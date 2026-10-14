@@ -5,14 +5,13 @@
    ===================================================================== */
 const WL_CARDS={ // Partner, Name, Pill, Icon, Text, Button
  bipa:{l:'bipa',n:'BIPA',p:'250',k:'oes',t:'250 Zusatz Ös auf den Einkauf',b:'Scan erforderlich',img:'__BD_IMG__'},
- adeg:{l:'adeg',n:'ADEG',p:'-&#8239;30%',k:'jo',t:'-30 % auf das teuerste Produkt',b:'Aktivieren'},
- billa:{l:'billa',n:'BILLA',p:'500',k:'oes',t:'-10 % und 500 Ös auf den Einkauf',b:'Aktivieren',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-10%</div>'},
- penny:{l:'penny',n:'PENNY',p:'250',k:'oes',t:'5 € Rabatt auf den Wocheneinkauf',b:'Scan erforderlich',tag:'<div style="font-size:17px;font-weight:700;margin-bottom:2px">Rabatt</div><div style="font-size:66px;font-weight:800;line-height:1">5&#8239;€</div>'},
- allianz:{l:'allianz',n:'ALLIANZ',p:'+3000',k:'oes',t:'3000 Ös bei Abschluss',b:'Mehr erfahren'},
+ adeg:{l:'adeg',n:'ADEG',p:'250',k:'oes',t:'5 € Rabatt auf Hirter Privat Pils',b:'Aktivieren',img:'__WL:hirter__',tag:'<div style="font-size:17px;font-weight:700;margin-bottom:2px">Rabatt</div><div style="font-size:66px;font-weight:800;line-height:1">5&#8239;€</div>'},
+ billa:{l:'billa',n:'BILLA',p:'500',k:'oes',t:'-10 % und 500 Ös auf den Einkauf',b:'Aktivieren',img:'__WL:supermarkt__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-10%</div>'},
+ allianz:{l:'allianz',n:'ALLIANZ',p:'+3000',k:'oes',t:'3000 Ös bei Abschluss',b:'Mehr erfahren',img:'__WL:see__'},
  pagro:{l:'pagro',n:'PAGRO',p:'100',k:'oes',t:'-15 % und 100 Ös auf Schulartikel',b:'Aktivieren',img:'__WL:schreibwaren__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-15%</div>'},
  omv:{l:'omv',n:'OMV',p:'2fach',k:'oes',t:'Doppelte Ös bei der Autowäsche',b:'Aktivieren',img:'__WL:waschstrasse__'},
- universal:{l:'universal',n:'UNIVERSAL',p:'400&#8239;€',k:'jo',t:'400 € Rabatt auf Möbel',b:'Einlösen'}};
-const WL_COLS=[['billa','allianz','omv','penny','universal','adeg','pagro'],['pagro','adeg','bipa','billa','penny','allianz','omv'],['omv','universal','adeg','pagro','billa','penny','bipa_ph']];
+ universal:{l:'universal',n:'UNIVERSAL',p:'400&#8239;€',k:'jo',t:'400 € Rabatt auf Fahrradträger',b:'Einlösen',img:'__WL:thule__'}};
+const WL_COLS=[['billa','allianz','omv','bipa_ph','universal','adeg','pagro'],['pagro','adeg','bipa','billa','omv','allianz','universal'],['omv','universal','adeg','pagro','billa','bipa_ph','allianz']];
 // Etiketten auf dem Foto: immer in der Markenfarbe des Partners (Hintergrund, Schrift)
 const WL_BRAND={billa:['#ffe600','#1a1a1a'],penny:['#cd1719','#fff'],pagro:['#e2001a','#fff'],adeg:['#00843d','#fff'],omv:['#0c4b8e','#fff'],allianz:['#003781','#fff'],universal:['#1a1a1a','#fff'],bipa:['#e5097f','#fff']};
 WL_CARDS.bipa_ph={...WL_CARDS.bipa,t:'Die BIPA Bonusbox für 250 Ös',b:'Einlösen',img:'__WL:bipa_bonusbox__',tag:'<div style="font-size:34px;font-weight:700;line-height:1.15">Bonusbox</div>'};
