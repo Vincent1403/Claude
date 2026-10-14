@@ -253,7 +253,7 @@ const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const T_MAIN=190, FPS=24, TRACK_LEN=96.05;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
-const AU_OFF=6.8572;BEATS.forEach((v,i)=>BEATS[i]=+(v+AU_OFF).toFixed(3));BAR.forEach((v,i)=>BAR[i]=+(v+AU_OFF).toFixed(2)); // Musik startet nach dem längeren Intro
+const AU_OFF=0; // Musik startet bei Frame 0; das Intro dauert genau 3 Takte länger, das Logo liegt auf dem Drop (alles danach bleibt im Takt)
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)
 const MUSIC_SNAPS=[0,...[2.35,5.32,8.64].map(v=>v+AU_OFF),...BEATS];
 const CHAPTERS=[[0, "Intro"], [4.833, "01 Ganz persönlich"], [100.0, "Ablage: 02 Digitaler Begleiter"], [116.568, "03 Partner"], [160.299, "Schluss"]];
