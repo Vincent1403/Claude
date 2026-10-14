@@ -52,14 +52,14 @@ function bdLayout(s,P){ // Geometrie eines Zustands in Basiseinheiten, Mitte = 0
   return {tag:{x,y,w,h,rt:6,rb:30,o:1},pill:{x:-pw/2,y:y+h-14-BD_PH,w:pw},title:{y:y+20,o:1},card:0,sc:P.scale,tw}}
 const BADGES={
   key:'badges',name:'Badges',lane:'laneV5',cls:'bento',
-  DEF:{beat:13.725/24,per:.5,morph:.15,scale:3,cardMorph:.6,cardScale:1.08,bounce:.1,bgDur:1.1,bgLead:.55},
+  DEF:{beat:13.725/24,per:.5,morph:.15,scale:3,cardMorph:.6,cardScale:1.08,bounce:.1,bgDur:.7,bgLead:.6},
   params:[
     {k:'per',label:'Pro Element (Schläge)',min:.5,max:4,step:.5,fmt:v=>num(v,1),sub:'jedes Element landet auf einem Schlag und steht bis zum nächsten Wechsel; das letzte Etikett steht doppelt, die Angebotskarte achtmal so lang'},
     {k:'morph',label:'Dauer Verwandlung',min:.1,max:.9,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'Form, Breite und Farbe gleiten; Texte und Icons blenden über (Slow In / Slow Out)'},
     {k:'cardMorph',label:'Dauer Verwandlung zur Karte',min:.3,max:1.5,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'Etikett wird zur weißen Angebotskarte, die Pill wandert aufs Foto, das Bild zoomt zurück'},
     {k:'scale',label:'Größe',min:1.4,max:3.2,step:.05,fmt:v=>Math.round(v*100)+' %',sub:'bezogen auf die Vorlage'},
     {k:'cardScale',label:'Größe Angebotskarte',min:.7,max:1.3,step:.01,fmt:v=>Math.round(v*100)+' %'},
-    {k:'bgDur',label:'Farbwechsel über',min:.2,max:2.5,step:1/24,fmt:v=>num(v,2)+' s',sub:'neue Hintergrundfarbe breitet sich als weicher Kreis aus'},
+    {k:'bgDur',label:'Farbwechsel über',min:.2,max:2.5,step:1/24,fmt:v=>num(v,2)+' s',sub:'neue Hintergrundfarbe schiebt sich von unten ins Bild (Slow In / Slow Out)'},
     {k:'bgLead',label:'Farbwechsel beginnt vorher',min:0,max:1,step:.05,fmt:v=>Math.round(v*100)+' %',sub:'Anteil des Farbwechsels vor der Ankunft der neuen Kategorie'},
     {k:'bounce',label:'Federn beim Landen',min:0,max:.2,step:.005,fmt:v=>Math.round(v*100)+' %',sub:'jedes Element federt beim Ankommen ganz leicht nach'}],
   model(P){const b=P.beat,n=BD_LIST.length,d=BD_LIST.map(s=>P.per*b*(s.hold||1));
@@ -72,13 +72,13 @@ const BADGES={
     const u=a<n-1&&t>tEnd-md?eIO(seg(t,tEnd-md,tEnd)):0;
     const LA=bdLayout(A,P),LB=bdLayout(B,P),L=(p,q)=>p+(q-p)*u;
     // Hintergrund: neue Kategorie wächst als Kreis hinter dem Element aus der Mitte
-    // Hintergrund: eigener, längerer Übergang je Kategoriewechsel – beginnt vor der Ankunft, endet danach, weiche Kreiskante
+    // Hintergrund: eigener Übergang je Kategoriewechsel – neue Farbe fährt von unten rein, beginnt vor der Ankunft, endet danach
     let bgA=BD_CAT[A.c],bgB=null,v=0;
     for(let j=1;j<n;j++){if(BD_LIST[j].c===BD_LIST[j-1].c)continue;const T=M.st[j],w0=T-P.bgDur*P.bgLead,w1=T+P.bgDur*(1-P.bgLead);
       if(t>=w0&&t<w1){bgA=BD_CAT[BD_LIST[j-1].c];bgB=BD_CAT[BD_LIST[j].c];v=eIO(seg(t,w0,w1))}else if(t>=w1&&j<=a+1&&BD_LIST[j].c===B.c&&t<M.st[j])bgA=BD_CAT[BD_LIST[j].c]}
     E.bg.style.background=bgA;
-    if(bgB){const R=v*1300,F=260; // F = Breite der weichen Kante
-      Object.assign(E.circ.style,{display:'',background:bgB,clipPath:'',webkitMaskImage:`radial-gradient(circle at 960px 540px,#000 ${Math.max(0,R-F).toFixed(1)}px,transparent ${R.toFixed(1)}px)`,maskImage:`radial-gradient(circle at 960px 540px,#000 ${Math.max(0,R-F).toFixed(1)}px,transparent ${R.toFixed(1)}px)`})}
+    if(bgB){ // neue Fläche schiebt sich von unten ins Bild
+      Object.assign(E.circ.style,{display:'',background:bgB,transform:`translateY(${((1-v)*100).toFixed(3)}%)`})}
     else E.circ.style.display='none';
     // leichtes Federn bei jeder Ankunft
     const hit=t-M.st[a],bump=a>0&&hit>=0&&hit<.45?P.bounce*Math.sin(hit/.45*Math.PI*1.5)*Math.exp(-hit*6):0;
