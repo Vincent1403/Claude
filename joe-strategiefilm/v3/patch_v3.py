@@ -91,7 +91,8 @@ CLIPS["wall"] = C(round(40.078 + 17.5 * BEAT, 4), 16 * BEAT)
 _wk = (WR1 - WR0) / (WE - 4.8333)
 STORY_AT = round(WR0_REAL + (8.196 - 4.8333) * _wk, 4)   # Start der Stories (echte Zeit, Ablage)
 CLIPS["tags"] = C(round(STORY_AT - 9.5 * BEAT, 4), round(9.5 * BEAT + 2.26, 4))  # Tag-System: „Flug“ liegt auf dem Start der Stories  # Angebots-Wand: zieht von der Karte auf, Spalten laufen gegenläufig                # Julian + Stories liegen ebenfalls in der Ablage
-T_LEN = 170                                    # Timeline länger als der Track (96 s)
+CLIPS["showcase"] = C(167.0, 8.47)          # Icon-Showcase: in der Ablage hinter dem Schluss
+T_LEN = 180                                    # Timeline länger als der Track (96 s)
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
 DROP = ["story3", "story5", "story6", "hl3", "endc"]
@@ -222,13 +223,17 @@ rep("function stEntry(){", "function stEntry(){if(typeof tgLeads==='function'&&t
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "tags_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 
 rep("const tR=mT,g=S.clips.grad,tD=wDesign(tR);", "const tR=mT,g=S.clips.grad,tD=wDesign(tR);tgRT=tR;")
+# ---------- 5d. Icon-Showcase (showcase_comp.js), Icons als Inline-SVG ----------
+def sc_icons(txt):
+    return re.sub(r"__ICON:(\w+)__", lambda m: (here / "icons" / (m.group(1) + ".svg")).read_text(encoding="utf-8").replace('width="200" height="200" ', 'width="100%" height="100%" style="display:block;overflow:visible" ').replace("\n", "").replace("'", "&#39;"), txt)
+rep("const WHL=document.createElement('div');WHL.id='whiteL'", sc_icons((here / "showcase_comp.js").read_text(encoding="utf-8")) + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)

@@ -1,0 +1,17 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M100 172C92 166 20 124 20 72C20 46 40 28 64 28C80 28 92 36 100 50C108 36 120 28 136 28C160 28 180 46 180 72C180 124 108 166 100 172Z" fill="url(#body_hea)"/>
+<path opacity="0.75" d="M100 172C92 166 20 124 20 72C20 46 40 28 64 28C80 28 92 36 100 50C108 36 120 28 136 28C160 28 180 46 180 72C180 124 108 166 100 172Z" fill="url(#well_hea)" transform="translate(100 102) scale(0.62) translate(-100 -100)"/>
+<path d="M100 172C92 166 20 124 20 72C20 46 40 28 64 28C80 28 92 36 100 50C108 36 120 28 136 28C160 28 180 46 180 72C180 124 108 166 100 172Z" fill="url(#acc_hea)" transform="translate(100 102) scale(0.26) translate(-100 -100)"/>
+<defs>
+<linearGradient id="body_hea" x1="0" y1="190" x2="200" y2="20" gradientUnits="userSpaceOnUse">
+<stop stop-color="#A83041"/><stop offset="0.12" stop-color="#C02031"/><stop offset="0.45" stop-color="#EF2700"/>
+<stop offset="0.68" stop-color="#F23E10"/><stop offset="0.88" stop-color="#FB6321"/><stop offset="1" stop-color="#FF7024"/>
+</linearGradient>
+<linearGradient id="well_hea" x1="0" y1="0" x2="1" y2="1">
+<stop stop-color="#5C3048"/><stop offset="1" stop-color="#8C3044"/>
+</linearGradient>
+<linearGradient id="acc_hea" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#FF7429"/><stop offset="1" stop-color="#FF7429"/>
+</linearGradient>
+</defs>
+</svg>

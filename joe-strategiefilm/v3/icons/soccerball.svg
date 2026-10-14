@@ -1,0 +1,26 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<clipPath id="ballclip"><circle cx="100" cy="100" r="78"/></clipPath>
+<circle cx="100" cy="100" r="78" fill="url(#body_bal)"/>
+<path d="M158.52,49.47 L164.47,57.86 L169.33,67.20 L172.84,76.96 L175.48,81.50 L176.77,86.47 L176.63,91.59 L173.99,85.17 L169.92,78.90 L164.65,73.13 L162.05,63.80 L158.25,54.96 L153.46,47.10 L156.17,46.92 L157.89,47.72 Z" opacity="0.75" fill="url(#well_bal)" clip-path="url(#ballclip)"/>
+<path d="M46.54,152.90 L41.75,145.04 L37.95,136.20 L35.35,126.87 L30.08,121.10 L26.01,114.83 L23.37,108.41 L23.23,113.53 L24.52,118.50 L27.16,123.04 L30.67,132.80 L35.53,142.14 L41.48,150.53 L42.11,152.28 L43.83,153.08 Z" opacity="0.75" fill="url(#well_bal)" clip-path="url(#ballclip)"/>
+<path d="M26.69,77.16 L30.52,72.39 L35.72,68.05 L41.99,64.37 L46.54,55.38 L52.16,47.06 L58.56,39.85 L56.07,37.93 L54.35,37.12 L53.50,37.48 L45.95,44.15 L39.26,51.98 L33.80,60.54 L30.16,65.45 L27.74,71.09 Z" opacity="0.75" fill="url(#well_bal)" clip-path="url(#ballclip)"/>
+<path d="M119.23,156.32 L109.10,156.36 L98.61,155.35 L88.34,153.35 L82.92,158.69 L77.73,163.03 L73.04,166.14 L79.81,171.07 L87.09,174.76 L94.47,177.02 L104.06,176.39 L113.75,174.33 L123.02,170.95 L122.16,167.31 L120.87,162.34 Z" opacity="0.75" fill="url(#well_bal)" clip-path="url(#ballclip)"/>
+<path d="M87.11,33.78 L90.93,38.81 L95.00,45.08 L99.09,52.24 L109.56,52.36 L120.05,53.37 L129.98,55.21 L132.95,48.73 L135.36,43.09 L137.09,38.59 L128.78,32.95 L119.79,28.45 L110.59,25.35 L102.82,26.82 L94.84,29.68 Z" opacity="0.75" fill="url(#well_bal)" clip-path="url(#ballclip)"/>
+<path d="M144.30,82.71 L139.50,90.71 L133.87,99.04 L127.73,107.23 L132.05,116.20 L135.85,125.04 L138.92,133.26 L147.62,131.02 L155.59,128.15 L162.41,124.83 L164.70,114.68 L165.82,104.07 L165.73,93.58 L159.67,89.77 L152.40,86.08 Z" opacity="0.75" fill="url(#well_bal)" clip-path="url(#ballclip)"/>
+<path d="M96.84,104.26 L91.92,95.00 L87.06,85.66 L82.52,76.76 L72.50,78.39 L62.81,80.45 L53.97,82.83 L51.99,93.12 L50.86,103.73 L50.65,114.07 L58.73,118.83 L67.72,123.33 L77.14,127.32 L83.41,120.00 L90.09,112.17 Z" opacity="0.75" fill="url(#well_bal)" clip-path="url(#ballclip)"/>
+<circle cx="100" cy="100" r="78" fill="url(#shade_bal)"/>
+<defs><radialGradient id="shade_bal" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(78 74) scale(118)">
+<stop offset="0.45" stop-color="#5C3048" stop-opacity="0"/><stop offset="1" stop-color="#5C3048" stop-opacity="0.55"/></radialGradient></defs>
+<defs>
+<linearGradient id="body_bal" x1="0" y1="190" x2="200" y2="20" gradientUnits="userSpaceOnUse">
+<stop stop-color="#A83041"/><stop offset="0.12" stop-color="#C02031"/><stop offset="0.45" stop-color="#EF2700"/>
+<stop offset="0.68" stop-color="#F23E10"/><stop offset="0.88" stop-color="#FB6321"/><stop offset="1" stop-color="#FF7024"/>
+</linearGradient>
+<linearGradient id="well_bal" x1="0" y1="0" x2="1" y2="1">
+<stop stop-color="#5C3048"/><stop offset="1" stop-color="#8C3044"/>
+</linearGradient>
+<linearGradient id="acc_bal" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#FF7429"/><stop offset="1" stop-color="#FF7429"/>
+</linearGradient>
+</defs>
+</svg>

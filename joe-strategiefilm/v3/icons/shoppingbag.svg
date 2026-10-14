@@ -1,0 +1,17 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" d="M62 76V58C62 36 79 20 100 20C121 20 138 36 138 58V76H124V58C124 44 113 34 100 34C87 34 76 44 76 58V76Z" fill="url(#body_bag)"/>
+<path d="M44 60H156C163 60 168 65 169 72L174 160C175 168 169 176 160 176H40C31 176 25 168 26 160L31 72C32 65 37 60 44 60Z" fill="url(#body_bag)"/>
+<circle opacity="0.75" cx="69" cy="84" r="8" fill="url(#well_bag)"/><circle opacity="0.75" cx="131" cy="84" r="8" fill="url(#well_bag)"/>
+<defs>
+<linearGradient id="body_bag" x1="0" y1="190" x2="200" y2="20" gradientUnits="userSpaceOnUse">
+<stop stop-color="#A83041"/><stop offset="0.12" stop-color="#C02031"/><stop offset="0.45" stop-color="#EF2700"/>
+<stop offset="0.68" stop-color="#F23E10"/><stop offset="0.88" stop-color="#FB6321"/><stop offset="1" stop-color="#FF7024"/>
+</linearGradient>
+<linearGradient id="well_bag" x1="0" y1="0" x2="1" y2="1">
+<stop stop-color="#5C3048"/><stop offset="1" stop-color="#8C3044"/>
+</linearGradient>
+<linearGradient id="acc_bag" x1="0" y1="0" x2="0" y2="1">
+<stop stop-color="#FF7429"/><stop offset="1" stop-color="#FF7429"/>
+</linearGradient>
+</defs>
+</svg>
