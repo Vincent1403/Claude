@@ -80,10 +80,25 @@
    "len": 4.5,
    "start": 8.196
   },
+  "story3": {
+   "in": 0,
+   "len": 4.05,
+   "start": 10.9
+  },
   "story4": {
    "in": 0,
    "len": 4.5,
    "start": 8.196
+  },
+  "story5": {
+   "in": 0,
+   "len": 4.05,
+   "start": 10.9
+  },
+  "story6": {
+   "in": 0,
+   "len": 4.05,
+   "start": 10.9
   },
   "white": {
    "in": 0,

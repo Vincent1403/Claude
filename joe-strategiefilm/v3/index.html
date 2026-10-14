@@ -2676,7 +2676,7 @@ const S3I={"av2": "data:image/webp;base64,UklGRvhSAABXRUJQVlA4WAoAAAAQAAAAPwEAPw
 document.querySelectorAll('.uiAv').forEach((e,i)=>e.src=S3I[['av1','av2','av3'][i]]);
 const S3L=document.createElement('div');S3L.id='story3L';S3L.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font)';
 S3L.innerHTML=`<div id="s3Frame" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;border-radius:40px;transform-origin:0 0;background:#e4e1ea;box-shadow:0 40px 90px rgba(40,10,0,.35)">
- <div id="s3Pill" style="position:absolute;left:95px;top:95px;width:268px;height:98px">${stPill(ST_OR,'#fff')}</div>
+ <div id="s3Pill" style="position:absolute;left:95px;top:95px;width:268px;height:98px">${stPill(ST_OR,'#fff','hex','Neu')}</div>
  <div id="s3Card" style="position:absolute;left:0;top:685px;width:1080px;height:1235px;border-radius:144px 144px 0 0;background:linear-gradient(62deg,#c21f35 0%,#ea2b0b 42%,#f5501a 70%,#ff7024 100%)"></div>
  <img id="s3Man" src="${S3I.man}" alt="" style="position:absolute;left:168px;top:300px;width:760px;max-width:none;transform-origin:50% 100%">
  <div id="s3Share" style="position:absolute;left:176px;top:992px;width:727px;height:201px">
@@ -2794,7 +2794,7 @@ S5L.innerHTML=`<div id="s5Frame" style="position:absolute;left:0;top:0;width:108
   ${s5Ring('s5b',0)}
   <img id="s5Girl" src="${S5I.girl}" alt="" style="position:absolute;left:-272px;top:236px;width:1505px;max-width:none;transform-origin:50% 45%">
   ${s5Ring('s5f',1)}
-  <div id="s5Pill" style="position:absolute;left:79px;top:95px;height:98px;width:302px;border-radius:20px;background:${ST_OR};display:flex;align-items:center;gap:30px;padding-left:44px;box-sizing:border-box;color:#fff;font-size:44px;font-weight:800"><svg viewBox="0 0 24 24" style="width:48px;height:48px"><circle cx="12" cy="12" r="7.6" fill="none" stroke="#fff" stroke-width="4.4"/></svg>Deals</div>
+  <div id="s5Pill" style="position:absolute;left:79px;top:95px;height:98px;border-radius:21.6px;background:${ST_OR};display:flex;align-items:center;gap:20px;padding:0 33px;box-sizing:border-box;white-space:nowrap;color:#fff;font-size:52px;font-weight:700;letter-spacing:-.01em;line-height:1">${tgSvg('ci',46)}Aktion</div>
  </div>
  ${['Sammeln &','Sparen'].map((l,i)=>`<div style="position:absolute;left:96px;top:${1560+i*132}px;height:170px;width:900px;overflow:hidden"><div class="s5Hl" style="color:#fff;font-size:134px;font-weight:800;letter-spacing:-.01em;line-height:140px;white-space:nowrap">${l}</div></div>`).join('')}
 </div>`;
@@ -2845,7 +2845,7 @@ const S6L=document.createElement('div');S6L.id='story6L';S6L.style.cssText='posi
 S6L.innerHTML=`<div id="s6Frame" style="position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;border-radius:40px;transform-origin:0 0;background:#e4e1ea;box-shadow:0 40px 90px rgba(40,10,0,.35)">
  <div id="s6Card" style="position:absolute;left:0;top:0;width:1080px;height:1313px;border-radius:0 0 140px 140px;background:${ST_OR};overflow:hidden">
   <img id="s6Bag" src="${S6I.bag}" alt="" style="position:absolute;left:92px;top:250px;width:920px;max-width:none;transform-origin:50% 60%"></div>
- <div id="s6Neu" style="position:absolute;left:95px;top:95px;width:268px;height:98px">${stPill('#fff','#ea3a10')}</div>
+ <div id="s6Neu" style="position:absolute;left:95px;top:95px;width:268px;height:98px">${stPill('#fff','#ea3a10','hg','Letzte Chance')}</div>
  <div id="s6Deal" style="position:absolute;left:490px;top:285px;width:526px;height:198px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 64px;box-sizing:border-box;color:#5e0f0b;font-size:100px;font-weight:900;letter-spacing:-.02em;transform-origin:70% 50%">-25%${s2Jo(176)}</div>
  ${['Clever sparen','bei deinem','Wocheneinkauf.'].map((l,i)=>`<div style="position:absolute;left:96px;top:${1430+i*126}px;height:160px;width:960px;overflow:hidden"><div class="s6Hl" style="color:#6b0505;font-size:124px;font-weight:800;letter-spacing:-.01em;line-height:136px;white-space:nowrap">${l}</div></div>`).join('')}
 </div>`;
@@ -3559,7 +3559,7 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
 ["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c9:C9,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story4:STORY4,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c9:C9,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3593,7 +3593,7 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
-S.warp={r0:59.2979};delete S.clips.julian;
+S.warp={r0:59.2979};delete S.clips.julian;S.clips.white.len=8.7;
 S.clips.hl1={start:0,len:2.35,in:0};
 S.clips.logo={start:2.35,len:2.4833,in:0.475};
 S.clips.c2={start:4.8333,len:4.3617,in:0};
@@ -3667,11 +3667,11 @@ function renderBg(local,len){const g=len?clamp(local/len):0;$('bg').style.transf
 function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
 /* Zeitdehnung Julian + Stories: Clips dort sind in Design-Zeit gespeichert (WA…WB). Der Abschnitt ab Julian bis „Farben“
    wird so gedehnt, dass er genau bis zum Start von „Farben“ reicht – Farben/Anzeigen sind schneller, die gewonnene Zeit geht hierher. */
-const WA=4.8333,WB=11.5,WSPAN=11.2145; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar
+const WA=4.8333,WB=14.95,WSPAN=17.018; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar
 function warpK(){return Math.max(.2,WSPAN/(WB-WA))}
 function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA?t:t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)
 function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit
-const PRE=new Set(['grad','julian','white','story','story2','story4']);
+const PRE=new Set(['grad','julian','white','story','story2','story4','story3','story5','story6']);
 const isPre=k=>PRE.has(k);
 function mRender(){
   if(view!=='main')return;const tR=mT,g=S.clips.grad,tD=wDesign(tR);

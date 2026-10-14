@@ -28,10 +28,10 @@ bars = lambda t, n: round(t + n * BARL, 4)   # Szene aus dem Markenfilm um n Tak
 # ---------- Zeitplan ----------
 OFF = 3                         # alles ab Julian liegt 3 Takte später als in der Kapitel-Fassung („Menschen“ + „Mach dein Jö draus!“)
 PEOPLE_LEN = round(12 * BEAT, 4)              # vier Personen à 3 Schläge, beginnt auf dem Drop
-WE = 11.5                       # Design-Zeitpunkt, an dem auf Kian geschnitten wird (kurz bevor die Stories rausfahren)
+WE = 14.95                      # Design-Ende des Story-Abschnitts: zweiter Story-Block (Share, Sammeln & Sparen, Wocheneinkauf) läuft ganz durch
 WR0 = round(4.8333 + 13 * BARL, 4)           # Julian beginnt nach „Alles in einer App“ (gleiche Lage im Takt wie im Markenfilm)
 RABATT = bars(45.763, -11)      # Kian nach „Mach dein Jö draus!“
-WR1 = round(WR0 + 11.2145, 4)  # gleiche Dehnung wie bisher (Julian + Stories etwas ruhiger als im Markenfilm)
+WR1 = round(WR0 + 11.2145 / (11.5 - 4.8333) * (WE - 4.8333), 4)  # gleiche Dehnung wie bisher (Stories etwas ruhiger als im Markenfilm)
 CLOUD_A = round(RABATT + 3.0427, 4)          # wie im Markenfilm: Wolke startet auf dem letzten Kian-Bild
 CLOUD_END = round(CLOUD_A + 8.3843, 4)      # Wolke + Tamara wie im Markenfilm, endet auf der Takt-Eins
 BOX = bars(24.5417, 9)          # Sammelpass nach Julian + Stories
@@ -97,7 +97,7 @@ CLIPS["showcase"] = C(167.0, 8.47)          # Icon-Showcase: in der Ablage hinte
 T_LEN = 180                                    # Timeline länger als der Track (96 s)
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
-DROP = ["story3", "story5", "story6", "hl3", "endc", "julian"]  # Julian: im Partnerfilm nicht mehr nötig (Tag-System führt in die Stories)
+DROP = ["hl3", "endc", "julian"]  # Julian: im Partnerfilm nicht mehr nötig (Tag-System führt in die Stories)
 
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
@@ -115,7 +115,7 @@ rep("const WA=4.8333,WB=13.769;\nfunction warpK(){const c=S.clips.colors;return 
     "function warpK(){return Math.max(.2,WSPAN/(WB-WA))}\n"
     "function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA?t:t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)\n"
     "function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit\n"
-    "const PRE=new Set(['grad','julian','white','story','story2','story4']);\n"
+    "const PRE=new Set(['grad','julian','white','story','story2','story4','story3','story5','story6']);\n"
     "const isPre=k=>PRE.has(k);")
 
 # ---------- 2. Abhängigkeiten, die die alte Reihenfolge voraussetzen ----------
@@ -219,6 +219,10 @@ i = s.index("const S2_ST=[{n:'Sport',ico:'sport',w:272,"); j = s.index("];", i) 
 s = s[:i] + "const S2_ST=[{n:'Letzte Chance',ico:'hg',w:420,lines:['Exklusive','Sportdeals','entdecken!']},{n:'Games',ico:'x',w:300,lines:['Spielen &','Gewinnen']},{n:'Neu',ico:'hex',w:240,lines:['Neu Angebote','entdecken!']}]; // Pills im Tag-System; Breiten werden gemessen" + s[j:]
 rep('<div class="s2PillIn" style="position:absolute;left:0;top:0;height:98px;display:flex;align-items:center;gap:22px;padding-left:40px;color:#fff;font-size:44px;font-weight:700;white-space:nowrap">',
     '<div class="s2PillIn" style="position:absolute;left:0;top:0;height:98px;display:flex;align-items:center;gap:20px;padding-left:33px;color:#fff;font-size:52px;font-weight:700;letter-spacing:-.01em;line-height:1;white-space:nowrap">')
+rep("<div id=\"s3Pill\" style=\"position:absolute;left:95px;top:95px;width:268px;height:98px\">${stPill(ST_OR,'#fff')}", "<div id=\"s3Pill\" style=\"position:absolute;left:95px;top:95px;width:268px;height:98px\">${stPill(ST_OR,'#fff','hex','Neu')}")
+rep("<div id=\"s6Neu\" style=\"position:absolute;left:95px;top:95px;width:268px;height:98px\">${stPill('#fff','#ea3a10')}", "<div id=\"s6Neu\" style=\"position:absolute;left:95px;top:95px;width:268px;height:98px\">${stPill('#fff','#ea3a10','hg','Letzte Chance')}")
+rep('<div id="s5Pill" style="position:absolute;left:79px;top:95px;height:98px;width:302px;border-radius:20px;background:${ST_OR};display:flex;align-items:center;gap:30px;padding-left:44px;box-sizing:border-box;color:#fff;font-size:44px;font-weight:800"><svg viewBox="0 0 24 24" style="width:48px;height:48px"><circle cx="12" cy="12" r="7.6" fill="none" stroke="#fff" stroke-width="4.4"/></svg>Deals',
+    '<div id="s5Pill" style="position:absolute;left:79px;top:95px;height:98px;border-radius:21.6px;background:${ST_OR};display:flex;align-items:center;gap:20px;padding:0 33px;box-sizing:border-box;white-space:nowrap;color:#fff;font-size:52px;font-weight:700;letter-spacing:-.01em;line-height:1">${tgSvg(\'ci\',46)}Aktion')
 rep("${s2Ico[s.ico]}", "${tgSvg(s.ico,46)}")
 rep("    let pw=S2_ST[0].w;", "    if(!S2_ST._m&&E.pin[0].offsetWidth){S2_ST.forEach((s,i)=>s.w=E.pin[i].offsetWidth+33);S2_ST._m=1}\n    let pw=S2_ST[0].w;")
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "tags_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
@@ -241,7 +245,7 @@ layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); 
 rep(old_comps, aliases + layers + new_comps)
 
 # ---------- 7. Ausgangs-Timeline und Parameter im Code ----------
-block = f"S.warp={{r0:{WR0_REAL}}};delete S.clips.julian;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
+block = f"S.warp={{r0:{WR0_REAL}}};delete S.clips.julian;S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
