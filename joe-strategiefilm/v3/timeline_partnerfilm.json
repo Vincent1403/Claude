@@ -194,6 +194,11 @@
    "start": 6.5766,
    "len": 2.6306,
    "in": 0
+  },
+  "ivKochen": {
+   "start": 0,
+   "len": 2.4019,
+   "in": 0
   }
  },
  "grad": "g-video",
