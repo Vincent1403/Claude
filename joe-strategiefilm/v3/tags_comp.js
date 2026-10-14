@@ -71,6 +71,7 @@ const TAGS={
           else{const o=eIO(seg(t,fs,fs+.35));op=1-o}}}
       Object.assign(el.style,{width:w.toFixed(1)+'px',background:bg,color:fg,opacity:String(op),transform:`translate(${X.toFixed(1)}px,${Y.toFixed(1)}px) scale(${sc.toFixed(4)})`})});
     E.bg.style.opacity='1';
+    if(typeof GL!=='undefined')GL.style.display='none'; // das jö-App-Icon aus Julian liegt sonst über dem Tag-System
   },
   marks(M){const b=M.b,P=M.P;return [[0,'Formen'],[P.tagAt*b,'Tags'],[M.fly,'Flug'],[M.fly+P.flyDur,'Stories']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P,b=M.b;return [

@@ -89,8 +89,10 @@ CLIPS["slot"] = C(CLOUD_END, 2 * BARL)        # „Dein jö“: Namen rollen neb
 CLIPS["badges"] = C(40.078, 17.5 * BEAT)        # je Element 1 Schlag; jö-Kreis und letztes Etikett doppelt, Angebotskarte dreifach
 CLIPS["wall"] = C(round(40.078 + 17.5 * BEAT, 4), 16 * BEAT)
 _wk = (WR1 - WR0) / (WE - 4.8333)
-STORY_AT = round(WR0_REAL + (8.196 - 4.8333) * _wk, 4)   # Start der Stories (echte Zeit, Ablage)
-CLIPS["tags"] = C(round(STORY_AT - 9.5 * BEAT, 4), round(9.5 * BEAT + 2.26, 4))  # Tag-System: „Flug“ liegt auf dem Start der Stories  # Angebots-Wand: zieht von der Karte auf, Spalten laufen gegenläufig                # Julian + Stories liegen ebenfalls in der Ablage
+WALL_END = round(CLIPS["wall"]["start"] + CLIPS["wall"]["len"], 4)
+WR0_REAL = WALL_END                                        # Julian + Stories als Block direkt nach der Angebots-Wand (Julian liegt unter dem Tag-System)
+STORY_AT = round(WR0_REAL + (8.196 - 4.8333) * _wk, 4)     # Start der Stories
+CLIPS["tags"] = C(round(STORY_AT - 10 * BEAT, 4), round(10 * BEAT + 2.26, 4))  # Tag-System nach der Wand; „Flug“ (Schlag 10) liegt auf dem Start der Stories
 CLIPS["showcase"] = C(167.0, 8.47)          # Icon-Showcase: in der Ablage hinter dem Schluss
 T_LEN = 180                                    # Timeline länger als der Track (96 s)
 
@@ -99,6 +101,7 @@ DROP = ["story3", "story5", "story6", "hl3", "endc"]
 
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
+    "tags": {"flyAt": 10},
     "story": {"holdA": 1.4},    # Stories stehen länger, damit die eingeflogenen Tags lesbar bleiben
     "story2": {"hold1": 1.4},
     "brand": {"step": .71},          # jede Partnerfarbe steht länger (füllt genau einen Takt mehr)

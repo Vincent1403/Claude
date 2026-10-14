@@ -3103,6 +3103,7 @@ const TAGS={
           else{const o=eIO(seg(t,fs,fs+.35));op=1-o}}}
       Object.assign(el.style,{width:w.toFixed(1)+'px',background:bg,color:fg,opacity:String(op),transform:`translate(${X.toFixed(1)}px,${Y.toFixed(1)}px) scale(${sc.toFixed(4)})`})});
     E.bg.style.opacity='1';
+    if(typeof GL!=='undefined')GL.style.display='none'; // das jö-App-Icon aus Julian liegt sonst über dem Tag-System
   },
   marks(M){const b=M.b,P=M.P;return [[0,'Formen'],[P.tagAt*b,'Tags'],[M.fly,'Flug'],[M.fly+P.flyDur,'Stories']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P,b=M.b;return [
@@ -3628,7 +3629,7 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
-S.warp={r0:102.5032};
+S.warp={r0:59.2358};
 S.clips.hl1={start:0,len:2.35,in:0};
 S.clips.logo={start:2.35,len:2.4833,in:0.475};
 S.clips.c2={start:4.8333,len:4.3617,in:0};
@@ -3655,8 +3656,9 @@ S.clips.logo2={start:160.3636,len:5.9305,in:0};
 S.clips.slot={start:32.0459,len:4.5717,in:0};
 S.clips.badges={start:40.078,len:10.0078,in:0};
 S.clips.wall={start:50.0858,len:9.15,in:0};
-S.clips.tags={start:102.727,len:7.6928,in:0};
+S.clips.tags={start:59.1736,len:7.9787,in:0};
 S.clips.showcase={start:167.0,len:8.47,in:0};
+Object.assign(S.comps.tags.params,{"flyAt": 10});FM.tags=COMPS.tags.model(S.comps.tags.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
