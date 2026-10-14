@@ -214,6 +214,11 @@
    "start": 2.4019,
    "len": 2.1731,
    "in": 0
+  },
+  "ivBrille": {
+   "start": 4.575,
+   "len": 2.0016,
+   "in": 0
   }
  },
  "grad": "g-video",

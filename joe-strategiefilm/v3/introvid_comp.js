@@ -28,3 +28,4 @@ function makeIV(key,name,src,dur,def={}){
 }
 const IV_KOCHEN=makeIV('ivKochen','Video Kochen','iv_kochen.webm',5.042);
 const IV_TANKEN=makeIV('ivTanken','Video Tanken','iv_tanken.webm',5.042,{fade:0}); // harter Schnitt vom ersten Video
+const IV_BRILLE=makeIV('ivBrille','Video Brille','iv_brille.webm',5.042,{fade:0});

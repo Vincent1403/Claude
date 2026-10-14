@@ -3161,6 +3161,7 @@ function makeIV(key,name,src,dur,def={}){
 }
 const IV_KOCHEN=makeIV('ivKochen','Video Kochen','iv_kochen.webm',5.042);
 const IV_TANKEN=makeIV('ivTanken','Video Tanken','iv_tanken.webm',5.042,{fade:0}); // harter Schnitt vom ersten Video
+const IV_BRILLE=makeIV('ivBrille','Video Brille','iv_brille.webm',5.042,{fade:0});
 
 const WHL=document.createElement('div');WHL.id='whiteL';WHL.style.cssText='position:absolute;inset:0;display:none';WHL.innerHTML='<div id="whO" style="position:absolute;inset:0;background:#e4e0eb"></div><div id="whB" style="position:absolute;inset:0;background:#f4f1ea"></div>';
 $('bg').after(WHL);
@@ -3597,7 +3598,7 @@ const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c9:C9,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,white2:WHITE2,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c9:C9,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,white2:WHITE2,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3667,6 +3668,7 @@ S.clips.julian={start:11.6905,len:4.5717,in:0};
 S.clips.white2={start:11.6905,len:4.5717,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
+S.clips.ivBrille={start:4.575,len:2.0016,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
