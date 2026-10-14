@@ -251,10 +251,10 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=91.48, FPS=24;
+const T_MAIN=96.05, FPS=24;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
 const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];
-const CHAPTERS=[[0, "Intro"], [9.195, "01 Ganz persönlich"], [30.983, "02 Digitaler Begleiter"], [41.757, "03 Partner"], [85.487, "Schluss"]];
+const CHAPTERS=[[0, "Intro"], [4.833, "01 Ganz persönlich"], [35.555, "02 Digitaler Begleiter"], [46.328, "03 Partner"], [90.059, "Schluss"]];
 const fmtPct=v=>num(v*100,1)+' %',fmtX=v=>num(v)+'×',fmtMs=v=>Math.round(v*1000)+' ms',fmtSec=v=>num(v)+' s';
 
 /* =====================================================================
@@ -1987,6 +1987,85 @@ const FULLP={
 };
 
 /* =====================================================================
+   COMP: MENSCHEN (Partnerfilm) – Drehung wie „Partner Vollbild“, aber mit Fokus auf die einzelne Person:
+   großer Name in Dunkelrot hinter der Person, zwei persönliche HUD-Karten, Hintergrund wechselt bei jeder
+   Drehung zwischen Orange (Mandarine) und Beige.
+   ===================================================================== */
+const PF_COL=['#e0662e','#f4f1ea']; // Mandarine, Beige
+const PF_SCENES=[ // Person, Name, [HUD A], [HUD B]
+ {p:'girl',name:'Lena',A:fsCard(250,170,560,170,`<div style="display:flex;align-items:center;gap:22px;padding:0 26px;height:100%"><div style="flex:none;width:96px;height:96px;border-radius:50%;background:${FS_BG};color:#fff;display:grid;place-items:center;font-size:44px;font-weight:800">L</div><div><div style="font-size:34px;font-weight:700">Hallo Lena</div><div style="font-size:22px;font-weight:500;margin-top:6px;opacity:.85">3 neue Gutscheine für dich</div></div></div>`),
+   B:fsCard(1190,690,500,200,`<div style="padding:34px 40px 40px;text-align:right"><div style="font-size:30px;font-weight:500">Meine Ersparnis 2026</div><div style="font-size:84px;font-weight:700;letter-spacing:-.02em;line-height:1.1"><span class="fsNum" data-to="48.20" data-dec="2">0</span> €</div></div>`)},
+ {p:'woman',name:'Renate',A:fsCard(1170,140,540,300,`<div style="padding:32px 34px 38px"><div style="font-size:38px;font-weight:700">Meine Favoriten</div><div style="font-size:22px;font-weight:500;margin-top:8px">ausgewählt von Renate</div><div style="display:flex;gap:18px;margin-top:30px">${fsCircle('bipa',128)}${fsCircle('billa',128)}${fsCircle('penny',128)}</div></div>`),
+   B:fsCard(220,680,620,150,`<div style="display:flex;align-items:center;gap:26px;padding:0 28px;height:100%">${fsRing('pa',100,12,1)}<div><div style="font-size:40px;font-weight:700;display:flex;align-items:center;gap:8px"><span class="fsNum" data-to="100" data-dec="0">0</span> ${fsOes(36,26)}</div><div style="font-size:22px;font-weight:500;margin-top:4px">Für dich: bis zu −10 %</div></div><div style="margin-left:auto">${fsBtn('Einlösen')}</div></div>`)},
+ {p:'sport',name:'Sarah',A:fsCard(250,170,470,470,`<div style="padding:32px 32px 38px;display:flex;flex-direction:column;align-items:center"><div style="font-size:30px;font-weight:700;align-self:stretch">Sarahs Sportpass</div><div style="position:relative;margin-top:24px">${fsRing('pb',260,26,.72)}<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:58px;font-weight:700"><span class="fsNum" data-to="83" data-dec="0">0</span> ${fsOes(52,36)}</div></div></div>`),
+   B:fsCard(1140,730,600,160,`<div style="display:flex;align-items:center;gap:24px;padding:0 28px;height:100%"><div style="flex:none;width:112px;height:112px;border-radius:50%;background:${FS_BG};color:#fff;display:grid;place-items:center;font-size:44px;font-weight:900">2×</div><div><div style="font-size:36px;font-weight:700;display:flex;align-items:center;gap:8px">Doppelte ${fsOes(34,24)}</div><div style="font-size:22px;font-weight:500;margin-top:4px">für jedes Training</div></div></div>`)},
+ {p:'student',name:'Jonas',A:fsCard(1180,150,530,190,`<div style="padding:34px 36px 40px"><div style="font-size:30px;font-weight:700">Für dich empfohlen</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:22px"><div style="font-size:60px;font-weight:900;letter-spacing:-.02em;line-height:1">−15 %</div>${fsBtn('Aktivieren')}</div></div>`),
+   B:fsCard(230,680,600,160,`<div style="display:flex;align-items:center;gap:24px;padding:0 28px;height:100%"><div style="position:relative">${fsRing('pc',112,13,.86)}<div style="position:absolute;inset:0;display:grid;place-items:center;font-size:30px;font-weight:700"><span class="fsNum" data-to="594" data-dec="0">0</span></div></div><div><div style="font-size:36px;font-weight:700;display:flex;align-items:center;gap:8px">Jonas’ ${fsOes(34,24)}</div><div style="font-size:22px;font-weight:500;margin-top:4px">gesammelt seit Schulstart</div></div></div>`)}];
+const PFL=document.createElement('div');PFL.id='peopleL';PFL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);perspective:2400px;perspective-origin:50% 50%';
+PFL.innerHTML=`
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="pfRg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#c0233a"/><stop offset=".5" stop-color="#ee2a06"/><stop offset="1" stop-color="#ff7024"/></linearGradient></defs></svg>
+<div id="pfBg" style="position:absolute;inset:0;background:${PF_COL[0]}"></div>
+<div id="pfRig" style="position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 50%">
+ <div class="pfLy" style="position:absolute;inset:0;transform-origin:50% 50%"><div id="pfName" style="position:absolute;left:0;right:0;top:250px;text-align:center;color:${FS_BG};font-size:440px;font-weight:900;letter-spacing:-.04em;line-height:1;white-space:nowrap;transform-origin:50% 60%"></div></div>
+ <div class="pfLy" style="position:absolute;inset:0;transform-origin:50% 50%"><img id="pfPerson" alt="" style="position:absolute;transform-origin:50% 100%;display:none"></div>
+ <div class="pfLy" style="position:absolute;inset:0;transform-origin:50% 50%">${PF_SCENES.map((s,i)=>`<div class="pfHud" data-i="${i}" style="position:absolute;inset:0;display:none">${s.A.replace('class="fsc ','class="fsc fsA ')}${s.B.replace('class="fsc ','class="fsc fsB ')}</div>`).join('').replaceAll('url(#fsRg)','url(#pfRg)')}</div>
+</div>`;
+$('stage').appendChild(PFL);
+{const st=document.createElement('style');st.textContent=`#peopleL .fsc{position:absolute;border-radius:28px;color:${FS_BG};background:linear-gradient(120deg,rgba(255,255,255,.96),rgba(255,255,255,.84));-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 24px 50px rgba(30,10,0,.16);overflow:hidden}#peopleL .oesw{display:inline-flex;align-items:flex-end;line-height:1}#peopleL .oesg{width:auto;display:inline-block;overflow:visible}#peopleL .oess{font-weight:900;margin-left:1px;line-height:.8}`;document.head.appendChild(st)}
+const PFE={bg:$('pfBg'),rig:$('pfRig'),L:[...PFL.querySelectorAll('.pfLy')],name:$('pfName'),person:$('pfPerson'),huds:[...PFL.querySelectorAll('.pfHud')]};
+PFE.huds.forEach(h=>{h._A=h.querySelector('.fsA');h._B=h.querySelector('.fsB');h._nums=[...h.querySelectorAll('.fsNum')];h._arcs=[...h.querySelectorAll('.fsArc')]});
+const PEOPLE={
+  key:'people',name:'Menschen',lane:'laneV4',cls:'bento',
+  DEF:{beat:13.725/24,sb:3,flip:20/24,personH:980,zName:-260,zPerson:120,zHud:380,nameSize:440},
+  params:[
+    {k:'sb',label:'Pro Person (Schläge)',min:2,max:8,step:1,fmt:v=>String(v),sub:'die Kante jeder Drehung liegt auf einem Schlag; Clip beginnt auf dem Drop'},
+    {k:'flip',label:'Dauer Drehung',min:6/24,max:24/24,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'ganzes Bild dreht sich um die Hochachse; Hintergrund wechselt dabei zwischen Orange und Beige'},
+    {k:'nameSize',label:'Größe Name',min:240,max:560,step:10,fmt:v=>v+' px'},
+    {k:'personH',label:'Größe Person',min:700,max:1080,step:10,fmt:v=>v+' px'},
+    {k:'zName',label:'Tiefe Name',min:-600,max:0,step:10,fmt:v=>v+' px'},
+    {k:'zHud',label:'Tiefe HUD-Karten',min:0,max:700,step:10,fmt:v=>v+' px'}],
+  model(P){const b=P.beat,per=P.sb*b,n=PF_SCENES.length;const starts=PF_SCENES.map((_,i)=>i*per);
+    return {P,b,per,starts,key:per,keyName:'erste Drehung',total:n*per}},
+  show(on){PFL.style.display=on?'':'none'},
+  render(M,t){const P=M.P,E=PFE,n=PF_SCENES.length,fl=P.flip;
+    let idx=0,rot=0,blend=0,from=0,to=0;
+    for(let i=0;i<n;i++){const d=t-M.starts[i];if(d>=0)idx=i;
+      if(i>0&&d>=-FL_C*fl&&d<(1-FL_C)*fl){const u=d/fl+FL_C,e=eFlip(u);rot=e<.5?-e*180:180-e*180;blend=eIO(seg(e,.2,.8));from=(i-1)%2;to=i%2;idx=e<.5?i-1:i}}
+    if(!rot&&!blend){from=to=idx%2}
+    const mix=(a,c,f)=>{const pa=[1,3,5].map(o=>parseInt(a.substr(o,2),16)),pc=[1,3,5].map(o=>parseInt(c.substr(o,2),16));return `rgb(${pa.map((v,q)=>Math.round(v+(pc[q]-v)*f)).join(',')})`};
+    E.bg.style.background=mix(PF_COL[from],PF_COL[to],blend);
+    const sc=PF_SCENES[idx],lt=t-M.starts[idx],dr=seg(lt,0,M.per);
+    const zc=z=>(2400-z)/2400,zs=[P.zName,P.zPerson,P.zHud];
+    E.rig.style.transform=`rotateY(${rot.toFixed(2)}deg)`;
+    E.L.forEach((el,k)=>el.style.transform=`translateZ(${zs[k]}px) scale(${zc(zs[k]).toFixed(5)})`);
+    // Name: steigt beim ersten Bild auf, wächst danach ganz langsam
+    if(E.name._n!==sc.name){E.name._n=sc.name;E.name.textContent=sc.name}
+    const ni=idx===0?eExpo(seg(lt,.05,.6)):1;
+    E.name.style.fontSize=P.nameSize+'px';
+    E.name.style.transform=`translateY(${((1-ni)*160).toFixed(1)}px) scale(${(1+.04*dr).toFixed(4)})`;E.name.style.opacity=ni.toFixed(3);
+    // Person
+    const src=POA[sc.p];if(E.person._s!==src){E.person._s=src;E.person.src=src}
+    const ar={girl:709/1000,woman:425/1000,sport:623/1000,student:735/1000}[sc.p],ph=P.personH,pw=ph*ar,pin=idx===0?eOut(seg(lt,.12,.55)):1;
+    E.person.style.display='';
+    Object.assign(E.person.style,{height:ph+'px',width:pw+'px',left:(960-pw/2+(sc.p==='woman'?20:0))+'px',top:(1080-ph+10)+'px',opacity:pin.toFixed(3),
+      transform:`translateY(${((-16*eOut(dr))+(1-pin)*120).toFixed(1)}px) scale(${(1+.035*dr).toFixed(4)})`});
+    // HUD-Karten poppen nach der Drehung auf, Zahlen zählen hoch
+    E.huds.forEach((h,i)=>{h.style.display=i===idx?'':'none';if(i!==idx)return;
+      const a0=idx===0?.45:fl*(1-FL_C)*.55;
+      [[h._A,0],[h._B,.18]].forEach(([c,o])=>{const p=seg(lt,a0+o,a0+o+.5),e=eBack(p);c.style.opacity=Math.min(1,p*3).toFixed(3);
+        c.style.transform=`translateY(${((1-eExpo(p))*40+Math.sin((t+o*9)*1.6)*5*seg(lt,a0+.6,a0+1.2)).toFixed(1)}px) scale(${(.86+.14*e).toFixed(4)})`});
+      const cnt=eIO(seg(lt,a0+.1,a0+.9));
+      h._nums.forEach(nm=>{const v=+nm.dataset.to,dec=+nm.dataset.dec;nm.textContent=(v*cnt).toFixed(dec).replace('.',',')});
+      h._arcs.forEach(a=>{const c=+a.dataset.c,v=+a.dataset.v;a.setAttribute('stroke-dashoffset',(c*(1-v*cnt)).toFixed(1))})});
+  },
+  marks(M){return PF_SCENES.map((s,i)=>[M.starts[i],s.name])},
+  table(M){const F=s=>Math.round(s*FPS),P=M.P;return [
+    ...PF_SCENES.map((s,i)=>[`${s.name} (${s.p})`,`${F(M.starts[i])}–${F(M.starts[i]+M.per)}`,`Hintergrund ${i%2?'Beige #F4F1EA':'Orange #E0662E'}, Name ${P.nameSize} px Dunkelrot, zwei HUD-Karten`]),
+    ['Drehung',`${F(P.flip)} F`,'Kante auf dem Schlag, Farbe wechselt während der Drehung']]},
+  note:'Frames bei 24 fps ab Beginn der Subebene. Gleiche Freisteller und Drehung wie „Partner Vollbild“, aber mit Namen statt jö-Logo und persönlichen Karten. Namen sind Vorschläge.'
+};
+
+/* =====================================================================
    COMP: APP-VIDEO (eingespieltes Video „jo_screen_replaced_HQ“, Bezahlen mit der jö App)
    ===================================================================== */
 const VDL=document.createElement('div');VDL.id='vidL';VDL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;background:#000';
@@ -2085,20 +2164,20 @@ const HL1=makeHL('hl1','Headline 1','laneV3',['Eine Marke mitten im Leben.'],
   {size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:3.4,len:4.1,shadow:1,note:'Läuft über dem Verlauf vor dem Logo-Aufbau (Intro ohne Beat). Muss vor dem ersten Strich des Logos raus sein.'});
 const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','und *Vorteile sinnvoll','miteinander verbindet.'],
   {size:118,top:345,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.5,inAt:.5,outAt:7,len:8,cls:'logo',note:'Eigene Texttafel, genau 2 Takte zwischen „Deal“ und „Partner“; beginnt und endet auf einer Takt-Eins. „Entscheidungen“ und „Vorteile“ im jö-Verlauf.'});
-const C1=makeHL('c1','Vision','laneV2',["Begeisterung.", "Täglich. Für alle."],
-  {size:140,top:366,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:1.2,inAt:0.6,outAt:6.777,len:7.627,cls:'logo',note:'Tafel des Partnerfilms (Vision).'});
-const C2=makeHL('c2','01 Ganz persönlich','laneV2',["Wie für *dich gemacht:", "Angebote, die zu dir passen."],
-  {size:112,top:402,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.5,inAt:0.25,outAt:7.51,len:8.36,cls:'logo',note:'Tafel des Partnerfilms (01 Ganz persönlich).'});
+const C2=makeHL('c2','Wie für dich gemacht','laneV2',["Wie für *dich gemacht."],
+  {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.75,inAt:0.75,outAt:6.777,len:7.627,cls:'logo',note:'Tafel des Partnerfilms (Wie für dich gemacht).'});
+const C3=makeHL('c3','Angebote, die zu dir passen','laneV2',["Angebote, die", "zu *dir passen."],
+  {size:140,top:366,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.504,len:4.354,cls:'logo',note:'Tafel des Partnerfilms (Angebote, die zu dir passen).'});
 const C4=makeHL('c4','02 Digitaler Begleiter','laneV2',["Alles in einer App:", "*einfach und *bequem."],
   {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:5.02,len:5.87,cls:'logo',note:'Tafel des Partnerfilms (02 Digitaler Begleiter).'});
 const C5=makeHL('c5','03 Integration der Partner','laneV2',["Wir bringen eure Marke", "dorthin, wo sie *wirkt."],
   {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.375,inAt:0.5,outAt:6.374,len:7.224,cls:'logo',note:'Tafel des Partnerfilms (03 Integration der Partner).'});
 const C6=makeHL('c6','03 Unter-Headline Look','laneV2',["Eure Angebote", "im neuen jö *Look."],
-  {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:4.141,len:4.991,cls:'logo',note:'Tafel des Partnerfilms (03 Unter-Headline Look).'});
+  {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:4.14,len:4.99,cls:'logo',note:'Tafel des Partnerfilms (03 Unter-Headline Look).'});
 const C7=makeHL('c7','03 Unter-Headline Sichtbarkeit','laneV2',["Sichtbar, wo eure", "*Kund:innen sind."],
   {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.143,len:3.993,cls:'logo',note:'Tafel des Partnerfilms (03 Unter-Headline Sichtbarkeit).'});
 const C8=makeHL('c8','Schluss Vision','laneV2',["Begeisterung. Täglich. Für alle."],
-  {size:76,top:880,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:0.5,inAt:5.53,outAt:14.479,len:10.479,cls:'logo',note:'Tafel des Partnerfilms (Schluss Vision).'});
+  {size:76,top:880,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:0.5,inAt:5.53,outAt:14.476,len:10.476,cls:'logo',note:'Tafel des Partnerfilms (Schluss Vision).'});
 const HL3=makeHL('hl3','Headline 3','laneV3',['Marken erlebbar machen','wo das Leben stattfindet.'],
   {size:96,top:420,color:'#fff',step:.25,inAt:.25,outAt:3.25,len:4.25,shadow:1,scrim:'radial-gradient(80% 90% at 50% 50%,rgba(60,14,4,.55) 0%,rgba(60,14,4,.35) 100%)',note:'Overlay am Anfang des App-Videos, vor den HUD-Elementen. Leichte dunkle Abdunklung für Lesbarkeit, Wörter auf den Sechzehnteln.'});
 
@@ -3106,9 +3185,9 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
 
 const CLOUDB=Object.assign(Object.create(CLOUD),{key:'cloudB',name:'Profil-Wolke (Tamara)'});
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
-["c1", "c2", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
+["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c1:C1,c2:C2,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story4:STORY4,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,cloudB:CLOUDB,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story4:STORY4,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,cloudB:CLOUDB,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3144,26 +3223,27 @@ S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
 S.clips.hl1={start:0,len:2.35,in:0};
 S.clips.logo={start:2.35,len:2.4833,in:0.475};
-S.clips.c1={start:4.8333,len:4.3617,in:0};
-S.clips.c2={start:9.195,len:4.781,in:0};
-S.clips.rabatt={start:25.1905,len:3.5997,in:0};
-S.clips.cloud={start:28.2332,len:2.75,in:0};
-S.clips.c4={start:30.9832,len:3.3568,in:0};
-S.clips.cloudB={start:34.34,len:4.5767,in:3.4};
-S.clips.box={start:38.2567,len:3.5,in:0};
-S.clips.c5={start:41.7567,len:4.1312,in:0};
-S.clips.partner={start:45.8879,len:4.482,in:0};
-S.clips.brand={start:50.3699,len:6.6608,in:0};
-S.clips.full={start:57.0307,len:7.0317,in:0};
-S.clips.c6={start:64.0624,len:2.854,in:0};
-S.clips.colors={start:66.9164,len:3.4313,in:0};
-S.clips.deal={start:70.3477,len:5.1439,in:0};
-S.clips.prod={start:75.4916,len:2.273,in:0.634};
-S.clips.c7={start:77.7646,len:2.2837,in:0};
-S.clips.city={start:80.0483,len:3.293,in:0};
-S.clips.bill={start:83.3413,len:2.146,in:0};
-S.clips.c8={start:85.4873,len:5.9927,in:0};
-S.clips.logo2={start:85.552,len:5.928,in:0};
+S.clips.c2={start:4.8333,len:4.3617,in:0};
+S.clips.people={start:9.195,len:6.8625,in:0};
+S.clips.c3={start:16.0575,len:2.4902,in:0};
+S.clips.rabatt={start:29.7622,len:3.5997,in:0};
+S.clips.cloud={start:32.8049,len:2.75,in:0};
+S.clips.c4={start:35.5549,len:3.3568,in:0};
+S.clips.cloudB={start:38.9117,len:4.5766,in:3.4};
+S.clips.box={start:42.8283,len:3.5,in:0};
+S.clips.c5={start:46.3283,len:4.1313,in:0};
+S.clips.partner={start:50.4596,len:4.482,in:0};
+S.clips.brand={start:54.9416,len:6.6608,in:0};
+S.clips.full={start:61.6024,len:7.0317,in:0};
+S.clips.c6={start:68.6341,len:2.8539,in:0};
+S.clips.colors={start:71.488,len:3.4313,in:0};
+S.clips.deal={start:74.9193,len:5.144,in:0};
+S.clips.prod={start:80.0633,len:2.273,in:0.634};
+S.clips.c7={start:82.3363,len:2.2837,in:0};
+S.clips.city={start:84.62,len:3.293,in:0};
+S.clips.bill={start:87.913,len:2.146,in:0};
+S.clips.c8={start:90.059,len:5.991,in:0};
+S.clips.logo2={start:90.1237,len:5.9263,in:0};
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
 Object.assign(S.comps.cloudB.params,{"banner": 0});FM.cloudB=COMPS.cloudB.model(S.comps.cloudB.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
@@ -3208,7 +3288,7 @@ function renderBg(local,len){const g=len?clamp(local/len):0;$('bg').style.transf
 function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
 /* Zeitdehnung Julian + Stories: Clips dort sind in Design-Zeit gespeichert (WA…WB). Der Abschnitt ab Julian bis „Farben“
    wird so gedehnt, dass er genau bis zum Start von „Farben“ reicht – Farben/Anzeigen sind schneller, die gewonnene Zeit geht hierher. */
-const WA=4.8333,WB=11.5,WR0=13.976,WR1=25.1905; // Partnerfilm: Design-Abschnitt WA…WB (Julian + erste Stories) läuft auf der Hauptebene von WR0 bis WR1
+const WA=4.8333,WB=11.5,WR0=18.5477,WR1=29.7622; // Partnerfilm: Design-Abschnitt WA…WB (Julian + erste Stories) läuft auf der Hauptebene von WR0 bis WR1
 function warpK(){return Math.max(.2,(WR1-WR0)/(WB-WA))}
 function wDesign(t){const k=warpK();return t<=WA?t:t<WR0?WA-1e-4:t<=WR1?WA+(t-WR0)/k:t-WR1+WB} // echte Zeit → Design-Zeit
 function wReal(x){const k=warpK();return x<WA?x:x<=WB?WR0+(x-WA)*k:x-WB+WR1} // Design-Zeit → echte Zeit
@@ -3241,7 +3321,7 @@ function info(){
 }
 let actx=null,abuf=null,abuf0=null,abufAt=null,asrc=null,gain=null,muted=false;
 // Musik-Schnitt: der große Bass vom Ende des Tracks (91,44 s) wird genau auf den H·A-Aufbau der Endcard gelegt
-const AU_BASS=91.4537,AU_CUT=86.882,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
+const AU_BASS=91.4537,AU_CUT=91.4537,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
 function auTarget(){return AU_CUT}
 function spliceAudio(){if(!abuf0)return null;const T=auTarget();if(T==null||T>=AU_BASS)return abuf0;if(abufAt===T&&abuf)return abuf;
   const sr=abuf0.sampleRate,a=Math.round((T-AU_XF)*sr),b=Math.round((AU_BASS-AU_XF)*sr),tail=abuf0.length-b,n=a+tail,xf=Math.round(AU_XF*2*sr);

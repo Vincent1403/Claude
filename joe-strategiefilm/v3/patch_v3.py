@@ -26,24 +26,26 @@ BEAT = 13.725 / 24
 bars = lambda t, n: round(t + n * BARL, 4)   # Szene aus dem Markenfilm um n Takte verschieben
 
 # ---------- Zeitplan ----------
+OFF = 2                         # alles ab Julian liegt 2 Takte später als in der Kapitel-Fassung (Platz für „Menschen“)
+PEOPLE_LEN = round(12 * BEAT, 4)              # vier Personen à 3 Schläge, beginnt auf dem Drop
 WE = 11.5                       # Design-Zeitpunkt, an dem auf Kian geschnitten wird (kurz bevor die Stories rausfahren)
-WR0 = 13.976                    # Julian beginnt nach der ersten Kapitel-Tafel
-RABATT = bars(45.763, -9)       # 25,19 s
+WR0 = round(13.976 + OFF * BARL, 4)          # Julian beginnt nach „Angebote, die zu dir passen.“
+RABATT = bars(45.763, -9 + OFF)
 WR1 = RABATT
 CLOUD_A = round(RABATT + 3.0427, 4)          # wie im Markenfilm: Wolke startet auf dem letzten Kian-Bild
-C4_END = 34.34
-BOX = bars(24.5417, 6)          # 38,257 s
-PARTNER = bars(27.6013, 8)      # 45,888 s, Einflug auf dem Höhepunkt der Musik
+C4_END = round(34.34 + OFF * BARL, 4)
+BOX = bars(24.5417, 6 + OFF)
+PARTNER = bars(27.6013, 8 + OFF)   # Einflug auf einem Akzent der Musik
 BRAND = round(PARTNER + 4.482, 4)
 BRAND_LEN = round(4.375 + BARL, 4)           # Lockups einen Takt länger (ruhiger)
 FULL = round(PARTNER + 8.857 + BARL, 4)
-COLORS = bars(16.6281, 22)
+COLORS = bars(16.6281, 22 + OFF)
 DEAL = round(COLORS + 3.4313, 4)
-PROD = bars(43.49, 14)
-CITY = bars(57.19, 10)
+PROD = bars(43.49, 14 + OFF)
+CITY = bars(57.19, 10 + OFF)
 BILL = round(CITY + 3.293, 4)
 AU_BASS = 91.4537
-AU_CUT = round(AU_BASS - 2 * BARL, 4)        # Sprung auf den großen Bass am Ende des Tracks
+AU_CUT = round(AU_BASS - (2 - OFF) * BARL, 4)  # bei OFF = 2 läuft der Track ohne Sprung bis zum Ende
 LOGO_LAND = 1.33                              # Punkte landen 1,33 s nach Clipstart (Logo-Animation, Standardwerte)
 LOGO2 = round(AU_CUT - LOGO_LAND, 4)
 END = round(AU_CUT + (96.05 - AU_BASS), 2)   # Rest des Tracks nach dem Sprung
@@ -52,8 +54,9 @@ C = lambda st, ln, i=0: dict(start=round(st, 4), len=round(ln, 4), **{"in": i})
 CLIPS = {
     "hl1": C(0, 2.35),
     "logo": C(2.35, 2.4833, .475),
-    "c1": C(4.8333, 9.195 - 4.8333),
-    "c2": C(9.195, WR0 - 9.195),
+    "c2": C(4.8333, 9.195 - 4.8333),             # „Wie für dich gemacht.“
+    "people": C(9.195, PEOPLE_LEN),              # Lena, Renate, Sarah, Jonas – Drehung auf dem Drop
+    "c3": C(9.195 + PEOPLE_LEN, WR0 - 9.195 - PEOPLE_LEN),  # „Angebote, die zu dir passen.“
     # julian, white, story, story2, story4, grad: Design-Zeit wie im Markenfilm (Zeitdehnung WR0…WR1)
     "rabatt": C(RABATT, 3.5997),
     "cloud": C(CLOUD_A, 2.75),                  # Kian zoomt raus in die Profil-Wolke
@@ -110,7 +113,7 @@ rep("  for(const k in COMPS){const pre=isPre(k),t=pre?tD:tR,c=S.clips[k],on=clip
 # ---------- 4. Musik und Länge ----------
 rep("const AU_BASS=91.4537,AU_CUT=64.0237,AU_XF=.004;", f"const AU_BASS=91.4537,AU_CUT={AU_CUT},AU_XF=.004;")
 rep("const T_MAIN=95, FPS=24;", f"const T_MAIN={END}, FPS=24;")
-chap = [(0, "Intro"), (9.195, "01 Ganz persönlich"), (CLIPS["c4"]["start"], "02 Digitaler Begleiter"),
+chap = [(0, "Intro"), (4.8333, "01 Ganz persönlich"), (CLIPS["c4"]["start"], "02 Digitaler Begleiter"),
         (CLIPS["c5"]["start"], "03 Partner"), (CLIPS["c8"]["start"], "Schluss")]
 rep("const CHAPTERS=[[0,'Logo'],[BAR[1],'Neuausrichtung'],[BAR[4],'Menschen'],[BAR[16],'Bento-Box'],[BAR[21],'Partner'],[BAR[32],'Endcard']];",
     "const CHAPTERS=" + json.dumps([[round(a, 3), b] for a, b in chap], ensure_ascii=False) + ";")
@@ -141,10 +144,10 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
     return f"const {key.upper()}=makeHL('{key}','{name}','laneV2',{json.dumps(lines, ensure_ascii=False)},\n  {o});\n"
 
 
-CARDS = ["c1", "c2", "c4", "c5", "c6", "c7", "c8"]
+CARDS = ["c2", "c3", "c4", "c5", "c6", "c7", "c8"]
 cards = (
-    card("c1", "Vision", ["Begeisterung.", "Täglich. Für alle."], 140, GRAD, "#fff", step=1.2, inAt=.6, hi="'#fff'")
-    + card("c2", "01 Ganz persönlich", ["Wie für *dich gemacht:", "Angebote, die zu dir passen."], 112, BEIGE, BURG, step=.5, inAt=.25)
+    card("c2", "Wie für dich gemacht", ["Wie für *dich gemacht."], 150, BEIGE, BURG, step=.75, inAt=.75)
+    + card("c3", "Angebote, die zu dir passen", ["Angebote, die", "zu *dir passen."], 140, BEIGE, BURG, step=.25, inAt=.25)
     + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 118, BEIGE, BURG, step=.25, inAt=.25)
     + card("c5", "03 Integration der Partner", ["Wir bringen eure Marke", "dorthin, wo sie *wirkt."], 118, BEIGE, BURG, step=.375, inAt=.5)
     + card("c6", "03 Unter-Headline Look", ["Eure Angebote", "im neuen jö *Look."], 118, BEIGE, BURG, step=.25, inAt=.25)
@@ -155,6 +158,9 @@ cards = (
 anchor = "const HL3=makeHL('hl3'"
 rep(anchor, cards + anchor)
 
+# ---------- 5b. Neue Szene „Menschen“ (people_comp.js) nach „Partner Vollbild“ ----------
+rep("/* =====================================================================\n   COMP: APP-VIDEO", (here / "people_comp.js").read_text(encoding="utf-8") + "\n/* =====================================================================\n   COMP: APP-VIDEO")
+
 # ---------- 6. Doppel-Clips: Profil-Wolke (Tamara) und Logo am Schluss ----------
 aliases = ("const CLOUDB=Object.assign(Object.create(CLOUD),{key:'cloudB',name:'Profil-Wolke (Tamara)'});\n"
            "const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
@@ -162,7 +168,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",cloudB:CLOUDB,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,cloudB:CLOUDB,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
