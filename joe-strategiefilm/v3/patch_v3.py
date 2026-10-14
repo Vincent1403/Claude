@@ -8,7 +8,7 @@ Bogen: Intro + Vision → 01 Ganz persönlich → 02 Digitaler Begleiter → 03 
 Jede Kapitel-Tafel steht vor den Szenen, die sie belegen. Blöcke sind um ganze Takte verschoben,
 damit Schnitte auf der Musik bleiben.
 """
-import pathlib, json, base64
+import pathlib, json, base64, re
 
 here = pathlib.Path(__file__).parent
 s = (here / "index_markenfilm.html").read_text(encoding="utf-8")
@@ -197,7 +197,9 @@ anchor = "const HL3=makeHL('hl3'"
 rep(anchor, cards + anchor)
 
 # ---------- 5b. Neue Szene „Menschen“ (people_comp.js) nach „Partner Vollbild“ ----------
-rep("/* =====================================================================\n   COMP: APP-VIDEO", (here / "people_comp.js").read_text(encoding="utf-8") + "\n" + (here / "slot_comp.js").read_text(encoding="utf-8") + "\n" + ((here / "badge_comp.js").read_text(encoding="utf-8") + "\n" + (here / "wall_comp.js").read_text(encoding="utf-8")).replace("__BD_IMG__", "data:image/webp;base64," + base64.b64encode((here / "angebot_bild.webp").read_bytes()).decode()) + "\n/* =====================================================================\n   COMP: APP-VIDEO")
+def wl_imgs(txt):  # Fotos der Angebots-Wand: __WL:name__ -> wall_img/web/name.webp
+    return re.sub(r"__WL:(\w+)__", lambda m: "data:image/webp;base64," + base64.b64encode((here / "wall_img" / "web" / (m.group(1) + ".webp")).read_bytes()).decode(), txt)
+rep("/* =====================================================================\n   COMP: APP-VIDEO", (here / "people_comp.js").read_text(encoding="utf-8") + "\n" + (here / "slot_comp.js").read_text(encoding="utf-8") + "\n" + ((here / "badge_comp.js").read_text(encoding="utf-8") + "\n" + wl_imgs((here / "wall_comp.js").read_text(encoding="utf-8"))).replace("__BD_IMG__", "data:image/webp;base64," + base64.b64encode((here / "angebot_bild.webp").read_bytes()).decode()) + "\n/* =====================================================================\n   COMP: APP-VIDEO")
 
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
