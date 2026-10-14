@@ -8,7 +8,7 @@ Bogen: Intro + Vision → 01 Ganz persönlich → 02 Digitaler Begleiter → 03 
 Jede Kapitel-Tafel steht vor den Szenen, die sie belegen. Blöcke sind um ganze Takte verschoben,
 damit Schnitte auf der Musik bleiben.
 """
-import pathlib, json
+import pathlib, json, base64
 
 here = pathlib.Path(__file__).parent
 s = (here / "index_markenfilm.html").read_text(encoding="utf-8")
@@ -86,7 +86,7 @@ for k in PARKED:
     CLIPS[k]["start"] = round(CLIPS[k]["start"] + PARK, 4)
 WR0_REAL = round(WR0 + PARK, 4)
 CLIPS["slot"] = C(CLOUD_END, 2 * BARL)        # „Dein jö“: Namen rollen neben dem App-Icon, direkt nach der Profil-Wolke
-CLIPS["badges"] = C(40.078, 24 * BEAT)         # Ös-Pills, Preis-Pills, Etiketten: ab dem Schlag bei 40 s, je 2 Schläge                # Julian + Stories liegen ebenfalls in der Ablage
+CLIPS["badges"] = C(40.078, 28 * BEAT)         # Ös-Pills, Preis-Pills, Etiketten je 2 Schläge, am Ende die Angebotskarte (4 Schläge)                # Julian + Stories liegen ebenfalls in der Ablage
 T_LEN = 170                                    # Timeline länger als der Track (96 s)
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
@@ -135,6 +135,8 @@ rep("ge.style.left=wReal(g.start)*pps+'px';ge.style.width=Math.max(12,(wReal(g.s
     "let g2=$('clip_grad2');if(!g2){g2=document.createElement('div');g2.id='clip_grad2';g2.className='clip grad';g2.style.pointerEvents='none';g2.innerHTML='<span>Verlauf (Julian)</span>';$('laneV1').appendChild(g2)}"
     "g2.style.display=gap?'':'none';if(gap){const b0=S.warp.r0,b1=wReal(g.start+g.len);g2.style.left=b0*pps+'px';g2.style.width=Math.max(12,(b1-b0)*pps)+'px'}}"
     "ge.classList.toggle('sel',sel==='grad');")
+# Tamara: ohne „Digitale Rechnung“ und „Gesammelte Ös“, nur „+25 Ös“ bleibt
+rep("$('stage').appendChild(VDL);", "$('stage').appendChild(VDL);\n{const st=document.createElement('style');st.textContent='#vdPay,#vdSum{display:none!important}';document.head.appendChild(st)} // Partnerfilm: nur „+25 Ös“")
 # Wellenform nur so lang wie der Track
 rep("const per=c.width/PEAKS.length;PEAKS.forEach", "const per=c.width*Math.min(1,TRACK_LEN/T_MAIN)/PEAKS.length;PEAKS.forEach")
 # Julian + Stories als Block ziehen (verschiebt S.warp.r0), Stand wird mit gespeichert
@@ -194,7 +196,7 @@ anchor = "const HL3=makeHL('hl3'"
 rep(anchor, cards + anchor)
 
 # ---------- 5b. Neue Szene „Menschen“ (people_comp.js) nach „Partner Vollbild“ ----------
-rep("/* =====================================================================\n   COMP: APP-VIDEO", (here / "people_comp.js").read_text(encoding="utf-8") + "\n" + (here / "slot_comp.js").read_text(encoding="utf-8") + "\n" + (here / "badge_comp.js").read_text(encoding="utf-8") + "\n/* =====================================================================\n   COMP: APP-VIDEO")
+rep("/* =====================================================================\n   COMP: APP-VIDEO", (here / "people_comp.js").read_text(encoding="utf-8") + "\n" + (here / "slot_comp.js").read_text(encoding="utf-8") + "\n" + (here / "badge_comp.js").read_text(encoding="utf-8").replace("__BD_IMG__", "data:image/webp;base64," + base64.b64encode((here / "angebot_bild.webp").read_bytes()).decode()) + "\n/* =====================================================================\n   COMP: APP-VIDEO")
 
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
