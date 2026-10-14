@@ -14,7 +14,7 @@ const BD_LIST=[
  {c:2,tag:1,k:'oes',p:'500',t:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-&#8239;20%</div>'},
  {c:2,tag:1,k:'oes',p:'250',t:'<div style="font-size:34px;font-weight:700;line-height:1.15">Bonusbox</div>'},
  {c:2,tag:1,k:'oes',p:'100',hold:2,t:'<div style="font-size:34px;font-weight:700;line-height:1.15">1 Shira<br>Bonus<br>Produkt</div>'},
- {c:3,card:1,k:'oes',p:'250',hold:4}]; // hold: Anzahl Schläge × „Pro Element“
+ {c:3,card:1,k:'oes',p:'250',hold:3}]; // hold: Anzahl Schläge × „Pro Element“
 // Angebotskarte in Basiseinheiten (Vorlage 1068 × 1018 px × 0,8, Mitte = 0/0)
 const BD_CW=854,BD_CH=814,BD_CX=-BD_CW/2,BD_CY=-BD_CH/2,bdc=v=>v*.8;
 const BDL=document.createElement('div');BDL.id='badgeL';BDL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font)';
@@ -54,7 +54,7 @@ function bdLayout(s,P){ // Geometrie eines Zustands in Basiseinheiten, Mitte = 0
   return {tag:{x,y,w,h,rt:6,rb:30,o:1},pill:{x:-pw/2,y:y+h-14-BD_PH,w:pw},title:{y:y+20,o:1},card:0,sc:P.scale,tw}}
 const BADGES={
   key:'badges',name:'Badges',lane:'laneV5',cls:'bento',
-  DEF:{beat:13.725/24,per:.5,morph:.15,scale:3,cardMorph:.6,cardScale:1.08,bounce:.1,bgDur:.45,bgLead:.6},
+  DEF:{beat:13.725/24,per:.75,morph:.15,scale:3,cardMorph:.6,cardScale:1.08,bounce:.1,bgDur:.45,bgLead:.6},
   params:[
     {k:'per',label:'Pro Element (Schläge)',min:.5,max:4,step:.5,fmt:v=>num(v,1),sub:'jedes Element landet auf einem Schlag und steht bis zum nächsten Wechsel; das letzte Etikett steht doppelt, die Angebotskarte viermal so lang'},
     {k:'morph',label:'Dauer Verwandlung',min:.1,max:.9,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'Form, Breite und Farbe gleiten; Texte und Icons blenden über (Slow In / Slow Out)'},

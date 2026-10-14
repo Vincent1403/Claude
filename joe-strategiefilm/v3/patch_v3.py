@@ -86,8 +86,8 @@ for k in PARKED:
     CLIPS[k]["start"] = round(CLIPS[k]["start"] + PARK, 4)
 WR0_REAL = round(WR0 + PARK, 4)
 CLIPS["slot"] = C(CLOUD_END, 2 * BARL)        # „Dein jö“: Namen rollen neben dem App-Icon, direkt nach der Profil-Wolke
-CLIPS["badges"] = C(40.0631, 9.5 * BEAT)        # jö-Kreis 1 Schlag, Pills und Etiketten je ein Achtel, letztes Etikett 1 Schlag, Angebotskarte 2 Schläge
-CLIPS["wall"] = C(round(40.0631 + 9.5 * BEAT, 4), 16 * BEAT)  # Angebots-Wand: zieht von der Karte auf, Spalten laufen gegenläufig                # Julian + Stories liegen ebenfalls in der Ablage
+CLIPS["badges"] = C(40.0631, 13 * BEAT)        # je Element ¾ Schlag; jö-Kreis und letztes Etikett doppelt, Angebotskarte dreifach
+CLIPS["wall"] = C(round(40.0631 + 13 * BEAT, 4), 16 * BEAT)  # Angebots-Wand: zieht von der Karte auf, Spalten laufen gegenläufig                # Julian + Stories liegen ebenfalls in der Ablage
 T_LEN = 170                                    # Timeline länger als der Track (96 s)
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
