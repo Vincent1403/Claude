@@ -6,24 +6,30 @@
 const WL_CARDS={ // Partner, Name, Pill, Icon, Text, Button
  bipa:{l:'bipa',n:'BIPA',p:'250',k:'oes',t:'250 Zusatz Ös auf den Einkauf',b:'Scan erforderlich',img:'__BD_IMG__'},
  adeg:{l:'adeg',n:'ADEG',p:'-&#8239;30%',k:'jo',t:'-30 % auf das teuerste Produkt',b:'Aktivieren'},
- billa:{l:'billa',n:'BILLA',p:'+500',k:'oes',t:'500 Ös pro Einkauf',b:'Aktivieren'},
- penny:{l:'penny',n:'PENNY',p:'3fach',k:'oes',t:'3fach Ös auf den Wocheneinkauf',b:'Scan erforderlich'},
+ billa:{l:'billa',n:'BILLA',p:'500',k:'oes',t:'-10 % und 500 Ös auf den Einkauf',b:'Aktivieren',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-10%</div>'},
+ penny:{l:'penny',n:'PENNY',p:'250',k:'oes',t:'5 € Rabatt auf den Wocheneinkauf',b:'Scan erforderlich',tag:'<div style="font-size:17px;font-weight:700;margin-bottom:2px">Rabatt</div><div style="font-size:66px;font-weight:800;line-height:1">5&#8239;€</div>'},
  allianz:{l:'allianz',n:'ALLIANZ',p:'+3000',k:'oes',t:'3000 Ös bei Abschluss',b:'Mehr erfahren'},
- pagro:{l:'pagro',n:'PAGRO',p:'-&#8239;15%',k:'jo',t:'-15 % auf Schulartikel',b:'Aktivieren'},
+ pagro:{l:'pagro',n:'PAGRO',p:'250',k:'oes',t:'Bonusbox zum Schulstart',b:'Aktivieren',tag:'<div style="font-size:34px;font-weight:700;line-height:1.15">Bonusbox</div>'},
  omv:{l:'omv',n:'OMV',p:'2fach',k:'oes',t:'Doppelte Ös bei jedem Tankstopp',b:'Aktivieren'},
  universal:{l:'universal',n:'UNIVERSAL',p:'400&#8239;€',k:'jo',t:'400 € Rabatt auf Möbel',b:'Einlösen'}};
 const WL_COLS=[['billa','allianz','omv','penny','universal','adeg','pagro'],['pagro','adeg','bipa','billa','penny','allianz','omv'],['omv','universal','adeg','pagro','billa','penny','bipa_ph']];
+// Etiketten auf dem Foto: immer in der Markenfarbe des Partners (Hintergrund, Schrift)
+const WL_BRAND={billa:['#ffe600','#1a1a1a'],penny:['#cd1719','#fff'],pagro:['#e2001a','#fff'],adeg:['#00843d','#fff'],omv:['#0c4b8e','#fff'],allianz:['#003781','#fff'],universal:['#1a1a1a','#fff'],bipa:['#e5097f','#fff']};
 WL_CARDS.bipa_ph={...WL_CARDS.bipa,img:null};
 const WL_CENTER=2,WL_GX=64,WL_GY=64; // BIPA-Karte = Zeile 2 der mittleren Spalte
 const wlPill=(p,k)=>`<div style="position:absolute;right:${BD_CW-bdc(983)}px;top:${bdc(306)-BD_PH/2}px;height:${BD_PH}px;display:flex;align-items:center;gap:${BD_GAP}px;padding:0 ${BD_PADR}px 0 ${BD_PADL}px;background:#fff;border-radius:999px;box-shadow:0 10px 30px rgba(94,23,8,.08);color:${BD_DARK};font-size:34px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;line-height:1">${p}${k==='oes'
   ?`<div style="width:64px;height:64px;border-radius:50%;background:${BD_DARK};display:grid;place-items:center"><span style="display:block;width:68%">${oesSvg('#fff').replace('class="oesg"','class="oesg" style="width:100%;height:auto;display:block"')}</span></div>`
   :`<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#c8263a 0%,#e8481c 50%,#f5913f 100%);display:grid;place-items:center">${bdJo}</div>`}</div>`;
+const wlOesIc=`<div style="width:64px;height:64px;border-radius:50%;background:${BD_DARK};display:grid;place-items:center"><span style="display:block;width:68%">${oesSvg('#fff').replace('class="oesg"','class="oesg" style="width:100%;height:auto;display:block"')}</span></div>`;
+const wlTag=c=>{const [bg,fg]=WL_BRAND[c.l]||[BD_DARK,'#fff'];return `<div style="position:absolute;left:${bdc(82)}px;top:${bdc(208)}px;min-width:${BD_PH*2.6}px;padding:20px 14px 14px;background:${bg};color:${fg};border-radius:6px 6px 30px 30px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;white-space:nowrap">
+  <div>${c.tag}</div>
+  <div style="height:${BD_PH}px;display:flex;align-items:center;gap:${BD_GAP}px;padding:0 ${BD_PADR}px 0 ${BD_PADL}px;background:#fff;border-radius:999px;color:${BD_DARK};font-size:34px;font-weight:700;letter-spacing:-.01em;line-height:1">${c.p}${wlOesIc}</div></div>`};
 const wlCard=(c,x,y)=>`<div class="wlCard" style="position:absolute;left:${x}px;top:${y}px;width:${BD_CW}px;height:${BD_CH}px;background:#fff;border-radius:24px;box-shadow:0 30px 70px rgba(94,23,8,.12);color:#6a1006;overflow:hidden">
   <img src="${PTA[c.l]}" alt="" style="position:absolute;left:${bdc(82)}px;top:${bdc(70)}px;width:${bdc(92)}px;height:${bdc(92)}px;border-radius:50%">
   <div style="position:absolute;left:${bdc(200)}px;top:${bdc(116)}px;transform:translateY(-50%);font-size:${bdc(46)}px;font-weight:800">${c.n}</div>
   <div style="position:absolute;right:${bdc(95)}px;top:${bdc(118)}px;transform:translateY(-50%);font-size:${bdc(27)}px;font-weight:700">Gültig bis 31.10.2026</div>
   <div style="position:absolute;left:${bdc(36)}px;top:${bdc(208)}px;width:${bdc(992)}px;height:${bdc(468)}px;${c.img?`background:url(${c.img}) center/100% auto no-repeat`:'background:linear-gradient(135deg,#ead9c6,#f2c9a3);display:grid;place-items:center'}">${c.img?'':`<span style="font-size:30px;font-weight:600;color:rgba(106,16,6,.45)">Bild folgt</span>`}</div>
-  ${wlPill(c.p,c.k)}
+  ${c.tag?wlTag(c):wlPill(c.p,c.k)}
   <div style="position:absolute;left:${bdc(83)}px;top:${bdc(750)}px;transform:translateY(-50%);font-size:${bdc(42)}px;font-weight:700;white-space:nowrap">${c.t}</div>
   <div style="position:absolute;left:${bdc(82)}px;top:${bdc(822)}px;width:${bdc(124)}px;height:${bdc(124)}px;border-radius:50%;border:2px solid #6a1006;display:grid;place-items:center"><svg viewBox="0 0 24 24" style="width:46%"><path d="M12 20.5s-7.5-4.6-9.2-9.3C1.7 8 3.8 4.8 7.1 4.8c2 0 3.4 1.1 4.9 2.9 1.5-1.8 2.9-2.9 4.9-2.9 3.3 0 5.4 3.2 4.3 6.4-1.7 4.7-9.2 9.3-9.2 9.3z" fill="none" stroke="#6a1006" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
   <div style="position:absolute;left:${bdc(458)}px;top:${bdc(822)}px;width:${bdc(517)}px;height:${bdc(124)}px;border-radius:999px;background:#6a1006;color:#fff;display:grid;place-items:center;font-size:${bdc(42)}px;font-weight:700">${c.b}</div>
