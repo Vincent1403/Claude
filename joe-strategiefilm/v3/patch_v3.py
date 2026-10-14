@@ -143,12 +143,12 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
 
 CARDS = ["c1", "c2", "c4", "c5", "c6", "c7", "c8"]
 cards = (
-    card("c1", "Vision", ["Begeisterung.", "Täglich. Für alle."], 140, GRAD, "#fff", kicker="Unsere Vision", kc="rgba(255,255,255,.8)", step=1.2, inAt=.6, hi="'#fff'")
-    + card("c2", "01 Ganz persönlich", ["Wie für *dich gemacht:", "Angebote, die zu dir passen."], 112, BEIGE, BURG, kicker="01 · Ganz persönlich", kc=MUTED, step=.5, inAt=.25)
-    + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 118, BEIGE, BURG, kicker="02 · Digitaler Begleiter", kc=MUTED, step=.25, inAt=.25)
-    + card("c5", "03 Integration der Partner", ["Wir bringen eure Marke", "dorthin, wo sie *wirkt."], 118, BEIGE, BURG, kicker="03 · Integration der Partner", kc=MUTED, step=.375, inAt=.5)
-    + card("c6", "03 Unter-Headline Look", ["Eure Angebote", "im neuen jö *Look."], 118, BEIGE, BURG, kicker="03 · Integration der Partner", kc=MUTED, step=.25, inAt=.25)
-    + card("c7", "03 Unter-Headline Sichtbarkeit", ["Sichtbar, wo eure", "*Kund:innen sind."], 118, BEIGE, BURG, kicker="03 · Integration der Partner", kc=MUTED, step=.25, inAt=.25)
+    card("c1", "Vision", ["Begeisterung.", "Täglich. Für alle."], 140, GRAD, "#fff", step=1.2, inAt=.6, hi="'#fff'")
+    + card("c2", "01 Ganz persönlich", ["Wie für *dich gemacht:", "Angebote, die zu dir passen."], 112, BEIGE, BURG, step=.5, inAt=.25)
+    + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 118, BEIGE, BURG, step=.25, inAt=.25)
+    + card("c5", "03 Integration der Partner", ["Wir bringen eure Marke", "dorthin, wo sie *wirkt."], 118, BEIGE, BURG, step=.375, inAt=.5)
+    + card("c6", "03 Unter-Headline Look", ["Eure Angebote", "im neuen jö *Look."], 118, BEIGE, BURG, step=.25, inAt=.25)
+    + card("c7", "03 Unter-Headline Sichtbarkeit", ["Sichtbar, wo eure", "*Kund:innen sind."], 118, BEIGE, BURG, step=.25, inAt=.25)
     + card("c8", "Schluss Vision", ["Begeisterung. Täglich. Für alle."], 76, GRAD, "#fff", step=.5,
            inAt=round((LOGO2 - CLIPS['c8']['start'] + 3.1) / BEAT, 2), hi="'#fff'", top=880, out=False)
 )
