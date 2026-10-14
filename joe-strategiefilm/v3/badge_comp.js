@@ -5,7 +5,7 @@
    landet dabei auf dem Foto.
    ===================================================================== */
 const BD_DARK='#5e1708';
-const BD_CAT=['#f4f1ea','#e0662e',JG_CSS,'#f4f1ea']; // Hintergrund je Kategorie: Beige (Ös-Pills), Mandarine (Preis-Pills), jö-Verlauf (Etiketten), Beige (Karte)
+const BD_CAT=['#e0662e','#f4f1ea',JG_CSS,'#f4f1ea']; // Hintergrund je Kategorie: Mandarine (Ös-Pills), Beige (Preis-Pills), jö-Verlauf (Etiketten), Beige (Karte)
 const BD_LIST=[
  {c:1,k:'jo',p:'',icon:1,hold:2}, // Start: nur das jö-Logo im Kreis, dann fährt die Pille auf
  {c:1,k:'jo',p:'-&#8239;25%'},{c:1,k:'jo',p:'729&#8239;€'},{c:1,k:'jo',p:'1&#8239;€ = 1&#8239;Ö'},{c:1,k:'jo',p:'400&#8239;€ Rabatt'},{c:1,k:'jo',p:'19,99&#8239;€'},
