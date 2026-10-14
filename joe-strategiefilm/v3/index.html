@@ -251,10 +251,10 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=95, FPS=24;
+const T_MAIN=92.487, FPS=24;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
 const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];
-const CHAPTERS=[[0,'Logo'],[BAR[1],'Neuausrichtung'],[BAR[4],'Menschen'],[BAR[16],'Bento-Box'],[BAR[21],'Partner'],[BAR[32],'Endcard']];
+const CHAPTERS=[[0,'Intro'],[9.195,'Wie für dich gemacht'],[32.07,'Digitaler Begleiter'],[48.614,'Integration der Partner'],[85.4873,'Endcard']];
 const fmtPct=v=>num(v*100,1)+' %',fmtX=v=>num(v)+'×',fmtMs=v=>Math.round(v*1000)+' ms',fmtSec=v=>num(v)+' s';
 
 /* =====================================================================
@@ -1339,7 +1339,7 @@ const DEAL={
   model(P){const b=P.beat;return {P,b,G1:P.gridAt*b,G2:P.gridOut*b,M1:P.m1*b,M2:P.m2*b,key:P.morph,keyName:'Panel steht',total:P.end*b}},
   show(on){DL.style.display=on?'':'none'},
   render(M,t){const P=M.P,K=DEAL_K,m=eMorph(seg(t,0,P.morph)),rv=eMorph(seg(t,6/24,6/24+P.reveal)),E=DLE,M1=M.M1,M2=M.M2;
-    const tb=(view==='main'&&S.clips.box&&FM.box)?mT-S.clips.box.start:-1,dX=tb>0?FM.box.Xat(tb)*FM.box.P.dD:0; /* letzte Deal-Karte gleitet mit der Bento-Parallaxe nach links */
+    const tb=(view==='main'&&S.clips.box&&FM.box&&S.clips.deal&&S.clips.box.start>S.clips.deal.start)?mT-S.clips.box.start:-1,dX=tb>0?FM.box.Xat(tb)*FM.box.P.dD:0; /* letzte Deal-Karte gleitet mit der Bento-Parallaxe nach links */
     {const k=tb>0?eIO(seg(tb,0,FM.box.P.dealBg)):0,a=[224,222,216],b=[244,241,234];DL.style.background=`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')})`}
     E.wrap.style.transform=`translateX(${(-dX).toFixed(1)}px) scale(${(1+P.push*eIO(seg(t,P.morph,M.total))).toFixed(4)})`;
     const tf=`translate(${DEAL_X.toFixed(2)}px,${DEAL_Y.toFixed(2)}px) scale(${K.toFixed(5)})`;E.card.style.transform=E.mid.style.transform=E.front.style.transform=tf;
@@ -2056,7 +2056,8 @@ function makeHL(key,name,lane,lines,o){
   L.innerHTML=(o.bg?`<div style="position:absolute;inset:0;background:${o.bg}"></div>`:'')+(o.scrim?`<div class="hlScrim" style="position:absolute;inset:0;background:${o.scrim};opacity:0"></div>`:'')+
    `<div class="hlBox" style="position:absolute;left:0;right:0;top:${o.top}px;text-align:center;color:${o.color};font-size:${o.size}px;font-weight:900;letter-spacing:-.02em;line-height:${lh}px;${o.shadow?'text-shadow:0 4px 30px rgba(0,0,0,.18);':''}">`+
    lines.map(l=>`<div style="height:${lh+Math.round(o.size*.12)}px;overflow:hidden">${l.split(' ').map(w=>{const hi=w.startsWith('*');w=w.replace(/^\*/,'');return `<span class="hlw" data-i="${wi++}" style="display:inline-block;margin:0 ${(o.size*.13).toFixed(0)}px;transform:translateY(110%);${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;color:transparent;`:''}">${w}</span>`}).join('')}</div>`).join('')+`</div>`;
-  $('stage').appendChild(L);const W=[...L.querySelectorAll('.hlw')],box=L.querySelector('.hlBox'),scr=L.querySelector('.hlScrim');
+  if(o.kicker)L.insertAdjacentHTML('beforeend',`<div class="hlKick" style="position:absolute;left:0;right:0;top:${o.top-86}px;text-align:center;color:${o.kc||o.color};font-size:42px;font-weight:700;letter-spacing:-.005em;opacity:0">${o.kicker}</div>`);
+  $('stage').appendChild(L);const W=[...L.querySelectorAll('.hlw')],box=L.querySelector('.hlBox'),scr=L.querySelector('.hlScrim'),kk=L.querySelector('.hlKick');
   return {key,name,lane,cls:o.cls||'typo',
     DEF:{beat:13.725/24,step:o.step,inAt:o.inAt,outAt:o.outAt,len:o.len,beatSync:o.beatSync?1:0},
     params:[
@@ -2070,7 +2071,8 @@ function makeHL(key,name,lane,lines,o){
       W.forEach((w,i)=>{const a=(P.inAt+i*P.step)*b,p=seg(t,a,a+.45),o2=P.outAt*b+i*.03,q=seg(t,o2,o2+.22);
         w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`});
       box.style.transform=`scale(${(1+.025*eOut(seg(t,P.inAt*b,P.outAt*b))).toFixed(4)})`;
-      if(scr)scr.style.opacity=(eOut(seg(t,0,P.inAt*b+.25))*(1-eIO(seg(t,P.outAt*b,P.outAt*b+.45)))).toFixed(3)},
+      if(scr)scr.style.opacity=(eOut(seg(t,0,P.inAt*b+.25))*(1-eIO(seg(t,P.outAt*b,P.outAt*b+.45)))).toFixed(3);
+      if(kk){const p=eExpo(seg(t,Math.max(0,P.inAt*b-.35),P.inAt*b+.25)),q=eInCub(seg(t,P.outAt*b,P.outAt*b+.3));kk.style.opacity=(p*(1-q)).toFixed(3);kk.style.transform=`translateY(${((1-p)*24).toFixed(1)}px)`}},
     marks(M){const P=M.P,b=M.b;return [[P.inAt*b,'rein'],[(P.inAt+(W.length-1)*P.step)*b,'steht'],[P.outAt*b,'raus']]},
     table(M){const F=x=>Math.round(x*FPS),P=M.P,b=M.b;return [
       ['Headline',`${F(P.inAt*b)}–${F((P.inAt+(W.length-1)*P.step)*b+.45)}`,`„${lines.join(' ').replace(/\*/g,'')}“, Satoshi Black ${o.size} px, ${W.length} Wörter je ${num(P.step,3)} Schlag, steigen aus der Zeilenmaske (Expo Out)`],
@@ -2083,6 +2085,14 @@ const HL1=makeHL('hl1','Headline 1','laneV3',['Eine Marke mitten im Leben.'],
   {size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:3.4,len:4.1,shadow:1,note:'Läuft über dem Verlauf vor dem Logo-Aufbau (Intro ohne Beat). Muss vor dem ersten Strich des Logos raus sein.'});
 const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','und *Vorteile sinnvoll','miteinander verbindet.'],
   {size:118,top:345,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.5,inAt:.5,outAt:7,len:8,cls:'logo',note:'Eigene Texttafel, genau 2 Takte zwischen „Deal“ und „Partner“; beginnt und endet auf einer Takt-Eins. „Entscheidungen“ und „Vorteile“ im jö-Verlauf.'});
+const C1=makeHL('c1','Tafel Vision','laneV2',["Begeisterung.", "Täglich. Für alle."],
+  {size:140,top:396,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:1.2,inAt:0.6,outAt:6.777,len:7.627,cls:'logo',kicker:'Unsere Vision',kc:'rgba(255,255,255,.8)',note:'Kapitel-Tafel des Partnerfilms (Tafel Vision).'});
+const C2=makeHL('c2','Kapitel Wie für dich gemacht','laneV2',["Wie für *dich gemacht:", "Angebote, die zu dir passen."],
+  {size:112,top:432,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.5,inAt:0.25,outAt:7.51,len:8.36,cls:'logo',kicker:'Ganz persönlich',kc:'#9a4a40',note:'Kapitel-Tafel des Partnerfilms (Kapitel Wie für dich gemacht).'});
+const C4=makeHL('c4','Kapitel Digitaler Begleiter','laneV2',["Alles in einer App:", "*einfach und *bequem."],
+  {size:118,top:424,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:4.433,len:5.283,cls:'logo',kicker:'Digitaler Begleiter',kc:'#9a4a40',note:'Kapitel-Tafel des Partnerfilms (Kapitel Digitaler Begleiter).'});
+const C5=makeHL('c5','Kapitel Partner','laneV2',["Wir bringen eure Marke", "dorthin, wo sie *wirkt."],
+  {size:118,top:424,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.375,inAt:0.5,outAt:6.384,len:7.234,cls:'logo',kicker:'Integration der Partner',kc:'#9a4a40',note:'Kapitel-Tafel des Partnerfilms (Kapitel Partner).'});
 const HL3=makeHL('hl3','Headline 3','laneV3',['Marken erlebbar machen','wo das Leben stattfindet.'],
   {size:96,top:420,color:'#fff',step:.25,inAt:.25,outAt:3.25,len:4.25,shadow:1,scrim:'radial-gradient(80% 90% at 50% 50%,rgba(60,14,4,.55) 0%,rgba(60,14,4,.35) 100%)',note:'Overlay am Anfang des App-Videos, vor den HUD-Elementen. Leichte dunkle Abdunklung für Lesbarkeit, Wörter auf den Sechzehnteln.'});
 
@@ -2761,7 +2771,7 @@ const BOX={key:'box',name:'Bento-Box',lane:'laneV5',cls:'bento',
     const bump=[0,0,0]; /* kein Federn: Rechteck bleibt exakt */
     // Parallax wie in „Julian“: alles gleitet nach links durch, vordere Ebenen schneller
     /* Reinfliegen → Stillstand als Rechteck → Rausfliegen; Auffächern nur während der Bewegung */
-    const pi=M.pin(t),po=M.pout(t),dx=i=>{const k=[0,.5,1,.75][i]*P.spread;return P.inDist*(1-pi)*(1+k)-P.outDist*po*(1+(1-[0,.5,1,.75][i])*P.spread)};BXL.style.background=(view==='main'&&((S.clips.deal&&mT<S.clips.deal.start+S.clips.deal.len)||(S.clips.partner&&mT>=S.clips.partner.start)))?'transparent':'#f4f1ea';
+    const pi=M.pin(t),po=M.pout(t),dx=i=>{const k=[0,.5,1,.75][i]*P.spread;return P.inDist*(1-pi)*(1+k)-P.outDist*po*(1+(1-[0,.5,1,.75][i])*P.spread)};{const bc=S.clips.box,dc=S.clips.deal,pc=S.clips.partner;BXL.style.background=(view==='main'&&bc&&((dc&&dc.start<bc.start&&mT<dc.start+dc.len)||(pc&&pc.start>bc.start&&pc.start<bc.start+bc.len&&mT>=pc.start)))?'transparent':'#f4f1ea'};
     E.navMove.style.transform=`translateX(${dx(3).toFixed(1)}px)`;
     E.t.forEach((el,i)=>{const a=M.ent[i];
       el.style.opacity=1;el.style.transform=`translateX(${dx(i).toFixed(1)}px) scale(${(1+bump[i]).toFixed(4)})`;
@@ -3062,7 +3072,7 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
   show(on){ADL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=ADE,f=eStFlow,T=M.T;
     // Bento-Parallaxe nimmt die letzte Anzeige mit nach links
-    const tb=(view==='main'&&S.clips.box&&FM.box)?mT-S.clips.box.start:-1,dX=tb>0?FM.box.Xat(tb)*FM.box.P.dD:0;const cz=f(seg(t,0,P.cardDur)),sc=1-(1-P.card)*cz; /* Vollbild-Verlauf aus „Farben“ schrumpft zur Anzeigen-Karte */
+    const tb=(view==='main'&&S.clips.box&&FM.box&&S.clips.deal&&S.clips.box.start>S.clips.deal.start)?mT-S.clips.box.start:-1,dX=tb>0?FM.box.Xat(tb)*FM.box.P.dD:0;const cz=f(seg(t,0,P.cardDur)),sc=1-(1-P.card)*cz; /* Vollbild-Verlauf aus „Farben“ schrumpft zur Anzeigen-Karte */
     E.wrap.style.transform=`translateX(${(-dX).toFixed(1)}px) scale(${sc.toFixed(4)})`;E.wrap.style.borderRadius=(56/P.card*cz).toFixed(1)+'px';
     // Zustand interpolieren
     let s=0;for(let k=1;k<4;k++)if(t>=T[k])s=k;const A=AD_ST[Math.max(0,s-1)],B=AD_ST[s],u=s===0?1:f(seg(t,T[s],T[s]+P.morph));
@@ -3088,7 +3098,8 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
     ['Anzeige 4',`${F(T[3])}–${F(M.total)}`,'Bildfläche wird breiter (Vater mit Tochter), Preis-Kreis weg; danach nimmt die Bento-Parallaxe die Anzeige nach links mit']]},
   note:'Ersetzt „Deal“ (gleicher Clip auf der Timeline). Bilder und Layouts nach den gelieferten Anzeigen-Zuständen.'};
 
-const COMPS={box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,hl3:HL3,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE};
+['c1','c2','c4','c5'].forEach(k=>$('stage').appendChild($('hl_'+k)));
+const COMPS={c1:C1,c2:C2,c4:C4,c5:C5,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,hl3:HL3,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3122,6 +3133,25 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
+S.clips.hl1={start:0,len:2.35,in:0};
+S.clips.logo={start:2.35,len:2.4833,in:0.475};
+S.clips.c1={start:4.8333,len:4.3617,in:0};
+S.clips.c2={start:9.195,len:4.781,in:0};
+S.clips.rabatt={start:27.476,len:4.594,in:0};
+S.clips.c4={start:32.07,len:3.021,in:0};
+S.clips.cloud={start:35.091,len:10.023,in:0};
+S.clips.box={start:45.114,len:3.5,in:0};
+S.clips.c5={start:48.614,len:4.137,in:0};
+S.clips.partner={start:52.751,len:4.482,in:0};
+S.clips.brand={start:57.233,len:4.375,in:0};
+S.clips.full={start:61.608,len:7.593,in:0};
+S.clips.colors={start:69.201,len:3.4313,in:0};
+S.clips.deal={start:72.6323,len:5.1277,in:0};
+S.clips.prod={start:77.76,len:2.273,in:0.634};
+S.clips.hl3={start:77.76,len:2.43,in:0};
+S.clips.city={start:80.0483,len:3.293,in:0};
+S.clips.bill={start:83.3413,len:2.146,in:0};
+S.clips.endc={start:85.4873,len:7.0,in:0};
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
@@ -3164,11 +3194,12 @@ function renderBg(local,len){const g=len?clamp(local/len):0;$('bg').style.transf
 function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
 /* Zeitdehnung Julian + Stories: Clips dort sind in Design-Zeit gespeichert (WA…WB). Der Abschnitt ab Julian bis „Farben“
    wird so gedehnt, dass er genau bis zum Start von „Farben“ reicht – Farben/Anzeigen sind schneller, die gewonnene Zeit geht hierher. */
-const WA=4.8333,WB=13.769;
-function warpK(){const c=S.clips.colors;return c?Math.max(.2,(c.start-WA)/(WB-WA)):1}
-function wDesign(t){const c=S.clips.colors,B=c?c.start:WB,k=warpK();return t<=WA?t:t<=B?WA+(t-WA)/k:t-(B-WB)} // echte Zeit → Design-Zeit
-function wReal(x){const c=S.clips.colors,B=c?c.start:WB,k=warpK();return x<=WA?x:x<=WB?WA+(x-WA)*k:x+(B-WB)} // Design-Zeit → echte Zeit
-const isPre=k=>k==='grad'||(S.clips[k]&&S.clips[k].start<WB-1e-3&&S.clips[k].start+S.clips[k].len>WA+1e-3);
+const WA=4.8333,WB=13.769,WR0=13.976,WR1=27.476; // Partnerfilm: Design-Abschnitt WA…WB läuft auf der Hauptebene von WR0 bis WR1
+function warpK(){return Math.max(.2,(WR1-WR0)/(WB-WA))}
+function wDesign(t){const k=warpK();return t<=WA?t:t<WR0?WA-1e-4:t<=WR1?WA+(t-WR0)/k:t-WR1+WB} // echte Zeit → Design-Zeit
+function wReal(x){const k=warpK();return x<WA?x:x<=WB?WR0+(x-WA)*k:x-WB+WR1} // Design-Zeit → echte Zeit
+const PRE=new Set(['grad','julian','white','story','story2','story3','story4','story5','story6']);
+const isPre=k=>PRE.has(k);
 function mRender(){
   if(view!=='main')return;const tR=mT,g=S.clips.grad,tD=wDesign(tR);
   const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';if(gOn)renderBg(g.in+tD-g.start,g.in+g.len);
@@ -3194,7 +3225,7 @@ function info(){
 }
 let actx=null,abuf=null,abuf0=null,abufAt=null,asrc=null,gain=null,muted=false;
 // Musik-Schnitt: der große Bass vom Ende des Tracks (91,44 s) wird genau auf den H·A-Aufbau der Endcard gelegt
-const AU_BASS=91.4537,AU_CUT=64.0237,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
+const AU_BASS=91.4537,AU_CUT=86.882,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
 function auTarget(){return AU_CUT}
 function spliceAudio(){if(!abuf0)return null;const T=auTarget();if(T==null||T>=AU_BASS)return abuf0;if(abufAt===T&&abuf)return abuf;
   const sr=abuf0.sampleRate,a=Math.round((T-AU_XF)*sr),b=Math.round((AU_BASS-AU_XF)*sr),tail=abuf0.length-b,n=a+tail,xf=Math.round(AU_XF*2*sr);

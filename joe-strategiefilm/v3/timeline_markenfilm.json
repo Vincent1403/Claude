@@ -1,0 +1,125 @@
+{
+  "clips": {
+    "bill": {
+      "in": 0,
+      "len": 2.146,
+      "start": 60.483
+    },
+    "box": {
+      "in": 0,
+      "len": 3.5,
+      "start": 24.5417
+    },
+    "brand": {
+      "in": 0,
+      "len": 4.375,
+      "start": 32.0833
+    },
+    "city": {
+      "in": 0,
+      "len": 3.293,
+      "start": 57.19
+    },
+    "cloud": {
+      "in": 0,
+      "len": 8.3843,
+      "start": 48.8057
+    },
+    "colors": {
+      "in": 0,
+      "len": 3.4313,
+      "start": 16.6281
+    },
+    "deal": {
+      "in": 0,
+      "len": 6.3823,
+      "start": 20.0594
+    },
+    "endc": {
+      "in": 0,
+      "len": 7,
+      "start": 62.629
+    },
+    "full": {
+      "in": 0,
+      "len": 7.0317,
+      "start": 36.4583
+    },
+    "grad": {
+      "in": 0,
+      "len": 13.7916,
+      "start": 0
+    },
+    "hl1": {
+      "in": 0,
+      "len": 2.35,
+      "start": 0
+    },
+    "hl3": {
+      "in": 0,
+      "len": 2.43,
+      "start": 43.49
+    },
+    "julian": {
+      "in": 0,
+      "len": 4.29,
+      "start": 4.8333
+    },
+    "logo": {
+      "in": 0.475,
+      "len": 2.4833,
+      "start": 2.35
+    },
+    "partner": {
+      "in": 0,
+      "len": 4.482,
+      "start": 27.6013
+    },
+    "prod": {
+      "in": 0.634,
+      "len": 2.273,
+      "start": 43.49
+    },
+    "rabatt": {
+      "in": 0,
+      "len": 3.5997,
+      "start": 45.763
+    },
+    "story": {
+      "in": 0,
+      "len": 4.5,
+      "start": 8.196
+    },
+    "story2": {
+      "in": 0,
+      "len": 4.5,
+      "start": 8.196
+    },
+    "story3": {
+      "in": 0,
+      "len": 4.05,
+      "start": 10.9
+    },
+    "story4": {
+      "in": 0,
+      "len": 4.5,
+      "start": 8.196
+    },
+    "story5": {
+      "in": 0,
+      "len": 4.05,
+      "start": 10.9
+    },
+    "story6": {
+      "in": 0,
+      "len": 4.05,
+      "start": 10.9
+    },
+    "white": {
+      "in": 0,
+      "len": 7.436,
+      "start": 6.333
+    }
+  },
+  "grad": "g-video"
+}
