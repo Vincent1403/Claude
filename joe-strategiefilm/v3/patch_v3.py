@@ -94,7 +94,10 @@ CLIPS["tags"] = C(WALL_END, round(10 * BEAT, 4))     # Tag-System direkt nach de
 STORY_AT = round(WALL_END + 10 * BEAT, 4)               # Stories starten mit dem Schnitt
 WR0_REAL = round(STORY_AT - (8.196 - 4.8333) * _wk, 4)  # Story-Block (Design-Zeit) so verschoben
 CLIPS["showcase"] = C(167.0, 8.47)          # Icon-Showcase: in der Ablage hinter dem Schluss
-T_LEN = 180                                    # Timeline länger als der Track (96 s)
+T_LEN = 190                                    # Timeline länger als der Track (96 s)
+# Intro: vier Headlines vor dem Logo. Musik und alles ab dem Logo rücken um INTRO_D nach hinten (Beat-Sync bleibt).
+INTRO_HL = [("hl1", 4.2), ("hl1b", 3.2), ("hl1c", 3.5), ("hl1d", 4.6)]   # Länge je Headline in Schlägen
+INTRO_D = round(sum(l for _, l in INTRO_HL) * BEAT - 2.35, 4)          # alte Headline lief 0–2,35 s
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
 DROP = ["hl3", "endc", "julian"]  # Julian: im Partnerfilm nicht mehr nötig (Tag-System führt in die Stories)
@@ -113,8 +116,9 @@ rep("const WA=4.8333,WB=13.769;\nfunction warpK(){const c=S.clips.colors;return 
     "const isPre=k=>k==='grad'||(S.clips[k]&&S.clips[k].start<WB-1e-3&&S.clips[k].start+S.clips[k].len>WA+1e-3);",
     f"const WA=4.8333,WB={WE},WSPAN={round(WR1 - WR0, 4)}; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar\n"
     "function warpK(){return Math.max(.2,WSPAN/(WB-WA))}\n"
-    "function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA?t:t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)\n"
-    "function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit\n"
+    f"const WPD={INTRO_D};\n"
+    "function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA+WPD?t*WA/(WA+WPD):t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)\n"
+    "function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x*(WA+WPD)/WA:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit\n"
     "const PRE=new Set(['grad','julian','white','story','story2','story4','story3','story5','story6']);\n"
     "const isPre=k=>PRE.has(k);")
 
@@ -135,9 +139,10 @@ rep("const AU_BASS=91.4537,AU_CUT=64.0237,AU_XF=.004;", f"const AU_BASS=91.4537,
 rep("const T_MAIN=95, FPS=24;", f"const T_MAIN={T_LEN}, FPS=24, TRACK_LEN=96.05;")
 # Beat- und Taktraster laufen hinter dem Track weiter, damit in der Ablage gesnappt und synchronisiert werden kann
 rep("const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];",
+    f"const AU_OFF={INTRO_D};BEATS.forEach((v,i)=>BEATS[i]=+(v+AU_OFF).toFixed(3));BAR.forEach((v,i)=>BAR[i]=+(v+AU_OFF).toFixed(2)); // Musik startet nach dem längeren Intro\n"
     "{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));"
     "const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)\n"
-    "const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];")
+    "const MUSIC_SNAPS=[0,...[2.35,5.32,8.64].map(v=>v+AU_OFF),...BEATS];")
 # Verlauf-Clip: Intro und Julian-Block als zwei Balken zeichnen, wenn dazwischen eine Lücke ist
 rep("ge.style.left=wReal(g.start)*pps+'px';ge.style.width=Math.max(12,(wReal(g.start+g.len)-wReal(g.start))*pps)+'px';ge.classList.toggle('sel',sel==='grad');",
     "{const a=wReal(g.start),gap=S.warp.r0>WA+.01,e1=gap?WA:wReal(g.start+g.len);ge.style.left=a*pps+'px';ge.style.width=Math.max(12,(e1-a)*pps)+'px';"
@@ -147,7 +152,9 @@ rep("ge.style.left=wReal(g.start)*pps+'px';ge.style.width=Math.max(12,(wReal(g.s
 # Tamara: ohne „Digitale Rechnung“ und „Gesammelte Ös“, nur „+25 Ös“ bleibt
 rep("$('stage').appendChild(VDL);", "$('stage').appendChild(VDL);\n{const st=document.createElement('style');st.textContent='#vdPay,#vdSum{display:none!important}';document.head.appendChild(st)} // Partnerfilm: nur „+25 Ös“")
 # Wellenform nur so lang wie der Track
-rep("const per=c.width/PEAKS.length;PEAKS.forEach", "const per=c.width*Math.min(1,TRACK_LEN/T_MAIN)/PEAKS.length;PEAKS.forEach")
+rep("const per=c.width/PEAKS.length;PEAKS.forEach((p,i)=>{const h=Math.max(1,p*H*.95);x.fillRect(i*per,", "const per=c.width*Math.min(1,TRACK_LEN/T_MAIN)/PEAKS.length,o0=c.width*AU_OFF/T_MAIN;PEAKS.forEach((p,i)=>{const h=Math.max(1,p*H*.95);x.fillRect(o0+i*per,")
+rep("if(!abuf||mT>=abuf.duration)return;", "if(!abuf||mT-AU_OFF>=abuf.duration)return;")
+rep("asrc.start(0,mT)}", "asrc.start(mT<AU_OFF?actx.currentTime+AU_OFF-mT:0,Math.max(0,mT-AU_OFF))}")
 # Julian + Stories als Block ziehen (verschiebt S.warp.r0), Stand wird mit gespeichert
 rep("const trim=e.target.dataset.trim||'',x0=e.clientX,c0={...S.clips[key]};",
     "const trim=e.target.dataset.trim||'',x0=e.clientX,c0={...S.clips[key]},r00=S.warp.r0,blk=PRE.has(key)&&key!=='grad';")
@@ -233,19 +240,36 @@ def sc_icons(txt):
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", sc_icons((here / "showcase_comp.js").read_text(encoding="utf-8")) + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 rep("let xb=1920;if(view==='main'&&S.clips.julian&&FM.julian)", "let xb=S.clips.julian?1920:0;if(view==='main'&&S.clips.julian&&FM.julian)")  # ohne Julian liegt Beige sofort hinter den Stories
 rep("let sel='julian';", "let sel='tags';")
-rep("const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';", "const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';$('bg').style.background=tR<WA?JG_CSS:''; // Intro (Headline + Logo) im jö-Verlauf wie „Dein jö“")
+rep("const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';", "const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';$('bg').style.background=tR<WA+WPD?JG_CSS:''; // Intro (Headline + Logo) im jö-Verlauf wie „Dein jö“")
+# ---------- 5e. Intro: vier Headlines statt „Eine Marke mitten im Leben.“ ----------
+rep("const HL1=makeHL('hl1','Headline 1','laneV3',['Eine Marke mitten im Leben.'],\n  {size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:3.4,len:4.1,",
+    "const HL1=makeHL('hl1','Headline 1a','laneV3',['Eine Marke für das','alltägliche Leben.'],\n  {size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,")
+rep("const HL2=makeHL('hl2',",
+    "const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Voller Möglichkeiten.'],{size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:2.6,len:3.2,shadow:1,note:'Intro, zweite Zeile.'});\n"
+    "const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und jeden Tag anders.'],{size:120,top:470,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,note:'Intro, dritte Zeile.'});\n"
+    "const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});\n"
+    "const HL2=makeHL('hl2',")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
 
 # ---------- 7. Ausgangs-Timeline und Parameter im Code ----------
+# Intro verlängern: alles ab dem Logo um INTRO_D nach hinten, die vier Headlines davor
+for k in CLIPS:
+    if k != "hl1":
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + INTRO_D, 4)
+WR0_REAL = round(WR0_REAL + INTRO_D, 4)
+_t = 0.0
+for k, l in INTRO_HL:
+    CLIPS[k] = C(_t, l * BEAT)
+    _t += l * BEAT
 block = f"S.warp={{r0:{WR0_REAL}}};delete S.clips.julian;S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
