@@ -233,6 +233,7 @@ def sc_icons(txt):
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", sc_icons((here / "showcase_comp.js").read_text(encoding="utf-8")) + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 rep("let xb=1920;if(view==='main'&&S.clips.julian&&FM.julian)", "let xb=S.clips.julian?1920:0;if(view==='main'&&S.clips.julian&&FM.julian)")  # ohne Julian liegt Beige sofort hinter den Stories
 rep("let sel='julian';", "let sel='tags';")
+rep("const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';", "const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';$('bg').style.background=tR<WA?JG_CSS:''; // Intro (Headline + Logo) im jö-Verlauf wie „Dein jö“")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]

@@ -3675,7 +3675,7 @@ const PRE=new Set(['grad','julian','white','story','story2','story4','story3','s
 const isPre=k=>PRE.has(k);
 function mRender(){
   if(view!=='main')return;const tR=mT,g=S.clips.grad,tD=wDesign(tR);
-  const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';if(gOn)renderBg(g.in+tD-g.start,g.in+g.len);
+  const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';$('bg').style.background=tR<WA?JG_CSS:''; // Intro (Headline + Logo) im jö-Verlauf wie „Dein jö“if(gOn)renderBg(g.in+tD-g.start,g.in+g.len);
   GL.style.display='none';GL.style.clipPath='';
   if(S.clips.full&&FM.full&&FM.full.cs!==S.clips.full.start)FM.full=COMPS.full.model(S.comps.full.params);
   const cc=S.clips.colors;
