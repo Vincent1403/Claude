@@ -54,7 +54,7 @@ C = lambda st, ln, i=0: dict(start=round(st, 4), len=round(ln, 4), **{"in": i})
 CLIPS = {
     "hl1": C(0, 2.35),
     "logo": C(2.35, 2.4833, .475),
-    "c2": C(4.8333, 9.195 - 4.8333),             # „Das neue JÖ.“
+    "c2": C(4.8333, 9.195 - 4.8333),             # „Das neue Jö.“
     "people": C(9.195, PEOPLE_LEN),              # Lena, Renate, Sarah, Jonas – Drehung auf dem Drop
     "c3": C(9.195 + PEOPLE_LEN, bars(45.763, -12) - 9.195 - PEOPLE_LEN),  # „Angebote, die zu dir passen.“
     "c9": C(bars(45.763, -12), BARL),           # „Mach dein Jö draus!“ (ein Takt)
@@ -198,7 +198,7 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
 
 CARDS = ["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"]
 cards = (
-    card("c2", "Das neue JÖ", ["Das *neue JÖ."], 150, BEIGE, BURG, step=.75, inAt=.75)
+    card("c2", "Das neue Jö", ["Das *neue Jö."], 150, BEIGE, BURG, step=.75, inAt=.75)
     + card("c9", "Mach dein Jö draus", ["Mach *dein Jö draus!"], 150, BEIGE, BURG, step=.25, inAt=.25)
     + card("c3", "Angebote, die zu dir passen", ["Angebote, die", "zu *dir passen."], 140, BEIGE, BURG, step=.25, inAt=.25)
     + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 118, BEIGE, BURG, step=.25, inAt=.25)
