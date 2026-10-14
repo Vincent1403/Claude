@@ -2087,6 +2087,9 @@ SLL.innerHTML=`
 </div>`;
 $('stage').appendChild(SLL);
 const SLE={wheel:$('slWheel'),icon:$('slIcon'),names:[...SLL.querySelectorAll('.slN')]};
+const slInkC={};function slInk(txt,size){const k=txt+size;if(slInkC[k])return slInkC[k]; // sichtbare Breite und rechte Nachbreite der Buchstaben
+  const c=document.createElement('canvas').getContext('2d');c.font=`900 ${size}px Satoshi`;c.letterSpacing=(-.025*size)+'px';const m=c.measureText(txt);
+  const w=m.actualBoundingBoxLeft+m.actualBoundingBoxRight,rb=m.width-m.actualBoundingBoxRight;return slInkC[k]={w,rb}}
 const slPos=(u,last,p,k)=>last*(1-Math.pow(1-u,p))+k*Math.sin(Math.PI*u)*Math.pow(u,8); // schnell los, durchgehend langsamer; k = kurz über „Dein“ hinaus und zurück (in Namen)
 const SLOT={
   key:'slot',name:'Slot „Dein jö“',lane:'laneV3',cls:'typo',
@@ -2108,8 +2111,12 @@ const SLOT={
     const u=seg(t,P.spinFrom,M.land),pos=t<P.spinFrom?0:slPos(u,last,P.pow,P.kick);
     const du=1e-3,vel=t<P.spinFrom||u>=1?0:Math.abs(slPos(Math.min(1,u+du),last,P.pow,P.kick)-slPos(u,last,P.pow,P.kick))/du/(M.land-P.spinFrom); // Namen pro Sekunde
     // Breite → Gruppe zentrieren
-    const tw=el=>el.firstChild.offsetWidth,wMax=Math.max(...E.names.map(tw)),wN=tw(E.names[last]);
-    const landed=eIO(seg(t,M.land+.15,M.land+.85))*(P.center?1:0),wUse=wMax+(wN-wMax)*landed,left=960-(wUse+P.gap+300)/2;
+    const tw=el=>el.firstChild.offsetWidth,wMax=Math.max(...E.names.map(tw));
+    // Endstand optisch zentrieren: nach den sichtbaren Buchstaben von „Dein“, nicht nach der Textbox (Vor- und Nachbreite der Glyphen)
+    const ink=slInk(SL_SPIN[last],P.size),landed=eIO(seg(t,M.land+.15,M.land+.85))*(P.center?1:0);
+    const spinL=960-(wMax+P.gap+300)/2,spinR=spinL+wMax; // rechte Kante der Walze während des Drehens
+    const endR=960-(ink.w+P.gap+300)/2+ink.w+ink.rb; // rechte Kante der Textbox, damit Buchstaben + Icon mittig stehen
+    const wR=spinR+(endR-spinR)*landed,wUse=wMax,left=wR-wUse,iconL=wR-ink.rb*landed+P.gap;
     Object.assign(E.wheel.style,{left:left+'px',width:wUse+'px',perspectiveOrigin:`50% 540px`,opacity:seg(t,P.spinFrom-.1,P.spinFrom+.12).toFixed(3),
       filter:vel>4?`blur(${Math.min(8,(vel-4)*.35).toFixed(2)}px)`:'none'});
     const dim=1-eIO(seg(t,M.land+.05,M.land+.6)); // nach dem Landen bleibt nur „Dein“
@@ -2118,7 +2125,7 @@ const SLOT={
       el.style.visibility='';el.style.fontSize=P.size+'px';el.style.height=el.style.lineHeight=H+'px';el.style.top=(540-H/2)+'px';
       el.style.transform=`translateZ(${(-R).toFixed(1)}px) rotateX(${(-a*180/Math.PI).toFixed(2)}deg) translateZ(${R.toFixed(1)}px)`;
       el.style.opacity=(Math.pow(Math.max(0,Math.cos(a)),2.2)*(i===last?1:dim)).toFixed(3)});
-    E.icon.style.left=(left+wUse+P.gap)+'px';
+    E.icon.style.left=iconL+'px';
     // Icon: ploppt am Anfang, federt beim Landen von „Dein“
     const pin=eBack(seg(t,0,.45)),hit=t-M.land,bump=hit>0&&hit<.5?.08*Math.sin(hit/.5*Math.PI)*Math.exp(-hit*4):0;
     E.icon.style.transform=`scale(${(pin*(1+bump)).toFixed(4)})`;E.icon.style.opacity=Math.min(1,seg(t,0,.12)).toFixed(3);
