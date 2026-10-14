@@ -2148,8 +2148,9 @@ const SLOT={
 const BD_DARK='#5e1708';
 const BD_CAT=['#f4f1ea','#e0662e',JG_CSS,'#f4f1ea']; // Hintergrund je Kategorie: Beige (Ös-Pills), Mandarine (Preis-Pills), jö-Verlauf (Etiketten), Beige (Karte)
 const BD_LIST=[
- {c:0,k:'oes',p:'250'},{c:0,k:'oes',p:'500'},{c:0,k:'oes',p:'3fach'},
+ {c:1,k:'jo',p:'',icon:1,hold:2}, // Start: nur das jö-Logo im Kreis, dann fährt die Pille auf
  {c:1,k:'jo',p:'-&#8239;25%'},{c:1,k:'jo',p:'729&#8239;€'},{c:1,k:'jo',p:'1&#8239;€ = 1&#8239;Ö'},{c:1,k:'jo',p:'400&#8239;€ Rabatt'},{c:1,k:'jo',p:'19,99&#8239;€'},
+ {c:0,k:'oes',p:'250'},{c:0,k:'oes',p:'500'},{c:0,k:'oes',p:'3fach'},
  {c:2,tag:1,k:'oes',p:'250',t:'<div style="font-size:17px;font-weight:700;margin-bottom:2px">Rabatt</div><div style="font-size:66px;font-weight:800;line-height:1">5&#8239;€</div>'},
  {c:2,tag:1,k:'oes',p:'500',t:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-&#8239;20%</div>'},
  {c:2,tag:1,k:'oes',p:'250',t:'<div style="font-size:34px;font-weight:700;line-height:1.15">Bonusbox</div>'},
@@ -2188,6 +2189,7 @@ function bdLayout(s,P){ // Geometrie eines Zustands in Basiseinheiten, Mitte = 0
   const tw=bdMeasure(s.p,'font-size:34px;font-weight:700;letter-spacing:-.01em;line-height:1').w,pw=BD_PADL+tw+BD_GAP+BD_IC+BD_PADR;
   if(s.card){const px=BD_CX+bdc(983)-pw,py=BD_CY+bdc(306)-BD_PH/2; // Pill rechts oben auf dem Foto
     return {tag:{x:BD_CX,y:BD_CY,w:BD_CW,h:BD_CH,rt:24,rb:24,o:1},pill:{x:px,y:py,w:pw},title:{y:BD_CY+20,o:0},card:1,sc:P.cardScale,tw}}
+  if(s.icon){const w=BD_IC+2*BD_PADR,x=-w/2,y=-BD_PH/2;return {tag:{x,y,w,h:BD_PH,rt:BD_PH/2,rb:BD_PH/2,o:0},pill:{x,y,w,o:0},title:{y:y+10,o:0},card:0,sc:P.scale,tw:0}}
   if(!s.tag){const x=-pw/2,y=-BD_PH/2;return {tag:{x,y,w:pw,h:BD_PH,rt:BD_PH/2,rb:BD_PH/2,o:0},pill:{x,y,w:pw},title:{y:y+10,o:0},card:0,sc:P.scale,tw}}
   const T=bdMeasure(s.t,'font-size:34px;font-weight:700;line-height:1.15'),w=Math.max(pw+28,T.w+56),h=20+T.h+14+BD_PH+14,x=-w/2,y=-h/2;
   return {tag:{x,y,w,h,rt:6,rb:30,o:1},pill:{x:-pw/2,y:y+h-14-BD_PH,w:pw},title:{y:y+20,o:1},card:0,sc:P.scale,tw}}
@@ -2234,7 +2236,7 @@ const BADGES={
      E.card.style.clipPath=cd>0&&cd<1?`inset(${ct}px ${cr}px ${cb}px ${cl}px round ${tg.rt}px ${tg.rt}px ${tg.rb}px ${tg.rb}px)`:''}
     E.img.style.backgroundSize=(100*(1+.1*(1-eOut(seg(t,M.st[n-1]-.3,M.st[n-1]+1.8))))).toFixed(2)+'% auto'; // Foto zoomt im eigenen Rahmen zurück
     const pl={x:L(LA.pill.x,LB.pill.x),y:L(LA.pill.y,LB.pill.y),w:L(LA.pill.w,LB.pill.w)};
-    Object.assign(E.pill.style,{left:pl.x+'px',top:pl.y+'px',width:pl.w+'px',height:BD_PH+'px'});
+    Object.assign(E.pill.style,{left:pl.x+'px',top:pl.y+'px',width:pl.w+'px',height:BD_PH+'px',opacity:L(LA.pill.o??1,LB.pill.o??1).toFixed(3)});
     // Pill-Text: alter raus nach oben, neuer kommt von unten
     if(E.txtA._s!==A.p){E.txtA._s=A.p;E.txtA.innerHTML=A.p}if(E.txtB._s!==B.p){E.txtB._s=B.p;E.txtB.innerHTML=B.p}
     const same=A.p===B.p,oa=same?1:1-seg(u,0,.5),ob=same?0:seg(u,.45,1);
@@ -3498,8 +3500,8 @@ S.clips.bill={start:158.1529,len:2.146,in:0};
 S.clips.c8={start:160.2989,len:5.9952,in:0};
 S.clips.logo2={start:160.3636,len:5.9305,in:0};
 S.clips.slot={start:32.0459,len:4.5717,in:0};
-S.clips.badges={start:40.0631,len:4.8609,in:0};
-S.clips.wall={start:44.924,len:9.15,in:0};
+S.clips.badges={start:40.0631,len:5.4328,in:0};
+S.clips.wall={start:45.4959,len:9.15,in:0};
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
