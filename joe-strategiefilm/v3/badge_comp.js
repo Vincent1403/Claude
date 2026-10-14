@@ -5,22 +5,22 @@
    landet dabei auf dem Foto.
    ===================================================================== */
 const BD_DARK='#5e1708';
-const BD_CAT=['#f4f1ea','#e0662e','#f2ab6e','#f4f1ea']; // Hintergrund je Kategorie: Beige (Ös-Pills), Mandarine (Preis-Pills), Aprikose (Etiketten), Beige (Karte)
+const BD_CAT=['#f4f1ea','#e0662e',JG_CSS,'#f4f1ea']; // Hintergrund je Kategorie: Beige (Ös-Pills), Mandarine (Preis-Pills), jö-Verlauf (Etiketten), Beige (Karte)
 const BD_LIST=[
  {c:0,k:'oes',p:'250'},{c:0,k:'oes',p:'500'},{c:0,k:'oes',p:'3fach'},
  {c:1,k:'jo',p:'-&#8239;25%'},{c:1,k:'jo',p:'729&#8239;€'},{c:1,k:'jo',p:'1&#8239;€ = 1&#8239;Ö'},{c:1,k:'jo',p:'400&#8239;€ Rabatt'},{c:1,k:'jo',p:'19,99&#8239;€'},
  {c:2,tag:1,k:'oes',p:'250',t:'<div style="font-size:17px;font-weight:700;margin-bottom:2px">Rabatt</div><div style="font-size:66px;font-weight:800;line-height:1">5&#8239;€</div>'},
  {c:2,tag:1,k:'oes',p:'500',t:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-&#8239;20%</div>'},
  {c:2,tag:1,k:'oes',p:'250',t:'<div style="font-size:34px;font-weight:700;line-height:1.15">Bonusbox</div>'},
- {c:2,tag:1,k:'oes',p:'100',t:'<div style="font-size:34px;font-weight:700;line-height:1.15">1 Shira<br>Bonus<br>Produkt</div>'},
- {c:3,card:1,k:'oes',p:'250',hold:4}]; // hold: Anzahl Schläge × „Pro Element“
+ {c:2,tag:1,k:'oes',p:'100',hold:2,t:'<div style="font-size:34px;font-weight:700;line-height:1.15">1 Shira<br>Bonus<br>Produkt</div>'},
+ {c:3,card:1,k:'oes',p:'250',hold:8}]; // hold: Anzahl Schläge × „Pro Element“
 // Angebotskarte in Basiseinheiten (Vorlage 1068 × 1018 px × 0,8, Mitte = 0/0)
 const BD_CW=854,BD_CH=814,BD_CX=-BD_CW/2,BD_CY=-BD_CH/2,bdc=v=>v*.8;
 const BDL=document.createElement('div');BDL.id='badgeL';BDL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font)';
 const bdJo=`<svg viewBox="-6 -6 283.15 194.86" style="width:62%;overflow:visible"><g fill="#fff"><path d="${LP.J} ${LP.E}"/><circle cx="87.99" cy="16.8" r="16.8"/><circle cx="152.94" cy="16.8" r="16.8"/><circle cx="207.17" cy="16.8" r="16.8"/></g></svg>`;
 BDL.innerHTML=`
 <div id="bdBg" style="position:absolute;inset:0;background:${BD_CAT[0]}"></div>
-<div id="bdCirc" style="position:absolute;left:960px;top:540px;width:0;height:0;border-radius:50%;transform:translate(-50%,-50%)"></div>
+<div id="bdCirc" style="position:absolute;inset:0"></div>
 <div id="bdMeasure" style="position:absolute;left:0;top:0;visibility:hidden;white-space:nowrap;text-align:center"></div>
 <div id="bdG" style="position:absolute;left:960px;top:540px;width:0;height:0">
  <div id="bdTag" style="position:absolute;background:${BD_DARK}"></div>
@@ -52,14 +52,14 @@ function bdLayout(s,P){ // Geometrie eines Zustands in Basiseinheiten, Mitte = 0
   return {tag:{x,y,w,h,rt:6,rb:30,o:1},pill:{x:-pw/2,y:y+h-14-BD_PH,w:pw},title:{y:y+20,o:1},card:0,sc:P.scale,tw}}
 const BADGES={
   key:'badges',name:'Badges',lane:'laneV5',cls:'bento',
-  DEF:{beat:13.725/24,per:1,morph:.32,scale:3,cardMorph:.75,cardScale:1.08,bounce:.045},
+  DEF:{beat:13.725/24,per:.5,morph:.15,scale:3,cardMorph:.6,cardScale:1.08,bounce:.1},
   params:[
-    {k:'per',label:'Pro Element (Schläge)',min:.5,max:4,step:.5,fmt:v=>num(v,1),sub:'jedes Element landet auf einem Schlag und steht bis zum nächsten Wechsel; die Angebotskarte am Ende steht viermal so lang'},
-    {k:'morph',label:'Dauer Verwandlung',min:.2,max:.9,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'Form, Breite und Farbe gleiten; Texte und Icons blenden über (Slow In / Slow Out)'},
+    {k:'per',label:'Pro Element (Schläge)',min:.5,max:4,step:.5,fmt:v=>num(v,1),sub:'jedes Element landet auf einem Schlag und steht bis zum nächsten Wechsel; das letzte Etikett steht doppelt, die Angebotskarte achtmal so lang'},
+    {k:'morph',label:'Dauer Verwandlung',min:.1,max:.9,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'Form, Breite und Farbe gleiten; Texte und Icons blenden über (Slow In / Slow Out)'},
     {k:'cardMorph',label:'Dauer Verwandlung zur Karte',min:.3,max:1.5,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'Etikett wird zur weißen Angebotskarte, die Pill wandert aufs Foto, das Bild zoomt zurück'},
     {k:'scale',label:'Größe',min:1.4,max:3.2,step:.05,fmt:v=>Math.round(v*100)+' %',sub:'bezogen auf die Vorlage'},
     {k:'cardScale',label:'Größe Angebotskarte',min:.7,max:1.3,step:.01,fmt:v=>Math.round(v*100)+' %'},
-    {k:'bounce',label:'Federn beim Landen',min:0,max:.12,step:.005,fmt:v=>Math.round(v*100)+' %',sub:'jedes Element federt beim Ankommen ganz leicht nach'}],
+    {k:'bounce',label:'Federn beim Landen',min:0,max:.2,step:.005,fmt:v=>Math.round(v*100)+' %',sub:'jedes Element federt beim Ankommen ganz leicht nach'}],
   model(P){const b=P.beat,n=BD_LIST.length,d=BD_LIST.map(s=>P.per*b*(s.hold||1));
     const st=[];let acc=0;d.forEach(x=>{st.push(acc);acc+=x});return {P,n,d,st,key:st[1],keyName:'erster Wechsel',total:acc}},
   show(on){BDL.style.display=on?'':'none'},
@@ -71,7 +71,7 @@ const BADGES={
     const LA=bdLayout(A,P),LB=bdLayout(B,P),L=(p,q)=>p+(q-p)*u;
     // Hintergrund: neue Kategorie wächst als Kreis hinter dem Element aus der Mitte
     E.bg.style.background=BD_CAT[A.c];const nc=B.c!==A.c&&u>0;
-    if(nc){const R=eIO(u)*2300;Object.assign(E.circ.style,{display:'',width:R+'px',height:R+'px',background:BD_CAT[B.c]})}else E.circ.style.display='none';
+    if(nc){const R=eIO(u)*1150;Object.assign(E.circ.style,{display:'',background:BD_CAT[B.c],clipPath:`circle(${R.toFixed(1)}px at 960px 540px)`})}else E.circ.style.display='none'; // neue Fläche wird als Kreis freigelegt (funktioniert auch mit Verlauf)
     // leichtes Federn bei jeder Ankunft
     const hit=t-M.st[a],bump=a>0&&hit>=0&&hit<.45?P.bounce*Math.sin(hit/.45*Math.PI*1.5)*Math.exp(-hit*6):0;
     const pop=eBack(seg(t,0,.45));E.g.style.transform=`scale(${(L(LA.sc,LB.sc)*pop*(1+bump)).toFixed(4)})`;E.g.style.opacity=Math.min(1,seg(t,0,.15)).toFixed(3);
