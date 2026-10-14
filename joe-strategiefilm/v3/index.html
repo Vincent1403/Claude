@@ -3683,11 +3683,11 @@ const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'
  const r0=PARTNER.render;
  PARTNER.render=function(M,t){r0.call(this,M,t);const P=M.P,E=PTE;
   // „Viele Marken.“: steigt auf, fällt beim Logo-Wechsel nach unten raus
-  const wi=eExpo(seg(t,.05,.55)),wo=eInCub(seg(t,P.swap-.05,P.swap+.25));
+  const wi=eExpo(seg(t,.05,.55)),wo=eInCub(seg(t,P.swap-.3,P.swap-.04)); // ganz raus, bevor das Logo kommt
   E.words.style.transform=`translateY(${((1-wi)*110+wo*110).toFixed(1)}%)`;
   // jö-Logo: poppt an Stelle der Worte auf, wächst mit jedem ankommenden Partner, schrumpft am Ende weg
   const lin=eBack(seg(t,P.swap,P.swap+.45)),lout=eIO(seg(t,P.lOut,P.lOut+.35));
-  E.logo.style.transform+=` scale(${(lin*(1-lout)).toFixed(4)})`;E.logo.style.opacity=t<P.swap?'0':'1';
+  E.logo.style.transform+=` scale(${(lin*(1-lout)).toFixed(4)})`;E.logo.style.opacity=t<P.swap?'0':'1';E.words.parentNode.style.visibility=t<P.swap?'visible':'hidden';
   E.disc.style.opacity=(lin*(1-lout)).toFixed(3);
   // „Eine starke Verbindung.“
   const si=eExpo(seg(t,P.sent,P.sent+.55));E.sent.style.transform=`translateY(${((1-si)*110).toFixed(1)}%)`;
