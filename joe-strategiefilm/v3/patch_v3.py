@@ -198,7 +198,7 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
 
 CARDS = ["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"]
 cards = (
-    card("c2", "Das neue Jö", ["Das *neue Jö."], 150, BEIGE, BURG, step=.75, inAt=.75)
+    card("c2", "Das neue Jö", ["Das *neue Jö."], 150, BEIGE, BURG, step=.75, inAt=0)
     + card("c9", "Mach dein Jö draus", ["Mach *dein Jö draus!"], 150, BEIGE, BURG, step=.25, inAt=.25)
     + card("c3", "Angebote, die zu dir passen", ["Angebote, die", "zu *dir passen."], 140, BEIGE, BURG, step=.25, inAt=.25)
     + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 118, BEIGE, BURG, step=.25, inAt=.25)
@@ -284,7 +284,9 @@ for k in CLIPS:
         CLIPS[k]["start"] = round(CLIPS[k]["start"] + JUL_LEN, 4)
 WR0_REAL = round(WR0_REAL + JUL_LEN, 4)
 CLIPS["julian"] = C(JUL_AT, JUL_LEN)
-CLIPS["white2"] = C(JUL_AT, JUL_LEN)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
+CLIPS["white2"] = C(JUL_AT, JUL_LEN)
+_e = CLIPS["c2"]["start"] + CLIPS["c2"]["len"]
+CLIPS["c2"] = C(378 / 24, _e - 378 / 24)   # „Das neue Jö.“ erscheint ab Frame 378 (liegt über dem Ende des Julian-Scrolls)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
