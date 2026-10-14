@@ -56,8 +56,8 @@ CLIPS = {
     "logo": C(2.35, 2.4833, .475),
     "c2": C(4.8333, 2.5881),                     # Länge = Frame 378 bis Start „Menschen“ (wird unten gesetzt)             # „Das neue Jö.“
     "people": C(9.195, PEOPLE_LEN),              # Lena, Renate, Sarah, Jonas – Drehung auf dem Drop
-    "c3": C(9.195 + PEOPLE_LEN, bars(45.763, -12) - 9.195 - PEOPLE_LEN),  # „Angebote, die zu dir passen.“
-    "c9": C(bars(45.763, -12), BARL),           # „Mach dein Jö draus!“ (ein Takt)
+    "c3": C(9.195 + PEOPLE_LEN, bars(45.763, -12) - 9.195 - PEOPLE_LEN),  # „Mit Möglichkeiten für jeden Einzelnen.“
+    "pers": C(bars(45.763, -12), BARL),         # „Persönlich. Relevant. Ganz nach dir.“ (ein Takt, schnell nacheinander)
     # julian, white, story, story2, story4, grad: Design-Zeit wie im Markenfilm (Zeitdehnung WR0…WR1)
     "rabatt": C(RABATT, 3.5997),
     "cloud": C(CLOUD_A, 8.3843),                # Kian zoomt raus in die Profil-Wolke, dann „Mehr für Tamara.“
@@ -197,11 +197,10 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
     return f"const {key.upper()}=makeHL('{key}','{name}','laneV2',{json.dumps(lines, ensure_ascii=False)},\n  {o});\n"
 
 
-CARDS = ["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"]
+CARDS = ["c2", "c3", "c4", "c5", "c6", "c7", "c8"]
 cards = (
     card("c2", "Das neue Jö", ["Das *neue Jö."], 150, BEIGE, BURG, step=.75, inAt=0)
-    + card("c9", "Mach dein Jö draus", ["Mach *dein Jö draus!"], 150, BEIGE, BURG, step=.25, inAt=.25)
-    + card("c3", "Angebote, die zu dir passen", ["Angebote, die", "zu *dir passen."], 140, BEIGE, BURG, step=.25, inAt=.25)
+    + card("c3", "Mit Möglichkeiten für jeden Einzelnen", ["Mit Möglichkeiten", "für jeden *Einzelnen."], 140, BEIGE, BURG, step=.25, inAt=.25)
     + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 118, BEIGE, BURG, step=.25, inAt=.25)
     + card("c5", "03 Integration der Partner", ["Wir bringen eure Marke", "dorthin, wo sie *wirkt."], 118, BEIGE, BURG, step=.375, inAt=.5)
     + card("c6", "03 Unter-Headline Look", ["Eure Angebote", "im neuen jö *Look."], 118, BEIGE, BURG, step=.25, inAt=.25)
@@ -254,7 +253,7 @@ rep("const HL2=makeHL('hl2',",
     "const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});\n"
     "const HL2=makeHL('hl2',")
 # ---------- 5f. Hintergrundvideos der Intro-Headlines (introvid_comp.js) ----------
-rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
+rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8") + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n"
            "const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});\n")
@@ -262,7 +261,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,white2:WHITE2,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,white2:WHITE2,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)

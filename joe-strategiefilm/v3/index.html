@@ -2433,10 +2433,8 @@ const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','un
   {size:118,top:345,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.5,inAt:.5,outAt:7,len:8,cls:'logo',note:'Eigene Texttafel, genau 2 Takte zwischen „Deal“ und „Partner“; beginnt und endet auf einer Takt-Eins. „Entscheidungen“ und „Vorteile“ im jö-Verlauf.'});
 const C2=makeHL('c2','Das neue Jö','laneV2',["Das *neue Jö."],
   {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.75,inAt:0,outAt:3.676,len:4.526,cls:'logo',note:'Tafel des Partnerfilms (Das neue Jö).'});
-const C9=makeHL('c9','Mach dein Jö draus','laneV2',["Mach *dein Jö draus!"],
-  {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.147,len:3.997,cls:'logo',note:'Tafel des Partnerfilms (Mach dein Jö draus).'});
-const C3=makeHL('c3','Angebote, die zu dir passen','laneV2',["Angebote, die", "zu *dir passen."],
-  {size:140,top:366,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.129,len:3.979,cls:'logo',note:'Tafel des Partnerfilms (Angebote, die zu dir passen).'});
+const C3=makeHL('c3','Mit Möglichkeiten für jeden Einzelnen','laneV2',["Mit Möglichkeiten", "für jeden *Einzelnen."],
+  {size:140,top:366,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.129,len:3.979,cls:'logo',note:'Tafel des Partnerfilms (Mit Möglichkeiten für jeden Einzelnen).'});
 const C4=makeHL('c4','02 Digitaler Begleiter','laneV2',["Alles in einer App:", "*einfach und *bequem."],
   {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.527,len:4.377,cls:'logo',note:'Tafel des Partnerfilms (02 Digitaler Begleiter).'});
 const C5=makeHL('c5','03 Integration der Partner','laneV2',["Wir bringen eure Marke", "dorthin, wo sie *wirkt."],
@@ -3211,6 +3209,34 @@ const FUER={
   note:'Frames bei 24 fps ab Beginn der Subebene. Zwei Takte; „Für“ steht, die Satzenden wechseln alle zwei Schläge, am Ende gleitet „Für jeden Tag.“ in die Bildmitte.'
 };
 
+/* =====================================================================
+   COMP: „PERSÖNLICH. RELEVANT. GANZ NACH DIR.“ (Partnerfilm) – drei kurze Aussagen, schnell nacheinander,
+   jede steigt mittig aus der Zeilenmaske und schiebt die vorige nach oben raus. Beige, Dunkelrot, „dir“ im Verlauf.
+   ===================================================================== */
+const PS_PH=['Persönlich.','Relevant.','Ganz nach *dir.'];
+const PSL=document.createElement('div');PSL.id='persL';PSL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);background:#f4f1ea';
+PSL.innerHTML=`<div id="psMask" style="position:absolute;left:0;right:0;top:${540-110}px;height:220px;overflow:hidden">${PS_PH.map(p=>`<div class="psP" style="position:absolute;left:0;right:0;top:35px;text-align:center;color:#670003;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">${p.split(' ').map(w=>w.startsWith('*')?`<span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent">${w.slice(1)}</span>`:w).join(' ')}</div>`).join('')}</div>`;
+$('stage').appendChild(PSL);
+const PSE={ph:[...PSL.querySelectorAll('.psP')]};
+const PERS={
+  key:'pers',name:'Persönlich. Relevant. Ganz nach dir.',lane:'laneV2',cls:'logo',
+  DEF:{beat:13.725/24,inAt:0,step:1,move:.22,outAt:3.6},
+  params:[
+    {k:'inAt',label:'Erste Aussage bei (Schlag)',min:0,max:1,step:.25,fmt:v=>String(v)},
+    {k:'step',label:'Nächste Aussage alle',min:.5,max:2,step:.25,fmt:v=>v+' Schlag',sub:'schnell nacheinander, jede schiebt die vorige nach oben raus'},
+    {k:'move',label:'Dauer Wechsel',min:.1,max:.6,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+    {k:'outAt',label:'Ausstieg bei (Schlag)',min:2,max:4,step:.25,fmt:v=>String(v)}],
+  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:'Persönlich.',total:4*b}},
+  show(on){PSL.style.display=on?'':'none'},
+  render(M,t){const P=M.P,b=M.b;
+    let p=-1;for(let k=0;k<PS_PH.length;k++){const s=(P.inAt+k*P.step)*b;p+=(k?eIO:eExpo)(seg(t,s,s+P.move+(k?0:.15)))}
+    p+=eInCub(seg(t,P.outAt*b,P.outAt*b+.2));
+    PSE.ph.forEach((el,i)=>{const d=i-p;el.style.transform=`translateY(${(d*220).toFixed(1)}px)`;el.style.visibility=Math.abs(d)<1.02?'visible':'hidden'})},
+  marks(M){const P=M.P,b=M.b;return PS_PH.map((x,k)=>[(P.inAt+k*P.step)*b,x.replace('*','')]).concat([[P.outAt*b,'raus']])},
+  table(M){const F=s=>Math.round(s*FPS),P=M.P,b=M.b;return PS_PH.map((x,k)=>[x.replace('*',''),String(F((P.inAt+k*P.step)*b)),'steigt mittig aus der Maske, schiebt die vorige Aussage nach oben']).concat([['Ausstieg',String(F(P.outAt*b)),'fällt nach oben raus']])},
+  note:'Frames bei 24 fps ab Beginn der Subebene. Ein Takt; ersetzt „Mach dein Jö draus!“.'
+};
+
 const WHL=document.createElement('div');WHL.id='whiteL';WHL.style.cssText='position:absolute;inset:0;display:none';WHL.innerHTML='<div id="whO" style="position:absolute;inset:0;background:#e4e0eb"></div><div id="whB" style="position:absolute;inset:0;background:#f4f1ea"></div>';
 $('bg').after(WHL);
 let WH_J=false; // true, solange die Weiße Fläche für Julian rendert (zweiter Clip „white2“)
@@ -3644,9 +3670,9 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
 
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
-["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
+["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c9:C9,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,white2:WHITE2,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,white2:WHITE2,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3686,7 +3712,7 @@ S.clips.logo={start:9.2072,len:2.4833,in:0.475};
 S.clips.c2={start:15.75,len:2.5881,in:0};
 S.clips.people={start:22.9098,len:6.8625,in:0};
 S.clips.c3={start:29.7723,len:2.2755,in:0};
-S.clips.c9={start:32.0478,len:2.2858,in:0};
+S.clips.pers={start:32.0478,len:2.2858,in:0};
 S.clips.rabatt={start:34.3337,len:3.5997,in:0};
 S.clips.cloud={start:37.3764,len:8.3843,in:0};
 S.clips.c4={start:113.7148,len:2.5032,in:0};
