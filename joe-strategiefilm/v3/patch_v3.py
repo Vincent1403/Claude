@@ -100,7 +100,7 @@ INTRO_HL = [("hl1", 4.2), ("hl1b", 3.8), ("hl1c", 3.5), ("hl1d", 4.6)]   # Läng
 INTRO_D = round(sum(l for _, l in INTRO_HL) * BEAT - 2.35, 4)          # alte Headline lief 0–2,35 s
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
-DROP = ["hl3", "endc", "julian"]  # Julian: im Partnerfilm nicht mehr nötig (Tag-System führt in die Stories)
+DROP = ["hl3", "endc"]
 
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
@@ -119,7 +119,7 @@ rep("const WA=4.8333,WB=13.769;\nfunction warpK(){const c=S.clips.colors;return 
     f"const WPD={INTRO_D};\n"
     "function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA+WPD?t*WA/(WA+WPD):t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)\n"
     "function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x*(WA+WPD)/WA:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit\n"
-    "const PRE=new Set(['grad','julian','white','story','story2','story4','story3','story5','story6']);\n"
+    "const PRE=new Set(['grad','white','story','story2','story4','story3','story5','story6']);\n"
     "const isPre=k=>PRE.has(k);")
 
 # ---------- 2. Abhängigkeiten, die die alte Reihenfolge voraussetzen ----------
@@ -238,9 +238,12 @@ rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "tags_com
 def sc_icons(txt):
     return re.sub(r"__ICON:(\w+)__", lambda m: (here / "icons" / (m.group(1) + ".svg")).read_text(encoding="utf-8").replace('width="200" height="200" ', 'width="100%" height="100%" style="display:block;overflow:visible" ').replace("\n", "").replace("'", "&#39;"), txt)
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", sc_icons((here / "showcase_comp.js").read_text(encoding="utf-8")) + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
-rep("let xb=1920;if(view==='main'&&S.clips.julian&&FM.julian)", "let xb=S.clips.julian?1920:0;if(view==='main'&&S.clips.julian&&FM.julian)")  # ohne Julian liegt Beige sofort hinter den Stories
+rep("let xb=1920;if(view==='main'&&S.clips.julian&&FM.julian)", "let xb=WH_J?1920:0;if(view==='main'&&WH_J&&S.clips.julian&&FM.julian)")  # Stories: Beige sofort; Julian: Kante folgt dem Scroll
+rep("if(view==='main'&&S.clips.julian&&FM.julian){const J=FM.julian,c=S.clips.julian,u=mT", "if(view==='main'&&WH_J&&S.clips.julian&&FM.julian){const J=FM.julian,c=S.clips.julian,u=mT")
+rep("const WHITE={", "let WH_J=false; // true, solange die Weiße Fläche für Julian rendert (zweiter Clip „white2“)\nconst WHITE={")
+rep("function stEntry(){", "function stEntry(){return 0; // Partnerfilm: Julian liegt nach dem Logo, die Stories fahren nicht mehr mit seinem Scroll ein\n  ")
 rep("let sel='julian';", "let sel='tags';")
-rep("const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';", "const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';$('bg').style.background=tR<WA+WPD?JG_CSS:''; // Intro (Headline + Logo) im jö-Verlauf wie „Dein jö“")
+rep("const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';", "const jOn=S.clips.julian&&clipOn(S.clips.julian,tR),gOn=clipOn(g,tD)||jOn;$('bg').style.display=gOn?'':'none';$('bg').style.background=(tR<WA+WPD||jOn)?JG_CSS:''; // Intro (Headline + Logo) im jö-Verlauf wie „Dein jö“")
 # ---------- 5e. Intro: vier Headlines statt „Eine Marke mitten im Leben.“ ----------
 rep("const HL1=makeHL('hl1','Headline 1','laneV3',['Eine Marke mitten im Leben.'],\n  {size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:3.4,len:4.1,",
     "const HL1=makeHL('hl1','Headline 1a','laneV3',['Eine Marke für das','alltägliche Leben.'],\n  {size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,")
@@ -252,12 +255,13 @@ rep("const HL2=makeHL('hl2',",
 # ---------- 5f. Hintergrundvideos der Intro-Headlines (introvid_comp.js) ----------
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
-aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
+aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n"
+           "const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,white2:WHITE2,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -272,9 +276,18 @@ _t = 0.0
 for k, l in INTRO_HL:
     CLIPS[k] = C(_t, l * BEAT)
     _t += l * BEAT
+# Julian (App-Icon → Karte → App-Elemente-Slider) direkt nach dem Logo; alles danach rückt 2 Takte nach hinten
+JUL_AT = round(CLIPS["logo"]["start"] + CLIPS["logo"]["len"], 4)
+JUL_LEN = round(2 * BARL, 4)
+for k in CLIPS:
+    if CLIPS[k]["start"] >= JUL_AT - 1e-3:
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + JUL_LEN, 4)
+WR0_REAL = round(WR0_REAL + JUL_LEN, 4)
+CLIPS["julian"] = C(JUL_AT, JUL_LEN)
+CLIPS["white2"] = C(JUL_AT, JUL_LEN)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
-block = f"S.warp={{r0:{WR0_REAL}}};delete S.clips.julian;S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
+block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
