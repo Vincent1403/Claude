@@ -251,10 +251,11 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=96.05, FPS=24;
+const T_MAIN=170, FPS=24, TRACK_LEN=96.05;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
+{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)
 const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];
-const CHAPTERS=[[0, "Intro"], [4.833, "01 Ganz persönlich"], [29.76, "02 Digitaler Begleiter"], [46.328, "03 Partner"], [90.059, "Schluss"]];
+const CHAPTERS=[[0, "Intro"], [4.833, "01 Ganz persönlich"], [100.0, "Ablage: 02 Digitaler Begleiter"], [116.568, "03 Partner"], [160.299, "Schluss"]];
 const fmtPct=v=>num(v*100,1)+' %',fmtX=v=>num(v)+'×',fmtMs=v=>Math.round(v*1000)+' ms',fmtSec=v=>num(v)+' s';
 
 /* =====================================================================
@@ -2177,7 +2178,7 @@ const C6=makeHL('c6','03 Unter-Headline Look','laneV2',["Eure Angebote", "im neu
 const C7=makeHL('c7','03 Unter-Headline Sichtbarkeit','laneV2',["Sichtbar, wo eure", "*Kund:innen sind."],
   {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.143,len:3.993,cls:'logo',note:'Tafel des Partnerfilms (03 Unter-Headline Sichtbarkeit).'});
 const C8=makeHL('c8','Schluss Vision','laneV2',["Begeisterung. Täglich. Für alle."],
-  {size:76,top:880,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:0.5,inAt:5.53,outAt:14.476,len:10.476,cls:'logo',note:'Tafel des Partnerfilms (Schluss Vision).'});
+  {size:76,top:880,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:0.5,inAt:-117.29,outAt:14.476,len:10.476,cls:'logo',note:'Tafel des Partnerfilms (Schluss Vision).'});
 const HL3=makeHL('hl3','Headline 3','laneV3',['Marken erlebbar machen','wo das Leben stattfindet.'],
   {size:96,top:420,color:'#fff',step:.25,inAt:.25,outAt:3.25,len:4.25,shadow:1,scrim:'radial-gradient(80% 90% at 50% 50%,rgba(60,14,4,.55) 0%,rgba(60,14,4,.35) 100%)',note:'Overlay am Anfang des App-Videos, vor den HUD-Elementen. Leichte dunkle Abdunklung für Lesbarkeit, Wörter auf den Sechzehnteln.'});
 
@@ -3220,6 +3221,7 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
+S.warp={r0:102.5033};
 S.clips.hl1={start:0,len:2.35,in:0};
 S.clips.logo={start:2.35,len:2.4833,in:0.475};
 S.clips.c2={start:4.8333,len:4.3617,in:0};
@@ -3227,32 +3229,32 @@ S.clips.people={start:9.195,len:6.8625,in:0};
 S.clips.c3={start:16.0575,len:2.2755,in:0};
 S.clips.rabatt={start:18.333,len:3.5997,in:0};
 S.clips.cloud={start:21.3757,len:8.3843,in:0};
-S.clips.c4={start:29.76,len:2.5033,in:0};
-S.clips.box={start:42.8283,len:3.5,in:0};
-S.clips.c5={start:46.3283,len:4.1313,in:0};
-S.clips.partner={start:50.4596,len:4.482,in:0};
-S.clips.brand={start:54.9416,len:6.6608,in:0};
-S.clips.full={start:61.6024,len:7.0317,in:0};
-S.clips.c6={start:68.6341,len:2.8539,in:0};
-S.clips.colors={start:71.488,len:3.4313,in:0};
-S.clips.deal={start:74.9193,len:5.144,in:0};
-S.clips.prod={start:80.0633,len:2.273,in:0.634};
-S.clips.c7={start:82.3363,len:2.2837,in:0};
-S.clips.city={start:84.62,len:3.293,in:0};
-S.clips.bill={start:87.913,len:2.146,in:0};
-S.clips.c8={start:90.059,len:5.991,in:0};
-S.clips.logo2={start:90.1237,len:5.9263,in:0};
+S.clips.c4={start:100.0,len:2.5033,in:0};
+S.clips.box={start:113.0683,len:3.5,in:0};
+S.clips.c5={start:116.5683,len:4.1313,in:0};
+S.clips.partner={start:120.6996,len:4.482,in:0};
+S.clips.brand={start:125.1816,len:6.6608,in:0};
+S.clips.full={start:131.8424,len:7.0317,in:0};
+S.clips.c6={start:138.8741,len:2.8539,in:0};
+S.clips.colors={start:141.728,len:3.4313,in:0};
+S.clips.deal={start:145.1593,len:5.144,in:0};
+S.clips.prod={start:150.3033,len:2.273,in:0.634};
+S.clips.c7={start:152.5763,len:2.2837,in:0};
+S.clips.city={start:154.86,len:3.293,in:0};
+S.clips.bill={start:158.153,len:2.146,in:0};
+S.clips.c8={start:160.299,len:5.991,in:0};
+S.clips.logo2={start:160.3637,len:5.9263,in:0};
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
 let saving=false,saveAgain=false;
-async function saveTl(){if(saving){saveAgain=true;return}saving=true;const cl={};for(const k in S.clips)if(COMPS[k]||k==='grad')cl[k]=S.clips[k];const d={clips:cl,grad:S.grad};
+async function saveTl(){if(saving){saveAgain=true;return}saving=true;const cl={};for(const k in S.clips)if(COMPS[k]||k==='grad')cl[k]=S.clips[k];const d={clips:cl,grad:S.grad,warp:S.warp};
   if(db){try{await db.doc(DOC_TL).set(d)}catch(e){}}else{try{localStorage.setItem(DOC_TL,JSON.stringify(d))}catch(e){}}
   saving=false;if(saveAgain){saveAgain=false;saveTl()}}
 function applyComp(k,d){if(!d||!d.params)return;S.comps[k]={params:{...COMPS[k].DEF,...d.params},version:d.version||1,frozenAt:d.frozenAt||null};FM[k]=COMPS[k].model(S.comps[k].params);
   if(view==='main'||openKey!==k){}else if(!dirty()){draft={...S.comps[k].params};DM=COMPS[k].model(draft);syncInputs()}refresh()}
-function applyTl(d){if(!d||!d.clips)return;for(const k in d.clips){if(!COMPS[k]&&k!=='grad')continue;S.clips[k]={in:0,...S.clips[k],...d.clips[k]}}if(d.grad)setGrad(d.grad,false);refresh()}
+function applyTl(d){if(!d||!d.clips)return;if(d.warp&&typeof d.warp.r0==='number')S.warp={...S.warp,...d.warp};for(const k in d.clips){if(!COMPS[k]&&k!=='grad')continue;S.clips[k]={in:0,...S.clips[k],...d.clips[k]}}if(d.grad)setGrad(d.grad,false);refresh()}
 
 /* =====================================================================
    VIEW
@@ -3285,10 +3287,10 @@ function renderBg(local,len){const g=len?clamp(local/len):0;$('bg').style.transf
 function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
 /* Zeitdehnung Julian + Stories: Clips dort sind in Design-Zeit gespeichert (WA…WB). Der Abschnitt ab Julian bis „Farben“
    wird so gedehnt, dass er genau bis zum Start von „Farben“ reicht – Farben/Anzeigen sind schneller, die gewonnene Zeit geht hierher. */
-const WA=4.8333,WB=11.5,WR0=32.2633,WR1=43.4778; // Partnerfilm: Design-Abschnitt WA…WB (Julian + erste Stories) läuft auf der Hauptebene von WR0 bis WR1
-function warpK(){return Math.max(.2,(WR1-WR0)/(WB-WA))}
-function wDesign(t){const k=warpK();return t<=WA?t:t<WR0?WA-1e-4:t<=WR1?WA+(t-WR0)/k:t-WR1+WB} // echte Zeit → Design-Zeit
-function wReal(x){const k=warpK();return x<WA?x:x<=WB?WR0+(x-WA)*k:x-WB+WR1} // Design-Zeit → echte Zeit
+const WA=4.8333,WB=11.5,WSPAN=11.2145; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar
+function warpK(){return Math.max(.2,WSPAN/(WB-WA))}
+function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA?t:t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)
+function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit
 const PRE=new Set(['grad','julian','white','story','story2','story4']);
 const isPre=k=>PRE.has(k);
 function mRender(){
@@ -3370,12 +3372,12 @@ function buildClips(){
     const ld=el.querySelector('.land');ld.style.left=(M.key-c.in)*pps+'px';ld.style.display=(M.key>=c.in&&M.key<c.in+c.len)?'':'none';
     el.querySelector('.hold').style.width=Math.max(0,Math.min(c.len,c.in+c.len-M.total)*pps)+'px'}
   const g=S.clips.grad;let ge=$('clip_grad');if(!ge)ge=makeClip('grad','laneV1','grad','Verlauf',false);
-  ge.style.left=wReal(g.start)*pps+'px';ge.style.width=Math.max(12,(wReal(g.start+g.len)-wReal(g.start))*pps)+'px';ge.classList.toggle('sel',sel==='grad');
+  {const a=wReal(g.start),gap=S.warp.r0>WA+.01,e1=gap?WA:wReal(g.start+g.len);ge.style.left=a*pps+'px';ge.style.width=Math.max(12,(e1-a)*pps)+'px';let g2=$('clip_grad2');if(!g2){g2=document.createElement('div');g2.id='clip_grad2';g2.className='clip grad';g2.style.pointerEvents='none';g2.innerHTML='<span>Verlauf (Julian)</span>';$('laneV1').appendChild(g2)}g2.style.display=gap?'':'none';if(gap){const b0=S.warp.r0,b1=wReal(g.start+g.len);g2.style.left=b0*pps+'px';g2.style.width=Math.max(12,(b1-b0)*pps)+'px'}}ge.classList.toggle('sel',sel==='grad');
   if(!$('clipAudio'))$('laneA1').insertAdjacentHTML('beforeend','<div class="clip audio" id="clipAudio" style="left:0;right:0"><canvas class="wave" id="wave"></canvas></div>');
 }
 function drawWave(){const c=$('wave');if(!c)return;const W=T_MAIN*pps,H=36;c.width=Math.min(16000,W);c.height=H*2;c.style.width=W+'px';
   const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--clip-audio').trim()||'#8f8579';
-  const per=c.width/PEAKS.length;PEAKS.forEach((p,i)=>{const h=Math.max(1,p*H*.95);x.fillRect(i*per,H-h,Math.max(1,per-.3),h*2)})}
+  const per=c.width*Math.min(1,TRACK_LEN/T_MAIN)/PEAKS.length;PEAKS.forEach((p,i)=>{const h=Math.max(1,p*H*.95);x.fillRect(i*per,H-h,Math.max(1,per-.3),h*2)})}
 let dragging=false;
 function snapList(self){const a=[...MUSIC_SNAPS];for(const k in S.clips){if(k===self)continue;const c=S.clips[k];a.push(c.start,c.start+c.len,c.start+c.len+1/FPS)}return a}
 function snapTime(t,offs,free,self){if(free)return Math.round(t*FPS)/FPS;let best=t,bd=1e9;const L=snapList(self);
@@ -3385,15 +3387,16 @@ function wireClip(el,key){
   el.addEventListener('pointerdown',e=>{
     if(e.target.closest('.open'))return;
     sel=key;document.querySelectorAll('.clip').forEach(c=>c.classList.toggle('sel',c===el));info();
-    const trim=e.target.dataset.trim||'',x0=e.clientX,c0={...S.clips[key]};dragging=true;el.classList.add('dragging');el.setPointerCapture(e.pointerId);
+    const trim=e.target.dataset.trim||'',x0=e.clientX,c0={...S.clips[key]},r00=S.warp.r0,blk=PRE.has(key)&&key!=='grad';dragging=true;el.classList.add('dragging');el.setPointerCapture(e.pointerId);
     const move=ev=>{const dt=(ev.clientX-x0)/pps,c=S.clips[key];
       if(trim==='r'){const end=snapTime(c0.start+c0.len+dt,[0],ev.shiftKey,key);c.len=+Math.max(.2,end-c0.start).toFixed(4)}
       else if(trim==='l'){let st=snapTime(c0.start+dt,[0],ev.shiftKey,key);st=Math.max(st,c0.start-c0.in);st=Math.min(st,c0.start+c0.len-.2);
         const d=st-c0.start;c.start=+st.toFixed(4);c.in=+(c0.in+d).toFixed(4);c.len=+(c0.len-d).toFixed(4)}
+      else if(blk){S.warp.r0=+Math.max(WA,snapTime(r00+dt,[0],ev.shiftKey,key)).toFixed(4)} // Julian + Stories wandern gemeinsam
       else{const offs=COMPS[key]?[0,FM[key].key-c0.in]:[0];let st=snapTime(c0.start+dt,offs,ev.shiftKey,key);c.start=+clamp(st,-(c0.len-.2),T_MAIN-.2).toFixed(4)}
       buildClips();mRender();info()};
     const up=()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);dragging=false;el.classList.remove('dragging');
-      const c=S.clips[key];if(c0.start!==c.start||c0.len!==c.len||c0.in!==c.in)saveTl();info()};
+      const c=S.clips[key];if(c0.start!==c.start||c0.len!==c.len||c0.in!==c.in||r00!==S.warp.r0)saveTl();info()};
     el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
   });
 }

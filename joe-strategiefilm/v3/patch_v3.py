@@ -77,6 +77,15 @@ CLIPS = {
     "c8": C(BILL + 2.146, END - BILL - 2.146),
     "logo2": C(LOGO2, END - LOGO2),
 }
+# Ablage: alles nach der Profil-Wolke liegt hinter dem Ende der Musik, in gleicher Reihenfolge
+PARK_AT = 100.0
+PARK = round(PARK_AT - CLIPS["c4"]["start"], 4)
+PARKED = [k for k, v in CLIPS.items() if v["start"] >= CLIPS["c4"]["start"] - 1e-6]
+for k in PARKED:
+    CLIPS[k]["start"] = round(CLIPS[k]["start"] + PARK, 4)
+WR0_REAL = round(WR0 + PARK, 4)                # Julian + Stories liegen ebenfalls in der Ablage
+T_LEN = 170                                    # Timeline länger als der Track (96 s)
+
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
 DROP = ["story3", "story5", "story6", "hl3", "endc"]
 
@@ -90,10 +99,10 @@ rep("const WA=4.8333,WB=13.769;\nfunction warpK(){const c=S.clips.colors;return 
     "function wDesign(t){const c=S.clips.colors,B=c?c.start:WB,k=warpK();return t<=WA?t:t<=B?WA+(t-WA)/k:t-(B-WB)} // echte Zeit → Design-Zeit\n"
     "function wReal(x){const c=S.clips.colors,B=c?c.start:WB,k=warpK();return x<=WA?x:x<=WB?WA+(x-WA)*k:x+(B-WB)} // Design-Zeit → echte Zeit\n"
     "const isPre=k=>k==='grad'||(S.clips[k]&&S.clips[k].start<WB-1e-3&&S.clips[k].start+S.clips[k].len>WA+1e-3);",
-    f"const WA=4.8333,WB={WE},WR0={WR0},WR1={WR1}; // Partnerfilm: Design-Abschnitt WA…WB (Julian + erste Stories) läuft auf der Hauptebene von WR0 bis WR1\n"
-    "function warpK(){return Math.max(.2,(WR1-WR0)/(WB-WA))}\n"
-    "function wDesign(t){const k=warpK();return t<=WA?t:t<WR0?WA-1e-4:t<=WR1?WA+(t-WR0)/k:t-WR1+WB} // echte Zeit → Design-Zeit\n"
-    "function wReal(x){const k=warpK();return x<WA?x:x<=WB?WR0+(x-WA)*k:x-WB+WR1} // Design-Zeit → echte Zeit\n"
+    f"const WA=4.8333,WB={WE},WSPAN={round(WR1 - WR0, 4)}; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar\n"
+    "function warpK(){return Math.max(.2,WSPAN/(WB-WA))}\n"
+    "function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA?t:t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)\n"
+    "function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit\n"
     "const PRE=new Set(['grad','julian','white','story','story2','story4']);\n"
     "const isPre=k=>PRE.has(k);")
 
@@ -111,8 +120,31 @@ rep("  for(const k in COMPS){const pre=isPre(k),t=pre?tD:tR,c=S.clips[k],on=clip
 
 # ---------- 4. Musik und Länge ----------
 rep("const AU_BASS=91.4537,AU_CUT=64.0237,AU_XF=.004;", f"const AU_BASS=91.4537,AU_CUT={AU_CUT},AU_XF=.004;")
-rep("const T_MAIN=95, FPS=24;", f"const T_MAIN={END}, FPS=24;")
-chap = [(0, "Intro"), (4.8333, "01 Ganz persönlich"), (CLIPS["c4"]["start"], "02 Digitaler Begleiter"),
+rep("const T_MAIN=95, FPS=24;", f"const T_MAIN={T_LEN}, FPS=24, TRACK_LEN=96.05;")
+# Beat- und Taktraster laufen hinter dem Track weiter, damit in der Ablage gesnappt und synchronisiert werden kann
+rep("const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];",
+    "{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));"
+    "const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)\n"
+    "const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];")
+# Verlauf-Clip: Intro und Julian-Block als zwei Balken zeichnen, wenn dazwischen eine Lücke ist
+rep("ge.style.left=wReal(g.start)*pps+'px';ge.style.width=Math.max(12,(wReal(g.start+g.len)-wReal(g.start))*pps)+'px';ge.classList.toggle('sel',sel==='grad');",
+    "{const a=wReal(g.start),gap=S.warp.r0>WA+.01,e1=gap?WA:wReal(g.start+g.len);ge.style.left=a*pps+'px';ge.style.width=Math.max(12,(e1-a)*pps)+'px';"
+    "let g2=$('clip_grad2');if(!g2){g2=document.createElement('div');g2.id='clip_grad2';g2.className='clip grad';g2.style.pointerEvents='none';g2.innerHTML='<span>Verlauf (Julian)</span>';$('laneV1').appendChild(g2)}"
+    "g2.style.display=gap?'':'none';if(gap){const b0=S.warp.r0,b1=wReal(g.start+g.len);g2.style.left=b0*pps+'px';g2.style.width=Math.max(12,(b1-b0)*pps)+'px'}}"
+    "ge.classList.toggle('sel',sel==='grad');")
+# Wellenform nur so lang wie der Track
+rep("const per=c.width/PEAKS.length;PEAKS.forEach", "const per=c.width*Math.min(1,TRACK_LEN/T_MAIN)/PEAKS.length;PEAKS.forEach")
+# Julian + Stories als Block ziehen (verschiebt S.warp.r0), Stand wird mit gespeichert
+rep("const trim=e.target.dataset.trim||'',x0=e.clientX,c0={...S.clips[key]};",
+    "const trim=e.target.dataset.trim||'',x0=e.clientX,c0={...S.clips[key]},r00=S.warp.r0,blk=PRE.has(key)&&key!=='grad';")
+rep("      else{const offs=COMPS[key]?[0,FM[key].key-c0.in]:[0];",
+    "      else if(blk){S.warp.r0=+Math.max(WA,snapTime(r00+dt,[0],ev.shiftKey,key)).toFixed(4)} // Julian + Stories wandern gemeinsam\n"
+    "      else{const offs=COMPS[key]?[0,FM[key].key-c0.in]:[0];")
+rep("const c=S.clips[key];if(c0.start!==c.start||c0.len!==c.len||c0.in!==c.in)saveTl();info()};",
+    "const c=S.clips[key];if(c0.start!==c.start||c0.len!==c.len||c0.in!==c.in||r00!==S.warp.r0)saveTl();info()};")
+rep("const d={clips:cl,grad:S.grad};", "const d={clips:cl,grad:S.grad,warp:S.warp};")
+rep("function applyTl(d){if(!d||!d.clips)return;", "function applyTl(d){if(!d||!d.clips)return;if(d.warp&&typeof d.warp.r0==='number')S.warp={...S.warp,...d.warp};")
+chap = [(0, "Intro"), (4.8333, "01 Ganz persönlich"), (PARK_AT, "Ablage: 02 Digitaler Begleiter"),
         (CLIPS["c5"]["start"], "03 Partner"), (CLIPS["c8"]["start"], "Schluss")]
 rep("const CHAPTERS=[[0,'Logo'],[BAR[1],'Neuausrichtung'],[BAR[4],'Menschen'],[BAR[16],'Bento-Box'],[BAR[21],'Partner'],[BAR[32],'Endcard']];",
     "const CHAPTERS=" + json.dumps([[round(a, 3), b] for a, b in chap], ensure_ascii=False) + ";")
@@ -172,7 +204,7 @@ layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); 
 rep(old_comps, aliases + layers + new_comps)
 
 # ---------- 7. Ausgangs-Timeline und Parameter im Code ----------
-block = "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
+block = f"S.warp={{r0:{WR0_REAL}}};\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
@@ -182,6 +214,7 @@ tl = json.loads((here / "timeline_markenfilm.json").read_text())
 for k in DROP:
     tl["clips"].pop(k, None)
 tl["clips"].update(CLIPS)
+tl["warp"] = {"r0": WR0_REAL}
 (here / "timeline_partnerfilm.json").write_text(json.dumps(tl, indent=1), encoding="utf-8")
 print("Ende", END, "AU_CUT", AU_CUT, "Logo2", LOGO2)
 for k, v in sorted(CLIPS.items(), key=lambda kv: kv[1]["start"]):
