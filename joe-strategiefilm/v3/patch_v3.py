@@ -29,12 +29,12 @@ bars = lambda t, n: round(t + n * BARL, 4)   # Szene aus dem Markenfilm um n Tak
 OFF = 2                         # alles ab Julian liegt 2 Takte später als in der Kapitel-Fassung (Platz für „Menschen“)
 PEOPLE_LEN = round(12 * BEAT, 4)              # vier Personen à 3 Schläge, beginnt auf dem Drop
 WE = 11.5                       # Design-Zeitpunkt, an dem auf Kian geschnitten wird (kurz bevor die Stories rausfahren)
-WR0 = round(13.976 + OFF * BARL, 4)          # Julian beginnt nach „Angebote, die zu dir passen.“
-RABATT = bars(45.763, -9 + OFF)
-WR1 = RABATT
+WR0 = round(4.8333 + 12 * BARL, 4)           # Julian beginnt nach „Alles in einer App“ (gleiche Lage im Takt wie im Markenfilm)
+RABATT = bars(45.763, -12)      # Kian direkt nach „Angebote, die zu dir passen.“
+WR1 = round(WR0 + 11.2145, 4)  # gleiche Dehnung wie bisher (Julian + Stories etwas ruhiger als im Markenfilm)
 CLOUD_A = round(RABATT + 3.0427, 4)          # wie im Markenfilm: Wolke startet auf dem letzten Kian-Bild
-C4_END = round(34.34 + OFF * BARL, 4)
-BOX = bars(24.5417, 6 + OFF)
+CLOUD_END = round(CLOUD_A + 8.3843, 4)      # Wolke + Tamara wie im Markenfilm, endet auf der Takt-Eins
+BOX = bars(24.5417, 8)          # Sammelpass nach Julian + Stories
 PARTNER = bars(27.6013, 8 + OFF)   # Einflug auf einem Akzent der Musik
 BRAND = round(PARTNER + 4.482, 4)
 BRAND_LEN = round(4.375 + BARL, 4)           # Lockups einen Takt länger (ruhiger)
@@ -56,12 +56,12 @@ CLIPS = {
     "logo": C(2.35, 2.4833, .475),
     "c2": C(4.8333, 9.195 - 4.8333),             # „Wie für dich gemacht.“
     "people": C(9.195, PEOPLE_LEN),              # Lena, Renate, Sarah, Jonas – Drehung auf dem Drop
-    "c3": C(9.195 + PEOPLE_LEN, WR0 - 9.195 - PEOPLE_LEN),  # „Angebote, die zu dir passen.“
+    "c3": C(9.195 + PEOPLE_LEN, RABATT - 9.195 - PEOPLE_LEN),  # „Angebote, die zu dir passen.“
     # julian, white, story, story2, story4, grad: Design-Zeit wie im Markenfilm (Zeitdehnung WR0…WR1)
     "rabatt": C(RABATT, 3.5997),
-    "cloud": C(CLOUD_A, 2.75),                  # Kian zoomt raus in die Profil-Wolke
-    "c4": C(CLOUD_A + 2.75, C4_END - CLOUD_A - 2.75),
-    "cloudB": C(C4_END, BOX + .66 - C4_END, 3.4),  # Zoom in Tamaras Video, digitale Rechnung
+    "cloud": C(CLOUD_A, 8.3843),                # Kian zoomt raus in die Profil-Wolke, dann „Mehr für Tamara.“
+    "c4": C(CLOUD_END, WR0 - CLOUD_END),        # „Alles in einer App: einfach und bequem.“
+    # danach Julian + Stories (Design-Zeit, Zeitdehnung WR0…WR1)
     "box": C(BOX, 3.5),
     "c5": C(BOX + 3.5, PARTNER - BOX - 3.5),
     "partner": C(PARTNER, 4.482),
@@ -83,7 +83,6 @@ DROP = ["story3", "story5", "story6", "hl3", "endc"]
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
     "brand": {"step": .71},          # jede Partnerfarbe steht länger (füllt genau einen Takt mehr)
-    "cloudB": {"banner": 0},         # Tamara: nur Video und digitale Rechnung, kein Banner
 }
 
 # ---------- 1. Zeitdehnung frei wählbar ----------
@@ -161,14 +160,13 @@ rep(anchor, cards + anchor)
 # ---------- 5b. Neue Szene „Menschen“ (people_comp.js) nach „Partner Vollbild“ ----------
 rep("/* =====================================================================\n   COMP: APP-VIDEO", (here / "people_comp.js").read_text(encoding="utf-8") + "\n/* =====================================================================\n   COMP: APP-VIDEO")
 
-# ---------- 6. Doppel-Clips: Profil-Wolke (Tamara) und Logo am Schluss ----------
-aliases = ("const CLOUDB=Object.assign(Object.create(CLOUD),{key:'cloudB',name:'Profil-Wolke (Tamara)'});\n"
-           "const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
+# ---------- 6. Doppel-Clip: Logo am Schluss ----------
+aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,cloudB:CLOUDB,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)

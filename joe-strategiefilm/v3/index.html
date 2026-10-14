@@ -254,7 +254,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const T_MAIN=96.05, FPS=24;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
 const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];
-const CHAPTERS=[[0, "Intro"], [4.833, "01 Ganz persönlich"], [35.555, "02 Digitaler Begleiter"], [46.328, "03 Partner"], [90.059, "Schluss"]];
+const CHAPTERS=[[0, "Intro"], [4.833, "01 Ganz persönlich"], [29.76, "02 Digitaler Begleiter"], [46.328, "03 Partner"], [90.059, "Schluss"]];
 const fmtPct=v=>num(v*100,1)+' %',fmtX=v=>num(v)+'×',fmtMs=v=>Math.round(v*1000)+' ms',fmtSec=v=>num(v)+' s';
 
 /* =====================================================================
@@ -2167,9 +2167,9 @@ const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','un
 const C2=makeHL('c2','Wie für dich gemacht','laneV2',["Wie für *dich gemacht."],
   {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.75,inAt:0.75,outAt:6.777,len:7.627,cls:'logo',note:'Tafel des Partnerfilms (Wie für dich gemacht).'});
 const C3=makeHL('c3','Angebote, die zu dir passen','laneV2',["Angebote, die", "zu *dir passen."],
-  {size:140,top:366,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.504,len:4.354,cls:'logo',note:'Tafel des Partnerfilms (Angebote, die zu dir passen).'});
+  {size:140,top:366,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.129,len:3.979,cls:'logo',note:'Tafel des Partnerfilms (Angebote, die zu dir passen).'});
 const C4=makeHL('c4','02 Digitaler Begleiter','laneV2',["Alles in einer App:", "*einfach und *bequem."],
-  {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:5.02,len:5.87,cls:'logo',note:'Tafel des Partnerfilms (02 Digitaler Begleiter).'});
+  {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.527,len:4.377,cls:'logo',note:'Tafel des Partnerfilms (02 Digitaler Begleiter).'});
 const C5=makeHL('c5','03 Integration der Partner','laneV2',["Wir bringen eure Marke", "dorthin, wo sie *wirkt."],
   {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.375,inAt:0.5,outAt:6.374,len:7.224,cls:'logo',note:'Tafel des Partnerfilms (03 Integration der Partner).'});
 const C6=makeHL('c6','03 Unter-Headline Look','laneV2',["Eure Angebote", "im neuen jö *Look."],
@@ -3183,11 +3183,10 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
     ['Anzeige 4',`${F(T[3])}–${F(M.total)}`,'Bildfläche wird breiter (Vater mit Tochter), Preis-Kreis weg; danach nimmt die Bento-Parallaxe die Anzeige nach links mit']]},
   note:'Ersetzt „Deal“ (gleicher Clip auf der Timeline). Bilder und Layouts nach den gelieferten Anzeigen-Zuständen.'};
 
-const CLOUDB=Object.assign(Object.create(CLOUD),{key:'cloudB',name:'Profil-Wolke (Tamara)'});
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story4:STORY4,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,cloudB:CLOUDB,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story4:STORY4,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3225,11 +3224,10 @@ S.clips.hl1={start:0,len:2.35,in:0};
 S.clips.logo={start:2.35,len:2.4833,in:0.475};
 S.clips.c2={start:4.8333,len:4.3617,in:0};
 S.clips.people={start:9.195,len:6.8625,in:0};
-S.clips.c3={start:16.0575,len:2.4902,in:0};
-S.clips.rabatt={start:29.7622,len:3.5997,in:0};
-S.clips.cloud={start:32.8049,len:2.75,in:0};
-S.clips.c4={start:35.5549,len:3.3568,in:0};
-S.clips.cloudB={start:38.9117,len:4.5766,in:3.4};
+S.clips.c3={start:16.0575,len:2.2755,in:0};
+S.clips.rabatt={start:18.333,len:3.5997,in:0};
+S.clips.cloud={start:21.3757,len:8.3843,in:0};
+S.clips.c4={start:29.76,len:2.5033,in:0};
 S.clips.box={start:42.8283,len:3.5,in:0};
 S.clips.c5={start:46.3283,len:4.1313,in:0};
 S.clips.partner={start:50.4596,len:4.482,in:0};
@@ -3245,7 +3243,6 @@ S.clips.bill={start:87.913,len:2.146,in:0};
 S.clips.c8={start:90.059,len:5.991,in:0};
 S.clips.logo2={start:90.1237,len:5.9263,in:0};
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
-Object.assign(S.comps.cloudB.params,{"banner": 0});FM.cloudB=COMPS.cloudB.model(S.comps.cloudB.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
@@ -3288,7 +3285,7 @@ function renderBg(local,len){const g=len?clamp(local/len):0;$('bg').style.transf
 function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
 /* Zeitdehnung Julian + Stories: Clips dort sind in Design-Zeit gespeichert (WA…WB). Der Abschnitt ab Julian bis „Farben“
    wird so gedehnt, dass er genau bis zum Start von „Farben“ reicht – Farben/Anzeigen sind schneller, die gewonnene Zeit geht hierher. */
-const WA=4.8333,WB=11.5,WR0=18.5477,WR1=29.7622; // Partnerfilm: Design-Abschnitt WA…WB (Julian + erste Stories) läuft auf der Hauptebene von WR0 bis WR1
+const WA=4.8333,WB=11.5,WR0=32.2633,WR1=43.4778; // Partnerfilm: Design-Abschnitt WA…WB (Julian + erste Stories) läuft auf der Hauptebene von WR0 bis WR1
 function warpK(){return Math.max(.2,(WR1-WR0)/(WB-WA))}
 function wDesign(t){const k=warpK();return t<=WA?t:t<WR0?WA-1e-4:t<=WR1?WA+(t-WR0)/k:t-WR1+WB} // echte Zeit → Design-Zeit
 function wReal(x){const k=warpK();return x<WA?x:x<=WB?WR0+(x-WA)*k:x-WB+WR1} // Design-Zeit → echte Zeit
