@@ -5,7 +5,7 @@
 const FU_PH=['mehr Möglichkeiten.','mehr Begeisterung.','jeden Tag.'];
 const FUL=document.createElement('div');FUL.id='fuerL';FUL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
 FUL.innerHTML=`<div style="position:absolute;inset:0;background:${JG_CSS}"></div>
-<div id="fuRow" style="position:absolute;left:0;top:0;font-size:140px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
+<div id="fuRow" style="position:absolute;left:0;top:0;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
  <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="fuFix" style="display:inline-block;margin-top:30px">Für</span></div>
  <div id="fuMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${FU_PH.map(p=>`<span class="fuP" style="position:absolute;left:0;top:30px;display:inline-block">${p}</span>`).join('')}</div>
 </div>`;
@@ -24,7 +24,7 @@ const FUER={
     {k:'outAt',label:'Ausstieg bei (Schlag)',min:4,max:8,step:.25,fmt:v=>String(v)}],
   model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:'Für',total:8*b}},
   show(on){FUL.style.display=on?'':'none'},
-  render(M,t){const P=M.P,b=M.b,E=FUE,fs=140;
+  render(M,t){const P=M.P,b=M.b,E=FUE,fs=150;
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
     const gap=P.gap*fs,tw=E._wf+gap+Math.max(...E._wp),xa=960-tw/2,xc=960-(E._wf+gap+E._wp[E._wp.length-1])/2,
       cs=(P.inAt+(FU_PH.length-1)*P.hold+P.center)*b,x0=xa+(xc-xa)*eIO(seg(t,cs,cs+P.cDur)); // am Ende gleitet „Für jeden Tag.“ in die Mitte

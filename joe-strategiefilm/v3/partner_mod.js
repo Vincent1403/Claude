@@ -2,8 +2,8 @@
    dann ersetzt das jö-Logo die Worte, die Partner fliegen hinein, das Logo verschwindet und
    „Eine starke Verbindung.“ steigt auf. */
 {const mk=(id,html,size)=>{const d=document.createElement('div');d.id=id;d.style.cssText=`position:absolute;left:0;right:0;top:${540-size*.62}px;height:${Math.round(size*1.3)}px;overflow:hidden;text-align:center;color:#670003;font-size:${size}px;font-weight:900;letter-spacing:-.02em;line-height:${Math.round(size*1.3)}px;white-space:nowrap;pointer-events:none`;d.innerHTML=`<div style="display:inline-block">${html}</div>`;PT.insertBefore(d,$('ptLogo'));return d.firstChild};
- PTE.words=mk('ptWords','Viele Marken.',120);
- PTE.sent=mk('ptSent',`Eine starke <span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent">Verbindung.</span>`,120);
+ PTE.words=mk('ptWords','Viele Marken.',150);
+ PTE.sent=mk('ptSent',`Eine starke <span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent">Verbindung.</span>`,150);
  Object.assign(PARTNER.DEF,{swap:2,lOut:4.25,sent:4.4});
  PARTNER.params.unshift(
   {k:'swap',label:'jö-Logo ersetzt „Viele Marken.“ bei',min:.5,max:4,step:1/24,fmt:v=>Math.round(v*24)+' F'},

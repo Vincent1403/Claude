@@ -105,7 +105,7 @@ DROP = ["hl3", "endc"]
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
     "julian": {"sStart": 2.0, "pause": .3},   # Hallo Julian / 100 Ös / Einlösen stehen länger, der Slider startet später
-    "partner": {"hit": 2.5, "popGap": 99, "end": 12},   # Einflug nach dem Logo-Wechsel, kein Verlauf-Flut
+    "partner": {"hit": 2.5, "popGap": 99, "end": 12, "spread": 1.15},   # Einflug nach dem Logo-Wechsel, kein Verlauf-Flut
     "story": {"holdA": 1.4},    # Stories stehen länger, damit die eingeflogenen Tags lesbar bleiben
     "story2": {"hold1": 1.4},
     "brand": {"step": .71},          # jede Partnerfarbe steht länger (füllt genau einen Takt mehr)
@@ -201,11 +201,11 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
 CARDS = ["c2", "c3", "c4", "c5", "c6", "c7", "c8"]
 cards = (
     card("c2", "Das neue Jö", ["Das *neue Jö."], 150, BEIGE, BURG, step=.75, inAt=0)
-    + card("c3", "Mit Möglichkeiten für jeden Einzelnen", ["Mit Möglichkeiten", "für jeden *Einzelnen."], 140, BEIGE, BURG, step=.25, inAt=.25)
-    + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 118, BEIGE, BURG, step=.25, inAt=.25)
-    + card("c5", "03 Integration der Partner", ["Wir bringen eure Marke", "dorthin, wo sie *wirkt."], 118, BEIGE, BURG, step=.375, inAt=.5)
-    + card("c6", "03 Unter-Headline Look", ["Eure Angebote", "im neuen jö *Look."], 118, BEIGE, BURG, step=.25, inAt=.25)
-    + card("c7", "03 Unter-Headline Sichtbarkeit", ["Sichtbar, wo eure", "*Kund:innen sind."], 118, BEIGE, BURG, step=.25, inAt=.25)
+    + card("c3", "Mit Möglichkeiten für jeden Einzelnen", ["Mit Möglichkeiten", "für jeden *Einzelnen."], 150, BEIGE, BURG, step=.25, inAt=.25)
+    + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 150, BEIGE, BURG, step=.25, inAt=.25)
+    + card("c5", "03 Integration der Partner", ["Wir bringen eure Marke", "dorthin, wo sie *wirkt."], 150, BEIGE, BURG, step=.375, inAt=.5)
+    + card("c6", "03 Unter-Headline Look", ["Eure Angebote", "im neuen jö *Look."], 150, BEIGE, BURG, step=.25, inAt=.25)
+    + card("c7", "03 Unter-Headline Sichtbarkeit", ["Sichtbar, wo eure", "*Kund:innen sind."], 150, BEIGE, BURG, step=.25, inAt=.25)
     + card("c8", "Schluss Vision", ["Begeisterung. Täglich. Für alle."], 76, GRAD, "#fff", step=.5,
            inAt=round((LOGO2 - CLIPS['c8']['start'] + 3.1) / BEAT, 2), hi="'#fff'", top=880, out=False)
 )
@@ -247,11 +247,11 @@ rep("let sel='julian';", "let sel='tags';")
 rep("const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';", "const jOn=S.clips.julian&&clipOn(S.clips.julian,tR),gOn=clipOn(g,tD)||jOn;$('bg').style.display=gOn?'':'none';$('bg').style.background=(tR<WA+WPD||jOn)?JG_CSS:''; // Intro (Headline + Logo) im jö-Verlauf wie „Dein jö“")
 # ---------- 5e. Intro: vier Headlines statt „Eine Marke mitten im Leben.“ ----------
 rep("const HL1=makeHL('hl1','Headline 1','laneV3',['Eine Marke mitten im Leben.'],\n  {size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:3.4,len:4.1,",
-    "const HL1=makeHL('hl1','Headline 1a','laneV3',['Eine Marke für das','alltägliche Leben.'],\n  {size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,")
+    "const HL1=makeHL('hl1','Headline 1a','laneV3',['Eine Marke für das','alltägliche Leben.'],\n  {size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,")
 rep("const HL2=makeHL('hl2',",
-    "const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Das Leben ist','voller Möglichkeiten.'],{size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:3.2,len:3.8,shadow:1,note:'Intro, zweite Zeile.'});\n"
-    "const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und jeden Tag anders.'],{size:120,top:470,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,note:'Intro, dritte Zeile.'});\n"
-    "const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});\n"
+    "const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Das Leben ist','voller Möglichkeiten.'],{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.2,len:3.8,shadow:1,note:'Intro, zweite Zeile.'});\n"
+    "const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und jeden Tag anders.'],{size:150,top:447,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,note:'Intro, dritte Zeile.'});\n"
+    "const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});\n"
     "const HL2=makeHL('hl2',")
 # ---------- 5f. Hintergrundvideos der Intro-Headlines (introvid_comp.js) ----------
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8") + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
