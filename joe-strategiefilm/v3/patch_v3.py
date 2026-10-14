@@ -26,15 +26,15 @@ BEAT = 13.725 / 24
 bars = lambda t, n: round(t + n * BARL, 4)   # Szene aus dem Markenfilm um n Takte verschieben
 
 # ---------- Zeitplan ----------
-OFF = 2                         # alles ab Julian liegt 2 Takte später als in der Kapitel-Fassung (Platz für „Menschen“)
+OFF = 3                         # alles ab Julian liegt 3 Takte später als in der Kapitel-Fassung („Menschen“ + „Mach dein Jö draus!“)
 PEOPLE_LEN = round(12 * BEAT, 4)              # vier Personen à 3 Schläge, beginnt auf dem Drop
 WE = 11.5                       # Design-Zeitpunkt, an dem auf Kian geschnitten wird (kurz bevor die Stories rausfahren)
-WR0 = round(4.8333 + 12 * BARL, 4)           # Julian beginnt nach „Alles in einer App“ (gleiche Lage im Takt wie im Markenfilm)
-RABATT = bars(45.763, -12)      # Kian direkt nach „Angebote, die zu dir passen.“
+WR0 = round(4.8333 + 13 * BARL, 4)           # Julian beginnt nach „Alles in einer App“ (gleiche Lage im Takt wie im Markenfilm)
+RABATT = bars(45.763, -11)      # Kian nach „Mach dein Jö draus!“
 WR1 = round(WR0 + 11.2145, 4)  # gleiche Dehnung wie bisher (Julian + Stories etwas ruhiger als im Markenfilm)
 CLOUD_A = round(RABATT + 3.0427, 4)          # wie im Markenfilm: Wolke startet auf dem letzten Kian-Bild
 CLOUD_END = round(CLOUD_A + 8.3843, 4)      # Wolke + Tamara wie im Markenfilm, endet auf der Takt-Eins
-BOX = bars(24.5417, 8)          # Sammelpass nach Julian + Stories
+BOX = bars(24.5417, 9)          # Sammelpass nach Julian + Stories
 PARTNER = bars(27.6013, 8 + OFF)   # Einflug auf einem Akzent der Musik
 BRAND = round(PARTNER + 4.482, 4)
 BRAND_LEN = round(4.375 + BARL, 4)           # Lockups einen Takt länger (ruhiger)
@@ -45,7 +45,7 @@ PROD = bars(43.49, 14 + OFF)
 CITY = bars(57.19, 10 + OFF)
 BILL = round(CITY + 3.293, 4)
 AU_BASS = 91.4537
-AU_CUT = round(AU_BASS - (2 - OFF) * BARL, 4)  # bei OFF = 2 läuft der Track ohne Sprung bis zum Ende
+AU_CUT = round(AU_BASS - (2 - OFF) * BARL, 4)  # ab OFF = 2 liegt der Punkt hinter dem Bass: der Track läuft ohne Sprung bis zum Ende
 LOGO_LAND = 1.33                              # Punkte landen 1,33 s nach Clipstart (Logo-Animation, Standardwerte)
 LOGO2 = round(AU_CUT - LOGO_LAND, 4)
 END = round(AU_CUT + (96.05 - AU_BASS), 2)   # Rest des Tracks nach dem Sprung
@@ -56,7 +56,8 @@ CLIPS = {
     "logo": C(2.35, 2.4833, .475),
     "c2": C(4.8333, 9.195 - 4.8333),             # „Wie für dich gemacht.“
     "people": C(9.195, PEOPLE_LEN),              # Lena, Renate, Sarah, Jonas – Drehung auf dem Drop
-    "c3": C(9.195 + PEOPLE_LEN, RABATT - 9.195 - PEOPLE_LEN),  # „Angebote, die zu dir passen.“
+    "c3": C(9.195 + PEOPLE_LEN, bars(45.763, -12) - 9.195 - PEOPLE_LEN),  # „Angebote, die zu dir passen.“
+    "c9": C(bars(45.763, -12), BARL),           # „Mach dein Jö draus!“ (ein Takt)
     # julian, white, story, story2, story4, grad: Design-Zeit wie im Markenfilm (Zeitdehnung WR0…WR1)
     "rabatt": C(RABATT, 3.5997),
     "cloud": C(CLOUD_A, 8.3843),                # Kian zoomt raus in die Profil-Wolke, dann „Mehr für Tamara.“
@@ -175,9 +176,10 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
     return f"const {key.upper()}=makeHL('{key}','{name}','laneV2',{json.dumps(lines, ensure_ascii=False)},\n  {o});\n"
 
 
-CARDS = ["c2", "c3", "c4", "c5", "c6", "c7", "c8"]
+CARDS = ["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"]
 cards = (
     card("c2", "Wie für dich gemacht", ["Wie für *dich gemacht."], 150, BEIGE, BURG, step=.75, inAt=.75)
+    + card("c9", "Mach dein Jö draus", ["Mach *dein Jö draus!"], 150, BEIGE, BURG, step=.25, inAt=.25)
     + card("c3", "Angebote, die zu dir passen", ["Angebote, die", "zu *dir passen."], 140, BEIGE, BURG, step=.25, inAt=.25)
     + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 118, BEIGE, BURG, step=.25, inAt=.25)
     + card("c5", "03 Integration der Partner", ["Wir bringen eure Marke", "dorthin, wo sie *wirkt."], 118, BEIGE, BURG, step=.375, inAt=.5)

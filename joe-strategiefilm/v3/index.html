@@ -2167,6 +2167,8 @@ const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','un
   {size:118,top:345,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.5,inAt:.5,outAt:7,len:8,cls:'logo',note:'Eigene Texttafel, genau 2 Takte zwischen „Deal“ und „Partner“; beginnt und endet auf einer Takt-Eins. „Entscheidungen“ und „Vorteile“ im jö-Verlauf.'});
 const C2=makeHL('c2','Wie für dich gemacht','laneV2',["Wie für *dich gemacht."],
   {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.75,inAt:0.75,outAt:6.777,len:7.627,cls:'logo',note:'Tafel des Partnerfilms (Wie für dich gemacht).'});
+const C9=makeHL('c9','Mach dein Jö draus','laneV2',["Mach *dein Jö draus!"],
+  {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.147,len:3.997,cls:'logo',note:'Tafel des Partnerfilms (Mach dein Jö draus).'});
 const C3=makeHL('c3','Angebote, die zu dir passen','laneV2',["Angebote, die", "zu *dir passen."],
   {size:140,top:366,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.129,len:3.979,cls:'logo',note:'Tafel des Partnerfilms (Angebote, die zu dir passen).'});
 const C4=makeHL('c4','02 Digitaler Begleiter','laneV2',["Alles in einer App:", "*einfach und *bequem."],
@@ -2178,7 +2180,7 @@ const C6=makeHL('c6','03 Unter-Headline Look','laneV2',["Eure Angebote", "im neu
 const C7=makeHL('c7','03 Unter-Headline Sichtbarkeit','laneV2',["Sichtbar, wo eure", "*Kund:innen sind."],
   {size:118,top:394,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.143,len:3.993,cls:'logo',note:'Tafel des Partnerfilms (03 Unter-Headline Sichtbarkeit).'});
 const C8=makeHL('c8','Schluss Vision','laneV2',["Begeisterung. Täglich. Für alle."],
-  {size:76,top:880,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:0.5,inAt:-117.29,outAt:14.476,len:10.476,cls:'logo',note:'Tafel des Partnerfilms (Schluss Vision).'});
+  {size:76,top:880,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:0.5,inAt:-113.29,outAt:14.483,len:10.483,cls:'logo',note:'Tafel des Partnerfilms (Schluss Vision).'});
 const HL3=makeHL('hl3','Headline 3','laneV3',['Marken erlebbar machen','wo das Leben stattfindet.'],
   {size:96,top:420,color:'#fff',step:.25,inAt:.25,outAt:3.25,len:4.25,shadow:1,scrim:'radial-gradient(80% 90% at 50% 50%,rgba(60,14,4,.55) 0%,rgba(60,14,4,.35) 100%)',note:'Overlay am Anfang des App-Videos, vor den HUD-Elementen. Leichte dunkle Abdunklung für Lesbarkeit, Wörter auf den Sechzehnteln.'});
 
@@ -3185,9 +3187,9 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
   note:'Ersetzt „Deal“ (gleicher Clip auf der Timeline). Bilder und Layouts nach den gelieferten Anzeigen-Zuständen.'};
 
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
-["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
+["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story4:STORY4,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c9:C9,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story4:STORY4,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3221,29 +3223,30 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
-S.warp={r0:102.5033};
+S.warp={r0:102.5032};
 S.clips.hl1={start:0,len:2.35,in:0};
 S.clips.logo={start:2.35,len:2.4833,in:0.475};
 S.clips.c2={start:4.8333,len:4.3617,in:0};
 S.clips.people={start:9.195,len:6.8625,in:0};
 S.clips.c3={start:16.0575,len:2.2755,in:0};
-S.clips.rabatt={start:18.333,len:3.5997,in:0};
-S.clips.cloud={start:21.3757,len:8.3843,in:0};
-S.clips.c4={start:100.0,len:2.5033,in:0};
+S.clips.c9={start:18.333,len:2.2858,in:0};
+S.clips.rabatt={start:20.6189,len:3.5997,in:0};
+S.clips.cloud={start:23.6616,len:8.3843,in:0};
+S.clips.c4={start:100.0,len:2.5032,in:0};
 S.clips.box={start:113.0683,len:3.5,in:0};
-S.clips.c5={start:116.5683,len:4.1313,in:0};
-S.clips.partner={start:120.6996,len:4.482,in:0};
-S.clips.brand={start:125.1816,len:6.6608,in:0};
-S.clips.full={start:131.8424,len:7.0317,in:0};
-S.clips.c6={start:138.8741,len:2.8539,in:0};
-S.clips.colors={start:141.728,len:3.4313,in:0};
-S.clips.deal={start:145.1593,len:5.144,in:0};
-S.clips.prod={start:150.3033,len:2.273,in:0.634};
-S.clips.c7={start:152.5763,len:2.2837,in:0};
-S.clips.city={start:154.86,len:3.293,in:0};
-S.clips.bill={start:158.153,len:2.146,in:0};
-S.clips.c8={start:160.299,len:5.991,in:0};
-S.clips.logo2={start:160.3637,len:5.9263,in:0};
+S.clips.c5={start:116.5683,len:4.1312,in:0};
+S.clips.partner={start:120.6995,len:4.482,in:0};
+S.clips.brand={start:125.1815,len:6.6608,in:0};
+S.clips.full={start:131.8423,len:7.0317,in:0};
+S.clips.c6={start:138.874,len:2.8539,in:0};
+S.clips.colors={start:141.7279,len:3.4313,in:0};
+S.clips.deal={start:145.1592,len:5.144,in:0};
+S.clips.prod={start:150.3032,len:2.273,in:0.634};
+S.clips.c7={start:152.5762,len:2.2837,in:0};
+S.clips.city={start:154.8599,len:3.293,in:0};
+S.clips.bill={start:158.1529,len:2.146,in:0};
+S.clips.c8={start:160.2989,len:5.9952,in:0};
+S.clips.logo2={start:160.3636,len:5.9305,in:0};
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
@@ -3320,7 +3323,7 @@ function info(){
 }
 let actx=null,abuf=null,abuf0=null,abufAt=null,asrc=null,gain=null,muted=false;
 // Musik-Schnitt: der große Bass vom Ende des Tracks (91,44 s) wird genau auf den H·A-Aufbau der Endcard gelegt
-const AU_BASS=91.4537,AU_CUT=91.4537,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
+const AU_BASS=91.4537,AU_CUT=93.7395,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
 function auTarget(){return AU_CUT}
 function spliceAudio(){if(!abuf0)return null;const T=auTarget();if(T==null||T>=AU_BASS)return abuf0;if(abufAt===T&&abuf)return abuf;
   const sr=abuf0.sampleRate,a=Math.round((T-AU_XF)*sr),b=Math.round((AU_BASS-AU_XF)*sr),tail=abuf0.length-b,n=a+tail,xf=Math.round(AU_XF*2*sr);
