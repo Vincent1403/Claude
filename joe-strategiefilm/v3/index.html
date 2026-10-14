@@ -251,10 +251,10 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=92.487, FPS=24;
+const T_MAIN=91.48, FPS=24;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
 const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];
-const CHAPTERS=[[0,'Intro'],[9.195,'Wie für dich gemacht'],[32.07,'Digitaler Begleiter'],[48.614,'Integration der Partner'],[85.4873,'Endcard']];
+const CHAPTERS=[[0, "Intro"], [9.195, "01 Ganz persönlich"], [30.983, "02 Digitaler Begleiter"], [41.757, "03 Partner"], [85.487, "Schluss"]];
 const fmtPct=v=>num(v*100,1)+' %',fmtX=v=>num(v)+'×',fmtMs=v=>Math.round(v*1000)+' ms',fmtSec=v=>num(v)+' s';
 
 /* =====================================================================
@@ -2085,14 +2085,20 @@ const HL1=makeHL('hl1','Headline 1','laneV3',['Eine Marke mitten im Leben.'],
   {size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:3.4,len:4.1,shadow:1,note:'Läuft über dem Verlauf vor dem Logo-Aufbau (Intro ohne Beat). Muss vor dem ersten Strich des Logos raus sein.'});
 const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','und *Vorteile sinnvoll','miteinander verbindet.'],
   {size:118,top:345,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.5,inAt:.5,outAt:7,len:8,cls:'logo',note:'Eigene Texttafel, genau 2 Takte zwischen „Deal“ und „Partner“; beginnt und endet auf einer Takt-Eins. „Entscheidungen“ und „Vorteile“ im jö-Verlauf.'});
-const C1=makeHL('c1','Tafel Vision','laneV2',["Begeisterung.", "Täglich. Für alle."],
-  {size:140,top:396,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:1.2,inAt:0.6,outAt:6.777,len:7.627,cls:'logo',kicker:'Unsere Vision',kc:'rgba(255,255,255,.8)',note:'Kapitel-Tafel des Partnerfilms (Tafel Vision).'});
-const C2=makeHL('c2','Kapitel Wie für dich gemacht','laneV2',["Wie für *dich gemacht:", "Angebote, die zu dir passen."],
-  {size:112,top:432,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.5,inAt:0.25,outAt:7.51,len:8.36,cls:'logo',kicker:'Ganz persönlich',kc:'#9a4a40',note:'Kapitel-Tafel des Partnerfilms (Kapitel Wie für dich gemacht).'});
-const C4=makeHL('c4','Kapitel Digitaler Begleiter','laneV2',["Alles in einer App:", "*einfach und *bequem."],
-  {size:118,top:424,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:4.433,len:5.283,cls:'logo',kicker:'Digitaler Begleiter',kc:'#9a4a40',note:'Kapitel-Tafel des Partnerfilms (Kapitel Digitaler Begleiter).'});
-const C5=makeHL('c5','Kapitel Partner','laneV2',["Wir bringen eure Marke", "dorthin, wo sie *wirkt."],
-  {size:118,top:424,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.375,inAt:0.5,outAt:6.384,len:7.234,cls:'logo',kicker:'Integration der Partner',kc:'#9a4a40',note:'Kapitel-Tafel des Partnerfilms (Kapitel Partner).'});
+const C1=makeHL('c1','Vision','laneV2',["Begeisterung.", "Täglich. Für alle."],
+  {size:140,top:396,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:1.2,inAt:0.6,outAt:6.777,len:7.627,cls:'logo',kicker:'Unsere Vision',kc:'rgba(255,255,255,.8)',note:'Tafel des Partnerfilms (Vision).'});
+const C2=makeHL('c2','01 Ganz persönlich','laneV2',["Wie für *dich gemacht:", "Angebote, die zu dir passen."],
+  {size:112,top:432,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.5,inAt:0.25,outAt:7.51,len:8.36,cls:'logo',kicker:'01 · Ganz persönlich',kc:'#9a4a40',note:'Tafel des Partnerfilms (01 Ganz persönlich).'});
+const C4=makeHL('c4','02 Digitaler Begleiter','laneV2',["Alles in einer App:", "*einfach und *bequem."],
+  {size:118,top:424,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:5.02,len:5.87,cls:'logo',kicker:'02 · Digitaler Begleiter',kc:'#9a4a40',note:'Tafel des Partnerfilms (02 Digitaler Begleiter).'});
+const C5=makeHL('c5','03 Integration der Partner','laneV2',["Wir bringen eure Marke", "dorthin, wo sie *wirkt."],
+  {size:118,top:424,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.375,inAt:0.5,outAt:6.374,len:7.224,cls:'logo',kicker:'03 · Integration der Partner',kc:'#9a4a40',note:'Tafel des Partnerfilms (03 Integration der Partner).'});
+const C6=makeHL('c6','03 Unter-Headline Look','laneV2',["Eure Angebote", "im neuen jö *Look."],
+  {size:118,top:424,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:4.141,len:4.991,cls:'logo',kicker:'03 · Integration der Partner',kc:'#9a4a40',note:'Tafel des Partnerfilms (03 Unter-Headline Look).'});
+const C7=makeHL('c7','03 Unter-Headline Sichtbarkeit','laneV2',["Sichtbar, wo eure", "*Kund:innen sind."],
+  {size:118,top:424,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.143,len:3.993,cls:'logo',kicker:'03 · Integration der Partner',kc:'#9a4a40',note:'Tafel des Partnerfilms (03 Unter-Headline Sichtbarkeit).'});
+const C8=makeHL('c8','Schluss Vision','laneV2',["Begeisterung. Täglich. Für alle."],
+  {size:76,top:880,color:'#fff',bg:'radial-gradient(45% 70% at 0% 100%,#b23336 0%,rgba(178,51,54,0) 100%),linear-gradient(95deg,#c4382b 0%,#cf3a25 18%,#db3e22 36%,#de4626 52%,#e05530 68%,#e86a37 84%,#ee793c 96%,#ee793c 100%)',hi:'#fff',step:0.5,inAt:5.53,outAt:14.479,len:10.479,cls:'logo',note:'Tafel des Partnerfilms (Schluss Vision).'});
 const HL3=makeHL('hl3','Headline 3','laneV3',['Marken erlebbar machen','wo das Leben stattfindet.'],
   {size:96,top:420,color:'#fff',step:.25,inAt:.25,outAt:3.25,len:4.25,shadow:1,scrim:'radial-gradient(80% 90% at 50% 50%,rgba(60,14,4,.55) 0%,rgba(60,14,4,.35) 100%)',note:'Overlay am Anfang des App-Videos, vor den HUD-Elementen. Leichte dunkle Abdunklung für Lesbarkeit, Wörter auf den Sechzehnteln.'});
 
@@ -3098,8 +3104,11 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
     ['Anzeige 4',`${F(T[3])}–${F(M.total)}`,'Bildfläche wird breiter (Vater mit Tochter), Preis-Kreis weg; danach nimmt die Bento-Parallaxe die Anzeige nach links mit']]},
   note:'Ersetzt „Deal“ (gleicher Clip auf der Timeline). Bilder und Layouts nach den gelieferten Anzeigen-Zuständen.'};
 
-['c1','c2','c4','c5'].forEach(k=>$('stage').appendChild($('hl_'+k)));
-const COMPS={c1:C1,c2:C2,c4:C4,c5:C5,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,hl3:HL3,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE};
+const CLOUDB=Object.assign(Object.create(CLOUD),{key:'cloudB',name:'Profil-Wolke (Tamara)'});
+const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
+["c1", "c2", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
+[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
+const COMPS={c1:C1,c2:C2,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story4:STORY4,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,cloudB:CLOUDB,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3137,21 +3146,26 @@ S.clips.hl1={start:0,len:2.35,in:0};
 S.clips.logo={start:2.35,len:2.4833,in:0.475};
 S.clips.c1={start:4.8333,len:4.3617,in:0};
 S.clips.c2={start:9.195,len:4.781,in:0};
-S.clips.rabatt={start:27.476,len:4.594,in:0};
-S.clips.c4={start:32.07,len:3.021,in:0};
-S.clips.cloud={start:35.091,len:10.023,in:0};
-S.clips.box={start:45.114,len:3.5,in:0};
-S.clips.c5={start:48.614,len:4.137,in:0};
-S.clips.partner={start:52.751,len:4.482,in:0};
-S.clips.brand={start:57.233,len:4.375,in:0};
-S.clips.full={start:61.608,len:7.593,in:0};
-S.clips.colors={start:69.201,len:3.4313,in:0};
-S.clips.deal={start:72.6323,len:5.1277,in:0};
-S.clips.prod={start:77.76,len:2.273,in:0.634};
-S.clips.hl3={start:77.76,len:2.43,in:0};
+S.clips.rabatt={start:25.1905,len:3.5997,in:0};
+S.clips.cloud={start:28.2332,len:2.75,in:0};
+S.clips.c4={start:30.9832,len:3.3568,in:0};
+S.clips.cloudB={start:34.34,len:4.5767,in:3.4};
+S.clips.box={start:38.2567,len:3.5,in:0};
+S.clips.c5={start:41.7567,len:4.1312,in:0};
+S.clips.partner={start:45.8879,len:4.482,in:0};
+S.clips.brand={start:50.3699,len:6.6608,in:0};
+S.clips.full={start:57.0307,len:7.0317,in:0};
+S.clips.c6={start:64.0624,len:2.854,in:0};
+S.clips.colors={start:66.9164,len:3.4313,in:0};
+S.clips.deal={start:70.3477,len:5.1439,in:0};
+S.clips.prod={start:75.4916,len:2.273,in:0.634};
+S.clips.c7={start:77.7646,len:2.2837,in:0};
 S.clips.city={start:80.0483,len:3.293,in:0};
 S.clips.bill={start:83.3413,len:2.146,in:0};
-S.clips.endc={start:85.4873,len:7.0,in:0};
+S.clips.c8={start:85.4873,len:5.9927,in:0};
+S.clips.logo2={start:85.552,len:5.928,in:0};
+Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
+Object.assign(S.comps.cloudB.params,{"banner": 0});FM.cloudB=COMPS.cloudB.model(S.comps.cloudB.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
@@ -3194,11 +3208,11 @@ function renderBg(local,len){const g=len?clamp(local/len):0;$('bg').style.transf
 function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
 /* Zeitdehnung Julian + Stories: Clips dort sind in Design-Zeit gespeichert (WA…WB). Der Abschnitt ab Julian bis „Farben“
    wird so gedehnt, dass er genau bis zum Start von „Farben“ reicht – Farben/Anzeigen sind schneller, die gewonnene Zeit geht hierher. */
-const WA=4.8333,WB=13.769,WR0=13.976,WR1=27.476; // Partnerfilm: Design-Abschnitt WA…WB läuft auf der Hauptebene von WR0 bis WR1
+const WA=4.8333,WB=11.5,WR0=13.976,WR1=25.1905; // Partnerfilm: Design-Abschnitt WA…WB (Julian + erste Stories) läuft auf der Hauptebene von WR0 bis WR1
 function warpK(){return Math.max(.2,(WR1-WR0)/(WB-WA))}
 function wDesign(t){const k=warpK();return t<=WA?t:t<WR0?WA-1e-4:t<=WR1?WA+(t-WR0)/k:t-WR1+WB} // echte Zeit → Design-Zeit
 function wReal(x){const k=warpK();return x<WA?x:x<=WB?WR0+(x-WA)*k:x-WB+WR1} // Design-Zeit → echte Zeit
-const PRE=new Set(['grad','julian','white','story','story2','story3','story4','story5','story6']);
+const PRE=new Set(['grad','julian','white','story','story2','story4']);
 const isPre=k=>PRE.has(k);
 function mRender(){
   if(view!=='main')return;const tR=mT,g=S.clips.grad,tD=wDesign(tR);
@@ -3206,7 +3220,9 @@ function mRender(){
   GL.style.display='none';GL.style.clipPath='';
   if(S.clips.full&&FM.full&&FM.full.cs!==S.clips.full.start)FM.full=COMPS.full.model(S.comps.full.params);
   const cc=S.clips.colors;
-  for(const k in COMPS){const pre=isPre(k),t=pre?tD:tR,c=S.clips[k],on=clipOn(c,t);COMPS[k].show(on);if(!on)continue;
+  const ON={};for(const k in COMPS){const pre=isPre(k);ON[k]=clipOn(S.clips[k],pre?tD:tR)}
+  for(const k in COMPS)if(!ON[k])COMPS[k].show(false); // erst alles aus, dann ein: Doppel-Clips teilen sich eine Ebene
+  for(const k in COMPS){const pre=isPre(k),t=pre?tD:tR,c=S.clips[k],on=ON[k];if(!on)continue;COMPS[k].show(true);
     if(pre){mT=tD;if(cc)S.clips.colors=Object.assign({},cc,{start:WB})}
     try{COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))}finally{if(pre){mT=tR;if(cc)S.clips.colors=cc}}}
 }
