@@ -3178,18 +3178,21 @@ $('stage').appendChild(FUL);
 const FUE={row:$('fuRow'),fix:$('fuFix'),mask:$('fuMask'),ph:[...FUL.querySelectorAll('.fuP')]};
 const FUER={
   key:'fuer',name:'Für … (Verlauf)',lane:'laneV3',cls:'typo',
-  DEF:{beat:13.725/24,inAt:.25,hold:4,move:.55,gap:.28,outAt:11.4},
+  DEF:{beat:13.725/24,inAt:.25,hold:2,move:.4,gap:.28,center:.75,cDur:.5,outAt:7.4},
   params:[
     {k:'inAt',label:'„Für“ steigt auf bei (Schlag)',min:0,max:2,step:.25,fmt:v=>String(v)},
     {k:'hold',label:'Satzende wechselt alle',min:2,max:6,step:.5,fmt:v=>v+' Schläge',sub:'„Für“ bleibt stehen, das Satzende läuft nach oben weiter'},
     {k:'move',label:'Dauer Wechsel',min:.2,max:1,step:1/24,fmt:v=>Math.round(v*24)+' F'},
     {k:'gap',label:'Abstand nach „Für“',min:.1,max:.6,step:.01,fmt:v=>Math.round(v*100)+' % Schriftgröße'},
-    {k:'outAt',label:'Ausstieg bei (Schlag)',min:6,max:12,step:.25,fmt:v=>String(v)}],
-  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:'Für',total:12*b}},
+    {k:'center',label:'„Für jeden Tag.“ mittig ab (Schläge nach dem Wechsel)',min:0,max:2,step:.25,fmt:v=>String(v)},
+    {k:'cDur',label:'Dauer Gleiten zur Mitte',min:.2,max:1,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+    {k:'outAt',label:'Ausstieg bei (Schlag)',min:4,max:8,step:.25,fmt:v=>String(v)}],
+  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:'Für',total:8*b}},
   show(on){FUL.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b,E=FUE,fs=140;
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
-    const gap=P.gap*fs,tw=E._wf+gap+Math.max(...E._wp),x0=960-tw/2;
+    const gap=P.gap*fs,tw=E._wf+gap+Math.max(...E._wp),xa=960-tw/2,xc=960-(E._wf+gap+E._wp[E._wp.length-1])/2,
+      cs=(P.inAt+(FU_PH.length-1)*P.hold+P.center)*b,x0=xa+(xc-xa)*eIO(seg(t,cs,cs+P.cDur)); // am Ende gleitet „Für jeden Tag.“ in die Mitte
     Object.assign(E.row.style,{left:x0.toFixed(1)+'px',top:(540-fs*.55).toFixed(1)+'px'});
     E.mask.style.left=(E._wf+gap).toFixed(1)+'px';E.mask.style.width=(Math.max(...E._wp)+40)+'px';
     const a=P.inAt*b,o=P.outAt*b,rin=eExpo(seg(t,a,a+.5)),rout=eInCub(seg(t,o,o+.3));
@@ -3205,7 +3208,7 @@ const FUER={
     ['„… mehr Begeisterung.“',`${F((P.inAt+P.hold)*b)}–${F((P.inAt+2*P.hold)*b)}`,'nur das Satzende läuft nach oben weiter'],
     ['„… jeden Tag.“',`${F((P.inAt+2*P.hold)*b)}–${F(P.outAt*b)}`,'danach fällt alles aus der Maske'],
     ['Hintergrund','','jö-Verlauf, zieht leicht auf']]},
-  note:'Frames bei 24 fps ab Beginn der Subebene. Drei Takte; „Für“ steht, die Satzenden wechseln auf den Schlägen.'
+  note:'Frames bei 24 fps ab Beginn der Subebene. Zwei Takte; „Für“ steht, die Satzenden wechseln alle zwei Schläge, am Ende gleitet „Für jeden Tag.“ in die Bildmitte.'
 };
 
 const WHL=document.createElement('div');WHL.id='whiteL';WHL.style.cssText='position:absolute;inset:0;display:none';WHL.innerHTML='<div id="whO" style="position:absolute;inset:0;background:#e4e0eb"></div><div id="whB" style="position:absolute;inset:0;background:#f4f1ea"></div>';
@@ -3677,41 +3680,41 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
-S.warp={r0:75.2985};S.clips.white.len=8.7;
+S.warp={r0:73.0127};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9.2072,len:2.4833,in:0.475};
 S.clips.c2={start:15.75,len:2.5881,in:0};
-S.clips.people={start:25.1956,len:6.8625,in:0};
-S.clips.c3={start:32.0581,len:2.2755,in:0};
-S.clips.c9={start:34.3336,len:2.2858,in:0};
-S.clips.rabatt={start:36.6195,len:3.5997,in:0};
-S.clips.cloud={start:39.6622,len:8.3843,in:0};
-S.clips.c4={start:116.0006,len:2.5032,in:0};
-S.clips.box={start:129.0689,len:3.5,in:0};
-S.clips.c5={start:132.5689,len:4.1312,in:0};
-S.clips.partner={start:136.7001,len:4.482,in:0};
-S.clips.brand={start:141.1821,len:6.6608,in:0};
-S.clips.full={start:147.8429,len:7.0317,in:0};
-S.clips.c6={start:154.8746,len:2.8539,in:0};
-S.clips.colors={start:157.7285,len:3.4313,in:0};
-S.clips.deal={start:161.1598,len:5.144,in:0};
-S.clips.prod={start:166.3038,len:2.273,in:0.634};
-S.clips.c7={start:168.5768,len:2.2837,in:0};
-S.clips.city={start:170.8605,len:3.293,in:0};
-S.clips.bill={start:174.1535,len:2.146,in:0};
-S.clips.c8={start:176.2995,len:5.9952,in:0};
-S.clips.logo2={start:176.3642,len:5.9305,in:0};
-S.clips.slot={start:48.0465,len:4.5717,in:0};
-S.clips.badges={start:56.0786,len:10.0078,in:0};
-S.clips.wall={start:66.0864,len:9.15,in:0};
-S.clips.tags={start:75.2364,len:5.7188,in:0};
-S.clips.showcase={start:183.0006,len:8.47,in:0};
+S.clips.people={start:22.9098,len:6.8625,in:0};
+S.clips.c3={start:29.7723,len:2.2755,in:0};
+S.clips.c9={start:32.0478,len:2.2858,in:0};
+S.clips.rabatt={start:34.3337,len:3.5997,in:0};
+S.clips.cloud={start:37.3764,len:8.3843,in:0};
+S.clips.c4={start:113.7148,len:2.5032,in:0};
+S.clips.box={start:126.7831,len:3.5,in:0};
+S.clips.c5={start:130.2831,len:4.1312,in:0};
+S.clips.partner={start:134.4143,len:4.482,in:0};
+S.clips.brand={start:138.8963,len:6.6608,in:0};
+S.clips.full={start:145.5571,len:7.0317,in:0};
+S.clips.c6={start:152.5888,len:2.8539,in:0};
+S.clips.colors={start:155.4427,len:3.4313,in:0};
+S.clips.deal={start:158.874,len:5.144,in:0};
+S.clips.prod={start:164.018,len:2.273,in:0.634};
+S.clips.c7={start:166.291,len:2.2837,in:0};
+S.clips.city={start:168.5747,len:3.293,in:0};
+S.clips.bill={start:171.8677,len:2.146,in:0};
+S.clips.c8={start:174.0137,len:5.9952,in:0};
+S.clips.logo2={start:174.0784,len:5.9305,in:0};
+S.clips.slot={start:45.7607,len:4.5717,in:0};
+S.clips.badges={start:53.7928,len:10.0078,in:0};
+S.clips.wall={start:63.8006,len:9.15,in:0};
+S.clips.tags={start:72.9506,len:5.7188,in:0};
+S.clips.showcase={start:180.7148,len:8.47,in:0};
 S.clips.hl1b={start:2.4019,len:2.1731,in:0};
 S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
 S.clips.julian={start:11.6905,len:4.5717,in:0};
 S.clips.white2={start:11.6905,len:4.5717,in:0};
-S.clips.fuer={start:18.3381,len:6.8575,in:0};
+S.clips.fuer={start:18.3381,len:4.5717,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};

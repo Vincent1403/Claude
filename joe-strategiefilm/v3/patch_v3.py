@@ -292,12 +292,12 @@ for k in CLIPS:                                    # „Das neue Jö.“ endet e
         CLIPS[k]["start"] = round(CLIPS[k]["start"] - BARL, 4)
 WR0_REAL = round(WR0_REAL - BARL, 4)
 CLIPS["c2"] = C(378 / 24, _e - BARL - 378 / 24)   # „Das neue Jö.“ Frame 378–440
-FU_AT = round(_e - BARL, 4)                         # danach „Für …“ auf dem Verlauf (3 Takte), alles Weitere rückt nach hinten
+FU_AT = round(_e - BARL, 4)                         # danach „Für …“ auf dem Verlauf (2 Takte), alles Weitere rückt nach hinten
 for k in CLIPS:
     if k != "c2" and CLIPS[k]["start"] >= FU_AT - 1e-3:
-        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 3 * BARL, 4)
-WR0_REAL = round(WR0_REAL + 3 * BARL, 4)
-CLIPS["fuer"] = C(FU_AT, 3 * BARL)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
+WR0_REAL = round(WR0_REAL + 2 * BARL, 4)
+CLIPS["fuer"] = C(FU_AT, 2 * BARL)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
