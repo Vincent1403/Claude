@@ -90,18 +90,17 @@ CLIPS["badges"] = C(40.078, 17.5 * BEAT)        # je Element 1 Schlag; jö-Kreis
 CLIPS["wall"] = C(round(40.078 + 17.5 * BEAT, 4), 16 * BEAT)
 _wk = (WR1 - WR0) / (WE - 4.8333)
 WALL_END = round(CLIPS["wall"]["start"] + CLIPS["wall"]["len"], 4)
-WR0_REAL = WALL_END                                        # Julian + Stories als Block direkt nach der Angebots-Wand (Julian liegt unter dem Tag-System)
-STORY_AT = round(WR0_REAL + (8.196 - 4.8333) * _wk, 4)     # Start der Stories
-CLIPS["tags"] = C(round(STORY_AT - 10 * BEAT, 4), round(10 * BEAT + 2.26, 4))  # Tag-System nach der Wand; „Flug“ (Schlag 10) liegt auf dem Start der Stories
+CLIPS["tags"] = C(WALL_END, round(10 * BEAT, 4))     # Tag-System direkt nach der Angebots-Wand, danach harter Schnitt auf die Stories
+STORY_AT = round(WALL_END + 10 * BEAT, 4)               # Stories starten mit dem Schnitt
+WR0_REAL = round(STORY_AT - (8.196 - 4.8333) * _wk, 4)  # Story-Block (Design-Zeit) so verschoben
 CLIPS["showcase"] = C(167.0, 8.47)          # Icon-Showcase: in der Ablage hinter dem Schluss
 T_LEN = 180                                    # Timeline länger als der Track (96 s)
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
-DROP = ["story3", "story5", "story6", "hl3", "endc"]
+DROP = ["story3", "story5", "story6", "hl3", "endc", "julian"]  # Julian: im Partnerfilm nicht mehr nötig (Tag-System führt in die Stories)
 
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
-    "tags": {"flyAt": 10},
     "story": {"holdA": 1.4},    # Stories stehen länger, damit die eingeflogenen Tags lesbar bleiben
     "story2": {"hold1": 1.4},
     "brand": {"step": .71},          # jede Partnerfarbe steht länger (füllt genau einen Takt mehr)
@@ -222,14 +221,14 @@ rep('<div class="s2PillIn" style="position:absolute;left:0;top:0;height:98px;dis
     '<div class="s2PillIn" style="position:absolute;left:0;top:0;height:98px;display:flex;align-items:center;gap:20px;padding-left:33px;color:#fff;font-size:52px;font-weight:700;letter-spacing:-.01em;line-height:1;white-space:nowrap">')
 rep("${s2Ico[s.ico]}", "${tgSvg(s.ico,46)}")
 rep("    let pw=S2_ST[0].w;", "    if(!S2_ST._m&&E.pin[0].offsetWidth){S2_ST.forEach((s,i)=>s.w=E.pin[i].offsetWidth+33);S2_ST._m=1}\n    let pw=S2_ST[0].w;")
-rep("function stEntry(){", "function stEntry(){if(typeof tgLeads==='function'&&tgLeads())return 0; // führt das Tag-System in die Stories, stehen sie (kein Julian-Einfahren)\n  ")
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "tags_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 
-rep("const tR=mT,g=S.clips.grad,tD=wDesign(tR);", "const tR=mT,g=S.clips.grad,tD=wDesign(tR);tgRT=tR;")
 # ---------- 5d. Icon-Showcase (showcase_comp.js), Icons als Inline-SVG ----------
 def sc_icons(txt):
     return re.sub(r"__ICON:(\w+)__", lambda m: (here / "icons" / (m.group(1) + ".svg")).read_text(encoding="utf-8").replace('width="200" height="200" ', 'width="100%" height="100%" style="display:block;overflow:visible" ').replace("\n", "").replace("'", "&#39;"), txt)
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", sc_icons((here / "showcase_comp.js").read_text(encoding="utf-8")) + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
+rep("let xb=1920;if(view==='main'&&S.clips.julian&&FM.julian)", "let xb=S.clips.julian?1920:0;if(view==='main'&&S.clips.julian&&FM.julian)")  # ohne Julian liegt Beige sofort hinter den Stories
+rep("let sel='julian';", "let sel='tags';")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
@@ -242,7 +241,7 @@ layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); 
 rep(old_comps, aliases + layers + new_comps)
 
 # ---------- 7. Ausgangs-Timeline und Parameter im Code ----------
-block = f"S.warp={{r0:{WR0_REAL}}};\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
+block = f"S.warp={{r0:{WR0_REAL}}};delete S.clips.julian;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
