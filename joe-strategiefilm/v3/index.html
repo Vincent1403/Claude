@@ -3134,12 +3134,12 @@ const SHOWCASE={
    COMP: INTRO-VIDEOS (Partnerfilm) – Hintergrundvideos unter den Intro-Headlines, eins je Clip.
    Liegen direkt über dem Verlauf und unter allen Szenen; eine leichte Abdunklung hält die weiße Schrift lesbar.
    ===================================================================== */
-function makeIV(key,name,src,dur){
+function makeIV(key,name,src,dur,def={}){
   const L=document.createElement('div');L.id='iv_'+key;L.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;background:#000';
   L.innerHTML=`<video src="${src}" muted playsinline preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 50%"></video><div class="ivDim" style="position:absolute;inset:0"></div>`;
   $('bg').after(L);const V=L.querySelector('video'),DM=L.querySelector('.ivDim');
   return {key,name,lane:'laneV1',cls:'bento',
-    DEF:{speed:1,zoom:.04,dim:.35,fade:.25},
+    DEF:{speed:1,zoom:.04,dim:.35,fade:.25,...def},
     params:[
       {k:'speed',label:'Tempo',min:.5,max:1.5,step:.05,fmt:fmtX},
       {k:'zoom',label:'Leichter Push-in',min:0,max:.1,step:.005,fmt:v=>num(v*100,1)+' %'},
@@ -3159,6 +3159,7 @@ function makeIV(key,name,src,dur){
     note:'Hintergrundvideo der Intro-Headlines. Länge des Videos: '+num(dur,2)+' s.'};
 }
 const IV_KOCHEN=makeIV('ivKochen','Video Kochen','iv_kochen.webm',5.042);
+const IV_TANKEN=makeIV('ivTanken','Video Tanken','iv_tanken.webm',5.042,{fade:0}); // harter Schnitt vom ersten Video
 
 const WHL=document.createElement('div');WHL.id='whiteL';WHL.style.cssText='position:absolute;inset:0;display:none';WHL.innerHTML='<div id="whO" style="position:absolute;inset:0;background:#e4e0eb"></div><div id="whB" style="position:absolute;inset:0;background:#f4f1ea"></div>';
 $('bg').after(WHL);
@@ -3593,7 +3594,7 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
 ["c2", "c3", "c9", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c9:C9,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c9:C9,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3660,6 +3661,7 @@ S.clips.hl1b={start:2.4019,len:2.1731,in:0};
 S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
+S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);

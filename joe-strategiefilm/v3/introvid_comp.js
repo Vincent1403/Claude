@@ -2,12 +2,12 @@
    COMP: INTRO-VIDEOS (Partnerfilm) – Hintergrundvideos unter den Intro-Headlines, eins je Clip.
    Liegen direkt über dem Verlauf und unter allen Szenen; eine leichte Abdunklung hält die weiße Schrift lesbar.
    ===================================================================== */
-function makeIV(key,name,src,dur){
+function makeIV(key,name,src,dur,def={}){
   const L=document.createElement('div');L.id='iv_'+key;L.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;background:#000';
   L.innerHTML=`<video src="${src}" muted playsinline preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 50%"></video><div class="ivDim" style="position:absolute;inset:0"></div>`;
   $('bg').after(L);const V=L.querySelector('video'),DM=L.querySelector('.ivDim');
   return {key,name,lane:'laneV1',cls:'bento',
-    DEF:{speed:1,zoom:.04,dim:.35,fade:.25},
+    DEF:{speed:1,zoom:.04,dim:.35,fade:.25,...def},
     params:[
       {k:'speed',label:'Tempo',min:.5,max:1.5,step:.05,fmt:fmtX},
       {k:'zoom',label:'Leichter Push-in',min:0,max:.1,step:.005,fmt:v=>num(v*100,1)+' %'},
@@ -27,3 +27,4 @@ function makeIV(key,name,src,dur){
     note:'Hintergrundvideo der Intro-Headlines. Länge des Videos: '+num(dur,2)+' s.'};
 }
 const IV_KOCHEN=makeIV('ivKochen','Video Kochen','iv_kochen.webm',5.042);
+const IV_TANKEN=makeIV('ivTanken','Video Tanken','iv_tanken.webm',5.042,{fade:0}); // harter Schnitt vom ersten Video

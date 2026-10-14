@@ -199,6 +199,11 @@
    "start": 0,
    "len": 2.4019,
    "in": 0
+  },
+  "ivTanken": {
+   "start": 2.4019,
+   "len": 2.1731,
+   "in": 0
   }
  },
  "grad": "g-video",
