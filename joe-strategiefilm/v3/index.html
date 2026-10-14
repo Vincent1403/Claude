@@ -3669,6 +3669,31 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
   note:'Ersetzt „Deal“ (gleicher Clip auf der Timeline). Bilder und Layouts nach den gelieferten Anzeigen-Zuständen.'};
 
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
+/* Partnerfilm: Partner-Szene neu erzählt – erst „Viele Marken.“ in der Mitte, die Partner kreisen darum;
+   dann ersetzt das jö-Logo die Worte, die Partner fliegen hinein, das Logo verschwindet und
+   „Eine starke Verbindung.“ steigt auf. */
+{const mk=(id,html,size)=>{const d=document.createElement('div');d.id=id;d.style.cssText=`position:absolute;left:0;right:0;top:${540-size*.62}px;height:${Math.round(size*1.3)}px;overflow:hidden;text-align:center;color:#670003;font-size:${size}px;font-weight:900;letter-spacing:-.02em;line-height:${Math.round(size*1.3)}px;white-space:nowrap;pointer-events:none`;d.innerHTML=`<div style="display:inline-block">${html}</div>`;PT.insertBefore(d,$('ptLogo'));return d.firstChild};
+ PTE.words=mk('ptWords','Viele Marken.',120);
+ PTE.sent=mk('ptSent',`Eine starke <span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent">Verbindung.</span>`,120);
+ Object.assign(PARTNER.DEF,{swap:2,lOut:4.25,sent:4.4});
+ PARTNER.params.unshift(
+  {k:'swap',label:'jö-Logo ersetzt „Viele Marken.“ bei',min:.5,max:4,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+  {k:'lOut',label:'Logo verschwindet bei',min:2,max:7,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'nachdem alle Partner im Logo sind'},
+  {k:'sent',label:'„Eine starke Verbindung.“ ab',min:2,max:7,step:1/24,fmt:v=>Math.round(v*24)+' F'});
+ const r0=PARTNER.render;
+ PARTNER.render=function(M,t){r0.call(this,M,t);const P=M.P,E=PTE;
+  // „Viele Marken.“: steigt auf, fällt beim Logo-Wechsel nach unten raus
+  const wi=eExpo(seg(t,.05,.55)),wo=eInCub(seg(t,P.swap-.05,P.swap+.25));
+  E.words.style.transform=`translateY(${((1-wi)*110+wo*110).toFixed(1)}%)`;
+  // jö-Logo: poppt an Stelle der Worte auf, wächst mit jedem ankommenden Partner, schrumpft am Ende weg
+  const lin=eBack(seg(t,P.swap,P.swap+.45)),lout=eIO(seg(t,P.lOut,P.lOut+.35));
+  E.logo.style.transform+=` scale(${(lin*(1-lout)).toFixed(4)})`;E.logo.style.opacity=t<P.swap?'0':'1';
+  E.disc.style.opacity=(lin*(1-lout)).toFixed(3);
+  // „Eine starke Verbindung.“
+  const si=eExpo(seg(t,P.sent,P.sent+.55));E.sent.style.transform=`translateY(${((1-si)*110).toFixed(1)}%)`;
+ };
+}
+
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
@@ -3706,35 +3731,35 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
-S.warp={r0:77.5844};S.clips.white.len=8.7;
+S.warp={r0:79.8702};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9.2072,len:2.4833,in:0.475};
 S.clips.c2={start:15.75,len:2.5881,in:0};
 S.clips.people={start:22.9098,len:6.8625,in:0};
 S.clips.c3={start:29.7723,len:2.2755,in:0};
 S.clips.pers={start:32.0478,len:2.2858,in:0};
-S.clips.rabatt={start:38.9054,len:3.5997,in:0};
-S.clips.cloud={start:41.9481,len:8.3843,in:0};
-S.clips.c4={start:118.2865,len:2.5032,in:0};
-S.clips.box={start:131.3548,len:3.5,in:0};
-S.clips.c5={start:134.8548,len:4.1312,in:0};
-S.clips.partner={start:34.3336,len:4.5717,in:0};
-S.clips.brand={start:143.468,len:6.6608,in:0};
-S.clips.full={start:150.1288,len:7.0317,in:0};
-S.clips.c6={start:157.1605,len:2.8539,in:0};
-S.clips.colors={start:160.0144,len:3.4313,in:0};
-S.clips.deal={start:163.4457,len:5.144,in:0};
-S.clips.prod={start:168.5897,len:2.273,in:0.634};
-S.clips.c7={start:170.8627,len:2.2837,in:0};
-S.clips.city={start:173.1464,len:3.293,in:0};
-S.clips.bill={start:176.4394,len:2.146,in:0};
-S.clips.c8={start:178.5854,len:5.9952,in:0};
-S.clips.logo2={start:178.6501,len:5.9305,in:0};
-S.clips.slot={start:50.3324,len:4.5717,in:0};
-S.clips.badges={start:58.3645,len:10.0078,in:0};
-S.clips.wall={start:68.3723,len:9.15,in:0};
-S.clips.tags={start:77.5223,len:5.7188,in:0};
-S.clips.showcase={start:185.2865,len:8.47,in:0};
+S.clips.rabatt={start:41.1912,len:3.5997,in:0};
+S.clips.cloud={start:44.2339,len:8.3843,in:0};
+S.clips.c4={start:120.5723,len:2.5032,in:0};
+S.clips.box={start:133.6406,len:3.5,in:0};
+S.clips.c5={start:137.1406,len:4.1312,in:0};
+S.clips.partner={start:34.3336,len:6.8575,in:0};
+S.clips.brand={start:145.7538,len:6.6608,in:0};
+S.clips.full={start:152.4146,len:7.0317,in:0};
+S.clips.c6={start:159.4463,len:2.8539,in:0};
+S.clips.colors={start:162.3002,len:3.4313,in:0};
+S.clips.deal={start:165.7315,len:5.144,in:0};
+S.clips.prod={start:170.8755,len:2.273,in:0.634};
+S.clips.c7={start:173.1485,len:2.2837,in:0};
+S.clips.city={start:175.4322,len:3.293,in:0};
+S.clips.bill={start:178.7252,len:2.146,in:0};
+S.clips.c8={start:180.8712,len:5.9952,in:0};
+S.clips.logo2={start:180.9359,len:5.9305,in:0};
+S.clips.slot={start:52.6182,len:4.5717,in:0};
+S.clips.badges={start:60.6503,len:10.0078,in:0};
+S.clips.wall={start:70.6581,len:9.15,in:0};
+S.clips.tags={start:79.8081,len:5.7188,in:0};
+S.clips.showcase={start:187.5723,len:8.47,in:0};
 S.clips.hl1b={start:2.4019,len:2.1731,in:0};
 S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
@@ -3745,6 +3770,7 @@ S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
+Object.assign(S.comps.partner.params,{"hit": 2.5, "popGap": 99, "end": 12});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);

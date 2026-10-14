@@ -105,6 +105,7 @@ DROP = ["hl3", "endc"]
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
     "julian": {"sStart": 2.0, "pause": .3},   # Hallo Julian / 100 Ös / Einlösen stehen länger, der Slider startet später
+    "partner": {"hit": 2.5, "popGap": 99, "end": 12},   # Einflug nach dem Logo-Wechsel, kein Verlauf-Flut
     "story": {"holdA": 1.4},    # Stories stehen länger, damit die eingeflogenen Tags lesbar bleiben
     "story2": {"hold1": 1.4},
     "brand": {"step": .71},          # jede Partnerfarbe steht länger (füllt genau einen Takt mehr)
@@ -256,6 +257,7 @@ rep("const HL2=makeHL('hl2',",
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8") + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n"
+           + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            "const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
@@ -297,12 +299,12 @@ for k in CLIPS:
         CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
 WR0_REAL = round(WR0_REAL + 2 * BARL, 4)
 CLIPS["fuer"] = C(FU_AT, 2 * BARL)
-PT_AT = round(CLIPS["pers"]["start"] + CLIPS["pers"]["len"], 4)   # Partner-Logos direkt nach „Persönlich. Relevant. Ganz nach dir.“ (2 Takte)
+PT_AT = round(CLIPS["pers"]["start"] + CLIPS["pers"]["len"], 4)   # Partner: „Viele Marken.“ → jö → „Eine starke Verbindung.“ (3 Takte)
 for k in CLIPS:
     if k != "partner" and CLIPS[k]["start"] >= PT_AT - 1e-3:
-        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
-WR0_REAL = round(WR0_REAL + 2 * BARL, 4)
-CLIPS["partner"] = C(PT_AT, 2 * BARL)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 3 * BARL, 4)
+WR0_REAL = round(WR0_REAL + 3 * BARL, 4)
+CLIPS["partner"] = C(PT_AT, 3 * BARL)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
