@@ -104,7 +104,7 @@ DROP = ["hl3", "endc"]
 
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
-    "julian": {"sStart": 2.2, "pause": .45},   # Hallo Julian / 100 Ös / Einlösen stehen länger, der Slider startet später
+    "julian": {"sStart": 2.0, "pause": .3},   # Hallo Julian / 100 Ös / Einlösen stehen länger, der Slider startet später
     "story": {"holdA": 1.4},    # Stories stehen länger, damit die eingeflogenen Tags lesbar bleiben
     "story2": {"hold1": 1.4},
     "brand": {"step": .71},          # jede Partnerfarbe steht länger (füllt genau einen Takt mehr)
