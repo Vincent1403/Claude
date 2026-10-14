@@ -296,7 +296,13 @@ for k in CLIPS:
     if k != "c2" and CLIPS[k]["start"] >= FU_AT - 1e-3:
         CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
 WR0_REAL = round(WR0_REAL + 2 * BARL, 4)
-CLIPS["fuer"] = C(FU_AT, 2 * BARL)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
+CLIPS["fuer"] = C(FU_AT, 2 * BARL)
+PT_AT = round(CLIPS["pers"]["start"] + CLIPS["pers"]["len"], 4)   # Partner-Logos direkt nach „Persönlich. Relevant. Ganz nach dir.“ (2 Takte)
+for k in CLIPS:
+    if k != "partner" and CLIPS[k]["start"] >= PT_AT - 1e-3:
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
+WR0_REAL = round(WR0_REAL + 2 * BARL, 4)
+CLIPS["partner"] = C(PT_AT, 2 * BARL)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
