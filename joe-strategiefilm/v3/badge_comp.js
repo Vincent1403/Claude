@@ -54,7 +54,7 @@ function bdLayout(s,P){ // Geometrie eines Zustands in Basiseinheiten, Mitte = 0
   return {tag:{x,y,w,h,rt:6,rb:30,o:1},pill:{x:-pw/2,y:y+h-14-BD_PH,w:pw},title:{y:y+20,o:1},card:0,sc:P.scale,tw}}
 const BADGES={
   key:'badges',name:'Badges',lane:'laneV5',cls:'bento',
-  DEF:{beat:13.725/24,per:.75,morph:.15,scale:3,cardMorph:.6,cardScale:1.08,bounce:.1,bgDur:.45,bgLead:.6},
+  DEF:{beat:13.725/24,per:1,morph:.15,scale:3,cardMorph:.6,cardScale:1.08,bounce:.1,bgDur:.45,bgLead:.6},
   params:[
     {k:'per',label:'Pro Element (Schläge)',min:.5,max:4,step:.5,fmt:v=>num(v,1),sub:'jedes Element landet auf einem Schlag und steht bis zum nächsten Wechsel; das letzte Etikett steht doppelt, die Angebotskarte viermal so lang'},
     {k:'morph',label:'Dauer Verwandlung',min:.1,max:.9,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'Form, Breite und Farbe gleiten; Texte und Icons blenden über (Slow In / Slow Out)'},
