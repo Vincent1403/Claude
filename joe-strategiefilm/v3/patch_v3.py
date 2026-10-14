@@ -54,7 +54,7 @@ C = lambda st, ln, i=0: dict(start=round(st, 4), len=round(ln, 4), **{"in": i})
 CLIPS = {
     "hl1": C(0, 2.35),
     "logo": C(2.35, 2.4833, .475),
-    "c2": C(4.8333, 9.195 - 4.8333),             # „Das neue Jö.“
+    "c2": C(4.8333, 2.5881),                     # Länge = Frame 378 bis Start „Menschen“ (wird unten gesetzt)             # „Das neue Jö.“
     "people": C(9.195, PEOPLE_LEN),              # Lena, Renate, Sarah, Jonas – Drehung auf dem Drop
     "c3": C(9.195 + PEOPLE_LEN, bars(45.763, -12) - 9.195 - PEOPLE_LEN),  # „Angebote, die zu dir passen.“
     "c9": C(bars(45.763, -12), BARL),           # „Mach dein Jö draus!“ (ein Takt)
@@ -285,8 +285,12 @@ for k in CLIPS:
 WR0_REAL = round(WR0_REAL + JUL_LEN, 4)
 CLIPS["julian"] = C(JUL_AT, JUL_LEN)
 CLIPS["white2"] = C(JUL_AT, JUL_LEN)
-_e = CLIPS["c2"]["start"] + CLIPS["c2"]["len"]
-CLIPS["c2"] = C(378 / 24, _e - 378 / 24)   # „Das neue Jö.“ erscheint ab Frame 378 (liegt über dem Ende des Julian-Scrolls)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
+_e = CLIPS["people"]["start"]                    # bisheriges Ende von „Das neue Jö.“ = Start „Menschen“
+for k in CLIPS:                                    # „Das neue Jö.“ endet einen Takt früher (Frame 440): alles danach rückt 1 Takt vor
+    if CLIPS[k]["start"] >= _e - 1e-3:
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] - BARL, 4)
+WR0_REAL = round(WR0_REAL - BARL, 4)
+CLIPS["c2"] = C(378 / 24, _e - BARL - 378 / 24)   # „Das neue Jö.“ Frame 378–440        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
