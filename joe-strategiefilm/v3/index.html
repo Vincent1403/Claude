@@ -253,7 +253,7 @@ const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const T_MAIN=190, FPS=24, TRACK_LEN=96.05;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
-const AU_OFF=6.5141;BEATS.forEach((v,i)=>BEATS[i]=+(v+AU_OFF).toFixed(3));BAR.forEach((v,i)=>BAR[i]=+(v+AU_OFF).toFixed(2)); // Musik startet nach dem längeren Intro
+const AU_OFF=6.8572;BEATS.forEach((v,i)=>BEATS[i]=+(v+AU_OFF).toFixed(3));BAR.forEach((v,i)=>BAR[i]=+(v+AU_OFF).toFixed(2)); // Musik startet nach dem längeren Intro
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)
 const MUSIC_SNAPS=[0,...[2.35,5.32,8.64].map(v=>v+AU_OFF),...BEATS];
 const CHAPTERS=[[0, "Intro"], [4.833, "01 Ganz persönlich"], [100.0, "Ablage: 02 Digitaler Begleiter"], [116.568, "03 Partner"], [160.299, "Schluss"]];
@@ -2426,7 +2426,7 @@ function makeHL(key,name,lane,lines,o){
 const JG_TXT=`${JG_CSS}`;
 const HL1=makeHL('hl1','Headline 1a','laneV3',['Eine Marke für das','alltägliche Leben.'],
   {size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,shadow:1,note:'Läuft über dem Verlauf vor dem Logo-Aufbau (Intro ohne Beat). Muss vor dem ersten Strich des Logos raus sein.'});
-const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Voller Möglichkeiten.'],{size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:2.6,len:3.2,shadow:1,note:'Intro, zweite Zeile.'});
+const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Das Leben ist','voller Möglichkeiten.'],{size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:3.2,len:3.8,shadow:1,note:'Intro, zweite Zeile.'});
 const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und jeden Tag anders.'],{size:120,top:470,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,note:'Intro, dritte Zeile.'});
 const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});
 const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','und *Vorteile sinnvoll','miteinander verbindet.'],
@@ -3597,38 +3597,38 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
-S.warp={r0:65.812};delete S.clips.julian;S.clips.white.len=8.7;
+S.warp={r0:66.1551};delete S.clips.julian;S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
-S.clips.logo={start:8.8641,len:2.4833,in:0.475};
-S.clips.c2={start:11.3474,len:4.3617,in:0};
-S.clips.people={start:15.7091,len:6.8625,in:0};
-S.clips.c3={start:22.5716,len:2.2755,in:0};
-S.clips.c9={start:24.8471,len:2.2858,in:0};
-S.clips.rabatt={start:27.133,len:3.5997,in:0};
-S.clips.cloud={start:30.1757,len:8.3843,in:0};
-S.clips.c4={start:106.5141,len:2.5032,in:0};
-S.clips.box={start:119.5824,len:3.5,in:0};
-S.clips.c5={start:123.0824,len:4.1312,in:0};
-S.clips.partner={start:127.2136,len:4.482,in:0};
-S.clips.brand={start:131.6956,len:6.6608,in:0};
-S.clips.full={start:138.3564,len:7.0317,in:0};
-S.clips.c6={start:145.3881,len:2.8539,in:0};
-S.clips.colors={start:148.242,len:3.4313,in:0};
-S.clips.deal={start:151.6733,len:5.144,in:0};
-S.clips.prod={start:156.8173,len:2.273,in:0.634};
-S.clips.c7={start:159.0903,len:2.2837,in:0};
-S.clips.city={start:161.374,len:3.293,in:0};
-S.clips.bill={start:164.667,len:2.146,in:0};
-S.clips.c8={start:166.813,len:5.9952,in:0};
-S.clips.logo2={start:166.8777,len:5.9305,in:0};
-S.clips.slot={start:38.56,len:4.5717,in:0};
-S.clips.badges={start:46.5921,len:10.0078,in:0};
-S.clips.wall={start:56.5999,len:9.15,in:0};
-S.clips.tags={start:65.7499,len:5.7188,in:0};
-S.clips.showcase={start:173.5141,len:8.47,in:0};
-S.clips.hl1b={start:2.4019,len:1.83,in:0};
-S.clips.hl1c={start:4.2319,len:2.0016,in:0};
-S.clips.hl1d={start:6.2334,len:2.6306,in:0};
+S.clips.logo={start:9.2072,len:2.4833,in:0.475};
+S.clips.c2={start:11.6905,len:4.3617,in:0};
+S.clips.people={start:16.0522,len:6.8625,in:0};
+S.clips.c3={start:22.9147,len:2.2755,in:0};
+S.clips.c9={start:25.1902,len:2.2858,in:0};
+S.clips.rabatt={start:27.4761,len:3.5997,in:0};
+S.clips.cloud={start:30.5188,len:8.3843,in:0};
+S.clips.c4={start:106.8572,len:2.5032,in:0};
+S.clips.box={start:119.9255,len:3.5,in:0};
+S.clips.c5={start:123.4255,len:4.1312,in:0};
+S.clips.partner={start:127.5567,len:4.482,in:0};
+S.clips.brand={start:132.0387,len:6.6608,in:0};
+S.clips.full={start:138.6995,len:7.0317,in:0};
+S.clips.c6={start:145.7312,len:2.8539,in:0};
+S.clips.colors={start:148.5851,len:3.4313,in:0};
+S.clips.deal={start:152.0164,len:5.144,in:0};
+S.clips.prod={start:157.1604,len:2.273,in:0.634};
+S.clips.c7={start:159.4334,len:2.2837,in:0};
+S.clips.city={start:161.7171,len:3.293,in:0};
+S.clips.bill={start:165.0101,len:2.146,in:0};
+S.clips.c8={start:167.1561,len:5.9952,in:0};
+S.clips.logo2={start:167.2208,len:5.9305,in:0};
+S.clips.slot={start:38.9031,len:4.5717,in:0};
+S.clips.badges={start:46.9352,len:10.0078,in:0};
+S.clips.wall={start:56.943,len:9.15,in:0};
+S.clips.tags={start:66.093,len:5.7188,in:0};
+S.clips.showcase={start:173.8572,len:8.47,in:0};
+S.clips.hl1b={start:2.4019,len:2.1731,in:0};
+S.clips.hl1c={start:4.575,len:2.0016,in:0};
+S.clips.hl1d={start:6.5766,len:2.6306,in:0};
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
@@ -3676,7 +3676,7 @@ function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
    wird so gedehnt, dass er genau bis zum Start von „Farben“ reicht – Farben/Anzeigen sind schneller, die gewonnene Zeit geht hierher. */
 const WA=4.8333,WB=14.95,WSPAN=17.018; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar
 function warpK(){return Math.max(.2,WSPAN/(WB-WA))}
-const WPD=6.5141;
+const WPD=6.8572;
 function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA+WPD?t*WA/(WA+WPD):t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)
 function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x*(WA+WPD)/WA:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit
 const PRE=new Set(['grad','julian','white','story','story2','story4','story3','story5','story6']);

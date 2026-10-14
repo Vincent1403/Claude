@@ -96,7 +96,7 @@ WR0_REAL = round(STORY_AT - (8.196 - 4.8333) * _wk, 4)  # Story-Block (Design-Ze
 CLIPS["showcase"] = C(167.0, 8.47)          # Icon-Showcase: in der Ablage hinter dem Schluss
 T_LEN = 190                                    # Timeline länger als der Track (96 s)
 # Intro: vier Headlines vor dem Logo. Musik und alles ab dem Logo rücken um INTRO_D nach hinten (Beat-Sync bleibt).
-INTRO_HL = [("hl1", 4.2), ("hl1b", 3.2), ("hl1c", 3.5), ("hl1d", 4.6)]   # Länge je Headline in Schlägen
+INTRO_HL = [("hl1", 4.2), ("hl1b", 3.8), ("hl1c", 3.5), ("hl1d", 4.6)]   # Länge je Headline in Schlägen
 INTRO_D = round(sum(l for _, l in INTRO_HL) * BEAT - 2.35, 4)          # alte Headline lief 0–2,35 s
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
@@ -245,7 +245,7 @@ rep("const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';", "const gOn=cl
 rep("const HL1=makeHL('hl1','Headline 1','laneV3',['Eine Marke mitten im Leben.'],\n  {size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:3.4,len:4.1,",
     "const HL1=makeHL('hl1','Headline 1a','laneV3',['Eine Marke für das','alltägliche Leben.'],\n  {size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,")
 rep("const HL2=makeHL('hl2',",
-    "const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Voller Möglichkeiten.'],{size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:2.6,len:3.2,shadow:1,note:'Intro, zweite Zeile.'});\n"
+    "const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Das Leben ist','voller Möglichkeiten.'],{size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:3.2,len:3.8,shadow:1,note:'Intro, zweite Zeile.'});\n"
     "const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und jeden Tag anders.'],{size:120,top:470,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,note:'Intro, dritte Zeile.'});\n"
     "const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:120,top:392,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});\n"
     "const HL2=makeHL('hl2',")
