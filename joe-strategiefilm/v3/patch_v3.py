@@ -87,7 +87,10 @@ for k in PARKED:
 WR0_REAL = round(WR0 + PARK, 4)
 CLIPS["slot"] = C(CLOUD_END, 2 * BARL)        # „Dein jö“: Namen rollen neben dem App-Icon, direkt nach der Profil-Wolke
 CLIPS["badges"] = C(40.078, 17.5 * BEAT)        # je Element 1 Schlag; jö-Kreis und letztes Etikett doppelt, Angebotskarte dreifach
-CLIPS["wall"] = C(round(40.078 + 17.5 * BEAT, 4), 16 * BEAT)  # Angebots-Wand: zieht von der Karte auf, Spalten laufen gegenläufig                # Julian + Stories liegen ebenfalls in der Ablage
+CLIPS["wall"] = C(round(40.078 + 17.5 * BEAT, 4), 16 * BEAT)
+_wk = (WR1 - WR0) / (WE - 4.8333)
+STORY_AT = round(WR0_REAL + (8.196 - 4.8333) * _wk, 4)   # Start der Stories (echte Zeit, Ablage)
+CLIPS["tags"] = C(round(STORY_AT - 9.5 * BEAT, 4), round(9.5 * BEAT + 2.26, 4))  # Tag-System: „Flug“ liegt auf dem Start der Stories  # Angebots-Wand: zieht von der Karte auf, Spalten laufen gegenläufig                # Julian + Stories liegen ebenfalls in der Ablage
 T_LEN = 170                                    # Timeline länger als der Track (96 s)
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
@@ -95,6 +98,8 @@ DROP = ["story3", "story5", "story6", "hl3", "endc"]
 
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
+    "story": {"holdA": 1.4},    # Stories stehen länger, damit die eingeflogenen Tags lesbar bleiben
+    "story2": {"hold1": 1.4},
     "brand": {"step": .71},          # jede Partnerfarbe steht länger (füllt genau einen Takt mehr)
 }
 
@@ -201,13 +206,29 @@ def wl_imgs(txt):  # Fotos der Angebots-Wand: __WL:name__ -> wall_img/web/name.w
     return re.sub(r"__WL:(\w+)__", lambda m: "data:image/webp;base64," + base64.b64encode((here / "wall_img" / "web" / (m.group(1) + ".webp")).read_bytes()).decode(), txt)
 rep("/* =====================================================================\n   COMP: APP-VIDEO", (here / "people_comp.js").read_text(encoding="utf-8") + "\n" + (here / "slot_comp.js").read_text(encoding="utf-8") + "\n" + ((here / "badge_comp.js").read_text(encoding="utf-8") + "\n" + wl_imgs((here / "wall_comp.js").read_text(encoding="utf-8"))).replace("__BD_IMG__", "data:image/webp;base64," + base64.b64encode((here / "angebot_bild.webp").read_bytes()).decode()) + "\n/* =====================================================================\n   COMP: APP-VIDEO")
 
+# ---------- 5c. Tag-System → Stories (tags_comp.js); Story-Pills nutzen die Tag-Formen ----------
+rep("const stStar=", (here / "tag_shapes.js").read_text(encoding="utf-8") + "const stStar=")
+rep("const stPill=(bg,fg)=>`<div style=\"position:absolute;left:0;top:0;width:268px;height:98px;border-radius:20px;background:${bg};display:flex;align-items:center;gap:44px;padding-left:44px;box-sizing:border-box;color:${fg};font-size:44px;font-weight:800\">${stStar(fg)}<span>Neu</span></div>`;",
+    "const stPill=(bg,fg,sh='sq',lab='Neu')=>`<div style=\"position:absolute;left:0;top:0;height:98px;border-radius:21.6px;background:${bg};display:flex;align-items:center;gap:20px;padding:0 33px;box-sizing:border-box;white-space:nowrap;color:${fg};font-size:52px;font-weight:700;letter-spacing:-.01em;line-height:1\">${tgSvg(sh,46)}<span>${lab}</span></div>`; // Pill im Tag-System: Form + Label")
+rep("${stPill(ST_RED,'#fff')}", "${stPill(ST_RED,'#fff','di','Neu')}")
+rep("<div id=\"s4Pill\" style=\"position:absolute;left:95px;top:95px;width:268px;height:98px\">${stPill('#fff','#ea3a10')}", "<div id=\"s4Pill\" style=\"position:absolute;left:95px;top:95px;width:268px;height:98px\">${stPill('#fff','#ea3a10','ci','Aktion')}")
+i = s.index("const S2_ST=[{n:'Sport',ico:'sport',w:272,"); j = s.index("];", i) + 2
+s = s[:i] + "const S2_ST=[{n:'Letzte Chance',ico:'hg',w:420,lines:['Exklusive','Sportdeals','entdecken!']},{n:'Games',ico:'x',w:300,lines:['Spielen &','Gewinnen']},{n:'Neu',ico:'hex',w:240,lines:['Neu Angebote','entdecken!']}]; // Pills im Tag-System; Breiten werden gemessen" + s[j:]
+rep('<div class="s2PillIn" style="position:absolute;left:0;top:0;height:98px;display:flex;align-items:center;gap:22px;padding-left:40px;color:#fff;font-size:44px;font-weight:700;white-space:nowrap">',
+    '<div class="s2PillIn" style="position:absolute;left:0;top:0;height:98px;display:flex;align-items:center;gap:20px;padding-left:33px;color:#fff;font-size:52px;font-weight:700;letter-spacing:-.01em;line-height:1;white-space:nowrap">')
+rep("${s2Ico[s.ico]}", "${tgSvg(s.ico,46)}")
+rep("    let pw=S2_ST[0].w;", "    if(!S2_ST._m&&E.pin[0].offsetWidth){S2_ST.forEach((s,i)=>s.w=E.pin[i].offsetWidth+33);S2_ST._m=1}\n    let pw=S2_ST[0].w;")
+rep("function stEntry(){", "function stEntry(){if(typeof tgLeads==='function'&&tgLeads())return 0; // führt das Tag-System in die Stories, stehen sie (kein Julian-Einfahren)\n  ")
+rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "tags_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
+
+rep("const tR=mT,g=S.clips.grad,tD=wDesign(tR);", "const tR=mT,g=S.clips.grad,tD=wDesign(tR);tgRT=tR;")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
