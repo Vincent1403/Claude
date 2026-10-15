@@ -54,7 +54,7 @@ const FUER={
     let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<FU_PH.length;k++){const s=M.st[k]*b;p+=k>FU_N0?.5-.5*Math.cos(Math.PI*seg(t,s,s+P.nMove)):eIO(seg(t,s,s+P.move)) /* Namen: weiche Sinus-Kurve */}
     p+=eInCub(seg(t,o+.04,o+.34));
     // ab dem ersten Namen steht die Kombi „Für [Bild] Name.“ mittig (Breite folgt dem laufenden Namen), endet als „Für jeden.“ in der Mitte
-    {const q=Math.max(0,Math.min(p,FU_PH.length-1)),i0=Math.floor(q),i1=Math.min(i0+1,FU_PH.length-1),wn=E._wp[i0]+(E._wp[i1]-E._wp[i0])*(q-i0),
+    {const q=Math.max(0,Math.min(p,FU_PH.length-1)),nL=FU_PH.length-2,wM=Math.max(...E._wp.slice(FU_N0,nL+1)),wn=q<=nL?wM:wM+(E._wp[nL+1]-wM)*(q-nL), // „Für“ steht still: zentriert auf den längsten Namen, erst zu „jeden.“ rückt die Zeile nach
       xm=960-(E._wf+gap+ow*(FU_PW+gap)+wn)/2,m=Math.max(eIO(seg(t,ns-.05,ns+P.move)),eIO(seg(t,cs,cs+P.cDur)));
      E.row.style.left=(x0+(xm-x0)*m).toFixed(1)+'px'}
     E.ph.forEach((el,i)=>{const d=i-p;el.style.transform=`translateY(${(d*240).toFixed(1)}px)`;el.style.opacity=Math.abs(d)<1.05?'1':'0'});
