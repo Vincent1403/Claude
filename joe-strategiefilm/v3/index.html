@@ -2414,7 +2414,7 @@ function makeHL(key,name,lane,lines,o){
     show(on){L.style.display=on?'':'none'},
     render(M,t){const P=M.P,b=M.b;
       W.forEach((w,i)=>{const a=(P.inAt+i*P.step)*b,p=seg(t,a,a+.45),o2=P.outAt*b+i*.03,q=seg(t,o2,o2+.22);
-        w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`});
+        w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`});
       box.style.transform=`scale(${(1+.025*eOut(seg(t,P.inAt*b,P.outAt*b))).toFixed(4)})`;
       if(scr)scr.style.opacity=(eOut(seg(t,0,P.inAt*b+.25))*(1-eIO(seg(t,P.outAt*b,P.outAt*b+.45)))).toFixed(3);
       if(kk){const p=eExpo(seg(t,Math.max(0,P.inAt*b-.35),P.inAt*b+.25)),q=eInCub(seg(t,P.outAt*b,P.outAt*b+.3));kk.style.opacity=(p*(1-q)).toFixed(3);kk.style.transform=`translateY(${((1-p)*24).toFixed(1)}px)`}},
@@ -3928,6 +3928,19 @@ const FORMATS={
   note:'Frames bei 24 fps ab Beginn der Subebene. Ersetzt die Stories: dieselben Inhalte in verschiedenen Formaten, drei Bildschirme.'
 };
 
+/* Partnerfilm: Bento-Box gleitet nach „Alles in einer App“ von unten ins Bild (Parallaxe wie in den Stories/Formaten):
+   jede Kachel und die Navigation folgen leicht versetzt, Slow In / Slow Out. Danach wie bisher (Rausfliegen nach links). */
+{Object.assign(BOX.DEF,{upDist:1250,upDur:1.1,upLag:.09});
+ BOX.params.unshift({k:'upDist',label:'Von unten: Strecke',min:800,max:1800,step:10,fmt:v=>v+' px',sub:'Kacheln und Navigation gleiten von unten rein (Parallaxe), statt von rechts'},
+  {k:'upDur',label:'Von unten: Dauer',min:.5,max:2,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+  {k:'upLag',label:'Von unten: Versatz je Kachel',min:0,max:.25,step:.01,fmt:v=>Math.round(v*1000)+' ms'});
+ const r0=BOX.render;
+ BOX.render=function(M,t){r0.call(this,M,t);const P=M.P,E=BXE,po=M.pout(t),W=[0,.5,1,.75];
+  const up=k=>P.upDist*(1-eStFlow(seg(t,k*P.upLag,k*P.upLag+P.upDur))),ox=i=>-P.outDist*po*(1+(1-W[i])*P.spread);
+  E.t.forEach((el,i)=>{el.style.transform=`translate(${ox(i).toFixed(1)}px,${up(i).toFixed(1)}px)`});
+  E.navMove.style.transform=`translate(${ox(3).toFixed(1)}px,${up(1.5).toFixed(1)}px)`};
+}
+
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
@@ -4013,7 +4026,7 @@ Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
-Object.assign(S.comps.c4.params,{"len": 4, "outAt": 3.15});FM.c4=COMPS.c4.model(S.comps.c4.params);
+Object.assign(S.comps.c4.params,{"len": 4, "outAt": 3.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
