@@ -37,7 +37,7 @@ const FUER={
     {k:'outAt',label:'„Für jeden.“ raus bei (Schlag)',min:6,max:16,step:.25,fmt:v=>String(v)},
     {k:'zoomAt',label:'Zoom in Kian ab (Schlag)',min:6,max:16,step:.25,fmt:v=>String(v),sub:'wie der Zoom in Tamara: Kamera fährt in Kians Kreis, die Wolke zoomt mit; Anschluss an das Kian-Video'},
     {k:'zDur',label:'Dauer Zoom in Kian',min:.5,max:3,step:1/24,fmt:v=>Math.round(v*24)+' F'}],
-  model(P){const b=P.beat,st=FU_PH.map((x,k)=>P.inAt+Math.min(k,FU_N0)*P.hold+Math.max(0,k-FU_N0)*P.nStep);return {P,b,st,key:P.inAt*b,keyName:'Für',total:16*b}},
+  model(P){const b=P.beat,st=FU_PH.map((x,k)=>P.inAt+Math.min(k,FU_N0)*P.hold+Math.max(0,k-FU_N0)*P.nStep);return {P,b,st,key:P.inAt*b,keyName:'Für',total:(P.len||16)*b}},
   show(on){FUL.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b,E=FUE,fs=150;
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}

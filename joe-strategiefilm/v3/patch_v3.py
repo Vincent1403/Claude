@@ -425,10 +425,10 @@ WR0_REAL = 9000.0
 BASS = 182.86
 CLIPS["logo3"] = C(0, BARL)
 LAYOUT = [  # (Clip, Takte, rate) – rate None = Tempo bleibt
-    ("logo3", 1, None), ("colors", 3, 2 / 3), ("fuer", 4, None), ("rcblock", 5, None), ("c3", 2, None), ("pers", 1, None), ("people", 4, None),
+    ("logo3", 1, None), ("colors", 3, 2 / 3), ("fuer", 5, None), ("rcblock", 5, None), ("c3", 2, None), ("pers", 1, None), ("people", 4, None),
     ("partner", 4, .75), ("brand", 4, .75), ("prod", 1, None), ("system", 2, None), ("badges", 4.375, None), ("wall", 4, None),
     ("tags", 3.125, .8), ("kanal", 1, None), ("formats", 6, None), ("flex", 1, None), ("deal", 2.25, None), 
-    ("c5", 3, None), ("city", 3, round(4.317 / (3 * BARL), 4)), ("c7", 1.75, None),
+    ("c5", 2, None), ("city", 3, round(4.317 / (3 * BARL), 4)), ("c7", 1.75, None),
     ("bill", 2.5, round(3.0611 / (2.5 * BARL), 4)), ("endtxt", 6, None)]
 NATIVE_CO = CLIPS["colors"]["len"]
 _t = CLIPS["c2"]["start"] + CLIPS["c2"]["len"]
@@ -448,7 +448,8 @@ CLIPS["endtxt"]["len"] = round(CLIPS["endc"]["start"] - CLIPS["endtxt"]["start"]
 PARAMS["people"] = {"sb": 4}                              # 4 Schläge pro Person (4 Takte)
 PARAMS["c3"] = {"len": 8, "outAt": 7.15}                  # Tafeln halten länger
 PARAMS["c4"] = {"len": 7, "outAt": 6.3, "outDir": -1}
-PARAMS["c5"] = {"len": 12, "outAt": 11.15}
+PARAMS["c5"] = {"len": 8, "outAt": 7.15}
+PARAMS["fuer"] = {**PARAMS.get("fuer", {}), "len": 20, "nStep": 1.0, "cloudAt": 12.25, "zoomAt": 17.5, "outAt": 20}   # Namen laufen langsamer durch (1 Takt mehr)
 PARAMS["c7"] = {"len": 7, "outAt": 6.15}
 # „Alles in einer App“ und Bento-Box entfallen (Zeit geht an „Wir bringen …“, Citylight, „Sichtbar …“ und Billboard)
 for k in ("c4", "box"):
