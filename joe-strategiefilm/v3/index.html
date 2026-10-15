@@ -3852,13 +3852,13 @@ const FM_S2=[
 const FM_S3=[
  [90,136,426,532.5,'#e4e1ea',`
   <div class="fmIm" style="position:absolute;left:0;top:170px;width:426px;height:362.5px;border-radius:48px 48px 0 0;background:${JG_CSS}"></div>
-  <img class="fmIm" src="${S3I.man}" alt="" style="position:absolute;left:150px;top:34px;height:500px;max-width:none">
+  <img data-z="1" class="fmIm" src="${S3I.man}" alt="" style="position:absolute;left:150px;top:34px;height:500px;max-width:none">
   <div style="position:absolute;left:30px;top:30px">${fmTag('sq','Neu','#fff','#e3301b',40)}</div>
   <div style="position:absolute;left:30px;top:330px">${FM_PILL(`<span style="padding-left:${64*.25}px">Share</span><span style="display:inline-flex">${['av1','av2','av3'].map((a,k)=>`<img src="${S3I[a]}" alt="" style="width:46px;height:46px;border-radius:50%;border:3px solid #fff;margin-left:${k?-14:0}px">`).join('')}</span>`,64)}</div>`],
  [90,724.5,426,219.5,'#f9ddc3',fmPush('Lena teilt 100 Ös mit dir','Jetzt in der jö App ansehen.')],
  [566,136,454,808,'#e4e1ea',`
   <div class="fmIm" style="position:absolute;left:0;top:560px;width:454px;height:248px;border-radius:48px 48px 0 0;background:${JG_CSS}"></div>
-  <svg class="fmIm" viewBox="0 0 454 600" style="position:absolute;left:0;top:0;width:454px;height:600px"><circle cx="227" cy="320" r="180" fill="none" stroke="#e3301b" stroke-width="46" stroke-dasharray="820 1200" stroke-linecap="round" transform="rotate(120 227 320)"/></svg>
+  <svg class="fmIm" viewBox="0 0 454 600" style="position:absolute;left:0;top:0;width:454px;height:600px"><circle class="fmRing" cx="227" cy="320" r="180" fill="none" stroke="#e3301b" stroke-width="46" stroke-dasharray="0 1200" stroke-linecap="round" transform="rotate(120 227 320)"/></svg>
   <img class="fmIm" src="${S5I.girl}" alt="" style="position:absolute;left:-8px;top:40px;height:560px;max-width:none">
   <div style="position:absolute;left:30px;top:30px">${fmTag('ci','Aktion','#fff','#e3301b',40)}</div>
   <div style="position:absolute;left:150px;top:470px">${fmJoPill('1&#8239;€ = 1&#8239;Ö',60)}</div>
@@ -3886,7 +3886,7 @@ $('stage').appendChild(FML);
 {const st=document.createElement('style');st.textContent='#fmtL .oesw{display:inline-flex;align-items:flex-end;line-height:1}#fmtL .oesg{display:inline-block;overflow:visible}';document.head.appendChild(st)}
 {const bi=document.querySelector('#badgeL .bdImg');if(bi)FML.querySelector('.fmImg').style.backgroundImage=bi.style.backgroundImage}
 const FME={g:$('fmG'),fr:[...FML.querySelectorAll('.fmFr')]};
-FME.el=FME.fr.map(f=>({im:[...f.querySelectorAll('.fmIm')],ln:[...f.querySelectorAll('.fmLn')],bd:[...f.querySelectorAll('.fmBd')],pl:[...f.querySelectorAll('.fmPl')]}));
+FME.el=FME.fr.map(f=>({im:[...f.querySelectorAll('.fmIm')],ln:[...f.querySelectorAll('.fmLn')],bd:[...f.querySelectorAll('.fmBd')],pl:[...f.querySelectorAll('.fmPl')],rg:[...f.querySelectorAll('.fmRing')]}));
 const FORMATS={
   key:'formats',name:'Formate (drei Bildschirme)',lane:'laneV3',cls:'bento',
   DEF:{beat:13.725/24,hold:8,dur:1.1,lag:.16,inLag:.38,travel:1240},
@@ -3910,6 +3910,8 @@ const FORMATS={
       EL.im.forEach((el,k)=>{const u=ef((t-r-k*.05)/(.8*D));el.style.transform=el.dataset.z?`scale(${(1+.16*(1-u)).toFixed(4)})`:`translateY(${(160*(1-u)).toFixed(1)}px)`}); // Vollflächige Fotos setzen sich per Zoom, freigestellte Bilder und Farbkarten gleiten von unten nach
       EL.ln.forEach((el,k)=>{const u=ef((t-r-.12-k*.06)/(.62*D));el.style.transform=`translateY(${(112*(1-u)).toFixed(1)}%)`});
       EL.bd.forEach((el,k)=>{const u=ef((t-r-.3-k*.08)/(.55*D));el.style.transform=`translateY(${(40*(1-u)).toFixed(1)}px)`;el.style.opacity=u.toFixed(3)});
+      // Fortschrittsring baut sich auf (wie in der Sammeln-&-Sparen-Story)
+      EL.rg.forEach(el=>{const v=ef((t-r-.2)/(1.4*D));el.setAttribute('stroke-dasharray',`${(820*v).toFixed(1)} 1200`);el.style.opacity=v>0?'1':'0'});
       // Pills fahren auf: zuerst nur der Kreis (jö / Ös), dann gleitet die Pille zur vollen Breite auf
       EL.pl.forEach((el,k)=>{if(!el._w&&el.offsetWidth){el._w=el.offsetWidth;el._h=el.offsetHeight}if(!el._w)return;
         const v=ef((t-r-.5-k*.08)/(.6*D)),d=(el._w-el._h)*(1-v),R2=el._h/2,base=el.classList.contains('fmBd')?el.style.transform:'';
