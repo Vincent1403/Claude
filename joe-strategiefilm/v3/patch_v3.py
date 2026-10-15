@@ -475,6 +475,7 @@ for k in ("julian", "white2"):
     CLIPS[k]["len"] = round(_cut - CLIPS[k]["start"], 4); CLIPS[k]["rate"] = round(4.0 / CLIPS[k]["len"], 5)
 CLIPS["colors"] = C(_cut, round(_ce - _cut, 4), .45); CLIPS["colors"]["rate"] = round((NATIVE_CO - .45) / CLIPS["colors"]["len"], 5)
 rep("const q=f(seg(t,T[1]+i*P.stag,T[1]+i*P.stag+.55)),", "const q=f(seg(t,T[1]-.55+i*P.stag*.6,T[1]-.55+i*P.stag*.6+.3)),")  # Abstufungen: früher und schneller
+rep("${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;color:transparent;`:''}", "${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.22em;margin-bottom:-.22em;`:''}")  # Verlaufswörter: Unterlängen (g, p) nicht abschneiden
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
