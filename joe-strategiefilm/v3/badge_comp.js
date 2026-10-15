@@ -29,7 +29,7 @@ BDL.innerHTML=`
   <img src="${PTA.bipa}" alt="" style="position:absolute;left:${bdc(82)}px;top:${bdc(70)}px;width:${bdc(92)}px;height:${bdc(92)}px;border-radius:50%">
   <div style="position:absolute;left:${bdc(200)}px;top:${bdc(116)}px;transform:translateY(-50%);font-size:${bdc(46)}px;font-weight:800">BIPA</div>
   <div style="position:absolute;right:${bdc(95)}px;top:${bdc(118)}px;transform:translateY(-50%);font-size:${bdc(27)}px;font-weight:700">Gültig bis 31.10.2026</div>
-  <div class="bdImg" style="position:absolute;left:${bdc(36)}px;top:${bdc(208)}px;width:${bdc(992)}px;height:${bdc(468)}px;background:url(__BD_IMG__) center/100% auto no-repeat"></div>
+  <div class="bdImg" style="position:absolute;left:0;top:${bdc(208)}px;width:${BD_CW}px;height:${bdc(468)}px;background:url(__BD_IMG__) center/cover no-repeat"></div>
   <div style="position:absolute;left:${bdc(83)}px;top:${bdc(750)}px;transform:translateY(-50%);font-size:${bdc(42)}px;font-weight:700;white-space:nowrap">250 Zusatz Ös auf den Einkauf</div>
   <div style="position:absolute;left:${bdc(82)}px;top:${bdc(822)}px;width:${bdc(124)}px;height:${bdc(124)}px;border-radius:50%;border:2px solid #6a1006;display:grid;place-items:center"><svg viewBox="0 0 24 24" style="width:46%"><path d="M12 20.5s-7.5-4.6-9.2-9.3C1.7 8 3.8 4.8 7.1 4.8c2 0 3.4 1.1 4.9 2.9 1.5-1.8 2.9-2.9 4.9-2.9 3.3 0 5.4 3.2 4.3 6.4-1.7 4.7-9.2 9.3-9.2 9.3z" fill="none" stroke="#6a1006" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
   <div style="position:absolute;left:${bdc(458)}px;top:${bdc(822)}px;width:${bdc(517)}px;height:${bdc(124)}px;border-radius:999px;background:#6a1006;color:#fff;display:grid;place-items:center;font-size:${bdc(42)}px;font-weight:700">Scan erforderlich</div>
