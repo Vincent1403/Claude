@@ -3167,7 +3167,7 @@ const IV_BRILLE=makeIV('ivBrille','Video Brille','iv_brille.webm',5.042,{fade:0}
    ===================================================================== */
 const FU_PH=['mehr Möglichkeiten.','mehr Begeisterung.','jeden.'];
 // Profil-Wolke um „Für jeden.“: Rasterlage, ohne Überlappung, Schrift frei (x, y relativ zur Bildmitte, Durchmesser); FU_KI = Kian
-const FU_POS=[[-826, -356, 194], [-548, -422, 144], [-262, -395, 179], [-29, -403, 125], [256, -381, 198], [570, -432, 169], [830, -362, 168], [-801, 334, 155], [-532, 446, 157], [-269, 379, 143], [10, 395, 148], [285, 367, 220], [528, 392, 139], [832, 358, 124], [-826, -131, 124], [-581, -129, 146], [586, -135, 133], [-820, 128, 200], [-605, 136, 149], [609, 147, 152], [840, 140, 120]],FU_KI=11;
+const FU_POS=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -232, 122], [-386, -177, 132], [-129, -198, 127], [116, -234, 178], [422, -231, 134], [678, -220, 182], [-853, -2, 114], [-564, 21, 115], [561, 8, 155], [820, 10, 134], [-703, 192, 110], [-385, 235, 155], [-116, 217, 136], [127, 189, 183], [405, 179, 140], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [304, 404, 200], [510, 418, 154], [829, 396, 131]],FU_KI=27;
 const FUL=document.createElement('div');FUL.id='fuerL';FUL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
 FUL.innerHTML=`<div style="position:absolute;inset:0;background:${JG_CSS}"></div>
 <div id="fuCloud" style="position:absolute;left:960px;top:540px;width:0;height:0">${FU_POS.filter((p,i)=>i!==FU_KI).map((p,i)=>`<img class="fuAv" src="${CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:0;top:0;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);transform-origin:50% 50%">`).join('')}</div>
@@ -3217,7 +3217,7 @@ const FUER={
     const fl=1-v,flo=(i,k)=>[9*fl*Math.sin(t*(1+i*.11)+i*1.7),7*fl*Math.cos(t*(.9+i*.13)+i*1.1)];
     E.av.forEach((el,i)=>{const [x,y,d]=FU_AV[i],k=FU_ORD.indexOf(i),a0=c0+(k+1)*.045,pp=eBack(seg(t,a0,a0+.45)),[ox,oy]=flo(i);
       el.style.width=el.style.height=d+'px';el.style.transform=`translate(${(x+ox-d/2).toFixed(1)}px,${(y+oy-d/2).toFixed(1)}px) scale(${pp.toFixed(4)})`});
-    {const kp=eBack(seg(t,c0,c0+.45)),[ox,oy]=flo(99),cx=960+S*(kx+ox-px),cy=540+S*(ky+oy-py);
+    {const kp=eBack(seg(t,c0,c0+.45)),[ox,oy]=flo(FU_KI),cx=960+S*(kx+ox-px),cy=540+S*(ky+oy-py);
      const L=(a,c)=>a+(c-a)*u,kw=u>0?L(D,1920):kd*S,kh=u>0?L(D,1080):kd*S,kr=u>0?L(D/2,0):kw/2;
      Object.assign(E.kian.style,{left:(cx-kw/2).toFixed(1)+'px',top:(cy-kh/2).toFixed(1)+'px',width:kw.toFixed(1)+'px',height:kh.toFixed(1)+'px',borderRadius:kr.toFixed(1)+'px',transform:`scale(${(u>0?1:kp).toFixed(4)})`,opacity:t<c0?'0':'1'});
      const im=E.kian.firstChild,iw=Math.max(kw,kh*16/9),ih=iw*9/16;Object.assign(im.style,{width:iw.toFixed(1)+'px',height:ih.toFixed(1)+'px',left:((kw-iw)/2).toFixed(1)+'px',top:((kh-ih)*.3).toFixed(1)+'px'})}
