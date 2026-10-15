@@ -343,6 +343,13 @@ for k in CLIPS:
 WR0_REAL = round(WR0_REAL - SL_D, 4)
 CLIPS["partner"]["len"] = round(CLIPS["badges"]["start"] - CLIPS["partner"]["start"], 4)
 CLIPS["slot"]["start"] = 202.0
+# Marken-Lockups (jö × Partner auf Markenfarben) direkt nach „Eine starke Verbindung.“; alles danach rückt 3 Takte nach hinten
+BR_AT, BR_D = CLIPS["badges"]["start"], round(12 * BEAT, 4)
+for k in CLIPS:
+    if BR_AT - 1e-3 <= CLIPS[k]["start"] < 100:
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + BR_D, 4)
+WR0_REAL = round(WR0_REAL + BR_D, 4)
+CLIPS["brand"] = C(BR_AT, BR_D)
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
