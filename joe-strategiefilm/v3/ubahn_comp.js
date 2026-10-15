@@ -31,7 +31,7 @@ const UBAHN={
     {k:'push',label:'Kamera fährt heran',min:0,max:.15,step:.005,fmt:v=>num(v*100,1)+' %'},
     {k:'inAt',label:'Anzeige baut sich auf ab',min:0,max:1.5,step:1/24,fmt:v=>Math.round(v*24)+' F'},
     {k:'dur',label:'Dauer Aufbau je Element',min:.4,max:1.6,step:1/24,fmt:v=>Math.round(v*24)+' F'}],
-  model(P){return {P,key:P.inAt,keyName:'Aufbau',total:4.0}},
+  model(P){return {P,key:P.inAt,keyName:'Aufbau',total:P.len||4.0}},
   show(on){UBL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=UBE,ef=u=>eStFlow(clamp(u)),a=P.inAt,D=P.dur;
     E.cam.style.transform=`scale(${(1+P.push*eIO(seg(t,0,M.total))).toFixed(4)})`;

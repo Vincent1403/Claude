@@ -429,7 +429,7 @@ LAYOUT = [  # (Clip, Takte, rate) – rate None = Tempo bleibt
     ("logo3", 1, None), ("colors", 3, 2 / 3), ("fuer", 5, None), ("rcblock", 5, None), ("c3", 2, None), ("pers", 1, None), ("people", 4, None),
     ("partner", 5, .75), ("brand", 4, .75), ("prod", 2, round(2.273 / (2 * BARL), 4)), ("system", 1, None), ("badges", 4.375, None), ("wall", 4, None),
     ("tags", 3.125, .8), ("kanal", 1, None), ("formats", 6, None), ("flex", 1, None), ("deal", 2.25, None), 
-    ("c5", 1, None), ("city", 3, round(4.317 / (3 * BARL), 4)), ("c7", 1.75, None),
+    ("c5", 1, None), ("city", 2.5, round(4.317 / (2.5 * BARL), 4)), ("c7", 2.25, None),
     ("bill", 2.5, round(3.0611 / (2.5 * BARL), 4)), ("endtxt", 6, None)]
 NATIVE_CO = CLIPS["colors"]["len"]
 _t = CLIPS["c2"]["start"] + CLIPS["c2"]["len"]
@@ -480,6 +480,8 @@ rep("${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;
 rep('<circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" ', '<circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" stroke-linecap="round" ')  # Julian: Fortschrittsring mit runden Enden
 # „Sichtbar, wo eure Kund:innen sind.“ → U-Bahn-Plakat (gleiche Stelle)
 CLIPS["ubahn"] = C(CLIPS["c7"]["start"], CLIPS["c7"]["len"]); CLIPS["c7"]["start"] = 9000.0
+PARAMS["ubahn"] = {"len": CLIPS["ubahn"]["len"]}
+rep("const g=f(seg(t,A(0),A(.7)));E.bg.style.clipPath=g>=1?'none':`circle(${(g*2500).toFixed(1)}px at 0px ${CT_H}px)`;", "E.bg.style.clipPath='none'; // Citylight: Verlauf steht von Anfang an")
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

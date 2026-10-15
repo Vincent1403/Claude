@@ -2644,7 +2644,7 @@ const CITY={
     // Plakat flach, unverzerrt, mittig in voller Bildhöhe (für Compositing in After Effects)
     E.ad.style.transform=`scale(${(380/CT_W).toFixed(5)})`; // Plakat exakt auf die Leuchtfläche des Mockups (380 × 529 px im Mockup)
     // 1) Verlauf breitet sich kreisförmig aus der Ecke unten links aus
-    const g=f(seg(t,A(0),A(.7)));E.bg.style.clipPath=g>=1?'none':`circle(${(g*2500).toFixed(1)}px at 0px ${CT_H}px)`;
+    E.bg.style.clipPath='none'; // Citylight: Verlauf steht von Anfang an
     // 2) Headline steigt aus der Maske
     E.hl.forEach((h,i)=>{const u=f(seg(t,A(.35+i*.1),A(.95+i*.1)));h.style.transform=`translateY(${(105*(1-u)).toFixed(2)}%)`});
     // 3) Foto: wächst von unten auf, Bild zoomt leicht nach
@@ -4015,7 +4015,7 @@ const UBAHN={
     {k:'push',label:'Kamera fährt heran',min:0,max:.15,step:.005,fmt:v=>num(v*100,1)+' %'},
     {k:'inAt',label:'Anzeige baut sich auf ab',min:0,max:1.5,step:1/24,fmt:v=>Math.round(v*24)+' F'},
     {k:'dur',label:'Dauer Aufbau je Element',min:.4,max:1.6,step:1/24,fmt:v=>Math.round(v*24)+' F'}],
-  model(P){return {P,key:P.inAt,keyName:'Aufbau',total:4.0}},
+  model(P){return {P,key:P.inAt,keyName:'Aufbau',total:P.len||4.0}},
   show(on){UBL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=UBE,ef=u=>eStFlow(clamp(u)),a=P.inAt,D=P.dur;
     E.cam.style.transform=`scale(${(1+P.push*eIO(seg(t,0,M.total))).toFixed(4)})`;
@@ -4138,8 +4138,8 @@ S.clips.c6={start:9000.0,len:2.8539,in:0};
 S.clips.colors={start:19.482,len:7.9994,in:0.45,rate:0.51525};
 S.clips.deal={start:138.3439,len:5.1431,in:0};
 S.clips.prod={start:86.9128,len:4.5717,in:0.634,rate:0.4972};
-S.clips.c7={start:9000.0,len:4.0002,in:0};
-S.clips.city={start:145.7728,len:6.8575,in:0,rate:0.6295};
+S.clips.c7={start:9000.0,len:5.1431,in:0};
+S.clips.city={start:145.7728,len:5.7146,in:0,rate:0.7554};
 S.clips.bill={start:156.6305,len:5.7146,in:0,rate:0.5357};
 S.clips.c8={start:9000.0,len:5.9952,in:0};
 S.clips.logo2={start:176.0601,len:2.4499,in:0};
@@ -4164,7 +4164,7 @@ S.clips.ivBrille={start:4.575,len:2.0016,in:0};
 S.clips.endtxt={start:162.3451,len:16.1649,in:0};
 S.clips.endc={start:178.51,len:11.49,in:0};
 S.clips.logo3={start:11.7953,len:2.4833,in:0.475};
-S.clips.ubahn={start:152.6303,len:4.0002,in:0};
+S.clips.ubahn={start:151.4874,len:5.1431,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 4.8, "lOut": 6.4, "sent": 6.45, "sent2": 7.4, "popGap": 99, "end": 15, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
@@ -4179,6 +4179,7 @@ Object.assign(S.comps.c5.params,{"len": 4, "outAt": 3.15});FM.c5=COMPS.c5.model(
 Object.assign(S.comps.system.params,{"len": 4, "step": 1.75, "outAt": 3.6});FM.system=COMPS.system.model(S.comps.system.params);
 Object.assign(S.comps.fuer.params,{"len": 20, "nStep": 1.0, "nMove": 0.45, "cloudAt": 12.25, "zoomAt": 17.5, "outAt": 20});FM.fuer=COMPS.fuer.model(S.comps.fuer.params);
 Object.assign(S.comps.c7.params,{"len": 7, "outAt": 6.15});FM.c7=COMPS.c7.model(S.comps.c7.params);
+Object.assign(S.comps.ubahn.params,{"len": 5.1431});FM.ubahn=COMPS.ubahn.model(S.comps.ubahn.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
