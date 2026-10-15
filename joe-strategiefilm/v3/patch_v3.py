@@ -482,6 +482,20 @@ rep('<circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" 
 CLIPS["ubahn"] = C(CLIPS["c7"]["start"], CLIPS["c7"]["len"]); CLIPS["c7"]["start"] = 9000.0
 PARAMS["ubahn"] = {"len": CLIPS["ubahn"]["len"]}
 rep("const g=f(seg(t,A(0),A(.7)));E.bg.style.clipPath=g>=1?'none':`circle(${(g*2500).toFixed(1)}px at 0px ${CT_H}px)`;", "E.bg.style.clipPath='none'; // Citylight: Verlauf steht von Anfang an")
+# Schluss nach Frames: Schluss-Text trifft F 3945, „… Relevanz.“ F 4062, jö-Logo sichtbar ab F 4230, Endcard F 4336,
+# Pill um „hammeralbrecht.design“ fährt auf dem letzten großen Bass (182,86 s) auf
+_et = round(3945 / 24 - .25 * BEAT, 4)
+CLIPS["bill"]["len"] = round(_et - CLIPS["bill"]["start"], 4)          # Billboard steht bis zum Schluss-Text (Tempo bleibt, letztes Bild hält)
+_ec = round(4336 / 24, 4)
+CLIPS["endtxt"] = C(_et, round(_ec - _et, 4))
+_rel = (4062 / 24 - _et) / BEAT                                       # Schlag, an dem „Relevanz.“ einläuft
+PARAMS["endtxt"] = {"len": round((_ec - _et) / BEAT + .5, 2), "aIn": .25, "aOut": 4.25, "bIn": 5.25, "hold": round(_rel - 5.25, 3),
+                    "bOut": round(5.25 + 2 * (_rel - 5.25) + 2.2, 2), "cOut": round((4230 / 24 - .65 - _et) / BEAT, 2)}
+PARAMS["endtxt"]["cIn"] = round(PARAMS["endtxt"]["bOut"] + .75, 2)
+CLIPS["logo2"] = C(round(4230 / 24 - .48, 4), 0, CLIPS["logo2"]["in"]); CLIPS["logo2"]["len"] = round(_ec - CLIPS["logo2"]["start"], 4)
+CLIPS["endc"] = C(_ec, round(190 - _ec, 4))
+_pa = round(BASS - _ec, 3)                                             # Pill-Start auf dem Bass
+PARAMS["endc"] = {"flyAt": .35, "txAt": .95, "wmAt": 1.0, "outAt": round(_pa - .5, 3), "linkAt": round(_pa - .3, 3), "pillAt": _pa}
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
