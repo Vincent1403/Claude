@@ -3187,7 +3187,7 @@ const FUE={row:$('fuRow'),fix:$('fuFix'),mask:$('fuMask'),ph:[...FUL.querySelect
 const FU_AV=FU_POS.filter((p,i)=>i!==FU_KI),FU_ORD=FU_AV.map((a,i)=>i).sort((x,y)=>Math.hypot(...FU_AV[x].slice(0,2))-Math.hypot(...FU_AV[y].slice(0,2))); // ploppen von innen nach außen
 const FUER={
   key:'fuer',name:'Für … (Verlauf)',lane:'laneV3',cls:'typo',
-  DEF:{beat:13.725/24,inAt:.25,hold:2,move:.4,nStep:.5,nMove:.2,gap:.28,center:.75,cDur:.5,cloudAt:8.25,cloudZoom:1.5,outAt:12.25,zoomAt:12.75},
+  DEF:{beat:13.725/24,inAt:.25,hold:2,move:.4,nStep:.5,nMove:.2,gap:.28,center:.75,cDur:.5,cloudAt:8.25,cloudZoom:1.5,outAt:12.25,zoomAt:13.5,zDur:1.4},
   params:[
     {k:'inAt',label:'„Für“ steigt auf bei (Schlag)',min:0,max:2,step:.25,fmt:v=>String(v)},
     {k:'hold',label:'Satzende wechselt alle',min:2,max:6,step:.5,fmt:v=>v+' Schläge',sub:'„Für“ bleibt stehen, das Satzende läuft nach oben weiter'},
@@ -3200,7 +3200,8 @@ const FUER={
     {k:'cloudAt',label:'Profil-Wolke ab (Schlag)',min:4,max:10,step:.25,fmt:v=>String(v),sub:'die Profile der jö Community ploppen um „Für jeden.“ auf, die Kamera zieht dabei auf'},
     {k:'cloudZoom',label:'Kamera zieht auf über',min:.5,max:3,step:1/24,fmt:v=>Math.round(v*24)+' F'},
     {k:'outAt',label:'„Für jeden.“ raus bei (Schlag)',min:6,max:16,step:.25,fmt:v=>String(v)},
-    {k:'zoomAt',label:'Kians Kreis wächst zum Vollbild ab (Schlag)',min:6,max:16,step:.25,fmt:v=>String(v),sub:'der Kreis wächst an seinem Platz, bis er das Bild füllt; Anschluss an das Kian-Video'}],
+    {k:'zoomAt',label:'Zoom in Kian ab (Schlag)',min:6,max:16,step:.25,fmt:v=>String(v),sub:'wie der Zoom in Tamara: Kamera fährt in Kians Kreis, die Wolke zoomt mit; Anschluss an das Kian-Video'},
+    {k:'zDur',label:'Dauer Zoom in Kian',min:.5,max:3,step:1/24,fmt:v=>Math.round(v*24)+' F'}],
   model(P){const b=P.beat,st=FU_PH.map((x,k)=>P.inAt+Math.min(k,FU_N0)*P.hold+Math.max(0,k-FU_N0)*P.nStep);return {P,b,st,key:P.inAt*b,keyName:'Für',total:16*b}},
   show(on){FUL.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b,E=FUE,fs=150;
@@ -3225,14 +3226,15 @@ const FUER={
     E.pi.forEach((el,i)=>{const d=i+FU_N0-Math.min(p,FU_PH.length-2);el.style.transform=`translate(${((pw-FU_PW)/2).toFixed(1)}px,${(d*FU_PHH).toFixed(1)}px)`;el.style.visibility=Math.abs(d)<1.02?'visible':'hidden'});
     // Profil-Wolke (Kian gehört von Anfang an dazu), Kamera zieht beim Aufbau auf
     const c0=P.cloudAt*b,zu=eIO(seg(t,c0,c0+P.cloudZoom)),[kx,ky,kd]=FU_POS[FU_KI],D=CL_D;
-    // nach „Für jeden.“ wächst Kians Kreis an seinem Platz zum Vollbild (Rechteck 1920 × 1080, Radius → 0), die Kamera steht
-    const za=P.zoomAt*b,u=eStFlow(seg(t,za,M.total-1/24)),S=1.45-.45*zu;
-    E.cloud.style.transform=`scale(${S.toFixed(4)})`;
+    // nach „Für jeden.“ zoomt die Kamera in Kians Kreis – wie der Zoom in Tamara: die ganze Wolke skaliert mit, Kians Kreis wandert
+    // in die Mitte und wird zum Vollbild (Rechteck 1920 × 1080, Ecken runden sich erst am Ende aus), die anderen fliegen aus dem Bild
+    const za=P.zoomAt*b,u=eStFlow(seg(t,za,Math.min(za+P.zDur,M.total-1/24))),S=1.45-.45*zu;
     const flo=i=>[9*Math.sin(t*(1+i*.11)+i*1.7),7*Math.cos(t*(.9+i*.13)+i*1.1)];
     E.av.forEach((el,i)=>{const [x,y,d]=FU_AV[i],k=FU_ORD.indexOf(i),a0=c0+(k+1)*.045,pp=eBack(seg(t,a0,a0+.45)),[ox,oy]=flo(i);
       el.style.width=el.style.height=d+'px';el.style.transform=`translate(${(x+ox-d/2).toFixed(1)}px,${(y+oy-d/2).toFixed(1)}px) scale(${pp.toFixed(4)})`});
-    {const kp=eBack(seg(t,c0,c0+.45)),[ox,oy]=flo(FU_KI),L=(a,c)=>a+(c-a)*u,k0=kd*S;
-     const cx=L(960+S*(kx+ox),960),cy=L(540+S*(ky+oy),540),kw=L(k0,1920),kh=L(k0,1080),kr=L(k0/2,0);
+    {const kp=eBack(seg(t,c0,c0+.45)),[fx,fy]=flo(FU_KI),ox=fx*(1-u),oy=fy*(1-u),d0=kd*S;
+     const kw=d0+(1920-d0)*u,kh=d0+(1080-d0)*u,s2=kw/kd,cx=960+(kx+ox)*S*(1-u),cy=540+(ky+oy)*S*(1-u),kr=Math.min(kw,kh)/2*(1-Math.pow(u,3));
+     E.cloud.style.transform=`translate(${(cx-960-kx*s2).toFixed(1)}px,${(cy-540-ky*s2).toFixed(1)}px) scale(${s2.toFixed(4)})`;
      Object.assign(E.kian.style,{left:(cx-kw/2).toFixed(1)+'px',top:(cy-kh/2).toFixed(1)+'px',width:kw.toFixed(1)+'px',height:kh.toFixed(1)+'px',borderRadius:kr.toFixed(1)+'px',transform:`scale(${(u>0?1:kp).toFixed(4)})`,opacity:t<c0?'0':'1'});
      const im=E.kian.firstChild,iw=Math.max(kw,kh*16/9),ih=iw*9/16;Object.assign(im.style,{width:iw.toFixed(1)+'px',height:ih.toFixed(1)+'px',left:((kw-iw)/2).toFixed(1)+'px',top:((kh-ih)*.3).toFixed(1)+'px'})}
     E.row.style.transform='none';FUL.querySelector('div').style.transform=`scale(${(1.04-.04*eOut(seg(t,0,M.total))).toFixed(4)})`},
@@ -3243,7 +3245,7 @@ const FUER={
     ['Namen',`${F(M.st[FU_N0]*b)}–${F(M.st[FU_PH.length-1]*b)}`,FU_NM.map(n=>n[0]).join(', ')+' – mit Profilbild-Pille'],
     ['„… jeden.“',`${F(M.st[FU_PH.length-1]*b)}–${F(P.outAt*b)}`,'Pille schließt, „Für jeden.“ gleitet in die Mitte, die Profil-Wolke ploppt auf'],
     ['Hintergrund','','jö-Verlauf, zieht leicht auf']]},
-  note:'Frames bei 24 fps ab Beginn der Subebene. Vier Takte; „Für“ steht, die Satzenden wechseln alle zwei Schläge, dann laufen schnell Namen mit Profilbild durch, „Für jeden.“ gleitet in die Bildmitte, dann ploppen die Profile der jö Community darum auf. Danach wächst Kians Kreis an seinem Platz zum Vollbild (Anschluss: Kian-Video, Profil-Wolke, Zoom in Tamara).'
+  note:'Frames bei 24 fps ab Beginn der Subebene. Vier Takte; „Für“ steht, die Satzenden wechseln alle zwei Schläge, dann laufen schnell Namen mit Profilbild durch, „Für jeden.“ gleitet in die Bildmitte, dann ploppen die Profile der jö Community darum auf. Danach zoomt die Kamera in Kians Kreis (wie der Zoom in Tamara) (Anschluss: Kian-Video, Profil-Wolke, Zoom in Tamara).'
 };
 
 /* =====================================================================
