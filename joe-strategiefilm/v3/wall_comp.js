@@ -9,8 +9,8 @@ const WL_CARDS={ // je Foto eine Karte: Partner(logo), Name, Pill, Icon, Text, B
  supermarkt:{l:'billa',n:'BILLA',p:'500',k:'oes',t:'-10 % und 500 Ös auf den Einkauf',b:'Aktivieren',img:'__WL:supermarkt__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-10%</div>'},
  gemuese:{l:'penny',n:'PENNY',p:'250',k:'oes',t:'5 € Rabatt auf Obst und Gemüse',b:'Scan erforderlich',img:'__WL:gemuese__',tag:'<div style="font-size:17px;font-weight:700;margin-bottom:2px">Rabatt</div><div style="font-size:66px;font-weight:800;line-height:1">5&#8239;€</div>'},
  hirter:{l:'adeg',n:'ADEG',p:'250',k:'oes',t:'-25 % auf Hirter Privat Pils',b:'Aktivieren',img:'__WL:hirter__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-25%</div>'},
- see:{l:'allianz',n:'ALLIANZ',p:'+3000',k:'oes',t:'3000 Ös bei Abschluss',b:'Mehr erfahren',img:'__WL:see__'},
- brille:{l:'allianz',n:'ALLIANZ',p:'150&#8239;€',k:'jo',t:'150 € Zuschuss für deine neue Brille',b:'Mehr erfahren',img:'__WL:brille__'},
+ see:{l:'raiffeisen',n:'RAIFFEISEN',p:'+3000',k:'oes',t:'3000 Ös bei Abschluss',b:'Mehr erfahren',img:'__WL:see__'},
+ brille:{l:'pearle',n:'PEARLE',p:'150&#8239;€',k:'jo',t:'150 € Zuschuss für deine neue Brille',b:'Mehr erfahren',img:'__WL:brille__'},
  schreibwaren:{l:'pagro',n:'PAGRO',p:'100',k:'oes',t:'-15 % und 100 Ös auf Schulartikel',b:'Aktivieren',img:'__WL:schreibwaren__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-15%</div>'},
  stifte:{l:'pagro',n:'PAGRO',p:'3fach',k:'oes',t:'3fach Ös auf Malsachen',b:'Aktivieren',img:'__WL:stifte__'},
  wasch:{l:'omv',n:'OMV',p:'2fach',k:'oes',t:'Doppelte Ös bei der Autowäsche',b:'Aktivieren',img:'__WL:waschstrasse__'},
@@ -19,7 +19,7 @@ const WL_CARDS={ // je Foto eine Karte: Partner(logo), Name, Pill, Icon, Text, B
 // 13 sichtbare Plätze, 11 Fotos: die zwei Wiederholungen (wasch, stifte) sind nie gleichzeitig im Bild. Die übrigen Plätze sieht man nie.
 const WL_COLS=[['wasch','supermarkt','brille','wasch','hirter','thule','see'],['gemuese','stifte','bipa','hirter','see','stifte','hirter'],['thule','bonusbox','schreibwaren','gemuese','supermarkt','brille','wasch']];
 // Etiketten auf dem Foto: immer in der Markenfarbe des Partners (Hintergrund, Schrift)
-const WL_BRAND={billa:['#ffe600','#1a1a1a'],penny:['#cd1719','#fff'],pagro:['#e2001a','#fff'],adeg:['#00843d','#fff'],omv:['#0c4b8e','#fff'],allianz:['#003781','#fff'],universal:['#1a1a1a','#fff'],bipa:['#e5097f','#fff']};
+const WL_BRAND={billa:['#ffe600','#1a1a1a'],penny:['#cd1719','#fff'],pagro:['#e2001a','#fff'],adeg:['#00843d','#fff'],omv:['#0c4b8e','#fff'],allianz:['#003781','#fff'],pearle:['#0a6b6a','#fff'],raiffeisen:['#fee600','#1a1a1a'],universal:['#1a1a1a','#fff'],bipa:['#e5097f','#fff']};
 const WL_CENTER=2,WL_GX=64,WL_GY=64; // BIPA-Karte = Zeile 2 der mittleren Spalte
 const wlPill=(p,k)=>`<div style="position:absolute;right:${BD_CW-bdc(983)}px;top:${bdc(306)-BD_PH/2}px;height:${BD_PH}px;display:flex;align-items:center;gap:${BD_GAP}px;padding:0 ${BD_PADR}px 0 ${BD_PADL}px;background:#fff;border-radius:999px;box-shadow:0 10px 30px rgba(94,23,8,.08);color:${BD_DARK};font-size:34px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;line-height:1">${p}${k==='oes'
   ?`<div style="width:64px;height:64px;border-radius:50%;background:${BD_DARK};display:grid;place-items:center"><span style="display:block;width:68%">${oesSvg('#fff').replace('class="oesg"','class="oesg" style="width:100%;height:auto;display:block"')}</span></div>`
