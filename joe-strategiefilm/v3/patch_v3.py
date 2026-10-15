@@ -557,6 +557,12 @@ PARAMS["kanal"] = {**PARAMS["kanal"], "len": round(CLIPS["kanal"]["len"] * 4 / B
 _fs = round(2900 / 24, 4)
 PARAMS["formats"] = {**PARAMS["formats"], "sh": round(PARAMS["formats"]["sh"] + CLIPS["formats"]["start"] - _fs, 4), "clearUntil": round(2918 / 24 - _fs, 3)}
 CLIPS["formats"]["start"], CLIPS["formats"]["len"] = _fs, round(_fe0 - _fs, 4)
+# „Rebranding by“ erscheint auf dem Hit F4336: Endcard 28,5 F früher, Pill bleibt auf dem Bass
+_ed = round(28.5 / 24, 4); _ec2 = round(CLIPS["endc"]["start"] - _ed, 4)
+CLIPS["endc"] = C(_ec2, round(190 - _ec2, 4))
+PARAMS["endc"] = {**PARAMS["endc"], **{k: round(PARAMS["endc"][k] + _ed, 3) for k in ("outAt", "linkAt", "pillAt")}}
+for k in ("logo2", "endtxt"):
+    CLIPS[k]["len"] = round(_ec2 - CLIPS[k]["start"], 4)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
