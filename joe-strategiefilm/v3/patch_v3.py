@@ -384,6 +384,18 @@ WR0_REAL = 215.0
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
+# „Farben“ direkt nach „Das neue Jö.“ (2 Takte, endet auf dem Verlauf → nahtlos in „Für …“); alles danach rückt 2 Takte nach hinten
+CO_AT = round(CLIPS["c2"]["start"] + CLIPS["c2"]["len"], 4)
+for k in CLIPS:
+    if k not in ("c2", "colors") and CO_AT - 1e-3 <= CLIPS[k]["start"] < 124:
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
+CLIPS["colors"] = C(CO_AT, 2 * BARL)
+PARAMS["colors"] = {"beatsC": 4.75}
+# im Editor angelegt: nach der Bento-Box „Wir bringen eure Marke dorthin, wo sie wirkt.“, Citylight und Billboard; Stories-Ablage bei 189,79
+CLIPS["c5"] = C(127.0736, 4.1312)
+CLIPS["city"] = C(130.609, 4.317)
+CLIPS["bill"] = C(134.926, 3.0611)
+WR0_REAL = 189.79   # Farb-Pills auf dem Verlauf stehen 2 Schläge länger (8 Schläge gesamt)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
