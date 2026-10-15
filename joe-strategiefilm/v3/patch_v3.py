@@ -394,8 +394,15 @@ PARAMS["colors"] = {"beatsC": 4.75}
 # im Editor angelegt: nach der Bento-Box „Wir bringen eure Marke dorthin, wo sie wirkt.“, Citylight und Billboard; Stories-Ablage bei 189,79
 CLIPS["c5"] = C(127.0736, 4.1312)
 CLIPS["city"] = C(130.609, 4.317)
-CLIPS["bill"] = C(134.926, 3.0611)
+CLIPS["bill"] = C(136.297, 3.0611)
+CLIPS["c7"] = C(134.345, 2.2837)
 WR0_REAL = 189.79   # Farb-Pills auf dem Verlauf stehen 2 Schläge länger (8 Schläge gesamt)
+# „Prämien“ (drei Partner-Prämienkarten) direkt nach den Markenfarben-Lockups, 1 Takt; alles danach (bis zum Billboard) rückt 1 Takt nach hinten
+PR_AT = round(CLIPS["brand"]["start"] + CLIPS["brand"]["len"], 4)
+for k in CLIPS:
+    if k not in ("brand", "prod") and PR_AT - 1e-3 <= CLIPS[k]["start"] < 145:
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + BARL, 4)
+CLIPS["prod"] = C(PR_AT, BARL, .634)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
