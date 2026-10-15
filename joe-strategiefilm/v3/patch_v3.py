@@ -430,6 +430,7 @@ LAYOUT = [  # (Clip, Takte, rate) – rate None = Tempo bleibt
     ("tags", 3.125, .8), ("kanal", 1, None), ("formats", 6, None), ("flex", 1, None), ("deal", 2.25, None), ("c4", 1.75, None),
     ("box", 2, round(3.5 / (2 * BARL), 4)), ("c5", 2, None), ("city", 2, round(4.317 / (2 * BARL), 4)), ("c7", 1, None),
     ("bill", 1.5, round(3.0611 / (1.5 * BARL), 4)), ("endtxt", 6, None)]
+NATIVE_CO = CLIPS["colors"]["len"]
 _t = CLIPS["c2"]["start"] + CLIPS["c2"]["len"]
 for k, bars, rate in LAYOUT:
     ln = round(bars * BARL, 4)
@@ -462,6 +463,11 @@ _js = round(CLIPS["logo3"]["start"] + CLIPS["logo3"]["len"], 4)
 for k in ("julian", "white2"):
     CLIPS[k] = C(_js, round(_co - _js, 4), 0)
     CLIPS[k]["rate"] = round(JUL_LEN / CLIPS[k]["len"], 5)
+# Lücke vor „Farben“ schließen: Julian endet, sobald der Slider raus ist (Schlag 19,482), Farben steigt später in seine Animation ein
+_cut, _ce = 19.482, CLIPS["colors"]["start"] + CLIPS["colors"]["len"]
+for k in ("julian", "white2"):
+    CLIPS[k]["len"] = round(_cut - CLIPS[k]["start"], 4); CLIPS[k]["rate"] = round(4.0 / CLIPS[k]["len"], 5)
+CLIPS["colors"] = C(_cut, round(_ce - _cut, 4), .45); CLIPS["colors"]["rate"] = round((NATIVE_CO - .45) / CLIPS["colors"]["len"], 5)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
