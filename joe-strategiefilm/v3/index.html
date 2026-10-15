@@ -251,13 +251,14 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=192, FPS=24, TRACK_LEN=187.48;
+const T_MAIN=290, FPS=24, TRACK_LEN=283.482;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
-const AU_LA=45.732,AU_LB=91.4456,AU_LN=2,AU_LL=AU_LB-AU_LA; // Musik-Schleife: ab dem Bass-Einsatz (Takt 37) springt der Track zurück auf den Break (Takt 17) – Break + zweite Hälfte laufen zweimal extra, ~187 s
-{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<AU_LB-.05)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const mid=BEATS.filter(v=>v>=AU_LA-.01&&v<AU_LB-.05);for(let k=1;k<=AU_LN;k++)BEATS.push(...mid.map(v=>+(v+k*AU_LL).toFixed(3)));BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));const per=96.0522/PEAKS.length,ia=Math.round(AU_LA/per),ib=Math.round(AU_LB/per),seg=PEAKS.slice(ia,ib),tail=PEAKS.splice(ib);for(let k=0;k<AU_LN;k++)PEAKS.push(...seg);PEAKS.push(...tail)}
+const AU_IA=2.3325,AU_IB=6.9075,AU_ID=AU_IB-AU_IA,AU_LA=45.732,AU_LB=91.4456,AU_LN=4,AU_LL=AU_LB-AU_LA; // Musik: Intro (vor dem Drop) um 2 Takte verlängert (Takt 2–3 noch einmal), Break + zweite Hälfte laufen viermal extra, ~283 s
+const AU_SEGS=[[0,AU_IB],[AU_IA,AU_IB],[AU_IB,AU_LB],...Array(AU_LN).fill([AU_LA,AU_LB]),[AU_LB,1e9]];
+{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<AU_LB-.05)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const mid=BEATS.filter(v=>v>=AU_LA-.01&&v<AU_LB-.05);for(let k=1;k<=AU_LN;k++)BEATS.push(...mid.map(v=>+(v+k*AU_LL).toFixed(3)));BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));for(let i=0;i<BEATS.length;i++)BEATS[i]=+(BEATS[i]+AU_ID).toFixed(3);BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));{const per=96.0522/PEAKS.length,src=PEAKS.slice(),o=[];AU_SEGS.forEach(([a,b])=>o.push(...src.slice(Math.round(a/per),Math.round(Math.min(b,96.0522)/per))));PEAKS.length=0;PEAKS.push(...o)}}
 const AU_OFF=0; // Musik startet bei Frame 0; das Intro dauert genau 3 Takte länger, das Logo liegt auf dem Drop (alles danach bleibt im Takt)
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)
-const MUSIC_SNAPS=[0,...[2.35,5.32,8.64].map(v=>v+AU_OFF),...BEATS];
+const MUSIC_SNAPS=[0,...BEATS];
 const CHAPTERS=[[0, "Intro"], [4.833, "01 Ganz persönlich"], [100.0, "Ablage: 02 Digitaler Begleiter"], [116.568, "03 Partner"], [160.299, "Schluss"]];
 const fmtPct=v=>num(v*100,1)+' %',fmtX=v=>num(v)+'×',fmtMs=v=>Math.round(v*1000)+' ms',fmtSec=v=>num(v)+' s';
 
@@ -3269,7 +3270,7 @@ function makeSeq(key,name,PH,beats,def,note){
     {k:'step',label:'Nächste Aussage alle',min:.5,max:4,step:.25,fmt:v=>v+' Schlag',sub:'jede schiebt die vorige nach oben raus'},
     {k:'move',label:'Dauer Wechsel',min:.1,max:.6,step:1/24,fmt:v=>Math.round(v*24)+' F'},
     {k:'outAt',label:'Ausstieg bei (Schlag)',min:1,max:beats,step:.25,fmt:v=>String(v)}],
-  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:PH[0].replace('*','').replace('|',' '),total:beats*b}},
+  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:PH[0].replace('*','').replace('|',' '),total:(P.len||beats)*b}},
   show(on){L.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b;
     let p=-1;for(let k=0;k<PH.length;k++){const s=(P.inAt+k*P.step)*b;p+=(k?eIO:eExpo)(seg(t,s,s+P.move+(k?0:.15)))}
@@ -3986,7 +3987,7 @@ const ENDTXT={
     {k:'cIn',label:'„Österreichs größte tägliche Markenbühne.“ ab (Schlag)',min:14,max:18,step:.25,fmt:v=>String(v)},
     {k:'cOut',label:'… raus bei (Schlag)',min:18,max:24,step:.25,fmt:v=>String(v),sub:'danach das jö-Logo'},
     {k:'step',label:'Wort-Abstand',min:.125,max:.5,step:.125,fmt:v=>v+' Schlag'}],
-  model(P){const b=P.beat;return {P,b,key:P.bIn*b,keyName:'Mehr …',total:24*b}},
+  model(P){const b=P.beat;return {P,b,key:P.bIn*b,keyName:'Mehr …',total:(P.len||24)*b}},
   show(on){ETL.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b,E=ETE;
     E.bg.style.transform=`scale(${(1.04-.04*eOut(seg(t,0,M.total))).toFixed(4)})`;
@@ -4048,60 +4049,67 @@ S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
 S.warp={r0:9000.0};S.clips.white.len=8.7;
-S.clips.hl1={start:0.0,len:2.4019,in:0};
-S.clips.logo={start:9.2072,len:2.4833,in:0.475};
-S.clips.c2={start:15.75,len:2.5881,in:0};
-S.clips.people={start:54.9113,len:9.1433,in:0};
-S.clips.c3={start:48.0538,len:4.5717,in:0};
-S.clips.pers={start:52.6255,len:2.2858,in:0};
-S.clips.rabatt={start:36.6247,len:3.5997,in:0};
-S.clips.cloud={start:39.6674,len:8.3843,in:0};
-S.clips.c4={start:138.9154,len:4.0002,in:0};
-S.clips.box={start:142.9156,len:4.5717,in:0,rate:0.7656};
-S.clips.c5={start:147.4873,len:4.5717,in:0};
-S.clips.partner={start:64.0546,len:9.1433,in:0,rate:0.75};
-S.clips.brand={start:73.1979,len:9.1433,in:0,rate:0.75};
+S.clips.hl1={start:0.0,len:3.5954,in:0,rate:0.66805};
+S.clips.logo={start:13.782,len:2.4833,in:0.475};
+S.clips.c2={start:22.3548,len:5.1422,in:0};
+S.clips.people={start:84.6426,len:13.715,in:0};
+S.clips.c3={start:74.3564,len:6.8575,in:0};
+S.clips.pers={start:81.2139,len:3.4287,in:0};
+S.clips.rabatt={start:57.2127,len:5.4006,in:0,rate:0.66654};
+S.clips.cloud={start:61.7776,len:12.5788,in:0,rate:0.66654};
+S.clips.c4={start:213.7919,len:5.7146,in:0};
+S.clips.box={start:219.5065,len:6.8575,in:0,rate:0.5104};
+S.clips.c5={start:226.364,len:6.8575,in:0};
+S.clips.partner={start:98.3576,len:13.715,in:0,rate:0.5};
+S.clips.brand={start:112.0726,len:13.715,in:0,rate:0.5};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:18.3381,len:6.8575,in:0,rate:0.6666666666666666};
-S.clips.deal={start:133.7723,len:5.1431,in:0};
-S.clips.prod={start:82.3412,len:2.2858,in:0.634};
-S.clips.c7={start:156.6307,len:2.2858,in:0};
-S.clips.city={start:152.059,len:4.5717,in:0,rate:0.9443};
-S.clips.bill={start:158.9165,len:3.4287,in:0,rate:0.8928};
+S.clips.colors={start:27.497,len:11.4291,in:0,rate:0.40001};
+S.clips.deal={start:205.7915,len:8.0004,in:0,rate:0.64286};
+S.clips.prod={start:125.7876,len:3.4287,in:0.634,rate:0.66667};
+S.clips.c7={start:240.079,len:3.4287,in:0};
+S.clips.city={start:233.2215,len:6.8575,in:0,rate:0.62954};
+S.clips.bill={start:243.5077,len:5.7146,in:0,rate:0.53566};
 S.clips.c8={start:9000.0,len:5.9952,in:0};
-S.clips.logo2={start:176.0602,len:2.4498,in:0};
+S.clips.logo2={start:269.7948,len:2.5424,in:0};
 S.clips.slot={start:9000.0,len:4.5717,in:0};
-S.clips.badges={start:89.1987,len:10.0005,in:0};
-S.clips.wall={start:99.1992,len:9.1433,in:0};
-S.clips.tags={start:108.3425,len:7.1432,in:0,rate:0.8};
+S.clips.badges={start:136.0738,len:16.0008,in:0,rate:0.625};
+S.clips.wall={start:152.0746,len:13.715,in:0,rate:0.66666};
+S.clips.tags={start:165.7896,len:10.2862,in:0,rate:0.55556};
 S.clips.showcase={start:9000.0,len:8.47,in:0};
-S.clips.hl1b={start:2.4019,len:2.1731,in:0};
-S.clips.hl1c={start:4.575,len:2.0016,in:0};
-S.clips.hl1d={start:6.5766,len:2.6306,in:0};
-S.clips.julian={start:11.6905,len:4.5717,in:0};
-S.clips.white2={start:11.6905,len:4.5717,in:0};
-S.clips.fuer={start:25.1956,len:11.4291,in:0,rate:0.8};
-S.clips.system={start:84.627,len:4.5717,in:0};
-S.clips.kanal={start:115.4857,len:2.2858,in:0};
-S.clips.formats={start:117.7715,len:13.715,in:0};
-S.clips.flex={start:131.4865,len:2.2858,in:0};
-S.clips.ivKochen={start:0,len:2.4019,in:0};
-S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
-S.clips.ivBrille={start:4.575,len:2.0016,in:0};
-S.clips.endtxt={start:162.3452,len:16.1648,in:0};
-S.clips.endc={start:178.51,len:11.49,in:0};
+S.clips.hl1b={start:3.5954,len:3.2529,in:0,rate:0.66805};
+S.clips.hl1c={start:6.8483,len:2.9962,in:0,rate:0.66805};
+S.clips.hl1d={start:9.8445,len:3.9377,in:0,rate:0.66805};
+S.clips.julian={start:16.2653,len:6.8575,in:0,rate:0.66667};
+S.clips.white2={start:16.2653,len:6.8575,in:0,rate:0.66667};
+S.clips.fuer={start:38.9261,len:18.2866,in:0,rate:0.5};
+S.clips.system={start:129.2163,len:6.8575,in:0};
+S.clips.kanal={start:176.0758,len:3.4287,in:0};
+S.clips.formats={start:179.5045,len:22.8583,in:0,rate:0.6};
+S.clips.flex={start:202.3628,len:3.4287,in:0};
+S.clips.ivKochen={start:0.0,len:3.5954,in:0};
+S.clips.ivTanken={start:3.5954,len:3.2529,in:0};
+S.clips.ivBrille={start:6.8483,len:2.9962,in:0};
+S.clips.endtxt={start:249.2223,len:23.1149,in:0};
+S.clips.endc={start:272.3372,len:13.6628,in:0,rate:0.66667};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 2.5, "popGap": 99, "end": 12, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
-Object.assign(S.comps.c4.params,{"len": 7, "outAt": 6.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
+Object.assign(S.comps.c4.params,{"len": 10, "outAt": 9.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
 Object.assign(S.comps.colors.params,{"beatsC": 4.75});FM.colors=COMPS.colors.model(S.comps.colors.params);
-Object.assign(S.comps.people.params,{"sb": 4});FM.people=COMPS.people.model(S.comps.people.params);
-Object.assign(S.comps.c3.params,{"len": 8, "outAt": 7.15});FM.c3=COMPS.c3.model(S.comps.c3.params);
-Object.assign(S.comps.c5.params,{"len": 8, "outAt": 7.15});FM.c5=COMPS.c5.model(S.comps.c5.params);
+Object.assign(S.comps.people.params,{"sb": 6});FM.people=COMPS.people.model(S.comps.people.params);
+Object.assign(S.comps.c3.params,{"len": 12, "outAt": 11.15});FM.c3=COMPS.c3.model(S.comps.c3.params);
+Object.assign(S.comps.c5.params,{"len": 12, "outAt": 11.15});FM.c5=COMPS.c5.model(S.comps.c5.params);
+Object.assign(S.comps.c2.params,{"len": 8.99, "outAt": 8.14});FM.c2=COMPS.c2.model(S.comps.c2.params);
+Object.assign(S.comps.kanal.params,{"len": 6, "outAt": 5.15});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
+Object.assign(S.comps.flex.params,{"len": 6, "outAt": 5.15});FM.flex=COMPS.flex.model(S.comps.flex.params);
+Object.assign(S.comps.c7.params,{"len": 6, "outAt": 5.15});FM.c7=COMPS.c7.model(S.comps.c7.params);
+Object.assign(S.comps.pers.params,{"len": 6, "step": 1.5, "outAt": 5.6});FM.pers=COMPS.pers.model(S.comps.pers.params);
+Object.assign(S.comps.system.params,{"len": 12, "step": 4.5, "outAt": 11.6});FM.system=COMPS.system.model(S.comps.system.params);
+Object.assign(S.comps.endtxt.params,{"len": 36, "aOut": 10.75, "bIn": 12.25, "hold": 3.75, "move": 0.5, "bOut": 23.5, "cIn": 24.25, "cOut": 34.75});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
@@ -4146,7 +4154,7 @@ function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
    wird so gedehnt, dass er genau bis zum Start von „Farben“ reicht – Farben/Anzeigen sind schneller, die gewonnene Zeit geht hierher. */
 const WA=4.8333,WB=14.95,WSPAN=17.018; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar
 function warpK(){return Math.max(.2,WSPAN/(WB-WA))}
-const WPD=6.8572;
+const WPD=11.4322;
 function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA+WPD?t*WA/(WA+WPD):t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)
 function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x*(WA+WPD)/WA:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit
 const PRE=new Set(['grad','white','story','story2','story4','story3','story5','story6']);
@@ -4180,12 +4188,11 @@ let actx=null,abuf=null,abuf0=null,abufAt=null,asrc=null,gain=null,muted=false;
 // Musik-Schnitt: der große Bass vom Ende des Tracks (91,44 s) wird genau auf den H·A-Aufbau der Endcard gelegt
 const AU_BASS=91.4537,AU_CUT=93.7395,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
 function auTarget(){return AU_CUT}
-function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track mit Schleife: [0,LB) + LN × [LA,LB) + [LB,Ende)
-  const sr=abuf0.sampleRate,a=Math.round(AU_LA*sr),b=Math.round(AU_LB*sr),L=b-a,n=abuf0.length+AU_LN*L,xf=Math.round(.006*sr);
+function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track aus Segmenten (AU_SEGS), kurzer Crossfade an jeder Naht
+  const sr=abuf0.sampleRate,xf=Math.round(.006*sr),xi=Math.round(.03*sr),sg=AU_SEGS.map(([a,b])=>[Math.round(a*sr),Math.min(abuf0.length,Math.round(b*sr))]),n=sg.reduce((q,[a,b])=>q+b-a,0);
   const out=actx.createBuffer(abuf0.numberOfChannels,n,sr);
-  for(let ch=0;ch<abuf0.numberOfChannels;ch++){const src=abuf0.getChannelData(ch),dst=out.getChannelData(ch);dst.set(src.subarray(0,b));
-    for(let k=0;k<=AU_LN;k++){const o=b+k*L;if(k<AU_LN)dst.set(src.subarray(a,b),o);else dst.set(src.subarray(b),o);
-      for(let i=0;i<xf;i++){const w=i/xf,from=src[b+i]??0,to=k<AU_LN?src[a+i]:src[b+i];dst[o+i]=to*w+from*(1-w)}}} // kurzer Crossfade an jeder Naht
+  for(let ch=0;ch<abuf0.numberOfChannels;ch++){const src=abuf0.getChannelData(ch),dst=out.getChannelData(ch);let o=0;
+    sg.forEach(([a,b],j)=>{dst.set(src.subarray(a,b),o);if(j>0){const pb=sg[j-1][1],x=j===1?xi:xf;for(let i=0;i<x;i++){const w=i/x,from=src[pb+i]??0;dst[o+i]=src[a+i]*w+from*(1-w)}}o+=b-a})}
   abufAt='loop';return out}
 async function ensureAudio(){if(actx)return;actx=new (window.AudioContext||window.webkitAudioContext)();gain=actx.createGain();gain.connect(actx.destination);try{abuf0=await actx.decodeAudioData(b64ToBuf(SND));abuf=spliceAudio()}catch(e){abuf=null}}
 function stopAudio(){if(asrc){try{asrc.stop()}catch(e){}asrc.disconnect();asrc=null}}

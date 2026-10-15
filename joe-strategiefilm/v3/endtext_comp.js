@@ -25,7 +25,7 @@ const ENDTXT={
     {k:'cIn',label:'„Österreichs größte tägliche Markenbühne.“ ab (Schlag)',min:14,max:18,step:.25,fmt:v=>String(v)},
     {k:'cOut',label:'… raus bei (Schlag)',min:18,max:24,step:.25,fmt:v=>String(v),sub:'danach das jö-Logo'},
     {k:'step',label:'Wort-Abstand',min:.125,max:.5,step:.125,fmt:v=>v+' Schlag'}],
-  model(P){const b=P.beat;return {P,b,key:P.bIn*b,keyName:'Mehr …',total:24*b}},
+  model(P){const b=P.beat;return {P,b,key:P.bIn*b,keyName:'Mehr …',total:(P.len||24)*b}},
   show(on){ETL.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b,E=ETE;
     E.bg.style.transform=`scale(${(1.04-.04*eOut(seg(t,0,M.total))).toFixed(4)})`;
