@@ -1247,7 +1247,7 @@ const COLORS={
     // 01 + 02: Karten
     const drift=0;
     E.cards.forEach((c,i)=>{const a=i*fl,p=i?f(seg(t,a,a+P.inDur)):1, /* Beige = Hintergrund: steht schon, nur die Pills erscheinen */pp=eBack(seg(t,a+P.inDur*.35,a+P.inDur*.35+.4));
-      const q=f(seg(t,T[1]+i*P.stag,T[1]+i*P.stag+.55)),o=f(seg(lt3,i*P.stag*.5,i*P.stag*.5+.4));
+      const q=f(seg(t,T[1]-.55+i*P.stag*.6,T[1]-.55+i*P.stag*.6+.3)),o=f(seg(lt3,i*P.stag*.5,i*P.stag*.5+.4));
       c.style.display=t<a?'none':'';
       c.style.transform=`translate(${(drift+(1-p)*(2060-(FC_X0+i*FC_STEP))).toFixed(1)}px,${(o*1150).toFixed(1)}px)`; // gleitet von rechts rein
       c.style.opacity=1;
