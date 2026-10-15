@@ -18,9 +18,9 @@ const FM_S1=[ // x, y, w, h, Hintergrund, Inhalt
   <div style="position:absolute;left:44px;top:44px">${fmTag('hg','Letzte Chance',S2_INK,'#fff',42)}</div>
   <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:58px;font-weight:800;line-height:1.02;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Exklusive</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sportdeals</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">entdecken!</div></div></div>
   <div style="position:absolute;left:44px;top:322px">${fmJoPill('49&#8239;€',70)}</div>
-  <div class="fmIm" style="position:absolute;left:440px;top:36px;width:280px;height:392px;border-radius:40px 40px 0 0;background:#f2bf62;overflow:hidden"><img class="fmIm" src="${S2I.girl}" alt="" style="position:absolute;left:-14px;top:18px;width:300px;max-width:none"></div>`],
+  <div class="fmIm" style="position:absolute;left:440px;top:36px;width:280px;height:392px;border-radius:40px 40px 0 0;background:#f2bf62;overflow:hidden"><img data-z="1" class="fmIm" src="${S2I.girl}" alt="" style="position:absolute;left:-14px;top:18px;width:300px;max-width:none"></div>`],
  [594,619.5,324.5,324.5,'#e4e1ea',`
-  <img class="fmIm" src="${S2I.pad}" alt="" style="position:absolute;left:-18px;top:58px;width:360px;max-width:none">
+  <img data-z="1" class="fmIm" src="${S2I.pad}" alt="" style="position:absolute;left:-18px;top:58px;width:360px;max-width:none">
   <div style="position:absolute;left:22px;top:22px">${fmTag('ci','Games',S2_INK,'#fff',38)}</div>
   <div style="position:absolute;left:46px;top:246px"><div class="fmBd fmPl" data-side="l" style="display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 22px 0 5px;border-radius:56px;background:#fff;color:${FM_DK};font-size:25px;font-weight:800;box-shadow:0 10px 24px rgba(40,10,0,.18)">${s2Jo(46)}Jetzt spielen</div></div>`],
  [958.5,619.5,395.5,324.5,'#fff',`
@@ -53,12 +53,12 @@ const FM_S2=[
   <div style="position:absolute;left:44px;top:44px">${fmTag('ci','Games',S2_INK,'#fff',42)}</div>
   <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:64px;font-weight:800;line-height:1.02;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Spielen &amp;</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Gewinnen</div></div></div>
   <div style="position:absolute;left:44px;top:300px">${FM_PILL(s2Jo(58)+'Jetzt spielen',70)}</div>
-  <div class="fmIm" style="position:absolute;left:420px;top:36px;width:300px;height:392px;border-radius:40px 40px 0 0;background:#e4e1ea;overflow:hidden"><img class="fmIm" src="${S2I.pad}" alt="" style="position:absolute;left:-60px;top:110px;width:400px;max-width:none"></div>`],
+  <div class="fmIm" style="position:absolute;left:420px;top:36px;width:300px;height:392px;border-radius:40px 40px 0 0;background:#e4e1ea;overflow:hidden"><img data-z="1" class="fmIm" src="${S2I.pad}" alt="" style="position:absolute;left:-60px;top:110px;width:400px;max-width:none"></div>`],
  [90,619.5,324.5,324.5,'#000',`
   <img data-z="1" class="fmIm" src="${STI.man}" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover">
   <div style="position:absolute;left:146px;top:240px">${fmOesPill('500',58)}</div>`],
  [454.5,619.5,395.5,324.5,'#5e0f0b',`
-  <img class="fmIm" src="${S2I.beer}" alt="" style="position:absolute;left:26px;top:34px;height:270px;max-width:none">
+  <img data-z="1" class="fmIm" src="${S2I.beer}" alt="" style="position:absolute;left:26px;top:34px;height:270px;max-width:none">
   <div style="position:absolute;left:214px;top:36px">${fmTag('x','Deal',ST_OR,'#fff',38)}</div>
   <div style="position:absolute;left:214px;top:98px;color:#fff;font-size:30px;font-weight:800;line-height:1.1"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Hirter</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Privat Pils</div></div></div>
   <div style="position:absolute;left:206px;top:226px">${fmJoPill('-&#8239;25%',64)}</div>`],
@@ -68,7 +68,7 @@ const FM_S2=[
  [900,724.5,426,219.5,'#e4e1ea',fmPush('Neuer Deal bei Hirter','-25 % mit deinen Ös.')],
  [1376,136,454,808,'#e4e1ea',`
   <div class="fmIm" style="position:absolute;left:0;top:300px;width:454px;height:508px;border-radius:48px 48px 0 0;background:${JG_CSS}"></div>
-  <img class="fmIm" src="${S4I.girl}" alt="" style="position:absolute;left:-46px;top:36px;width:540px;max-width:none">
+  <img data-z="1" class="fmIm" src="${S4I.girl}" alt="" style="position:absolute;left:-46px;top:36px;width:540px;max-width:none">
   <div style="position:absolute;left:30px;top:30px">${fmTag('ci','Aktion','#fff','#e3301b',40)}</div>
   <div style="position:absolute;left:54px;top:440px">${fmJoPill('Sportdeals',66)}</div>
   <div style="position:absolute;left:34px;top:676px;color:#fff;font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Mehr Bewegung,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">mehr Ös.</div></div></div>`]];
@@ -83,21 +83,21 @@ const FM_S3=[
  [566,136,454,808,'#e4e1ea',`
   <div class="fmIm" style="position:absolute;left:0;top:560px;width:454px;height:248px;border-radius:48px 48px 0 0;background:${JG_CSS}"></div>
   <svg class="fmIm" viewBox="0 0 454 600" style="position:absolute;left:0;top:0;width:454px;height:600px"><circle class="fmRing" cx="227" cy="320" r="180" fill="none" stroke="#e3301b" stroke-width="46" stroke-dasharray="0 1200" stroke-linecap="round" transform="rotate(120 227 320)"/></svg>
-  <img class="fmIm" src="${S5I.girl}" alt="" style="position:absolute;left:-8px;top:40px;height:560px;max-width:none">
+  <img data-z="1" class="fmIm" src="${S5I.girl}" alt="" style="position:absolute;left:-8px;top:40px;height:560px;max-width:none">
   <div style="position:absolute;left:30px;top:30px">${fmTag('ci','Aktion','#fff','#e3301b',40)}</div>
   <div style="position:absolute;left:150px;top:470px">${fmJoPill('1&#8239;€ = 1&#8239;Ö',60)}</div>
   <div style="position:absolute;left:34px;top:620px;color:#fff;font-size:56px;font-weight:800;line-height:1.02;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sammeln &amp;</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sparen</div></div></div>`],
  [1070,136,760,427.5,ST_OR,`
   <div style="position:absolute;left:44px;top:44px">${fmTag('hg','Letzte Chance',S2_INK,'#fff',42)}</div>
   <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:54px;font-weight:800;line-height:1.04;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Clever sparen</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">bei deinem</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Wocheneinkauf.</div></div></div>
-  <img class="fmIm" src="${S6I.bag}" alt="" style="position:absolute;left:452px;top:70px;width:300px;max-width:none">
+  <img data-z="1" class="fmIm" src="${S6I.bag}" alt="" style="position:absolute;left:452px;top:70px;width:300px;max-width:none">
   <div style="position:absolute;left:520px;top:40px">${fmJoPill('-&#8239;25%',70)}</div>`],
  [1070,619.5,324.5,324.5,JG_CSS,fmEtikett(52,34,220,256,'','Bonus-<br>box','250').replace('font-size:76.8px','font-size:52px')],
  [1434.5,619.5,395.5,324.5,'#fff',`
   <img src="${PTA.adeg}" alt="" style="position:absolute;left:18px;top:16px;width:38px;height:38px;border-radius:50%">
   <div style="position:absolute;left:66px;top:24px;color:#6a1006;font-size:20px;font-weight:700">ADEG</div>
   <div style="position:absolute;right:18px;top:29px;color:#6a1006;font-size:11px;font-weight:500">Gültig bis 31.10.2026</div>
-  <div style="position:absolute;left:12px;top:66px;width:371.5px;height:150px;border-radius:6px;background:#23872d;overflow:hidden"><img class="fmIm" src="${S6I.bag}" alt="" style="position:absolute;left:30px;top:-20px;width:170px;max-width:none"></div>
+  <div style="position:absolute;left:12px;top:66px;width:371.5px;height:150px;border-radius:6px;background:#23872d;overflow:hidden"><img data-z="1" class="fmIm" src="${S6I.bag}" alt="" style="position:absolute;left:30px;top:-20px;width:170px;max-width:none"></div>
   <div style="position:absolute;right:24px;top:78px">${fmOesPill('3fach',40)}</div>
   <div style="position:absolute;left:18px;top:230px;color:#6a1006;font-size:17px;font-weight:600">3fach Ös auf deinen Wocheneinkauf</div>
   <div style="position:absolute;left:18px;top:264px;width:42px;height:42px;border-radius:50%;border:2px solid #6a1006;box-sizing:border-box;display:grid;place-items:center"><svg viewBox="0 0 24 24" style="width:20px"><path d="M12 20s-7-4.4-7-9.6A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.4C19 15.6 12 20 12 20z" fill="none" stroke="#6a1006" stroke-width="2"/></svg></div>
