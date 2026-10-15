@@ -64,7 +64,7 @@ const FM_S2=[
   <div style="position:absolute;left:206px;top:226px">${fmJoPill('-&#8239;25%',64)}</div>`],
  [900,136,426,532.5,JG_CSS,`
   <div style="position:absolute;left:36px;top:34px;color:#fff;font-size:46px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Deine</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sportwoche.</div></div></div>
-  ${fmEtikett(83,196,260,300,'','-&#8239;20%','500')}`],
+  ${fmEtikett(83,196,260,300,'','-&#8239;20%','500').replace('font-size:90px','font-size:68px')}`],
  [900,724.5,426,219.5,'#e4e1ea',fmPush('Neuer Deal bei Hirter','-25 % mit deinen Ös.')],
  [1376,136,454,808,'#e4e1ea',`
   <div class="fmIm" style="position:absolute;left:0;top:300px;width:454px;height:508px;border-radius:48px 48px 0 0;background:${JG_CSS}"></div>
