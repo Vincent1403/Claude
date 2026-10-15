@@ -260,7 +260,7 @@ rep("const HL2=makeHL('hl2',",
     "const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});\n"
     "const HL2=makeHL('hl2',")
 # ---------- 5f. Hintergrundvideos der Intro-Headlines (introvid_comp.js) ----------
-rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8").replace("__KIAN0__", "data:image/webp;base64," + base64.b64encode((here / "kian0.webp").read_bytes()).decode()) + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
+rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8").replace("__KIAN0__", "data:image/webp;base64," + base64.b64encode((here / "kian0.webp").read_bytes()).decode()).replace("__TAM0__", "data:image/webp;base64," + base64.b64encode((here / "tamara0.webp").read_bytes()).decode()) + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 i0 = s.index("function spliceAudio(){"); i1 = s.index("abufAt=T;return out}", i0) + len("abufAt=T;return out}")
 s = s[:i0] + ("function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track mit Schleife: [0,LB) + LN × [LA,LB) + [LB,Ende)\n"
   "  const sr=abuf0.sampleRate,a=Math.round(AU_LA*sr),b=Math.round(AU_LB*sr),L=b-a,n=abuf0.length+AU_LN*L,xf=Math.round(.006*sr);\n"
@@ -273,6 +273,7 @@ rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:(
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
+           + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            "const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]

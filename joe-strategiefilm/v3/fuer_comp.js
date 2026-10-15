@@ -7,10 +7,10 @@
 const FU_NM=[['Kian',-1],['Lena',0],['Jonas',7],['Mei',8],['Elif',16],['Walter',4]];
 const FU_PH=['mehr Möglichkeiten.','mehr Begeisterung.',...FU_NM.map(n=>n[0]+'.'),'jeden.'],FU_N0=2,FU_PW=330,FU_PHH=170;
 // Profil-Wolke um „Für jeden.“: Rasterlage, ohne Überlappung, Schrift frei (x, y relativ zur Bildmitte, Durchmesser); FU_KI = Kian
-const FU_POS=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -232, 122], [-386, -177, 132], [-129, -198, 127], [116, -234, 178], [422, -231, 134], [678, -220, 182], [-853, -2, 114], [-564, 21, 115], [561, 8, 155], [820, 10, 134], [-703, 192, 110], [-385, 235, 155], [-116, 217, 136], [127, 189, 183], [405, 179, 140], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [304, 404, 200], [510, 418, 154], [829, 396, 131]],FU_KI=27;
+const FU_POS=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -232, 122], [-386, -177, 132], [-129, -198, 127], [116, -234, 178], [422, -231, 134], [678, -220, 182], [-853, -2, 114], [-564, 21, 115], [561, 8, 155], [820, 10, 134], [-703, 192, 110], [-385, 235, 155], [-116, 217, 136], [127, 189, 183], [405, 179, 140], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [304, 404, 200], [510, 418, 154], [829, 396, 131]],FU_KI=27,FU_TI=12; // FU_TI = Tamara (Index in FU_AV)
 const FUL=document.createElement('div');FUL.id='fuerL';FUL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
 FUL.innerHTML=`<div style="position:absolute;inset:0;background:${JG_CSS}"></div>
-<div id="fuCloud" style="position:absolute;left:960px;top:540px;width:0;height:0">${FU_POS.filter((p,i)=>i!==FU_KI).map((p,i)=>`<img class="fuAv" src="${CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:0;top:0;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);transform-origin:50% 50%">`).join('')}</div>
+<div id="fuCloud" style="position:absolute;left:960px;top:540px;width:0;height:0">${FU_POS.filter((p,i)=>i!==FU_KI).map((p,i)=>`<img class="fuAv" src="${i===FU_TI?'__TAM0__':CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:0;top:0;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);transform-origin:50% 50%">`).join('')}</div>
 <div id="fuKian" style="position:absolute;overflow:hidden;box-shadow:0 24px 60px rgba(60,20,0,.22)"><img src="__KIAN0__" alt="" style="position:absolute;max-width:none"></div>
 <div id="fuRow" style="position:absolute;left:0;top:0;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
  <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="fuFix" style="display:inline-block;margin-top:30px">Für</span></div>
@@ -22,7 +22,7 @@ const FUE={row:$('fuRow'),fix:$('fuFix'),mask:$('fuMask'),ph:[...FUL.querySelect
 const FU_AV=FU_POS.filter((p,i)=>i!==FU_KI),FU_ORD=FU_AV.map((a,i)=>i).sort((x,y)=>Math.hypot(...FU_AV[x].slice(0,2))-Math.hypot(...FU_AV[y].slice(0,2))); // ploppen von innen nach außen
 const FUER={
   key:'fuer',name:'Für … (Verlauf)',lane:'laneV3',cls:'typo',
-  DEF:{beat:13.725/24,inAt:.25,hold:2,move:.4,nStep:.5,nMove:.2,gap:.28,center:.75,cDur:.5,cloudAt:8.25,cloudZoom:1.5,outAt:12.25,zoomAt:13.5,zDur:1.4},
+  DEF:{beat:13.725/24,inAt:.25,hold:2,move:.4,nStep:.5,nMove:.2,gap:.28,center:.75,cDur:.5,cloudAt:8.25,cloudZoom:1.5,outAt:16,zoomAt:13.5,zDur:1.4},
   params:[
     {k:'inAt',label:'„Für“ steigt auf bei (Schlag)',min:0,max:2,step:.25,fmt:v=>String(v)},
     {k:'hold',label:'Satzende wechselt alle',min:2,max:6,step:.5,fmt:v=>v+' Schläge',sub:'„Für“ bleibt stehen, das Satzende läuft nach oben weiter'},
@@ -68,11 +68,13 @@ const FUER={
     E.av.forEach((el,i)=>{const [x,y,d]=FU_AV[i],k=FU_ORD.indexOf(i),a0=c0+(k+1)*.045,pp=eBack(seg(t,a0,a0+.45)),[ox,oy]=flo(i);
       el.style.width=el.style.height=d+'px';el.style.transform=`translate(${(x+ox-d/2).toFixed(1)}px,${(y+oy-d/2).toFixed(1)}px) scale(${pp.toFixed(4)})`});
     {const kp=eBack(seg(t,c0,c0+.45)),[fx,fy]=flo(FU_KI),ox=fx*(1-u),oy=fy*(1-u),d0=kd*S;
-     const kw=d0+(1920-d0)*u,kh=d0+(1080-d0)*u,s2=kw/kd,cx=960+(kx+ox)*S*(1-u),cy=540+(ky+oy)*S*(1-u),kr=Math.min(kw,kh)/2*(1-Math.pow(u,3));
-     E.cloud.style.transform=`translate(${(cx-960-kx*s2).toFixed(1)}px,${(cy-540-ky*s2).toFixed(1)}px) scale(${s2.toFixed(4)})`;
+     const kw=d0+(1920-d0)*u,kh=d0+(1080-d0)*u,s2=kw/kd,Tx=kx*S*(1-u)-kx*s2,Ty=ky*S*(1-u)-ky*s2,cx=960+Tx+(kx+ox)*s2,cy=540+Ty+(ky+oy)*s2,kr=Math.min(kw,kh)/2*(1-Math.pow(u,3));
+     const cam=`translate(${Tx.toFixed(1)}px,${Ty.toFixed(1)}px) scale(${s2.toFixed(4)})`;E.cloud.style.transform=cam;
+     // „Für jeden.“ bleibt stehen und gehört zur Szene: beim Zoom in Kian fliegt es mit der Wolke aus dem Bild
+     E.row.style.transformOrigin=`${(960-parseFloat(E.row.style.left)).toFixed(1)}px ${(540-parseFloat(E.row.style.top)).toFixed(1)}px`;E.row.style.transform=u>0?cam:'none';
      Object.assign(E.kian.style,{left:(cx-kw/2).toFixed(1)+'px',top:(cy-kh/2).toFixed(1)+'px',width:kw.toFixed(1)+'px',height:kh.toFixed(1)+'px',borderRadius:kr.toFixed(1)+'px',transform:`scale(${(u>0?1:kp).toFixed(4)})`,opacity:t<c0?'0':'1'});
      const im=E.kian.firstChild,iw=Math.max(kw,kh*16/9),ih=iw*9/16;Object.assign(im.style,{width:iw.toFixed(1)+'px',height:ih.toFixed(1)+'px',left:((kw-iw)/2).toFixed(1)+'px',top:((kh-ih)*.3).toFixed(1)+'px'})}
-    E.row.style.transform='none';FUL.querySelector('div').style.transform=`scale(${(1.04-.04*eOut(seg(t,0,M.total))).toFixed(4)})`},
+    FUL.querySelector('div').style.transform=`scale(${(1.04-.04*eOut(seg(t,0,M.total))).toFixed(4)})`},
   marks(M){const P=M.P,b=M.b;return [[P.inAt*b,'Für'],...FU_PH.slice(1).map((x,k)=>[M.st[k+1]*b,x.split(' ').pop()]),[P.outAt*b,'raus']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P,b=M.b;return [
     ['„Für mehr Möglichkeiten.“',`${F(P.inAt*b)}–${F((P.inAt+P.hold)*b)}`,'„Für“ und das Satzende steigen aus der Maske'],
