@@ -391,7 +391,7 @@ for k in CLIPS:
     if k not in ("c2", "colors") and CO_AT - 1e-3 <= CLIPS[k]["start"] < 124:
         CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
 CLIPS["colors"] = C(CO_AT, 2 * BARL)
-PARAMS["colors"] = {"beatsC": 4.75}
+PARAMS["colors"] = {"beatsB": 2.75, "beatsC": 3.0}
 # im Editor angelegt: nach der Bento-Box „Wir bringen eure Marke dorthin, wo sie wirkt.“, Citylight und Billboard; Stories-Ablage bei 189,79
 CLIPS["c5"] = C(127.0736, 4.1312)
 CLIPS["city"] = C(130.609, 4.317)
