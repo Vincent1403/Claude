@@ -42,7 +42,7 @@ const FUER={
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
     const gap=P.gap*fs,tw=E._wf+gap+Math.max(...E._wp),xa=960-tw/2,xc=960-(E._wf+gap+E._wp[E._wp.length-1])/2,
       cs=(M.st[FU_PH.length-1]+P.center)*b,x0=xa+(xc-xa)*eIO(seg(t,cs,cs+P.cDur)); // am Ende gleitet „Für jeden.“ in die Mitte
-    Object.assign(E.row.style,{left:x0.toFixed(1)+'px',top:(540-fs*.55).toFixed(1)+'px'});
+    Object.assign(E.row.style,{top:(540-fs*.55).toFixed(1)+'px'});
     // Profilbild-Pille zwischen „Für“ und Namen: öffnet beim ersten Namen, schließt zu „jeden.“
     const ns=M.st[FU_N0]*b,ne=M.st[FU_PH.length-1]*b,ow=eIO(seg(t,ns-.05,ns+P.move))*(1-eIO(seg(t,ne,ne+P.nMove+.08))),pw=FU_PW*ow;
     Object.assign(E.pill.style,{left:(E._wf+gap).toFixed(1)+'px',width:pw.toFixed(1)+'px',visibility:ow>.002?'visible':'hidden'});
@@ -52,6 +52,10 @@ const FUER={
     // Position auf der „Walze“: 0 = erstes Satzende, 1 = zweites …; jedes läuft von unten rein und oben raus
     let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<FU_PH.length;k++){const s=M.st[k]*b;p+=eIO(seg(t,s,s+(k>FU_N0?P.nMove:P.move)))}
     p+=eInCub(seg(t,o+.04,o+.34));
+    // ab dem ersten Namen steht die Kombi „Für [Bild] Name.“ mittig (Breite folgt dem laufenden Namen), endet als „Für jeden.“ in der Mitte
+    {const q=Math.max(0,Math.min(p,FU_PH.length-1)),i0=Math.floor(q),i1=Math.min(i0+1,FU_PH.length-1),wn=E._wp[i0]+(E._wp[i1]-E._wp[i0])*(q-i0),
+      xm=960-(E._wf+gap+ow*(FU_PW+gap)+wn)/2,m=Math.max(eIO(seg(t,ns-.05,ns+P.move)),eIO(seg(t,cs,cs+P.cDur)));
+     E.row.style.left=(x0+(xm-x0)*m).toFixed(1)+'px'}
     E.ph.forEach((el,i)=>{const d=i-p;el.style.transform=`translateY(${(d*240).toFixed(1)}px)`;el.style.opacity=Math.abs(d)<1.05?'1':'0'});
     E.pi.forEach((el,i)=>{const d=i+FU_N0-Math.min(p,FU_PH.length-2);el.style.transform=`translate(${((pw-FU_PW)/2).toFixed(1)}px,${(d*FU_PHH).toFixed(1)}px)`;el.style.visibility=Math.abs(d)<1.02?'visible':'hidden'});
     // Profil-Wolke (Kian gehört von Anfang an dazu), Kamera zieht beim Aufbau auf
