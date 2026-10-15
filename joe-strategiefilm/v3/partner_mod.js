@@ -1,9 +1,16 @@
 /* Partnerfilm: Partner-Szene – erst „Viele Marken. / Eine starke Verbindung.“ in der Mitte, die Partner-Logos liegen
    oben und unten drumherum; dann ersetzt das jö-App-Icon die Worte, die Partner fliegen hinein, das Icon verschwindet,
    danach in zwei Schritten „Eine Welt voller Marken.“ → „Ein gemeinsames Markenerlebnis.“ */
-{// Logos rahmen den Text: obere Reihe (8) und untere Reihe (7), Platz in der Mitte für zwei Zeilen (Werte vor der 115-%-Ausdehnung)
- const top=[-800,-571,-343,-114,114,343,571,800].map((x,i)=>[x,i%2?-385:-410]),bot=[-780,-520,-260,0,260,520,780].map((x,i)=>[x,i%2?385:405]);
- [...top,...bot].forEach(([x,y],i)=>{PT_CLOUD[i][0]=Math.round(x/1.15);PT_CLOUD[i][1]=Math.round(y/1.15)});}
+{// Zwei Anordnungen (Bildpixel relativ zur Mitte, werden durch die 115-%-Ausdehnung geteilt):
+ // A um „Viele Marken. / Eine starke Verbindung.“ – oben 6, links/rechts neben der kürzeren ersten Zeile je 2, unten 5;
+ // B um das jö-App-Icon – oben 5, links/rechts je 3, unten 4. Beim Wechsel zum Icon wandern die Logos in die frei werdenden Flächen.
+ const A=[[-750,-390],[-450,-405],[-150,-385],[150,-405],[450,-385],[750,-400],[-800,-120],[-615,-95],[615,-95],[800,-120],[-700,390],[-350,405],[0,385],[350,405],[700,390]];
+ const B=[[-640,-390],[-320,-400],[0,-385],[320,-400],[640,-390],[-470,-150],[-770,10],[-470,170],[470,-150],[770,-10],[470,170],[-560,395],[-190,410],[190,395],[560,410]];
+ // jedes Logo bekommt den nächstgelegenen freien Platz in B (gierig), damit die Wege kurz bleiben
+ const used=new Set(),mapB=A.map(()=>null),pairs=[];A.forEach((a,i)=>B.forEach((b,j)=>pairs.push([Math.hypot(a[0]-b[0],a[1]-b[1]),i,j])));pairs.sort((x,y)=>x[0]-y[0]);
+ const doneA=new Set();for(const [,i,j] of pairs){if(doneA.has(i)||used.has(j))continue;mapB[i]=B[j];doneA.add(i);used.add(j)}
+ window.PT_LA=A.map(v=>v.map(x=>x/1.15));window.PT_LB=mapB.map(v=>v.map(x=>x/1.15));
+ PT_LA.forEach((v,i)=>{PT_CLOUD[i][0]=v[0];PT_CLOUD[i][1]=v[1]});}
 {const LH=195;
  const blk=(id,lines)=>{const d=document.createElement('div');d.id=id;d.style.cssText=`position:absolute;left:0;right:0;top:${540-lines.length*LH/2}px;text-align:center;color:#670003;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:${LH}px;white-space:nowrap;pointer-events:none`;
   d.innerHTML=lines.map(l=>`<div style="height:${LH}px;overflow:hidden">${l.split(' ').map(w=>`<span class="ptW" style="display:inline-block${w.startsWith('*')?`;background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent`:''}">${w.replace('*','')}</span>`).join(' ')}</div>`).join('');
@@ -25,7 +32,8 @@
  const words=(ws,t,a0,o0)=>ws.forEach((w,k)=>{const a=a0+k*st,o=o0+k*.03,pi=eExpo(seg(t,a,a+.45)),po=eInCub(seg(t,o,o+.22));
   w.style.transform=`translateY(${((1-pi)*110-po*110).toFixed(1)}%)`;w.style.visibility=pi>0&&po<1?'visible':'hidden'});
  const r0=PARTNER.render;
- PARTNER.render=function(M,t){r0.call(this,M,t);const P=M.P,E=PTE;
+ PARTNER.render=function(M,t){{const u=eStFlow(seg(t,M.P.swap-.35,M.P.swap+.45));PT_LA.forEach((v,i)=>{PT_CLOUD[i][0]=v[0]+(PT_LB[i][0]-v[0])*u;PT_CLOUD[i][1]=v[1]+(PT_LB[i][1]-v[1])*u})}
+  r0.call(this,M,t);const P=M.P,E=PTE;
   words(E.w0,t,.05,P.swap-.45);                       // ganz raus, bevor das Icon kommt
   const lin=eBack(seg(t,P.swap,P.swap+.45)),lout=eIO(seg(t,P.lOut,P.lOut+.35));
   E.logo.style.transform+=` scale(${(lin*(1-lout)).toFixed(4)})`;E.logo.style.opacity=t<P.swap?'0':'1';
