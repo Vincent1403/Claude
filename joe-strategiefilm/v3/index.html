@@ -3757,8 +3757,10 @@ const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „D
  const words=(ws,t,a0,o0)=>ws.forEach((w,k)=>{const a=a0+k*st,o=o0+k*.03,pi=eExpo(seg(t,a,a+.45)),po=eInCub(seg(t,o,o+.22));
   w.style.transform=`translateY(${((1-pi)*110-po*110).toFixed(1)}%)`;w.style.visibility=pi>0&&po<1?'visible':'hidden'});
  const r0=PARTNER.render;
- PARTNER.render=function(M,t){{const u=eStFlow(seg(t,M.P.swap-.35,M.P.swap+.45));PT_LA.forEach((v,i)=>{PT_CLOUD[i][0]=v[0]+(PT_LB[i][0]-v[0])*u;PT_CLOUD[i][1]=v[1]+(PT_LB[i][1]-v[1])*u})}
+ PARTNER.render=function(M,t){{const u=1; // Logos erscheinen erst mit dem jö-Icon, direkt in der Anordnung um das Icon
+ PT_LA.forEach((v,i)=>{PT_CLOUD[i][0]=v[0]+(PT_LB[i][0]-v[0])*u;PT_CLOUD[i][1]=v[1]+(PT_LB[i][1]-v[1])*u})}
   r0.call(this,M,t);const P=M.P,E=PTE;
+  E.cs.forEach((c,i)=>{const a=P.swap+.05+PT_POP[i]*.035,q=eBack(seg(t,a,a+.4));c.style.transform+=` scale(${q.toFixed(4)})`;c.style.visibility=q>0?'visible':'hidden'});
   words(E.w0,t,.05,P.swap-.45);                       // ganz raus, bevor das Icon kommt
   const lin=eBack(seg(t,P.swap,P.swap+.45)),lout=eIO(seg(t,P.lOut,P.lOut+.35));
   E.logo.style.transform+=` scale(${(lin*(1-lout)).toFixed(4)})`;E.logo.style.opacity=t<P.swap?'0':'1';
@@ -4109,7 +4111,7 @@ S.clips.endtxt={start:162.3452,len:16.1648,in:0};
 S.clips.endc={start:178.51,len:11.49,in:0};
 S.clips.logo3={start:11.7953,len:2.4833,in:0.475};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
-Object.assign(S.comps.partner.params,{"hit": 2.5, "popGap": 99, "end": 12, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
+Object.assign(S.comps.partner.params,{"hit": 3.1, "lOut": 4.7, "sent": 4.75, "sent2": 5.7, "popGap": 99, "end": 12, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);

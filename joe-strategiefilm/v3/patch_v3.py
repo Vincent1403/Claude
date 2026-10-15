@@ -105,7 +105,7 @@ DROP = ["hl3"]
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
     "julian": {"sStart": 2.0, "pause": .3},   # Hallo Julian / 100 Ös / Einlösen stehen länger, der Slider startet später
-    "partner": {"hit": 2.5, "popGap": 99, "end": 12, "spread": 1.15},   # Einflug nach dem Logo-Wechsel, kein Verlauf-Flut
+    "partner": {"hit": 3.1, "lOut": 4.7, "sent": 4.75, "sent2": 5.7, "popGap": 99, "end": 12, "spread": 1.15},   # Einflug nach dem Logo-Wechsel, kein Verlauf-Flut
     "white2": {"edge": 1925},   # Flieder-Fläche erst mit dem Slider sichtbar (vorher Kante rechts außerhalb des Bildes)
     "story": {"holdA": 1.4},    # Stories stehen länger, damit die eingeflogenen Tags lesbar bleiben
     "story2": {"hold1": 1.4},

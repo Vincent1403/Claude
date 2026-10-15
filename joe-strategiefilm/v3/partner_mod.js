@@ -32,8 +32,10 @@
  const words=(ws,t,a0,o0)=>ws.forEach((w,k)=>{const a=a0+k*st,o=o0+k*.03,pi=eExpo(seg(t,a,a+.45)),po=eInCub(seg(t,o,o+.22));
   w.style.transform=`translateY(${((1-pi)*110-po*110).toFixed(1)}%)`;w.style.visibility=pi>0&&po<1?'visible':'hidden'});
  const r0=PARTNER.render;
- PARTNER.render=function(M,t){{const u=eStFlow(seg(t,M.P.swap-.35,M.P.swap+.45));PT_LA.forEach((v,i)=>{PT_CLOUD[i][0]=v[0]+(PT_LB[i][0]-v[0])*u;PT_CLOUD[i][1]=v[1]+(PT_LB[i][1]-v[1])*u})}
+ PARTNER.render=function(M,t){{const u=1; // Logos erscheinen erst mit dem jö-Icon, direkt in der Anordnung um das Icon
+ PT_LA.forEach((v,i)=>{PT_CLOUD[i][0]=v[0]+(PT_LB[i][0]-v[0])*u;PT_CLOUD[i][1]=v[1]+(PT_LB[i][1]-v[1])*u})}
   r0.call(this,M,t);const P=M.P,E=PTE;
+  E.cs.forEach((c,i)=>{const a=P.swap+.05+PT_POP[i]*.035,q=eBack(seg(t,a,a+.4));c.style.transform+=` scale(${q.toFixed(4)})`;c.style.visibility=q>0?'visible':'hidden'});
   words(E.w0,t,.05,P.swap-.45);                       // ganz raus, bevor das Icon kommt
   const lin=eBack(seg(t,P.swap,P.swap+.45)),lout=eIO(seg(t,P.lOut,P.lOut+.35));
   E.logo.style.transform+=` scale(${(lin*(1-lout)).toFixed(4)})`;E.logo.style.opacity=t<P.swap?'0':'1';
