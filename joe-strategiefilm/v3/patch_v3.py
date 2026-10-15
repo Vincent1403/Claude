@@ -498,6 +498,14 @@ CLIPS["endc"] = C(_ec, round(190 - _ec, 4))
 _pa = round(BASS - _ec, 3)                                             # Pill-Start auf dem Bass
 PARAMS["endc"] = {"flyAt": .35, "txAt": .95, "wmAt": 1.0, "outAt": round(_pa - .5, 3), "linkAt": round(_pa - .3, 3), "pillAt": _pa}
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.3,.62).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
+# „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
+_kd = round(2 * BEAT, 4)
+CLIPS["tags"]["len"] = round(CLIPS["tags"]["len"] - _kd, 4)
+CLIPS["kanal"]["start"] = round(CLIPS["kanal"]["start"] - _kd, 4); CLIPS["kanal"]["len"] = round(CLIPS["kanal"]["len"] + _kd, 4)
+_kn = 4 * CLIPS["kanal"]["len"] / BARL   # Subebene läuft im Takt-Raster (4 Einheiten pro Takt)
+PARAMS["kanal"] = {"len": round(_kn, 3), "inAt": 0, "outAt": round(_kn - .85, 3)}   # erstes Wort direkt auf dem Drop, Ausblenden wie bisher kurz vor den Formaten
+# Farben wie im Editor gesetzt (Start nach Julian, tiefer in die Subebene)
+CLIPS["colors"]["start"], CLIPS["colors"]["len"], CLIPS["colors"]["in"] = 19.5237, 7.9577, .8417
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
