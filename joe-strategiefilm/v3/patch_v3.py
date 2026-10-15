@@ -271,7 +271,7 @@ s = s[:i0] + ("function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&
   "  abufAt='loop';return out}") + s[i1:]
 rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
-aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // Schluss: Logo bleibt stehen, kein Übergang zum App-Icon\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'},render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf dem Verlauf auf und bleibt stehen\n"
+aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // Schluss: Logo bleibt stehen, kein Übergang zum App-Icon\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "formats_comp.js").read_text(encoding="utf-8") + "\n"
@@ -454,6 +454,14 @@ for k in ("julian", "white2"):
     CLIPS[k] = C(CLIPS["logo"]["start"], round(_je - CLIPS["logo"]["start"], 4), .45)
     CLIPS[k]["rate"] = round((JUL_LEN - .45) / CLIPS[k]["len"], 5)
 CLIPS["logo"]["start"] = 9000.0
+# Reihenfolge nach dem Drop: „Das neue Jö.“ → jö-Logo (wird zum App-Icon) → Julian (startet aus dem App-Icon) → Farben
+_d0, _co = CLIPS["julian"]["start"], CLIPS["colors"]["start"]
+CLIPS["c2"]["start"] = _d0
+CLIPS["logo3"] = C(round(_d0 + CLIPS["c2"]["len"], 4), 2.4833, .475)
+_js = round(CLIPS["logo3"]["start"] + CLIPS["logo3"]["len"], 4)
+for k in ("julian", "white2"):
+    CLIPS[k] = C(_js, round(_co - _js, 4), 0)
+    CLIPS[k]["rate"] = round(JUL_LEN / CLIPS[k]["len"], 5)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

@@ -3722,7 +3722,7 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
 
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // Schluss: Logo bleibt stehen, kein Übergang zum App-Icon
 const LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);
-const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'},render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf dem Verlauf auf und bleibt stehen
+const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt
 /* Partnerfilm: Partner-Szene – erst „Viele Marken. / Eine starke Verbindung.“ in der Mitte, die Partner-Logos liegen
    oben und unten drumherum; dann ersetzt das jö-App-Icon die Worte, die Partner fliegen hinein, das Icon verschwindet,
    danach in zwei Schritten „Eine Welt voller Marken.“ → „Ein gemeinsames Markenerlebnis.“ */
@@ -4058,7 +4058,7 @@ S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 
 S.warp={r0:9000.0};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9000.0,len:2.4833,in:0.475};
-S.clips.c2={start:15.75,len:2.5881,in:0};
+S.clips.c2={start:9.2072,len:2.5881,in:0};
 S.clips.people={start:54.9113,len:9.1433,in:0};
 S.clips.c3={start:48.0538,len:4.5717,in:0};
 S.clips.pers={start:52.6255,len:2.2858,in:0};
@@ -4087,8 +4087,8 @@ S.clips.showcase={start:9000.0,len:8.47,in:0};
 S.clips.hl1b={start:2.4019,len:2.1731,in:0};
 S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
-S.clips.julian={start:9.2072,len:7.055,in:0.45,rate:0.58422};
-S.clips.white2={start:9.2072,len:7.055,in:0.45,rate:0.58422};
+S.clips.julian={start:14.2786,len:6.3453,in:0,rate:0.72049};
+S.clips.white2={start:14.2786,len:6.3453,in:0,rate:0.72049};
 S.clips.fuer={start:27.4814,len:9.1433,in:0};
 S.clips.system={start:84.627,len:4.5717,in:0};
 S.clips.kanal={start:115.4857,len:2.2858,in:0};
@@ -4099,7 +4099,7 @@ S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};
 S.clips.endtxt={start:162.3452,len:16.1648,in:0};
 S.clips.endc={start:178.51,len:11.49,in:0};
-S.clips.logo3={start:18.3381,len:2.2858,in:0};
+S.clips.logo3={start:11.7953,len:2.4833,in:0.475};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 2.5, "popGap": 99, "end": 12, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
