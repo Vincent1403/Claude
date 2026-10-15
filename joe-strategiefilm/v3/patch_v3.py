@@ -94,8 +94,7 @@ CLIPS["tags"] = C(WALL_END, round(10 * BEAT, 4))     # Tag-System direkt nach de
 STORY_AT = round(WALL_END + 10 * BEAT, 4)               # Stories starten mit dem Schnitt
 WR0_REAL = round(STORY_AT - (8.196 - 4.8333) * _wk, 4)  # Story-Block (Design-Zeit) so verschoben
 CLIPS["showcase"] = C(121.2994, 8.47)   # Ablage; wird unten noch um die Intro-/Einschub-Verschiebungen versetzt (Editor: 146,443)          # Icon-Showcase: in der Ablage hinter dem Schluss
-AU_ID = round(6.9075 - 2.3325, 4); TRACK_LEN = round(96.0522 + AU_ID + 4 * (91.4456 - 45.732), 3)
-T_LEN = 290                                    # Timeline länger als der Track (96 s)
+T_LEN = 192                                    # Timeline länger als der Track (96 s)
 # Intro: vier Headlines vor dem Logo. Musik und alles ab dem Logo rücken um INTRO_D nach hinten (Beat-Sync bleibt).
 INTRO_HL = [("hl1", 4.2), ("hl1b", 3.8), ("hl1c", 3.5), ("hl1d", 4.6)]   # Länge je Headline in Schlägen
 INTRO_D = round(sum(l for _, l in INTRO_HL) * BEAT - 2.35, 4)          # alte Headline lief 0–2,35 s
@@ -120,8 +119,7 @@ rep("const WA=4.8333,WB=13.769;\nfunction warpK(){const c=S.clips.colors;return 
     "const isPre=k=>k==='grad'||(S.clips[k]&&S.clips[k].start<WB-1e-3&&S.clips[k].start+S.clips[k].len>WA+1e-3);",
     f"const WA=4.8333,WB={WE},WSPAN={round(WR1 - WR0, 4)}; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar\n"
     "function warpK(){return Math.max(.2,WSPAN/(WB-WA))}\n"
-    f"const WPD={round(INTRO_D + AU_ID, 4)};\n"   # Intro-Abschnitt (Verlauf) reicht bis zum Ende des Logos
-
+    f"const WPD={INTRO_D};\n"
     "function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA+WPD?t*WA/(WA+WPD):t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)\n"
     "function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x*(WA+WPD)/WA:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit\n"
     "const PRE=new Set(['grad','white','story','story2','story4','story3','story5','story6']);\n"
@@ -141,20 +139,18 @@ rep("  for(const k in COMPS){const pre=isPre(k),t=pre?tD:tR,c=S.clips[k],on=clip
 
 # ---------- 4. Musik und Länge ----------
 rep("const AU_BASS=91.4537,AU_CUT=64.0237,AU_XF=.004;", f"const AU_BASS=91.4537,AU_CUT={AU_CUT},AU_XF=.004;")
-rep("const T_MAIN=95, FPS=24;", f"const T_MAIN={T_LEN}, FPS=24, TRACK_LEN={TRACK_LEN};")  # Track mit Schleife (s. AU_LA/AU_LB)
+rep("const T_MAIN=95, FPS=24;", f"const T_MAIN={T_LEN}, FPS=24, TRACK_LEN=187.48;")  # Track mit Schleife (s. AU_LA/AU_LB)
 # Beat- und Taktraster laufen hinter dem Track weiter, damit in der Ablage gesnappt und synchronisiert werden kann
 rep("const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];",
-    "const AU_IA=2.3325,AU_IB=6.9075,AU_ID=AU_IB-AU_IA,AU_LA=45.732,AU_LB=91.4456,AU_LN=4,AU_LL=AU_LB-AU_LA; // Musik: Intro (vor dem Drop) um 2 Takte verlängert (Takt 2–3 noch einmal), Break + zweite Hälfte laufen viermal extra, ~283 s\n"
-    "const AU_SEGS=[[0,AU_IB],[AU_IA,AU_IB],[AU_IB,AU_LB],...Array(AU_LN).fill([AU_LA,AU_LB]),[AU_LB,1e9]];\n"
+    "const AU_LA=45.732,AU_LB=91.4456,AU_LN=2,AU_LL=AU_LB-AU_LA; // Musik-Schleife: ab dem Bass-Einsatz (Takt 37) springt der Track zurück auf den Break (Takt 17) – Break + zweite Hälfte laufen zweimal extra, ~187 s\n"
     "{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<AU_LB-.05)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));"
     "const mid=BEATS.filter(v=>v>=AU_LA-.01&&v<AU_LB-.05);for(let k=1;k<=AU_LN;k++)BEATS.push(...mid.map(v=>+(v+k*AU_LL).toFixed(3)));"
     "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));"
-    "for(let i=0;i<BEATS.length;i++)BEATS[i]=+(BEATS[i]+AU_ID).toFixed(3);BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));"
-    "{const per=96.0522/PEAKS.length,src=PEAKS.slice(),o=[];AU_SEGS.forEach(([a,b])=>o.push(...src.slice(Math.round(a/per),Math.round(Math.min(b,96.0522)/per))));PEAKS.length=0;PEAKS.push(...o)}}\n"
+    "const per=96.0522/PEAKS.length,ia=Math.round(AU_LA/per),ib=Math.round(AU_LB/per),seg=PEAKS.slice(ia,ib),tail=PEAKS.splice(ib);for(let k=0;k<AU_LN;k++)PEAKS.push(...seg);PEAKS.push(...tail)}\n"
     "const AU_OFF=0; // Musik startet bei Frame 0; das Intro dauert genau 3 Takte länger, das Logo liegt auf dem Drop (alles danach bleibt im Takt)\n"
     "{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));"
     "const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)\n"
-    "const MUSIC_SNAPS=[0,...BEATS];")
+    "const MUSIC_SNAPS=[0,...[2.35,5.32,8.64].map(v=>v+AU_OFF),...BEATS];")
 # Verlauf-Clip: Intro und Julian-Block als zwei Balken zeichnen, wenn dazwischen eine Lücke ist
 rep("ge.style.left=wReal(g.start)*pps+'px';ge.style.width=Math.max(12,(wReal(g.start+g.len)-wReal(g.start))*pps)+'px';ge.classList.toggle('sel',sel==='grad');",
     "{const a=wReal(g.start),gap=S.warp.r0>WA+.01,e1=gap?WA:wReal(g.start+g.len);ge.style.left=a*pps+'px';ge.style.width=Math.max(12,(e1-a)*pps)+'px';"
@@ -266,11 +262,12 @@ rep("const HL2=makeHL('hl2',",
 # ---------- 5f. Hintergrundvideos der Intro-Headlines (introvid_comp.js) ----------
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8").replace("__KIAN0__", "data:image/webp;base64," + base64.b64encode((here / "kian0.webp").read_bytes()).decode()).replace("__TAM0__", "data:image/webp;base64," + base64.b64encode((here / "tamara0.webp").read_bytes()).decode()) + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 i0 = s.index("function spliceAudio(){"); i1 = s.index("abufAt=T;return out}", i0) + len("abufAt=T;return out}")
-s = s[:i0] + ("function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track aus Segmenten (AU_SEGS), kurzer Crossfade an jeder Naht\n"
-  "  const sr=abuf0.sampleRate,xf=Math.round(.006*sr),xi=Math.round(.03*sr),sg=AU_SEGS.map(([a,b])=>[Math.round(a*sr),Math.min(abuf0.length,Math.round(b*sr))]),n=sg.reduce((q,[a,b])=>q+b-a,0);\n"
+s = s[:i0] + ("function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track mit Schleife: [0,LB) + LN × [LA,LB) + [LB,Ende)\n"
+  "  const sr=abuf0.sampleRate,a=Math.round(AU_LA*sr),b=Math.round(AU_LB*sr),L=b-a,n=abuf0.length+AU_LN*L,xf=Math.round(.006*sr);\n"
   "  const out=actx.createBuffer(abuf0.numberOfChannels,n,sr);\n"
-  "  for(let ch=0;ch<abuf0.numberOfChannels;ch++){const src=abuf0.getChannelData(ch),dst=out.getChannelData(ch);let o=0;\n"
-  "    sg.forEach(([a,b],j)=>{dst.set(src.subarray(a,b),o);if(j>0){const pb=sg[j-1][1],x=j===1?xi:xf;for(let i=0;i<x;i++){const w=i/x,from=src[pb+i]??0;dst[o+i]=src[a+i]*w+from*(1-w)}}o+=b-a})}\n"
+  "  for(let ch=0;ch<abuf0.numberOfChannels;ch++){const src=abuf0.getChannelData(ch),dst=out.getChannelData(ch);dst.set(src.subarray(0,b));\n"
+  "    for(let k=0;k<=AU_LN;k++){const o=b+k*L;if(k<AU_LN)dst.set(src.subarray(a,b),o);else dst.set(src.subarray(b),o);\n"
+  "      for(let i=0;i<xf;i++){const w=i/xf,from=src[b+i]??0,to=k<AU_LN?src[a+i]:src[b+i];dst[o+i]=to*w+from*(1-w)}}} // kurzer Crossfade an jeder Naht\n"
   "  abufAt='loop';return out}") + s[i1:]
 rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
@@ -450,53 +447,6 @@ PARAMS["people"] = {"sb": 4}                              # 4 Schläge pro Perso
 PARAMS["c3"] = {"len": 8, "outAt": 7.15}                  # Tafeln halten länger
 PARAMS["c4"] = {"len": 7, "outAt": 6.3, "outDir": -1}
 PARAMS["c5"] = {"len": 8, "outAt": 7.15}
-# ===== 1,5-fache Fassung (~286 s): Musik mit verlängertem Intro (+2 Takte) und vier Schleifen; alles ~1,5× langsamer,
-# Schnitte auf Takt/Halbtakt. Tafeln, Menschen, Schluss-Text: länger stehen (Wörter/Wechsel bleiben auf den Schlägen);
-# Animationen: rate = native Länge / neue Länge. Logo auf dem Drop bleibt in Originaltempo.
-NATIVE = {k: round(v["len"] * v.get("rate", 1), 4) for k, v in CLIPS.items()}
-F_IN = round((9.207 + AU_ID) / 9.207, 5)                        # Intro (ohne Beat) wird auf den neuen Drop gedehnt
-for k in ("hl1", "hl1b", "hl1c", "hl1d", "ivKochen", "ivTanken", "ivBrille"):
-    CLIPS[k]["start"], CLIPS[k]["len"] = round(CLIPS[k]["start"] * F_IN, 4), round(CLIPS[k]["len"] * F_IN, 4)
-    if k.startswith("hl"): CLIPS[k]["rate"] = round(1 / F_IN, 5)
-D0 = round(9.207 + AU_ID, 4)                                    # Drop: Logo-Treffer
-CLIPS["logo"]["start"] = D0
-_j = round(D0 + CLIPS["logo"]["len"], 4)
-for k in ("julian", "white2"):
-    CLIPS[k]["start"], CLIPS[k]["len"], CLIPS[k]["rate"] = _j, round(NATIVE[k] * 1.5, 4), round(1 / 1.5, 5)
-CO0 = round(D0 + 6 * BARL, 4)                                   # Farben auf der Takt-Eins, 6 Takte nach dem Drop
-CLIPS["c2"]["start"] = round(_j + NATIVE["julian"] * 1.5 - .768, 4); CLIPS["c2"]["len"] = round(CO0 - CLIPS["c2"]["start"], 4)
-PARAMS["c2"] = {"len": round(CLIPS["c2"]["len"] / BEAT, 2), "outAt": round(CLIPS["c2"]["len"] / BEAT - .85, 2)}
-BASS2 = round(BASS + AU_ID + 2 * (91.4456 - 45.732), 4)          # letzter langer Bass im verlängerten Track
-LAY2 = [  # (Clip, Takte, Art) – Art: "rate" = Animation dehnen, "hold" = Parameter (siehe unten)
-    ("colors", 5, "rate"), ("fuer", 8, "rate"), ("rcblock", 7.5, "rate"), ("c3", 3, "hold"), ("pers", 1.5, "hold"), ("people", 6, "hold"),
-    ("partner", 6, "rate"), ("brand", 6, "rate"), ("prod", 1.5, "rate"), ("system", 3, "hold"), ("badges", 7, "rate"), ("wall", 6, "rate"),
-    ("tags", 4.5, "rate"), ("kanal", 1.5, "hold"), ("formats", 10, "rate"), ("flex", 1.5, "hold"), ("deal", 3.5, "rate"), ("c4", 2.5, "hold"),
-    ("box", 3, "rate"), ("c5", 3, "hold"), ("city", 3, "rate"), ("c7", 1.5, "hold"), ("bill", 2.5, "rate"), ("endtxt", 9, "hold")]
-_t = CO0
-for k, bars, kind in LAY2:
-    ln = round(bars * BARL, 4)
-    if k == "rcblock":
-        r = round((NATIVE["cloud"] + CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]) / ln, 5)
-        _d = (CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]) / r
-        CLIPS["rabatt"].update(start=round(_t, 4), len=round(NATIVE["rabatt"] / r, 4), rate=r)
-        CLIPS["cloud"].update(start=round(_t + _d, 4), len=round(NATIVE["cloud"] / r, 4), rate=r)
-    else:
-        CLIPS[k]["start"], CLIPS[k]["len"] = round(_t, 4), ln
-        CLIPS[k].pop("rate", None)
-        if kind == "rate": CLIPS[k]["rate"] = round(NATIVE[k] / ln, 5)
-    _t += ln
-def card_hold(k, beats, **kw): PARAMS[k] = {**PARAMS.get(k, {}), "len": beats, "outAt": round(beats - .85, 2), **kw}
-for k, beats in (("c3", 12), ("kanal", 6), ("flex", 6), ("c5", 12), ("c7", 6)): card_hold(k, beats)
-card_hold("c4", 10, outAt=9.3, outDir=-1)
-PARAMS["pers"] = {"len": 6, "step": 1.5, "outAt": 5.6}
-PARAMS["system"] = {"len": 12, "step": 4.5, "outAt": 11.6}
-PARAMS["people"] = {"sb": 6}
-PARAMS["endtxt"] = {"len": 36, "aOut": 10.75, "bIn": 12.25, "hold": 3.75, "move": .5, "bOut": 23.5, "cIn": 24.25, "cOut": 34.75}
-CLIPS["endc"] = C(round(BASS2 - 4.35 * 1.5, 4), 0); CLIPS["endc"]["rate"] = round(1 / 1.5, 5)
-CLIPS["endc"]["len"] = round(286.0 - CLIPS["endc"]["start"], 4)
-CLIPS["logo2"] = C(round(CLIPS["endtxt"]["start"] + 9 * BARL, 4), 0, CLIPS["logo2"]["in"])
-CLIPS["logo2"]["len"] = round(CLIPS["endc"]["start"] - CLIPS["logo2"]["start"], 4)
-CLIPS["endtxt"]["len"] = round(CLIPS["endc"]["start"] - CLIPS["endtxt"]["start"], 4)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

@@ -17,7 +17,7 @@ function makeSeq(key,name,PH,beats,def,note){
     {k:'step',label:'Nächste Aussage alle',min:.5,max:4,step:.25,fmt:v=>v+' Schlag',sub:'jede schiebt die vorige nach oben raus'},
     {k:'move',label:'Dauer Wechsel',min:.1,max:.6,step:1/24,fmt:v=>Math.round(v*24)+' F'},
     {k:'outAt',label:'Ausstieg bei (Schlag)',min:1,max:beats,step:.25,fmt:v=>String(v)}],
-  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:PH[0].replace('*','').replace('|',' '),total:(P.len||beats)*b}},
+  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:PH[0].replace('*','').replace('|',' '),total:beats*b}},
   show(on){L.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b;
     let p=-1;for(let k=0;k<PH.length;k++){const s=(P.inAt+k*P.step)*b;p+=(k?eIO:eExpo)(seg(t,s,s+P.move+(k?0:.15)))}
