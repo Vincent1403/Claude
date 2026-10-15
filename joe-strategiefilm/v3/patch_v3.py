@@ -93,7 +93,7 @@ WALL_END = round(CLIPS["wall"]["start"] + CLIPS["wall"]["len"], 4)
 CLIPS["tags"] = C(WALL_END, round(10 * BEAT, 4))     # Tag-System direkt nach der Angebots-Wand, danach harter Schnitt auf die Stories
 STORY_AT = round(WALL_END + 10 * BEAT, 4)               # Stories starten mit dem Schnitt
 WR0_REAL = round(STORY_AT - (8.196 - 4.8333) * _wk, 4)  # Story-Block (Design-Zeit) so verschoben
-CLIPS["showcase"] = C(146.4433, 8.47)          # Icon-Showcase: in der Ablage hinter dem Schluss
+CLIPS["showcase"] = C(121.2994, 8.47)   # Ablage; wird unten noch um die Intro-/Einschub-Verschiebungen versetzt (Editor: 146,443)          # Icon-Showcase: in der Ablage hinter dem Schluss
 T_LEN = 190                                    # Timeline länger als der Track (96 s)
 # Intro: vier Headlines vor dem Logo. Musik und alles ab dem Logo rücken um INTRO_D nach hinten (Beat-Sync bleibt).
 INTRO_HL = [("hl1", 4.2), ("hl1b", 3.8), ("hl1c", 3.5), ("hl1d", 4.6)]   # Länge je Headline in Schlägen

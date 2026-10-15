@@ -5,8 +5,8 @@
    ===================================================================== */
 const FM_INK='#5e1708',FM_DK='#3a0a06';
 const fmOes=(h,c='#fff')=>oesSvg(c).replace('class="oesg"',`class="oesg" style="height:${h}px;width:auto"`);
-const fmOesPill=(n,h)=>`<div class="fmBd" style="display:inline-flex;align-items:center;gap:${h*.18}px;height:${h}px;padding:0 ${h*.1}px 0 ${h*.34}px;border-radius:${h}px;background:#fff;color:${FM_DK};font-size:${h*.5}px;font-weight:700;box-shadow:0 10px 24px rgba(40,10,0,.18);white-space:nowrap">${n}<div style="width:${h*.8}px;height:${h*.8}px;border-radius:50%;background:${FM_INK};display:grid;place-items:center">${fmOes(h*.38)}</div></div>`;
-const fmJoPill=(p,h)=>`<div class="fmBd" style="display:inline-flex;align-items:center;gap:${h*.18}px;height:${h}px;padding:0 ${h*.1}px 0 ${h*.34}px;border-radius:${h}px;background:#fff;color:${FM_DK};font-size:${h*.5}px;font-weight:700;box-shadow:0 10px 24px rgba(40,10,0,.18);white-space:nowrap">${p}${s2Jo(Math.round(h*.8))}</div>`;
+const fmOesPill=(n,h)=>`<div class="fmBd fmPl" data-side="r" style="display:inline-flex;align-items:center;gap:${h*.18}px;height:${h}px;padding:0 ${h*.1}px 0 ${h*.34}px;border-radius:${h}px;background:#fff;color:${FM_DK};font-size:${h*.5}px;font-weight:700;box-shadow:0 10px 24px rgba(40,10,0,.18);white-space:nowrap">${n}<div style="width:${h*.8}px;height:${h*.8}px;border-radius:50%;background:${FM_INK};display:grid;place-items:center">${fmOes(h*.38)}</div></div>`;
+const fmJoPill=(p,h)=>`<div class="fmBd fmPl" data-side="r" style="display:inline-flex;align-items:center;gap:${h*.18}px;height:${h}px;padding:0 ${h*.1}px 0 ${h*.34}px;border-radius:${h}px;background:#fff;color:${FM_DK};font-size:${h*.5}px;font-weight:700;box-shadow:0 10px 24px rgba(40,10,0,.18);white-space:nowrap">${p}${s2Jo(Math.round(h*.8))}</div>`;
 const fmTag=(sh,txt,bg,fg,h)=>`<div class="fmBd" style="display:inline-flex;align-items:center;gap:${h*.26}px;height:${h}px;padding:0 ${h*.42}px;border-radius:${h*.22}px;background:${bg};color:${fg};font-size:${h*.46}px;font-weight:800;white-space:nowrap">${tgSvg(sh,Math.round(h*.4))}${txt}</div>`;
 const FM_S1=[ // x, y, w, h, Hintergrund, Inhalt
  [90,136.0,454,808,ST_RED,`
@@ -22,7 +22,7 @@ const FM_S1=[ // x, y, w, h, Hintergrund, Inhalt
  [594,619.5,324.5,324.5,'#e4e1ea',`
   <img class="fmIm" src="${S2I.pad}" alt="" style="position:absolute;left:-18px;top:58px;width:360px;max-width:none">
   <div style="position:absolute;left:22px;top:22px">${fmTag('ci','Games',S2_INK,'#fff',38)}</div>
-  <div style="position:absolute;left:46px;top:246px"><div class="fmBd" style="display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 22px 0 5px;border-radius:56px;background:#fff;color:${FM_DK};font-size:25px;font-weight:800;box-shadow:0 10px 24px rgba(40,10,0,.18)">${s2Jo(46)}Jetzt spielen</div></div>`],
+  <div style="position:absolute;left:46px;top:246px"><div class="fmBd fmPl" data-side="l" style="display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 22px 0 5px;border-radius:56px;background:#fff;color:${FM_DK};font-size:25px;font-weight:800;box-shadow:0 10px 24px rgba(40,10,0,.18)">${s2Jo(46)}Jetzt spielen</div></div>`],
  [958.5,619.5,395.5,324.5,'#fff',`
   <img src="${PTA.bipa}" alt="" style="position:absolute;left:18px;top:16px;width:38px;height:38px;border-radius:50%">
   <div style="position:absolute;left:66px;top:24px;color:#6a1006;font-size:20px;font-weight:700">BIPA</div>
@@ -36,17 +36,17 @@ const FM_S1=[ // x, y, w, h, Hintergrund, Inhalt
   <div style="position:absolute;left:36px;top:34px;color:#fff;font-size:46px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Dein Bonus</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">beim Einkauf.</div></div></div>
   <div class="fmBd" style="position:absolute;left:83px;top:190px;width:260px;height:290px;border-radius:34px;background:${FM_INK};color:#fff;display:flex;flex-direction:column;align-items:center;padding-top:30px;box-sizing:border-box">
    <div style="font-size:24px;font-weight:700">Rabatt</div><div style="font-size:96px;font-weight:800;line-height:1;margin-top:4px">5&#8239;€</div>
-   <div style="margin-top:22px">${fmOesPill('250',82).replace('class="fmBd" ','')}</div></div>`],
+   <div style="margin-top:22px">${fmOesPill('250',82).replace('class="fmBd fmPl" ','class="fmPl" ')}</div></div>`],
  [1404,724.5,426,219.5,'#f9ddc3',`
   <div class="fmBd" style="position:absolute;left:20px;top:46px;width:386px;height:128px;border-radius:26px;background:rgba(255,255,255,.92);box-shadow:0 14px 30px rgba(40,10,0,.14);display:flex;align-items:center;gap:16px;padding:0 18px;box-sizing:border-box">
    <div style="flex:none;width:64px;height:64px;border-radius:16px;background:${JG_CSS};display:grid;place-items:center">${s2Jo(64).replace(/background:[^;]+;/,'background:transparent;')}</div>
    <div style="min-width:0"><div style="color:#8a6a60;font-size:15px;font-weight:600">jö · jetzt</div><div style="color:${FM_DK};font-size:21px;font-weight:800;margin-top:3px">250 Zusatz Ös bei BIPA</div><div style="color:${FM_DK};font-size:17px;font-weight:500;margin-top:3px">Nur noch heute aktivieren.</div></div></div>`]];
-const FM_PILL=(inner,h)=>`<div class="fmBd" style="display:inline-flex;align-items:center;gap:${h*.18}px;height:${h}px;padding:0 ${h*.34}px 0 ${h*.09}px;border-radius:${h}px;background:#fff;color:${FM_DK};font-size:${h*.46}px;font-weight:800;box-shadow:0 10px 24px rgba(40,10,0,.18);white-space:nowrap">${inner}</div>`;
+const FM_PILL=(inner,h)=>`<div class="fmBd fmPl" data-side="l" style="display:inline-flex;align-items:center;gap:${h*.18}px;height:${h}px;padding:0 ${h*.34}px 0 ${h*.09}px;border-radius:${h}px;background:#fff;color:${FM_DK};font-size:${h*.46}px;font-weight:800;box-shadow:0 10px 24px rgba(40,10,0,.18);white-space:nowrap">${inner}</div>`;
 const fmPush=(t1,t2)=>`<div class="fmBd" style="position:absolute;left:20px;top:46px;width:386px;height:128px;border-radius:26px;background:rgba(255,255,255,.92);box-shadow:0 14px 30px rgba(40,10,0,.14);display:flex;align-items:center;gap:16px;padding:0 18px;box-sizing:border-box">
    <div style="flex:none;width:64px;height:64px;border-radius:16px;background:${JG_CSS};display:grid;place-items:center">${s2Jo(64).replace(/background:[^;]+;/,'background:transparent;')}</div>
    <div style="min-width:0"><div style="color:#8a6a60;font-size:15px;font-weight:600">jö · jetzt</div><div style="color:${FM_DK};font-size:21px;font-weight:800;margin-top:3px">${t1}</div><div style="color:${FM_DK};font-size:17px;font-weight:500;margin-top:3px">${t2}</div></div></div>`;
 const fmEtikett=(x,y,w,h,top,big,oes)=>`<div class="fmBd" style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:32px;background:${FM_INK};color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:${h*.1}px 0 ${h*.08}px;box-sizing:border-box">
-   <div style="text-align:center">${top?`<div style="font-size:${h*.08}px;font-weight:700">${top}</div>`:''}<div style="font-size:${h*.3}px;font-weight:800;line-height:1;letter-spacing:-.02em">${big}</div></div>${fmOesPill(oes,h*.28).replace('class="fmBd" ','')}</div>`;
+   <div style="text-align:center">${top?`<div style="font-size:${h*.08}px;font-weight:700">${top}</div>`:''}<div style="font-size:${h*.3}px;font-weight:800;line-height:1;letter-spacing:-.02em">${big}</div></div>${fmOesPill(oes,h*.28).replace('class="fmBd fmPl" ','class="fmPl" ')}</div>`;
 // Bildschirm 2: Sport · Games · Deals
 const FM_S2=[
  [90,136,760,427.5,ST_OR,`
@@ -110,7 +110,7 @@ $('stage').appendChild(FML);
 {const st=document.createElement('style');st.textContent='#fmtL .oesw{display:inline-flex;align-items:flex-end;line-height:1}#fmtL .oesg{display:inline-block;overflow:visible}';document.head.appendChild(st)}
 {const bi=document.querySelector('#badgeL .bdImg');if(bi)FML.querySelector('.fmImg').style.backgroundImage=bi.style.backgroundImage}
 const FME={g:$('fmG'),fr:[...FML.querySelectorAll('.fmFr')]};
-FME.el=FME.fr.map(f=>({im:[...f.querySelectorAll('.fmIm')],ln:[...f.querySelectorAll('.fmLn')],bd:[...f.querySelectorAll('.fmBd')]}));
+FME.el=FME.fr.map(f=>({im:[...f.querySelectorAll('.fmIm')],ln:[...f.querySelectorAll('.fmLn')],bd:[...f.querySelectorAll('.fmBd')],pl:[...f.querySelectorAll('.fmPl')]}));
 const FORMATS={
   key:'formats',name:'Formate (drei Bildschirme)',lane:'laneV3',cls:'bento',
   DEF:{beat:13.725/24,hold:8,dur:1.1,lag:.16,inLag:.38,travel:1240},
@@ -133,7 +133,12 @@ const FORMATS={
       const r=inA+.28*D,EL=E.el[i];
       EL.im.forEach((el,k)=>{const u=ef((t-r-k*.05)/(.8*D));el.style.transform=el.dataset.z?`scale(${(1+.16*(1-u)).toFixed(4)})`:`translateY(${(160*(1-u)).toFixed(1)}px)`}); // Vollflächige Fotos setzen sich per Zoom, freigestellte Bilder und Farbkarten gleiten von unten nach
       EL.ln.forEach((el,k)=>{const u=ef((t-r-.12-k*.06)/(.62*D));el.style.transform=`translateY(${(112*(1-u)).toFixed(1)}%)`});
-      EL.bd.forEach((el,k)=>{const u=ef((t-r-.3-k*.08)/(.55*D));el.style.transform=`translateY(${(40*(1-u)).toFixed(1)}px)`;el.style.opacity=u.toFixed(3)})})},
+      EL.bd.forEach((el,k)=>{const u=ef((t-r-.3-k*.08)/(.55*D));el.style.transform=`translateY(${(40*(1-u)).toFixed(1)}px)`;el.style.opacity=u.toFixed(3)});
+      // Pills fahren auf: zuerst nur der Kreis (jö / Ös), dann gleitet die Pille zur vollen Breite auf
+      EL.pl.forEach((el,k)=>{if(!el._w&&el.offsetWidth){el._w=el.offsetWidth;el._h=el.offsetHeight}if(!el._w)return;
+        const v=ef((t-r-.5-k*.08)/(.6*D)),d=(el._w-el._h)*(1-v),R2=el._h/2,base=el.classList.contains('fmBd')?el.style.transform:'';
+        if(el.dataset.side==='r'){el.style.clipPath=`inset(0 0 0 ${d.toFixed(1)}px round ${R2}px)`;el.style.transform=`${base} translateX(${(-d).toFixed(1)}px)`}
+        else el.style.clipPath=`inset(0 ${d.toFixed(1)}px 0 0 round ${R2}px)`})})},
   marks(M){return [[0,'Bildschirm 1'],[M.T[1],'Bildschirm 2'],[M.T[2],'Bildschirm 3']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P;return [
     ['Bildschirm 1',`0–${F(M.T[1])}`,'Story 9:16, Landscape 16:9, Square 1:1, In-App, Feed 4:5, Push: Sport-Kampagne, Rahmen gleiten von unten rein, Zeilen rollen aus Masken, Badges setzen sich'],
