@@ -3907,7 +3907,7 @@ const FORMATS={
       f.style.transform=`translateY(${dy.toFixed(1)}px)`;
       // Elemente im Rahmen: Bildflächen gleiten nach, Zeilen rollen aus ihren Masken, Badges setzen sich (wie in den Stories)
       const r=inA+.28*D,EL=E.el[i];
-      EL.im.forEach((el,k)=>{const u=ef((t-r-k*.05)/(.8*D));el.style.transform=el.dataset.z?`scale(${(1+.16*(1-u)).toFixed(4)})`:`translateY(${(160*(1-u)).toFixed(1)}px)`}); // Vollflächige Fotos setzen sich per Zoom, freigestellte Bilder und Farbkarten gleiten von unten nach
+      EL.im.forEach((el,k)=>{if(el.dataset.z){const z=eOut(clamp((t-inA-.45*D)/2.2));el.style.transform=`scale(${(1+.28*(1-z)).toFixed(4)})`}else{const u=ef((t-r-k*.05)/(.8*D));el.style.transform=`translateY(${(160*(1-u)).toFixed(1)}px)`}}); // Bilder: deutlicher Zoom (128 % → 100 %), der erst nach dem Landen des Rahmens ausläuft // Vollflächige Fotos setzen sich per Zoom, freigestellte Bilder und Farbkarten gleiten von unten nach
       EL.ln.forEach((el,k)=>{const u=ef((t-r-.12-k*.06)/(.62*D));el.style.transform=`translateY(${(112*(1-u)).toFixed(1)}%)`});
       EL.bd.forEach((el,k)=>{const u=ef((t-r-.3-k*.08)/(.55*D));el.style.transform=`translateY(${(40*(1-u)).toFixed(1)}px)`;el.style.opacity=u.toFixed(3)});
       // Fortschrittsring baut sich auf (wie in der Sammeln-&-Sparen-Story)
