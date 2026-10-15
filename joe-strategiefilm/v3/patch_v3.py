@@ -254,7 +254,7 @@ rep("const HL2=makeHL('hl2',",
     "const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});\n"
     "const HL2=makeHL('hl2',")
 # ---------- 5f. Hintergrundvideos der Intro-Headlines (introvid_comp.js) ----------
-rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8") + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
+rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8").replace("__KIAN0__", "data:image/webp;base64," + base64.b64encode((here / "kian0.webp").read_bytes()).decode()) + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
@@ -309,7 +309,14 @@ CLIPS["partner"] = C(PT_AT, 3 * BARL)
 _p0 = CLIPS["people"]["start"]
 CLIPS["c3"]["start"] = _p0
 CLIPS["pers"]["start"] = round(_p0 + CLIPS["c3"]["len"], 4)
-CLIPS["people"]["start"] = round(CLIPS["pers"]["start"] + CLIPS["pers"]["len"], 4)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
+CLIPS["people"]["start"] = round(CLIPS["pers"]["start"] + CLIPS["pers"]["len"], 4)
+# Kian-Video + Profil-Wolke (Zoom raus aus Kian, Zoom rein in Tamara) direkt nach „Für jeden.“; Möglichkeiten … Partner rücken dahinter
+_q0, _r0 = CLIPS["c3"]["start"], CLIPS["rabatt"]["start"]
+_blk = round(CLIPS["cloud"]["start"] + CLIPS["cloud"]["len"] - _r0, 4)
+for k in ("c3", "pers", "people", "partner"):
+    CLIPS[k]["start"] = round(CLIPS[k]["start"] + _blk, 4)
+CLIPS["cloud"]["start"] = round(_q0 + CLIPS["cloud"]["start"] - _r0, 4)
+CLIPS["rabatt"]["start"] = _q0        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
