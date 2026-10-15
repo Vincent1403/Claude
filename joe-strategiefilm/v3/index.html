@@ -3040,9 +3040,9 @@ const CLOUD={
    ===================================================================== */
 const TG_INK='#5e1708';
 const TG_ORDER=['sq','ci','tri','hg','x','di','hex'];
-const TG_TAGS=[{s:'sq',l:'Neu'},{s:'ci',l:'Aktion'},{s:'hg',l:'Letzte Chance'},{s:'x',l:'Games'},{s:'di',l:'Neu'},{s:'hex',l:'Neu'}];
+const TG_TAGS=[{s:'sq',l:'Neu'},{s:'ci',l:'Aktion'},{s:'hg',l:'Letzte Chance'},{s:'x',l:'Games'},{s:'di',l:'Deals'},{s:'hex',l:'Gutes tun'}];
 // Tag-Maße im Bild (Proportionen wie die Pills in den Stories: Höhe 98, Schrift 52, Icon 46)
-const TG_H=90,TG_F=48,TG_IC=42,TG_PL=30,TG_GAP=18,TG_PR=30,TG_SP=26,TG_SZ=104,TG_SGAP=58;
+const TG_H=80,TG_F=42,TG_IC=37,TG_PL=27,TG_GAP=16,TG_PR=27,TG_SP=22,TG_SZ=104,TG_SGAP=58;
 const TGL=document.createElement('div');TGL.id='tagsL';TGL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:'+TG_INK;
 TGL.innerHTML=`<div id="tgBg" style="position:absolute;inset:0;background:#f4f1ea"></div>
 ${TG_TAGS.map(g=>`<div class="tgT" style="position:absolute;left:0;top:0;height:${TG_H}px;border-radius:${TG_H*.22}px;background:#fff;transform-origin:0 0;overflow:hidden;box-sizing:border-box;display:flex;align-items:center;gap:${TG_GAP}px;padding:0 ${TG_PR}px 0 ${TG_PL}px;white-space:nowrap;font-size:${TG_F}px;font-weight:700;letter-spacing:-.01em;line-height:1"><span class="tgI" style="display:block;width:${TG_IC}px;height:${TG_IC}px;flex:none"></span><span class="tgL">${g.l}</span></div>`).join('')}
