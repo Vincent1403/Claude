@@ -139,9 +139,14 @@ rep("  for(const k in COMPS){const pre=isPre(k),t=pre?tD:tR,c=S.clips[k],on=clip
 
 # ---------- 4. Musik und Länge ----------
 rep("const AU_BASS=91.4537,AU_CUT=64.0237,AU_XF=.004;", f"const AU_BASS=91.4537,AU_CUT={AU_CUT},AU_XF=.004;")
-rep("const T_MAIN=95, FPS=24;", f"const T_MAIN={T_LEN}, FPS=24, TRACK_LEN=96.05;")
+rep("const T_MAIN=95, FPS=24;", f"const T_MAIN={T_LEN}, FPS=24, TRACK_LEN=187.48;")  # Track mit Schleife (s. AU_LA/AU_LB)
 # Beat- und Taktraster laufen hinter dem Track weiter, damit in der Ablage gesnappt und synchronisiert werden kann
 rep("const MUSIC_SNAPS=[0,2.35,5.32,8.64,...BEATS];",
+    "const AU_LA=45.732,AU_LB=91.4456,AU_LN=2,AU_LL=AU_LB-AU_LA; // Musik-Schleife: ab dem Bass-Einsatz (Takt 37) springt der Track zurück auf den Break (Takt 17) – Break + zweite Hälfte laufen zweimal extra, ~187 s\n"
+    "{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<AU_LB-.05)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));"
+    "const mid=BEATS.filter(v=>v>=AU_LA-.01&&v<AU_LB-.05);for(let k=1;k<=AU_LN;k++)BEATS.push(...mid.map(v=>+(v+k*AU_LL).toFixed(3)));"
+    "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));"
+    "const per=96.0522/PEAKS.length,ia=Math.round(AU_LA/per),ib=Math.round(AU_LB/per),seg=PEAKS.slice(ia,ib),tail=PEAKS.splice(ib);for(let k=0;k<AU_LN;k++)PEAKS.push(...seg);PEAKS.push(...tail)}\n"
     "const AU_OFF=0; // Musik startet bei Frame 0; das Intro dauert genau 3 Takte länger, das Logo liegt auf dem Drop (alles danach bleibt im Takt)\n"
     "{const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));"
     "const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)\n"
@@ -256,6 +261,15 @@ rep("const HL2=makeHL('hl2',",
     "const HL2=makeHL('hl2',")
 # ---------- 5f. Hintergrundvideos der Intro-Headlines (introvid_comp.js) ----------
 rep("const WHL=document.createElement('div');WHL.id='whiteL'", (here / "introvid_comp.js").read_text(encoding="utf-8") + "\n" + (here / "fuer_comp.js").read_text(encoding="utf-8").replace("__KIAN0__", "data:image/webp;base64," + base64.b64encode((here / "kian0.webp").read_bytes()).decode()) + "\n" + (here / "pers_comp.js").read_text(encoding="utf-8") + "\nconst WHL=document.createElement('div');WHL.id='whiteL'")
+i0 = s.index("function spliceAudio(){"); i1 = s.index("abufAt=T;return out}", i0) + len("abufAt=T;return out}")
+s = s[:i0] + ("function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track mit Schleife: [0,LB) + LN × [LA,LB) + [LB,Ende)\n"
+  "  const sr=abuf0.sampleRate,a=Math.round(AU_LA*sr),b=Math.round(AU_LB*sr),L=b-a,n=abuf0.length+AU_LN*L,xf=Math.round(.006*sr);\n"
+  "  const out=actx.createBuffer(abuf0.numberOfChannels,n,sr);\n"
+  "  for(let ch=0;ch<abuf0.numberOfChannels;ch++){const src=abuf0.getChannelData(ch),dst=out.getChannelData(ch);dst.set(src.subarray(0,b));\n"
+  "    for(let k=0;k<=AU_LN;k++){const o=b+k*L;if(k<AU_LN)dst.set(src.subarray(a,b),o);else dst.set(src.subarray(b),o);\n"
+  "      for(let i=0;i<xf;i++){const w=i/xf,from=src[b+i]??0,to=k<AU_LN?src[a+i]:src[b+i];dst[o+i]=to*w+from*(1-w)}}} // kurzer Crossfade an jeder Naht\n"
+  "  abufAt='loop';return out}") + s[i1:]
+rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
