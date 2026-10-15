@@ -365,13 +365,11 @@ for k in CLIPS:
         CLIPS[k]["start"] = round(CLIPS[k]["start"] + BARL, 4)
 WR0_REAL = round(WR0_REAL + BARL, 4)
 CLIPS["kanal"] = C(KA_AT, BARL)
-# Formate (Story, Landscape, Square, In-App, Feed, Push) nach der Headline, 2 Takte; die Stories rücken nach hinten
+# Formate nach der Headline: drei Bildschirme (je 2 Takte) mit allen Story-Inhalten in verschiedenen Formaten.
+# Die bisherigen Stories (Design-Block) kommen als Reserve in die Ablage hinter den Slot.
 FM_AT = round(KA_AT + BARL, 4)
-for k in CLIPS:
-    if k != "kanal" and FM_AT - 1e-3 <= CLIPS[k]["start"] < 100:
-        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
-WR0_REAL = round(WR0_REAL + 2 * BARL, 4)
-CLIPS["formats"] = C(FM_AT, 2 * BARL)
+CLIPS["formats"] = C(FM_AT, 6 * BARL)
+WR0_REAL = 215.0
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
