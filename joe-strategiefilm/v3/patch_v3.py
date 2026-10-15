@@ -277,7 +277,7 @@ aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Log
            + (here / "formats_comp.js").read_text(encoding="utf-8") + "\n"
            + (here / "box_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "ooh_mod.js").read_text(encoding="utf-8") + "\n"
-           + wl_imgs((here / "ubahn_comp.js").read_text(encoding="utf-8")).replace("__UBAHN__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "ubahn_mock.webp").read_bytes()).decode()) + "\n"
+           + wl_imgs((here / "ubahn_comp.js").read_text(encoding="utf-8")).replace("__UBAHN__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "ubahn_mock.webp").read_bytes()).decode()).replace("__UBFRAU__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "ubahn_frau.webp").read_bytes()).decode()) + "\n"
            + (here / "endtext_comp.js").read_text(encoding="utf-8") + "\n"
            "const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
