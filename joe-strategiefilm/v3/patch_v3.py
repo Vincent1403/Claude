@@ -426,7 +426,7 @@ BASS = 182.86
 CLIPS["logo3"] = C(0, BARL)
 LAYOUT = [  # (Clip, Takte, rate) – rate None = Tempo bleibt
     ("logo3", 1, None), ("colors", 3, 2 / 3), ("fuer", 5, None), ("rcblock", 5, None), ("c3", 2, None), ("pers", 1, None), ("people", 4, None),
-    ("partner", 5, .75), ("brand", 4, .75), ("prod", 1, None), ("system", 2, None), ("badges", 4.375, None), ("wall", 4, None),
+    ("partner", 5, .75), ("brand", 4, .75), ("prod", 2, round(2.273 / (2 * BARL), 4)), ("system", 1, None), ("badges", 4.375, None), ("wall", 4, None),
     ("tags", 3.125, .8), ("kanal", 1, None), ("formats", 6, None), ("flex", 1, None), ("deal", 2.25, None), 
     ("c5", 1, None), ("city", 3, round(4.317 / (3 * BARL), 4)), ("c7", 1.75, None),
     ("bill", 2.5, round(3.0611 / (2.5 * BARL), 4)), ("endtxt", 6, None)]
@@ -449,6 +449,7 @@ PARAMS["people"] = {"sb": 4}                              # 4 Schläge pro Perso
 PARAMS["c3"] = {"len": 8, "outAt": 7.15}                  # Tafeln halten länger
 PARAMS["c4"] = {"len": 7, "outAt": 6.3, "outDir": -1}
 PARAMS["c5"] = {"len": 4, "outAt": 3.15}
+PARAMS["system"] = {"len": 4, "step": 1.75, "outAt": 3.6}   # „Ein System. Unzählige Möglichkeiten.“ nur noch 1 Takt
 PARAMS["fuer"] = {**PARAMS.get("fuer", {}), "len": 20, "nStep": 1.0, "nMove": .45, "cloudAt": 12.25, "zoomAt": 17.5, "outAt": 20}   # Namen laufen langsamer durch (1 Takt mehr)
 PARAMS["c7"] = {"len": 7, "outAt": 6.15}
 # „Alles in einer App“ und Bento-Box entfallen (Zeit geht an „Wir bringen …“, Citylight, „Sichtbar …“ und Billboard)
