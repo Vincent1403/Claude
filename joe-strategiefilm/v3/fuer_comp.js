@@ -51,7 +51,7 @@ const FUER={
     const a=P.inAt*b,o=P.outAt*b,rin=eExpo(seg(t,a,a+.5)),rout=eInCub(seg(t,o,o+.3));
     E.fix.style.transform=`translateY(${((1-rin)*120+rout*120).toFixed(1)}%)`;
     // Position auf der „Walze“: 0 = erstes Satzende, 1 = zweites …; jedes läuft von unten rein und oben raus
-    let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<FU_PH.length;k++){const s=M.st[k]*b;p+=eIO(seg(t,s,s+(k>FU_N0?P.nMove:P.move)))}
+    let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<FU_PH.length;k++){const s=M.st[k]*b;p+=k>FU_N0?.5-.5*Math.cos(Math.PI*seg(t,s,s+P.nMove)):eIO(seg(t,s,s+P.move)) /* Namen: weiche Sinus-Kurve */}
     p+=eInCub(seg(t,o+.04,o+.34));
     // ab dem ersten Namen steht die Kombi „Für [Bild] Name.“ mittig (Breite folgt dem laufenden Namen), endet als „Für jeden.“ in der Mitte
     {const q=Math.max(0,Math.min(p,FU_PH.length-1)),i0=Math.floor(q),i1=Math.min(i0+1,FU_PH.length-1),wn=E._wp[i0]+(E._wp[i1]-E._wp[i0])*(q-i0),
