@@ -448,6 +448,12 @@ PARAMS["people"] = {"sb": 4}                              # 4 Schläge pro Perso
 PARAMS["c3"] = {"len": 8, "outAt": 7.15}                  # Tafeln halten länger
 PARAMS["c4"] = {"len": 7, "outAt": 6.3, "outDir": -1}
 PARAMS["c5"] = {"len": 8, "outAt": 7.15}
+# Logo auf dem Drop entfällt: Julian beginnt direkt auf dem Drop (ohne App-Icon, gleich mit der Karte) und endet wie bisher
+_je = CLIPS["julian"]["start"] + CLIPS["julian"]["len"]
+for k in ("julian", "white2"):
+    CLIPS[k] = C(CLIPS["logo"]["start"], round(_je - CLIPS["logo"]["start"], 4), .45)
+    CLIPS[k]["rate"] = round((JUL_LEN - .45) / CLIPS[k]["len"], 5)
+CLIPS["logo"]["start"] = 9000.0
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
