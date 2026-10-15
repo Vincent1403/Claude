@@ -3945,18 +3945,18 @@ const FORMATS={
 
 /* Partnerfilm: Citylight und Billboard mit Partnerbezug.
    Citylight: Headline „Profitiere jetzt bei BIPA.“, unten jö × BIPA (wie die Marken-Lockups).
-   Billboard: unter dem Claim eine Reihe Partner-Logos, die nacheinander aufploppen; Store-Buttons rücken nach unten. */
+   Billboard: unter dem Claim alle Partner-Logos (zwei Reihen), die nacheinander aufploppen; Store-Buttons rücken nach unten. */
 {const hl=CTE.hl;if(hl[0])hl[0].textContent='Profitiere jetzt';if(hl[1])hl[1].textContent='bei BIPA.';
  const L=CTE.logo,x=document.createElement('div');x.style.cssText='position:absolute;left:258px;top:1790px;color:#fff;font-size:64px;font-weight:700;line-height:1';x.textContent='×';
  const b=document.createElement('img');b.src=PTA.bipa;b.alt='';b.style.cssText='position:absolute;left:330px;top:1750px;width:152px;height:152px;border-radius:50%;box-shadow:0 10px 26px rgba(60,10,0,.25)';
  L.after(x,b);const r0=CITY.render;
  CITY.render=function(M,t){r0.call(this,M,t);const cs=getComputedStyle(L);[x,b].forEach(e=>{e.style.opacity=cs.opacity;e.style.transform=L.style.transform;e.style.transformOrigin='50% 50%'})};}
-{const PN=['adeg','billa','bipa','penny','omv','pagro','libro','universal'],D=104,G=18;
- const row=document.createElement('div');row.style.cssText=`position:absolute;left:1180px;top:640px;display:flex;gap:${G}px`;
+{const PN=PT_N2,D=86,G=12; // alle 15 Partner, in zwei Reihen
+ const row=document.createElement('div');row.style.cssText=`position:absolute;left:1180px;top:612px;width:${8*D+7*G}px;display:flex;flex-wrap:wrap;gap:${G}px`;
  row.innerHTML=PN.map(n=>`<img class="bbPt" src="${PTA[n]}" alt="" style="width:${D}px;height:${D}px;border-radius:50%;box-shadow:0 8px 20px rgba(60,10,0,.22)">`).join('');
- $('bbStore').before(row);$('bbStore').style.top='790px';$('bbCta').style.top='826px';
+ $('bbStore').before(row);$('bbStore').style.top='832px';$('bbCta').style.top='868px';
  const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;
- BILL.render=function(M,t){r0.call(this,M,t);const P=M.P;pts.forEach((p,i)=>{const a=P.lineAt+.35+i*.05,q=eBack(seg(t,a,a+.4));p.style.transform=`scale(${q.toFixed(4)})`})};}
+ BILL.render=function(M,t){r0.call(this,M,t);const P=M.P;pts.forEach((p,i)=>{const a=P.lineAt+.3+i*.035,q=eBack(seg(t,a,a+.4));p.style.transform=`scale(${q.toFixed(4)})`})};}
 
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
