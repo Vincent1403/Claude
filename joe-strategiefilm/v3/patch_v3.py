@@ -276,6 +276,7 @@ aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Log
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "formats_comp.js").read_text(encoding="utf-8") + "\n"
            + (here / "box_mod.js").read_text(encoding="utf-8") + "\n"
+           + (here / "ooh_mod.js").read_text(encoding="utf-8") + "\n"
            "const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
