@@ -3952,9 +3952,10 @@ const FORMATS={
  L.after(x,b);const r0=CITY.render;
  CITY.render=function(M,t){r0.call(this,M,t);const cs=getComputedStyle(L);[x,b].forEach(e=>{e.style.opacity=cs.opacity;e.style.transform=L.style.transform;e.style.transformOrigin='50% 50%'})};}
 {const PN=PT_N2,D=86,G=12; // alle 15 Partner, in zwei Reihen
- const row=document.createElement('div');row.style.cssText=`position:absolute;left:1180px;top:612px;width:${8*D+7*G}px;display:flex;flex-wrap:wrap;gap:${G}px`;
+ const row=document.createElement('div');row.style.cssText=`position:absolute;left:1180px;top:521px;width:${8*D+7*G}px;display:flex;flex-wrap:wrap;gap:${G}px`;
  row.innerHTML=PN.map(n=>`<img class="bbPt" src="${PTA[n]}" alt="" style="width:${D}px;height:${D}px;border-radius:50%;box-shadow:0 8px 20px rgba(60,10,0,.22)">`).join('');
- $('bbStore').before(row);$('bbStore').style.top='832px';$('bbCta').style.top='868px';
+ $('bbStore').before(row);BBL.querySelector('.bbLine').parentNode.parentNode.style.top='48px'; // Claim nach oben: gleicher Abstand oben wie die Store-Buttons unten (48), Logos und Buttons gleichmäßig dazwischen
+ $('bbStore').style.top='832px';$('bbCta').style.top='868px';
  const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;
  BILL.render=function(M,t){r0.call(this,M,t);const P=M.P;pts.forEach((p,i)=>{const a=P.lineAt+.3+i*.035,q=eBack(seg(t,a,a+.4));p.style.transform=`scale(${q.toFixed(4)})`})};}
 
