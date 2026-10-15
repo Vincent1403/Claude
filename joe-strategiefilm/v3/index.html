@@ -3256,9 +3256,9 @@ const FUER={
    PERS: „Persönlich. Relevant. Ganz nach dir.“ · SYSTEM: „Ein System. Unzählige Möglichkeiten.“
    ===================================================================== */
 function makeSeq(key,name,PH,beats,def,note){
-  const nl=Math.max(...PH.map(p=>p.split('|').length)),MH=220+(nl-1)*165; // „|“ = Zeilenumbruch, die Maske wächst mit
+  const nl=Math.max(...PH.map(p=>p.split('|').length)),MH=270+(nl-1)*165; // „|“ = Zeilenumbruch, die Maske wächst mit
   const L=document.createElement('div');L.id=key+'L';L.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);background:#f4f1ea';
-  L.innerHTML=`<div style="position:absolute;left:0;right:0;top:${540-MH/2}px;height:${MH}px;overflow:hidden">${PH.map(p=>`<div class="sqP" style="position:absolute;left:0;right:0;top:35px;text-align:center;color:#670003;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:${nl>1?1.1:1};white-space:nowrap">${p.replaceAll('|','<br>').split(' ').map(w=>w.startsWith('*')?`<span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent">${w.slice(1)}</span>`:w).join(' ')}</div>`).join('')}</div>`;
+  L.innerHTML=`<div style="position:absolute;left:0;right:0;top:${540-MH/2}px;height:${MH}px;overflow:hidden">${PH.map(p=>`<div class="sqP" style="position:absolute;left:0;right:0;top:50px;text-align:center;color:#670003;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:${nl>1?1.1:1};white-space:nowrap">${p.replaceAll('|','<br>').split(' ').map(w=>w.startsWith('*')?`<span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent">${w.slice(1)}</span>`:w).join(' ')}</div>`).join('')}</div>`;
   $('stage').appendChild(L);
   const ph=[...L.querySelectorAll('.sqP')];
   return {
