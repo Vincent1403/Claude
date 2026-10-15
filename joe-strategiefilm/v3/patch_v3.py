@@ -94,13 +94,13 @@ CLIPS["tags"] = C(WALL_END, round(10 * BEAT, 4))     # Tag-System direkt nach de
 STORY_AT = round(WALL_END + 10 * BEAT, 4)               # Stories starten mit dem Schnitt
 WR0_REAL = round(STORY_AT - (8.196 - 4.8333) * _wk, 4)  # Story-Block (Design-Zeit) so verschoben
 CLIPS["showcase"] = C(121.2994, 8.47)   # Ablage; wird unten noch um die Intro-/Einschub-Verschiebungen versetzt (Editor: 146,443)          # Icon-Showcase: in der Ablage hinter dem Schluss
-T_LEN = 236                                    # Timeline länger als der Track (96 s)
+T_LEN = 170                                    # Timeline länger als der Track (96 s)
 # Intro: vier Headlines vor dem Logo. Musik und alles ab dem Logo rücken um INTRO_D nach hinten (Beat-Sync bleibt).
 INTRO_HL = [("hl1", 4.2), ("hl1b", 3.8), ("hl1c", 3.5), ("hl1d", 4.6)]   # Länge je Headline in Schlägen
 INTRO_D = round(sum(l for _, l in INTRO_HL) * BEAT - 2.35, 4)          # alte Headline lief 0–2,35 s
 
 # Szenen, die im Partnerfilm entfallen (zweite Story-Gruppe, verdeckte Headline 3, Agentur-Endcard)
-DROP = ["hl3", "endc"]
+DROP = ["hl3"]
 
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
@@ -406,12 +406,18 @@ for k in CLIPS:
 CLIPS["prod"] = C(PR_AT, BARL, .634)
 # Schluss nach dem Billboard: Schluss-Text (6 Takte) auf dem Verlauf, danach das jö-Logo (Logo-Animation, Länge wie bisher)
 ET_AT = round(CLIPS["bill"]["start"] + CLIPS["bill"]["len"], 4)
-CLIPS["logo2"] = C(round(ET_AT + 6 * BARL, 4), CLIPS["logo2"]["len"], CLIPS["logo2"]["in"])
+CLIPS["logo2"] = C(round(ET_AT + 6 * BARL, 4), BARL, CLIPS["logo2"]["in"])   # 1 Takt: endet als jö auf dem Verlauf (vor dem App-Icon), dort übernimmt die H·A-Endcard
 CLIPS["endtxt"] = C(ET_AT, round(6 * BARL + CLIPS["logo2"]["len"], 4))   # läuft unter dem Logo weiter (Verlauf als Hintergrund)
 # Ablage hinter dem Filmende neu sortiert, damit nichts in den Schluss ragt
 CLIPS["showcase"] = C(208.0, 8.47)
 CLIPS["full"] = C(218.0, CLIPS["full"]["len"])
 CLIPS["c6"] = C(227.0, CLIPS["c6"]["len"])
+# Nach dem Schluss: Hammer-Albrecht-Endcard (jö-Punkte → H·A) direkt nach dem jö-Logo. Alles, was bisher in der Ablage lag, ist raus
+# aus der Timeline (weit hinter das Ende geschoben, Code bleibt); die Stories ebenso.
+CLIPS["endc"] = C(round(CLIPS["logo2"]["start"] + CLIPS["logo2"]["len"], 4), 7.0)
+for k in ("slot", "c8", "showcase", "full", "c6"):
+    CLIPS[k]["start"] = 9000.0
+WR0_REAL = 9000.0
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
