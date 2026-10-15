@@ -120,7 +120,7 @@ const FORMATS={
     {k:'lag',label:'Versatz Rahmen (Wechsel)',min:0,max:.3,step:.01,fmt:v=>Math.round(v*1000)+' ms',sub:'Rahmen weiter rechts/unten folgen etwas später: Parallaxe'},
     {k:'inLag',label:'Versatz Rahmen (erster Aufbau)',min:0,max:.8,step:.01,fmt:v=>Math.round(v*1000)+' ms'},
     {k:'travel',label:'Weg nach oben',min:1100,max:1600,step:10,fmt:v=>v+' px'}],
-  model(P){const b=P.beat,T=[0,P.hold*b,2*P.hold*b];return {P,b,T,key:T[1],keyName:'Wechsel 2',total:3*P.hold*b}},
+  model(P){const b=P.beat,T=[0,P.hold*b+(P.sh||0),2*P.hold*b+(P.sh||0)]; /* sh: Wechsel auf die Synth-Hits verschieben */return {P,b,T,key:T[1],keyName:'Wechsel 2',total:3*P.hold*b}},
   show(on){FML.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=FME,T=M.T,D=P.dur,ef=u=>eStFlow(clamp(u));
     E.g.style.transform='none';

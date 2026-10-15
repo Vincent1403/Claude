@@ -521,6 +521,13 @@ _re = CLIPS["rabatt"]["start"] + CLIPS["rabatt"]["len"]
 CLIPS["rabatt"]["rate"] = round(CLIPS["rabatt"]["len"] / (_re - _fe), 5)
 CLIPS["rabatt"]["start"], CLIPS["rabatt"]["len"] = _fe, round(_re - _fe, 4)
 CLIPS["fuer"]["len"] = round(_fe - CLIPS["fuer"]["start"], 4)
+# Synth-Hits (Takt-Einsen in den drei Energie-Teilen, aus dem Audio gemessen) – Bewegungen in der Nähe genau darauf:
+# Kian-Video: Banner „Mehr für Kian.“ auf F933, Pill auf den nächsten Schlag F946, Pill schrumpft auf F988
+PARAMS["rabatt"] = {**PARAMS.get("rabatt", {}), "banAt": .3544, "inAt": .875, "outAt": 2.3835}
+PARAMS["fuer"] = {**PARAMS["fuer"], "cloudAt": 12}            # Profil-Wolke auf F823
+PARAMS["brand"] = {**PARAMS.get("brand", {}), "step": .75}  # bei rate .75 = exakt ein Schlag pro Partnerfarbe (vorher .71 = 13,0 F → driftete bis 7 F vom Hit)
+PARAMS["formats"] = {**PARAMS.get("formats", {}), "sh": 1.09}
+CLIPS["brand"]["in"] = .0625   # 2 F Vorlauf, damit die Kreise sichtbar genau auf dem Schlag aufgehen  # Bildschirm 2 und 3 starten auf F3072 / F3182
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
