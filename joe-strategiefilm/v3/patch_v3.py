@@ -474,7 +474,8 @@ for k in ("julian", "white2"):
 _cut, _ce = 19.482, CLIPS["colors"]["start"] + CLIPS["colors"]["len"]
 for k in ("julian", "white2"):
     CLIPS[k]["len"] = round(_cut - CLIPS[k]["start"], 4); CLIPS[k]["rate"] = round(4.0 / CLIPS[k]["len"], 5)
-CLIPS["colors"] = C(_cut, round(_ce - _cut, 4), 1.05); CLIPS["colors"]["rate"] = round((NATIVE_CO - 1.05) / CLIPS["colors"]["len"], 5)
+_co0 = round(_cut - .6, 4)   # Farben beginnt schon über dem Ende von Julian: Karten gleiten über die letzten Slider-Elemente
+CLIPS["colors"] = C(_co0, round(_ce - _co0, 4), .2); CLIPS["colors"]["rate"] = round((NATIVE_CO - .2) / CLIPS["colors"]["len"], 5)
 rep("const q=f(seg(t,T[1]+i*P.stag,T[1]+i*P.stag+.55)),", "const q=f(seg(t,T[1]-.55+i*P.stag*.6,T[1]-.55+i*P.stag*.6+.3)),")  # Abstufungen: früher und schneller
 rep("${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;color:transparent;`:''}", "${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.22em;margin-bottom:-.22em;`:''}")  # Verlaufswörter: Unterlängen (g, p) nicht abschneiden
 rep('<circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" ', '<circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" stroke-linecap="round" ')  # Julian: Fortschrittsring mit runden Enden
@@ -496,6 +497,7 @@ CLIPS["logo2"] = C(round(4230 / 24 - .48, 4), 0, CLIPS["logo2"]["in"]); CLIPS["l
 CLIPS["endc"] = C(_ec, round(190 - _ec, 4))
 _pa = round(BASS - _ec, 3)                                             # Pill-Start auf dem Bass
 PARAMS["endc"] = {"flyAt": .35, "txAt": .95, "wmAt": 1.0, "outAt": round(_pa - .5, 3), "linkAt": round(_pa - .3, 3), "pillAt": _pa}
+rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.3,.62).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

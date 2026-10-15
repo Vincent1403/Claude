@@ -1250,7 +1250,7 @@ const COLORS={
       const q=f(seg(t,T[1]-.55+i*P.stag*.6,T[1]-.55+i*P.stag*.6+.3)),o=f(seg(lt3,i*P.stag*.5,i*P.stag*.5+.4));
       c.style.display=t<a?'none':'';
       c.style.transform=`translate(${(drift+(1-p)*(2060-(FC_X0+i*FC_STEP))).toFixed(1)}px,${(o*1150).toFixed(1)}px)`; // gleitet von rechts rein
-      c.style.opacity=1;
+      c.style.opacity=i?1:seg(t,.3,.62).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft
       c.querySelector('.fdark').style.height=(FC_H*P.tones*q).toFixed(1)+'px';c.querySelector('.flight').style.height=(FC_H*P.tones*q).toFixed(1)+'px';
       const pl=c.querySelector('.fpill'),hx=c.querySelector('.fhex'),ph=eBack(seg(t,a+P.inDur*.5,a+P.inDur*.5+.4));
       {const u=f(seg(t,a+P.inDur*.3,a+P.inDur*.3+.4)),v=f(seg(t,a+P.inDur*.42,a+P.inDur*.42+.4));pl.style.transform=`translateY(${((1-u)*18).toFixed(1)}px)`;pl.style.opacity=u.toFixed(3);hx.style.transform=`translateY(${((1-v)*14).toFixed(1)}px)`;hx.style.opacity=(.85*v).toFixed(3)}});
@@ -4135,7 +4135,7 @@ S.clips.partner={start:66.3404,len:11.4291,in:0,rate:0.75};
 S.clips.brand={start:77.7695,len:9.1433,in:0,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:19.482,len:7.9994,in:1.05,rate:0.44025};
+S.clips.colors={start:18.882,len:8.5994,in:0.2,rate:0.50837};
 S.clips.deal={start:138.3439,len:5.1431,in:0};
 S.clips.prod={start:86.9128,len:4.5717,in:0.634,rate:0.4972};
 S.clips.c7={start:9000.0,len:5.1431,in:0};
