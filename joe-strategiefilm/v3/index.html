@@ -3168,15 +3168,19 @@ const IV_BRILLE=makeIV('ivBrille','Video Brille','iv_brille.webm',5.042,{fade:0}
 const FU_PH=['mehr Möglichkeiten.','mehr Begeisterung.','jeden.'];
 const FUL=document.createElement('div');FUL.id='fuerL';FUL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
 FUL.innerHTML=`<div style="position:absolute;inset:0;background:${JG_CSS}"></div>
+<div id="fuCloud" style="position:absolute;left:960px;top:540px;width:0;height:0">${CL_POS.map((p,i)=>`<img class="fuAv" src="${CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:0;top:0;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);transform-origin:50% 50%">`).join('')}</div>
 <div id="fuRow" style="position:absolute;left:0;top:0;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
  <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="fuFix" style="display:inline-block;margin-top:30px">Für</span></div>
  <div id="fuMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${FU_PH.map(p=>`<span class="fuP" style="position:absolute;left:0;top:30px;display:inline-block">${p}</span>`).join('')}</div>
 </div>`;
 $('stage').appendChild(FUL);
-const FUE={row:$('fuRow'),fix:$('fuFix'),mask:$('fuMask'),ph:[...FUL.querySelectorAll('.fuP')]};
+const FUE={row:$('fuRow'),fix:$('fuFix'),mask:$('fuMask'),ph:[...FUL.querySelectorAll('.fuP')],cloud:$('fuCloud'),av:[...FUL.querySelectorAll('.fuAv')]};
+// Profil-Wolke um „Für jeden.“: Lage wie in der Profil-Wolke, etwas weiter gefasst; was die Schrift berühren würde, rückt nach außen
+const FU_AV=CL_POS.map(([x,y,d])=>{x*=1.12;y*=1.12;const r=d/2+28;let k=0;while(Math.abs(x)<470+r&&Math.abs(y)<95+r&&k++<200){const l=Math.hypot(x,y)||1;x+=x/l*8;y+=y/l*8}return [x,y,d,Math.hypot(x,y)]});
+const FU_ORD=FU_AV.map((a,i)=>i).sort((a,b)=>FU_AV[a][3]-FU_AV[b][3]); // von innen nach außen
 const FUER={
   key:'fuer',name:'Für … (Verlauf)',lane:'laneV3',cls:'typo',
-  DEF:{beat:13.725/24,inAt:.25,hold:2,move:.4,gap:.28,center:.75,cDur:.5,outAt:7.4},
+  DEF:{beat:13.725/24,inAt:.25,hold:2,move:.4,gap:.28,center:.75,cDur:.5,cloudAt:5.5,cloudZoom:1.5,outAt:15.4},
   params:[
     {k:'inAt',label:'„Für“ steigt auf bei (Schlag)',min:0,max:2,step:.25,fmt:v=>String(v)},
     {k:'hold',label:'Satzende wechselt alle',min:2,max:6,step:.5,fmt:v=>v+' Schläge',sub:'„Für“ bleibt stehen, das Satzende läuft nach oben weiter'},
@@ -3184,8 +3188,10 @@ const FUER={
     {k:'gap',label:'Abstand nach „Für“',min:.1,max:.6,step:.01,fmt:v=>Math.round(v*100)+' % Schriftgröße'},
     {k:'center',label:'„Für jeden.“ mittig ab (Schläge nach dem Wechsel)',min:0,max:2,step:.25,fmt:v=>String(v)},
     {k:'cDur',label:'Dauer Gleiten zur Mitte',min:.2,max:1,step:1/24,fmt:v=>Math.round(v*24)+' F'},
-    {k:'outAt',label:'Ausstieg bei (Schlag)',min:4,max:8,step:.25,fmt:v=>String(v)}],
-  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:'Für',total:8*b}},
+    {k:'cloudAt',label:'Profil-Wolke ab (Schlag)',min:4,max:10,step:.25,fmt:v=>String(v),sub:'die Profile der jö Community ploppen um „Für jeden.“ auf, die Kamera zieht dabei auf'},
+    {k:'cloudZoom',label:'Kamera zieht auf über',min:.5,max:3,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+    {k:'outAt',label:'Ausstieg bei (Schlag)',min:6,max:16,step:.25,fmt:v=>String(v)}],
+  model(P){const b=P.beat;return {P,b,key:P.inAt*b,keyName:'Für',total:16*b}},
   show(on){FUL.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b,E=FUE,fs=150;
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
@@ -3199,6 +3205,12 @@ const FUER={
     let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<FU_PH.length;k++){const s=a+k*P.hold*b;p+=eIO(seg(t,s,s+P.move))}
     p+=eInCub(seg(t,o+.04,o+.34));
     E.ph.forEach((el,i)=>{const d=i-p;el.style.transform=`translateY(${(d*240).toFixed(1)}px)`;el.style.opacity=Math.abs(d)<1.05?'1':'0'});
+    // Profil-Wolke
+    const c0=P.cloudAt*b,zu=eIO(seg(t,c0,c0+P.cloudZoom)),cout=eInCub(seg(t,o-.05,o+.3));
+    E.cloud.style.transform=`scale(${(1.45-.45*zu).toFixed(4)})`;
+    E.av.forEach((el,i)=>{const [x,y,d]=FU_AV[i],k=FU_ORD.indexOf(i),a0=c0+k*.045,pp=eBack(seg(t,a0,a0+.45))*(1-cout),
+      fx=x+9*Math.sin(t*(1+i*.11)+i*1.7),fy=y+7*Math.cos(t*(.9+i*.13)+i*1.1);
+      el.style.width=el.style.height=d+'px';el.style.transform=`translate(${(fx-d/2).toFixed(1)}px,${(fy-d/2).toFixed(1)}px) scale(${pp.toFixed(4)})`});
     E.row.style.transform='none';FUL.querySelector('div').style.transform=`scale(${(1.04-.04*eOut(seg(t,0,M.total))).toFixed(4)})`},
   marks(M){const P=M.P,b=M.b;return [[P.inAt*b,'Für'],...[1,2].map(k=>[(P.inAt+k*P.hold)*b,FU_PH[k].split(' ')[1]||FU_PH[k]]),[P.outAt*b,'raus']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P,b=M.b;return [
@@ -3206,7 +3218,7 @@ const FUER={
     ['„… mehr Begeisterung.“',`${F((P.inAt+P.hold)*b)}–${F((P.inAt+2*P.hold)*b)}`,'nur das Satzende läuft nach oben weiter'],
     ['„… jeden.“',`${F((P.inAt+2*P.hold)*b)}–${F(P.outAt*b)}`,'danach fällt alles aus der Maske'],
     ['Hintergrund','','jö-Verlauf, zieht leicht auf']]},
-  note:'Frames bei 24 fps ab Beginn der Subebene. Zwei Takte; „Für“ steht, die Satzenden wechseln alle zwei Schläge, am Ende gleitet „Für jeden.“ in die Bildmitte.'
+  note:'Frames bei 24 fps ab Beginn der Subebene. Vier Takte; „Für“ steht, die Satzenden wechseln alle zwei Schläge, „Für jeden.“ gleitet in die Bildmitte, dann ploppen die Profile der jö Community darum auf.'
 };
 
 /* =====================================================================
@@ -3734,41 +3746,41 @@ S.clips.bill={start:60.483,len:2.146,in:0};
 S.clips.endc={start:62.629,len:7.0,in:0}; // endet auf dem Schlag bei F 1427
 S.clips.rabatt={start:45.7630,len:3.5997,in:0};
 S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 s
-S.warp={r0:79.8702};S.clips.white.len=8.7;
+S.warp={r0:84.4418};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9.2072,len:2.4833,in:0.475};
 S.clips.c2={start:15.75,len:2.5881,in:0};
-S.clips.people={start:22.9098,len:6.8625,in:0};
-S.clips.c3={start:29.7723,len:2.2755,in:0};
-S.clips.pers={start:32.0478,len:2.2858,in:0};
-S.clips.rabatt={start:41.1912,len:3.5997,in:0};
-S.clips.cloud={start:44.2339,len:8.3843,in:0};
-S.clips.c4={start:120.5723,len:2.5032,in:0};
-S.clips.box={start:133.6406,len:3.5,in:0};
-S.clips.c5={start:137.1406,len:4.1312,in:0};
-S.clips.partner={start:34.3336,len:6.8575,in:0};
-S.clips.brand={start:145.7538,len:6.6608,in:0};
-S.clips.full={start:152.4146,len:7.0317,in:0};
-S.clips.c6={start:159.4463,len:2.8539,in:0};
-S.clips.colors={start:162.3002,len:3.4313,in:0};
-S.clips.deal={start:165.7315,len:5.144,in:0};
-S.clips.prod={start:170.8755,len:2.273,in:0.634};
-S.clips.c7={start:173.1485,len:2.2837,in:0};
-S.clips.city={start:175.4322,len:3.293,in:0};
-S.clips.bill={start:178.7252,len:2.146,in:0};
-S.clips.c8={start:180.8712,len:5.9952,in:0};
-S.clips.logo2={start:180.9359,len:5.9305,in:0};
-S.clips.slot={start:52.6182,len:4.5717,in:0};
-S.clips.badges={start:60.6503,len:10.0078,in:0};
-S.clips.wall={start:70.6581,len:9.15,in:0};
-S.clips.tags={start:79.8081,len:5.7188,in:0};
-S.clips.showcase={start:187.5723,len:8.47,in:0};
+S.clips.people={start:27.4814,len:6.8625,in:0};
+S.clips.c3={start:34.3439,len:2.2755,in:0};
+S.clips.pers={start:36.6194,len:2.2858,in:0};
+S.clips.rabatt={start:45.7628,len:3.5997,in:0};
+S.clips.cloud={start:48.8055,len:8.3843,in:0};
+S.clips.c4={start:125.1439,len:2.5032,in:0};
+S.clips.box={start:138.2122,len:3.5,in:0};
+S.clips.c5={start:141.7122,len:4.1312,in:0};
+S.clips.partner={start:38.9052,len:6.8575,in:0};
+S.clips.brand={start:150.3254,len:6.6608,in:0};
+S.clips.full={start:156.9862,len:7.0317,in:0};
+S.clips.c6={start:164.0179,len:2.8539,in:0};
+S.clips.colors={start:166.8718,len:3.4313,in:0};
+S.clips.deal={start:170.3031,len:5.144,in:0};
+S.clips.prod={start:175.4471,len:2.273,in:0.634};
+S.clips.c7={start:177.7201,len:2.2837,in:0};
+S.clips.city={start:180.0038,len:3.293,in:0};
+S.clips.bill={start:183.2968,len:2.146,in:0};
+S.clips.c8={start:185.4428,len:5.9952,in:0};
+S.clips.logo2={start:185.5075,len:5.9305,in:0};
+S.clips.slot={start:57.1898,len:4.5717,in:0};
+S.clips.badges={start:65.2219,len:10.0078,in:0};
+S.clips.wall={start:75.2297,len:9.15,in:0};
+S.clips.tags={start:84.3797,len:5.7188,in:0};
+S.clips.showcase={start:192.1439,len:8.47,in:0};
 S.clips.hl1b={start:2.4019,len:2.1731,in:0};
 S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
 S.clips.julian={start:11.6905,len:4.5717,in:0};
 S.clips.white2={start:11.6905,len:4.5717,in:0};
-S.clips.fuer={start:18.3381,len:4.5717,in:0};
+S.clips.fuer={start:18.3381,len:9.1433,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};

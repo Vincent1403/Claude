@@ -296,9 +296,9 @@ CLIPS["c2"] = C(378 / 24, _e - BARL - 378 / 24)   # „Das neue Jö.“ Frame 37
 FU_AT = round(_e - BARL, 4)                         # danach „Für …“ auf dem Verlauf (2 Takte), alles Weitere rückt nach hinten
 for k in CLIPS:
     if k != "c2" and CLIPS[k]["start"] >= FU_AT - 1e-3:
-        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 2 * BARL, 4)
-WR0_REAL = round(WR0_REAL + 2 * BARL, 4)
-CLIPS["fuer"] = C(FU_AT, 2 * BARL)
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] + 4 * BARL, 4)
+WR0_REAL = round(WR0_REAL + 4 * BARL, 4)
+CLIPS["fuer"] = C(FU_AT, 4 * BARL)   # „Für …“ + Profil-Wolke um „Für jeden.“
 PT_AT = round(CLIPS["pers"]["start"] + CLIPS["pers"]["len"], 4)   # Partner: „Viele Marken.“ → jö → „Eine starke Verbindung.“ (3 Takte)
 for k in CLIPS:
     if k != "partner" and CLIPS[k]["start"] >= PT_AT - 1e-3:
