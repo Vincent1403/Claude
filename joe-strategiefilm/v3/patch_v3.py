@@ -304,7 +304,12 @@ for k in CLIPS:
     if k != "partner" and CLIPS[k]["start"] >= PT_AT - 1e-3:
         CLIPS[k]["start"] = round(CLIPS[k]["start"] + 3 * BARL, 4)
 WR0_REAL = round(WR0_REAL + 3 * BARL, 4)
-CLIPS["partner"] = C(PT_AT, 3 * BARL)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
+CLIPS["partner"] = C(PT_AT, 3 * BARL)
+# „Menschen“ kommt nach „Persönlich. Relevant. Ganz nach dir.“: Reihenfolge Für … → Möglichkeiten → Persönlich → Menschen → Partner
+_p0 = CLIPS["people"]["start"]
+CLIPS["c3"]["start"] = _p0
+CLIPS["pers"]["start"] = round(_p0 + CLIPS["c3"]["len"], 4)
+CLIPS["people"]["start"] = round(CLIPS["pers"]["start"] + CLIPS["pers"]["len"], 4)        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
