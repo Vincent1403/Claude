@@ -3919,7 +3919,7 @@ const FORMATS={
     {k:'travel',label:'Weg nach oben',min:1100,max:1600,step:10,fmt:v=>v+' px'}],
   model(P){const b=P.beat,T=[0,P.hold*b+(P.sh||0),2*P.hold*b+(P.sh||0)]; /* sh: Wechsel auf die Synth-Hits verschieben */return {P,b,T,key:T[1],keyName:'Wechsel 2',total:3*P.hold*b}},
   show(on){FML.style.display=on?'':'none'},
-  render(M,t){const P=M.P,E=FME,T=M.T,D=P.dur,ef=u=>eStFlow(clamp(u));
+  render(M,t){const P=M.P,E=FME,T=M.T,D=P.dur,ef=u=>eStFlow(clamp(u));FML.style.background=t<(P.clearUntil||0)?'transparent':'#f4f1ea'; /* durchsichtig, solange die Headline darunter noch rausläuft */
     E.g.style.transform='none';
     E.fr.forEach((f,i)=>{const si=+f.dataset.s,x=+f.dataset.x,y=parseFloat(f.style.top),o=(x/1740+(y>500?.35:0)); // Reihenfolge: links → rechts, oben → unten
       const inA=si===0?o*P.inLag:T[si]+o*P.lag+.06,outA=si<2?T[si+1]+o*P.lag:1e9;
@@ -4155,8 +4155,8 @@ S.clips.julian={start:14.2786,len:5.9214,in:0,rate:0.76873};
 S.clips.white2={start:14.2786,len:5.9214,in:0,rate:0.76873};
 S.clips.fuer={start:27.4814,len:10.5345,in:0};
 S.clips.system={start:91.4845,len:2.2858,in:0};
-S.clips.kanal={start:118.9135,len:3.4296,in:0};
-S.clips.formats={start:122.3431,len:13.715,in:0};
+S.clips.kanal={start:118.9135,len:2.6698,in:0};
+S.clips.formats={start:120.8333,len:15.2248,in:0};
 S.clips.flex={start:136.0581,len:2.2858,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
@@ -4182,9 +4182,9 @@ Object.assign(S.comps.c7.params,{"len": 7, "outAt": 6.15});FM.c7=COMPS.c7.model(
 Object.assign(S.comps.ubahn.params,{"len": 4.575});FM.ubahn=COMPS.ubahn.model(S.comps.ubahn.params);
 Object.assign(S.comps.endtxt.params,{"len": 29.24, "aIn": 0.25, "aOut": 4.25, "bIn": 5.25, "hold": 3.525, "bOut": 14.5, "cOut": 19.88, "cIn": 15.25});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
 Object.assign(S.comps.endc.params,{"flyAt": 0.35, "txAt": 0.95, "wmAt": 1.0, "outAt": 1.693, "linkAt": 1.893, "pillAt": 2.193});FM.endc=COMPS.endc.model(S.comps.endc.params);
-Object.assign(S.comps.kanal.params,{"len": 6.001, "inAt": 0, "outAt": 5.151});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
+Object.assign(S.comps.kanal.params,{"len": 4.672, "inAt": 0, "outAt": 3.833});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
 Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.3835});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);
-Object.assign(S.comps.formats.params,{"sh": 1.09});FM.formats=COMPS.formats.model(S.comps.formats.params);
+Object.assign(S.comps.formats.params,{"sh": 2.5998, "clearUntil": 0.75});FM.formats=COMPS.formats.model(S.comps.formats.params);
 Object.assign(S.comps.prod.params,{"ppIn": 0.5, "ppStag": 0.1});FM.prod=COMPS.prod.model(S.comps.prod.params);
 Object.assign(S.comps.logo2.params,{"outAt": 2.4467});FM.logo2=COMPS.logo2.model(S.comps.logo2.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;

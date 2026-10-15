@@ -122,7 +122,7 @@ const FORMATS={
     {k:'travel',label:'Weg nach oben',min:1100,max:1600,step:10,fmt:v=>v+' px'}],
   model(P){const b=P.beat,T=[0,P.hold*b+(P.sh||0),2*P.hold*b+(P.sh||0)]; /* sh: Wechsel auf die Synth-Hits verschieben */return {P,b,T,key:T[1],keyName:'Wechsel 2',total:3*P.hold*b}},
   show(on){FML.style.display=on?'':'none'},
-  render(M,t){const P=M.P,E=FME,T=M.T,D=P.dur,ef=u=>eStFlow(clamp(u));
+  render(M,t){const P=M.P,E=FME,T=M.T,D=P.dur,ef=u=>eStFlow(clamp(u));FML.style.background=t<(P.clearUntil||0)?'transparent':'#f4f1ea'; /* durchsichtig, solange die Headline darunter noch rausläuft */
     E.g.style.transform='none';
     E.fr.forEach((f,i)=>{const si=+f.dataset.s,x=+f.dataset.x,y=parseFloat(f.style.top),o=(x/1740+(y>500?.35:0)); // Reihenfolge: links → rechts, oben → unten
       const inA=si===0?o*P.inLag:T[si]+o*P.lag+.06,outA=si<2?T[si+1]+o*P.lag:1e9;

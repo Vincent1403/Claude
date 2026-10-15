@@ -546,6 +546,13 @@ _sh = 30 / 24 * CLIPS["colors"]["rate"] / BEAT
 PARAMS["colors"] = {**PARAMS["colors"], "beatsB": round(PARAMS["colors"]["beatsB"] - _sh, 4), "beatsC": round(PARAMS["colors"]["beatsC"] + _sh, 4)}
 PARAMS["prod"] = {**PARAMS.get("prod", {}), "ppIn": .5, "ppStag": .1}
 PARAMS["logo2"] = {**PARAMS.get("logo2", {}), "outAt": round((4278.7 - 1.5) / 24 - CLIPS["logo2"]["start"] + CLIPS["logo2"]["in"], 4)}   # Übergang ins App-Icon auf dem Hit
+# „Konsistent über alle Kanäle.“ geht auf dem Drop F2908 raus, Formate gleiten schon währenddessen hoch (kein leerer Screen)
+_ks, _fe0 = CLIPS["kanal"]["start"], CLIPS["formats"]["start"] + CLIPS["formats"]["len"]
+CLIPS["kanal"]["len"] = round(2918 / 24 - _ks, 4)
+PARAMS["kanal"] = {**PARAMS["kanal"], "len": round(CLIPS["kanal"]["len"] * 4 / BARL, 3), "outAt": round((2906.5 / 24 - _ks) * 4 / BARL, 3)}
+_fs = round(2900 / 24, 4)
+PARAMS["formats"] = {**PARAMS["formats"], "sh": round(PARAMS["formats"]["sh"] + CLIPS["formats"]["start"] - _fs, 4), "clearUntil": round(2918 / 24 - _fs, 3)}
+CLIPS["formats"]["start"], CLIPS["formats"]["len"] = _fs, round(_fe0 - _fs, 4)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
