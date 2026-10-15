@@ -497,7 +497,8 @@ CLIPS["logo2"] = C(round(4230 / 24 - .48, 4), 0, CLIPS["logo2"]["in"]); CLIPS["l
 CLIPS["endc"] = C(_ec, round(190 - _ec, 4))
 _pa = round(BASS - _ec, 3)                                             # Pill-Start auf dem Bass
 PARAMS["endc"] = {"flyAt": .35, "txAt": .95, "wmAt": 1.0, "outAt": round(_pa - .5, 3), "linkAt": round(_pa - .3, 3), "pillAt": _pa}
-rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.3,.62).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
+rep("    const drift=0;\n    E.cards.forEach((c,i)=>{const a=i*fl,", "    const drift=0;FC.style.background=t<.85?'transparent':'#f4f1ea'; // durchsichtig, solange Julian darunter ausläuft\n    E.cards.forEach((c,i)=>{const a=i*fl,")
+rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)
 CLIPS["tags"]["len"] = round(CLIPS["tags"]["len"] - _kd, 4)
@@ -505,7 +506,21 @@ CLIPS["kanal"]["start"] = round(CLIPS["kanal"]["start"] - _kd, 4); CLIPS["kanal"
 _kn = 4 * CLIPS["kanal"]["len"] / BARL   # Subebene läuft im Takt-Raster (4 Einheiten pro Takt)
 PARAMS["kanal"] = {"len": round(_kn, 3), "inAt": 0, "outAt": round(_kn - .85, 3)}   # erstes Wort direkt auf dem Drop, Ausblenden wie bisher kurz vor den Formaten
 # Farben wie im Editor gesetzt (Start nach Julian, tiefer in die Subebene)
-CLIPS["colors"]["start"], CLIPS["colors"]["len"], CLIPS["colors"]["in"] = 19.5237, 7.9577, .8417
+_ce = round(CLIPS["colors"]["start"] + CLIPS["colors"]["len"], 4)
+# Julian → Farben als durchgehende Bewegung: Farbkarten fahren schon rein, während Julians Karten links rausgleiten;
+# Julian hält darunter sein leeres Beige-Endbild, bis die Beige-Karte deckt (kein Schwarz-Frame)
+_co0 = 18.504
+CLIPS["colors"] = C(_co0, round(_ce - _co0, 4), .2); CLIPS["colors"]["rate"] = round((NATIVE_CO - .2) / CLIPS["colors"]["len"], 5)
+for k in ("julian", "white2"):
+    CLIPS[k]["len"] = round(20.2 - CLIPS[k]["start"], 4)
+# Zoom in Kians Kreis setzt auf dem Drop bei F878 (36,58 s) ein; Kian-Video schließt direkt an und endet wie bisher
+_fz = 15.9
+PARAMS["fuer"] = {**PARAMS["fuer"], "zoomAt": _fz}
+_fe = round(CLIPS["fuer"]["start"] + _fz * BEAT + 1.4 + 1 / 24, 4)
+_re = CLIPS["rabatt"]["start"] + CLIPS["rabatt"]["len"]
+CLIPS["rabatt"]["rate"] = round(CLIPS["rabatt"]["len"] / (_re - _fe), 5)
+CLIPS["rabatt"]["start"], CLIPS["rabatt"]["len"] = _fe, round(_re - _fe, 4)
+CLIPS["fuer"]["len"] = round(_fe - CLIPS["fuer"]["start"], 4)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

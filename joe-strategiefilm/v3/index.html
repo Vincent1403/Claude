@@ -1245,12 +1245,12 @@ const COLORS={
   show(on){FC.style.display=on?'':'none'},
   render(M,t){const P=M.P,T=M.T,E=FCE,f=eStFlow,fl=P.flash*P.beat,lt3=t-T[2],D3=T[3]-T[2];
     // 01 + 02: Karten
-    const drift=0;
+    const drift=0;FC.style.background=t<.85?'transparent':'#f4f1ea'; // durchsichtig, solange Julian darunter ausläuft
     E.cards.forEach((c,i)=>{const a=i*fl,p=i?f(seg(t,a,a+P.inDur)):1, /* Beige = Hintergrund: steht schon, nur die Pills erscheinen */pp=eBack(seg(t,a+P.inDur*.35,a+P.inDur*.35+.4));
       const q=f(seg(t,T[1]-.55+i*P.stag*.6,T[1]-.55+i*P.stag*.6+.3)),o=f(seg(lt3,i*P.stag*.5,i*P.stag*.5+.4));
       c.style.display=t<a?'none':'';
       c.style.transform=`translate(${(drift+(1-p)*(2060-(FC_X0+i*FC_STEP))).toFixed(1)}px,${(o*1150).toFixed(1)}px)`; // gleitet von rechts rein
-      c.style.opacity=i?1:seg(t,.3,.62).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft
+      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft
       c.querySelector('.fdark').style.height=(FC_H*P.tones*q).toFixed(1)+'px';c.querySelector('.flight').style.height=(FC_H*P.tones*q).toFixed(1)+'px';
       const pl=c.querySelector('.fpill'),hx=c.querySelector('.fhex'),ph=eBack(seg(t,a+P.inDur*.5,a+P.inDur*.5+.4));
       {const u=f(seg(t,a+P.inDur*.3,a+P.inDur*.3+.4)),v=f(seg(t,a+P.inDur*.42,a+P.inDur*.42+.4));pl.style.transform=`translateY(${((1-u)*18).toFixed(1)}px)`;pl.style.opacity=u.toFixed(3);hx.style.transform=`translateY(${((1-v)*14).toFixed(1)}px)`;hx.style.opacity=(.85*v).toFixed(3)}});
@@ -4126,7 +4126,7 @@ S.clips.c2={start:9.2072,len:2.5881,in:0};
 S.clips.people={start:57.1971,len:9.1433,in:0};
 S.clips.c3={start:50.3396,len:4.5717,in:0};
 S.clips.pers={start:54.9113,len:2.2858,in:0};
-S.clips.rabatt={start:38.9105,len:3.5997,in:0};
+S.clips.rabatt={start:38.0159,len:4.4943,in:0,rate:0.80095};
 S.clips.cloud={start:41.9532,len:8.3843,in:0};
 S.clips.c4={start:9000.0,len:2.2858,in:0};
 S.clips.box={start:9000.0,len:3.5,in:0};
@@ -4135,7 +4135,7 @@ S.clips.partner={start:66.3404,len:11.4291,in:0,rate:0.75};
 S.clips.brand={start:77.7695,len:9.1433,in:0,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:19.5237,len:7.9577,in:0.8417,rate:0.50837};
+S.clips.colors={start:18.504,len:8.9774,in:0.2,rate:0.48697};
 S.clips.deal={start:138.3439,len:5.1431,in:0};
 S.clips.prod={start:86.9128,len:4.5717,in:0.634,rate:0.4972};
 S.clips.c7={start:9000.0,len:5.1431,in:0};
@@ -4151,9 +4151,9 @@ S.clips.showcase={start:9000.0,len:8.47,in:0};
 S.clips.hl1b={start:2.4019,len:2.1731,in:0};
 S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
-S.clips.julian={start:14.2786,len:5.2034,in:0,rate:0.76873};
-S.clips.white2={start:14.2786,len:5.2034,in:0,rate:0.76873};
-S.clips.fuer={start:27.4814,len:11.4291,in:0};
+S.clips.julian={start:14.2786,len:5.9214,in:0,rate:0.76873};
+S.clips.white2={start:14.2786,len:5.9214,in:0,rate:0.76873};
+S.clips.fuer={start:27.4814,len:10.5345,in:0};
 S.clips.system={start:91.4845,len:2.2858,in:0};
 S.clips.kanal={start:118.9135,len:3.4296,in:0};
 S.clips.formats={start:122.3431,len:13.715,in:0};
@@ -4177,7 +4177,7 @@ Object.assign(S.comps.people.params,{"sb": 4});FM.people=COMPS.people.model(S.co
 Object.assign(S.comps.c3.params,{"len": 8, "outAt": 7.15});FM.c3=COMPS.c3.model(S.comps.c3.params);
 Object.assign(S.comps.c5.params,{"len": 4, "outAt": 3.15});FM.c5=COMPS.c5.model(S.comps.c5.params);
 Object.assign(S.comps.system.params,{"len": 4, "step": 1.75, "outAt": 3.6});FM.system=COMPS.system.model(S.comps.system.params);
-Object.assign(S.comps.fuer.params,{"len": 20, "nStep": 1.0, "nMove": 0.45, "cloudAt": 12.25, "zoomAt": 17.5, "outAt": 20});FM.fuer=COMPS.fuer.model(S.comps.fuer.params);
+Object.assign(S.comps.fuer.params,{"len": 20, "nStep": 1.0, "nMove": 0.45, "cloudAt": 12.25, "zoomAt": 15.9, "outAt": 20});FM.fuer=COMPS.fuer.model(S.comps.fuer.params);
 Object.assign(S.comps.c7.params,{"len": 7, "outAt": 6.15});FM.c7=COMPS.c7.model(S.comps.c7.params);
 Object.assign(S.comps.ubahn.params,{"len": 5.1431});FM.ubahn=COMPS.ubahn.model(S.comps.ubahn.params);
 Object.assign(S.comps.endtxt.params,{"len": 29.24, "aIn": 0.25, "aOut": 4.25, "bIn": 5.25, "hold": 3.525, "bOut": 14.5, "cOut": 19.88, "cIn": 15.25});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
