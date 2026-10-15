@@ -34,3 +34,5 @@ const SYSTEM=makeSeq('system','Ein System. Unzählige Möglichkeiten.',['Ein Sys
 // „Konsistent über alle Kanäle.“ als Tafel wie die anderen Headlines: Wort für Wort aus der Zeilenmaske
 const KANAL=makeHL('kanal','Konsistent über alle Kanäle.','laneV2',['Konsistent über','alle *Kanäle.'],
   {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach dem Tag-System.'});
+const FLEX=makeHL('flex','Flexibel im Zusammenspiel.','laneV2',['Flexibel im','*Zusammenspiel.'],
+  {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach den Formaten; danach die Anzeigen.'});

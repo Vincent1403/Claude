@@ -280,7 +280,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,white2:WHITE2,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,flex:FLEX,white2:WHITE2,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -369,6 +369,10 @@ CLIPS["kanal"] = C(KA_AT, BARL)
 # Die bisherigen Stories (Design-Block) kommen als Reserve in die Ablage hinter den Slot.
 FM_AT = round(KA_AT + BARL, 4)
 CLIPS["formats"] = C(FM_AT, 6 * BARL)
+# „Flexibel im Zusammenspiel.“ (1 Takt), danach die Anzeigen (aus der Ablage, Länge wie im Markenfilm)
+FX_AT = round(FM_AT + 6 * BARL, 4)
+CLIPS["flex"] = C(FX_AT, BARL)
+CLIPS["deal"]["start"] = round(FX_AT + BARL, 4)
 WR0_REAL = 215.0
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten

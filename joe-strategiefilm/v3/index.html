@@ -3286,6 +3286,8 @@ const SYSTEM=makeSeq('system','Ein System. Unzählige Möglichkeiten.',['Ein Sys
 // „Konsistent über alle Kanäle.“ als Tafel wie die anderen Headlines: Wort für Wort aus der Zeilenmaske
 const KANAL=makeHL('kanal','Konsistent über alle Kanäle.','laneV2',['Konsistent über','alle *Kanäle.'],
   {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach dem Tag-System.'});
+const FLEX=makeHL('flex','Flexibel im Zusammenspiel.','laneV2',['Flexibel im','*Zusammenspiel.'],
+  {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach den Formaten; danach die Anzeigen.'});
 
 const WHL=document.createElement('div');WHL.id='whiteL';WHL.style.cssText='position:absolute;inset:0;display:none';WHL.innerHTML='<div id="whO" style="position:absolute;inset:0;background:#e4e0eb"></div><div id="whB" style="position:absolute;inset:0;background:#f4f1ea"></div>';
 $('bg').after(WHL);
@@ -3920,7 +3922,7 @@ const FORMATS={
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,white2:WHITE2,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,flex:FLEX,white2:WHITE2,logo2:LOGO2};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -3971,7 +3973,7 @@ S.clips.brand={start:57.2157,len:6.8625,in:0};
 S.clips.full={start:156.9862,len:7.0317,in:0};
 S.clips.c6={start:164.0179,len:2.8539,in:0};
 S.clips.colors={start:166.8718,len:3.4313,in:0};
-S.clips.deal={start:170.3031,len:5.144,in:0};
+S.clips.deal={start:111.8131,len:5.144,in:0};
 S.clips.prod={start:175.4471,len:2.273,in:0.634};
 S.clips.c7={start:177.7201,len:2.2837,in:0};
 S.clips.city={start:180.0038,len:3.293,in:0};
@@ -3992,6 +3994,7 @@ S.clips.fuer={start:18.3381,len:9.1433,in:0};
 S.clips.system={start:64.0782,len:4.5717,in:0};
 S.clips.kanal={start:93.5265,len:2.2858,in:0};
 S.clips.formats={start:95.8123,len:13.715,in:0};
+S.clips.flex={start:109.5273,len:2.2858,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};
