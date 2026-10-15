@@ -504,6 +504,10 @@ rep("const b=f(seg(t,a+.18,a+.6));q.bg", "const b=f(seg(t,a+.18*g,a+.6*g));q.bg"
 rep("const v=f(seg(t,a+.2,a+.62));q.v", "const v=f(seg(t,a+.2*g,a+.62*g));q.v")
 rep("const l=f(seg(t,a+.28,a+.6));q.lock", "const l=f(seg(t,a+.28*g,a+.6*g));q.lock")
 rep("pi=f(seg(t,a+.5,a+.8))", "pi=f(seg(t,a+.5*g,a+.8*g))")
+# Endcard startet aus dem App-Icon (Endzustand des Schluss-Logos), nicht mehr aus dem weißen jö
+rep("""fill="#fff"/>`).join('')}</svg>\n<div style="position:absolute;left:0;right:0;top:412px""", """fill="#fff"/>`).join('')}</svg>\n<img id="ecIcon" src="__ECICON__" style="position:absolute;left:710px;top:290px;width:500px;height:500px;border-radius:112.5px;box-shadow:0 30px 60px rgba(90,30,0,.18);transform-origin:50% 50%">\n<div style="position:absolute;left:0;right:0;top:412px""")
+rep("E.jo.style.transform=`scale(${js.toFixed(4)})`;E.jo.style.opacity=js>0.02?1:0;", "E.jo.style.opacity=0;{const ic=$('ecIcon');ic.style.transform=`scale(${js.toFixed(4)})`;ic.style.opacity=js>0.02?1:0} /* App-Icon schrumpft statt des weißen jö */")
+rep("c.setAttribute('fill','#fff');c.style.opacity=js>0.02?1:0})}", "c.setAttribute('fill','#fff');c.style.opacity=0})} /* die Punkte gehören zum weißen jö – mit App-Icon unsichtbar */")
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)
@@ -559,6 +563,7 @@ rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)
 rep("COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))", "COMPS[k].render(FM[k],Math.min(c.in+(t-c.start)*(c.rate||1),FM[k].total))")  # Clip-Tempo: rate < 1 = langsamer
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
+s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
 (here / "index.html").write_text(s, encoding="utf-8")
 
 tl = json.loads((here / "timeline_markenfilm.json").read_text())
