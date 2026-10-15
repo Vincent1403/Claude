@@ -94,7 +94,7 @@ CLIPS["tags"] = C(WALL_END, round(10 * BEAT, 4))     # Tag-System direkt nach de
 STORY_AT = round(WALL_END + 10 * BEAT, 4)               # Stories starten mit dem Schnitt
 WR0_REAL = round(STORY_AT - (8.196 - 4.8333) * _wk, 4)  # Story-Block (Design-Zeit) so verschoben
 CLIPS["showcase"] = C(121.2994, 8.47)   # Ablage; wird unten noch um die Intro-/Einschub-Verschiebungen versetzt (Editor: 146,443)          # Icon-Showcase: in der Ablage hinter dem Schluss
-T_LEN = 170                                    # Timeline länger als der Track (96 s)
+T_LEN = 192                                    # Timeline länger als der Track (96 s)
 # Intro: vier Headlines vor dem Logo. Musik und alles ab dem Logo rücken um INTRO_D nach hinten (Beat-Sync bleibt).
 INTRO_HL = [("hl1", 4.2), ("hl1b", 3.8), ("hl1c", 3.5), ("hl1d", 4.6)]   # Länge je Headline in Schlägen
 INTRO_D = round(sum(l for _, l in INTRO_HL) * BEAT - 2.35, 4)          # alte Headline lief 0–2,35 s
@@ -418,9 +418,39 @@ CLIPS["endc"] = C(round(CLIPS["logo2"]["start"] + CLIPS["logo2"]["len"], 4), 7.0
 for k in ("slot", "c8", "showcase", "full", "c6"):
     CLIPS[k]["start"] = 9000.0
 WR0_REAL = 9000.0
-block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
+# ===== 190-s-Fassung: ab „Farben“ alles neu auf das Taktraster gelegt (jede Szene ganze Takte, Schnitte auf der Eins).
+# Langsamer werden die Szenen über die Länge: Tafeln halten länger (Wörter bleiben auf den Schlägen), Animationen laufen mit rate < 1.
+# Badges, Angebots-Wand, „Ein System.“, Formate, Anzeigen und der Schluss-Text behalten ihr Tempo.
+# „hammeralbrecht.design“ (Link der H·A-Endcard, 4,35 s nach Start) landet auf dem letzten langen Bass (182,86 s); Film endet bei 190 s.
+BASS = 182.86
+LAYOUT = [  # (Clip, Takte, rate) – rate None = Tempo bleibt
+    ("colors", 3, 2 / 3), ("fuer", 5, .8), ("rcblock", 5, None), ("c3", 2, None), ("pers", 1, None), ("people", 4, None),
+    ("partner", 4, .75), ("brand", 4, .75), ("prod", 1, None), ("system", 2, None), ("badges", 4.375, None), ("wall", 4, None),
+    ("tags", 3.125, .8), ("kanal", 1, None), ("formats", 6, None), ("flex", 1, None), ("deal", 2.25, None), ("c4", 1.75, None),
+    ("box", 2, round(3.5 / (2 * BARL), 4)), ("c5", 2, None), ("city", 2, round(4.317 / (2 * BARL), 4)), ("c7", 1, None),
+    ("bill", 1.5, round(3.0611 / (1.5 * BARL), 4)), ("endtxt", 6, None)]
+_t = CLIPS["c2"]["start"] + CLIPS["c2"]["len"]
+for k, bars, rate in LAYOUT:
+    ln = round(bars * BARL, 4)
+    if k == "rcblock":   # Kian-Video + Profil-Wolke: Abstand wie bisher
+        _d = CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]
+        CLIPS["rabatt"]["start"] = round(_t, 4); CLIPS["cloud"]["start"] = round(_t + _d, 4)
+    else:
+        CLIPS[k]["start"], CLIPS[k]["len"] = round(_t, 4), ln
+        if rate: CLIPS[k]["rate"] = rate
+    _t += ln
+CLIPS["endc"] = C(round(BASS - 4.35, 4), round(190 - (BASS - 4.35), 4))
+CLIPS["logo2"] = C(CLIPS["endtxt"]["start"] + 6 * BARL, round(CLIPS["endc"]["start"] - CLIPS["endtxt"]["start"] - 6 * BARL, 4), CLIPS["logo2"]["in"])
+CLIPS["logo2"]["start"] = round(CLIPS["logo2"]["start"], 4)
+CLIPS["endtxt"]["len"] = round(CLIPS["endc"]["start"] - CLIPS["endtxt"]["start"], 4)
+PARAMS["people"] = {"sb": 4}                              # 4 Schläge pro Person (4 Takte)
+PARAMS["c3"] = {"len": 8, "outAt": 7.15}                  # Tafeln halten länger
+PARAMS["c4"] = {"len": 7, "outAt": 6.3, "outDir": -1}
+PARAMS["c5"] = {"len": 8, "outAt": 7.15}
+block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
+rep("COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))", "COMPS[k].render(FM[k],Math.min(c.in+(t-c.start)*(c.rate||1),FM[k].total))")  # Clip-Tempo: rate < 1 = langsamer
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
 (here / "index.html").write_text(s, encoding="utf-8")

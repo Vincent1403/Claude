@@ -251,7 +251,7 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=170, FPS=24, TRACK_LEN=187.48;
+const T_MAIN=192, FPS=24, TRACK_LEN=187.48;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
 const AU_LA=45.732,AU_LB=91.4456,AU_LN=2,AU_LL=AU_LB-AU_LA; // Musik-Schleife: ab dem Bass-Einsatz (Takt 37) springt der Track zurück auf den Break (Takt 17) – Break + zweite Hälfte laufen zweimal extra, ~187 s
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<AU_LB-.05)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const mid=BEATS.filter(v=>v>=AU_LA-.01&&v<AU_LB-.05);for(let k=1;k<=AU_LN;k++)BEATS.push(...mid.map(v=>+(v+k*AU_LL).toFixed(3)));BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));const per=96.0522/PEAKS.length,ia=Math.round(AU_LA/per),ib=Math.round(AU_LB/per),seg=PEAKS.slice(ia,ib),tail=PEAKS.splice(ib);for(let k=0;k<AU_LN;k++)PEAKS.push(...seg);PEAKS.push(...tail)}
@@ -4051,54 +4051,57 @@ S.warp={r0:9000.0};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9.2072,len:2.4833,in:0.475};
 S.clips.c2={start:15.75,len:2.5881,in:0};
-S.clips.people={start:48.0414,len:6.8625,in:0};
-S.clips.c3={start:43.4801,len:2.2755,in:0};
-S.clips.pers={start:45.7556,len:2.2858,in:0};
-S.clips.rabatt={start:32.0531,len:3.5997,in:0};
-S.clips.cloud={start:35.0958,len:8.3843,in:0};
-S.clips.c4={start:123.8146,len:2.2858,in:0};
-S.clips.box={start:126.1004,len:3.5,in:0};
-S.clips.c5={start:129.3594,len:4.1312,in:0};
-S.clips.partner={start:54.9039,len:6.8835,in:0};
-S.clips.brand={start:61.7874,len:6.8625,in:0};
+S.clips.people={start:54.9113,len:9.1433,in:0};
+S.clips.c3={start:48.0538,len:4.5717,in:0};
+S.clips.pers={start:52.6255,len:2.2858,in:0};
+S.clips.rabatt={start:36.6247,len:3.5997,in:0};
+S.clips.cloud={start:39.6674,len:8.3843,in:0};
+S.clips.c4={start:138.9154,len:4.0002,in:0};
+S.clips.box={start:142.9156,len:4.5717,in:0,rate:0.7656};
+S.clips.c5={start:147.4873,len:4.5717,in:0};
+S.clips.partner={start:64.0546,len:9.1433,in:0,rate:0.75};
+S.clips.brand={start:73.1979,len:9.1433,in:0,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:18.3381,len:4.5717,in:0};
-S.clips.deal={start:118.6706,len:5.144,in:0};
-S.clips.prod={start:68.6499,len:2.2858,in:0.634};
-S.clips.c7={start:136.6308,len:2.2837,in:0};
-S.clips.city={start:132.8948,len:4.317,in:0};
-S.clips.bill={start:138.5828,len:3.0611,in:0};
+S.clips.colors={start:18.3381,len:6.8575,in:0,rate:0.6666666666666666};
+S.clips.deal={start:133.7723,len:5.1431,in:0};
+S.clips.prod={start:82.3412,len:2.2858,in:0.634};
+S.clips.c7={start:156.6307,len:2.2858,in:0};
+S.clips.city={start:152.059,len:4.5717,in:0,rate:0.9443};
+S.clips.bill={start:158.9165,len:3.4287,in:0,rate:0.8928};
 S.clips.c8={start:9000.0,len:5.9952,in:0};
-S.clips.logo2={start:155.3589,len:2.2858,in:0};
+S.clips.logo2={start:176.0602,len:2.4498,in:0};
 S.clips.slot={start:9000.0,len:4.5717,in:0};
-S.clips.badges={start:75.5074,len:10.0078,in:0};
-S.clips.wall={start:85.5152,len:9.15,in:0};
-S.clips.tags={start:94.6652,len:5.7188,in:0};
+S.clips.badges={start:89.1987,len:10.0005,in:0};
+S.clips.wall={start:99.1992,len:9.1433,in:0};
+S.clips.tags={start:108.3425,len:7.1432,in:0,rate:0.8};
 S.clips.showcase={start:9000.0,len:8.47,in:0};
 S.clips.hl1b={start:2.4019,len:2.1731,in:0};
 S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
 S.clips.julian={start:11.6905,len:4.5717,in:0};
 S.clips.white2={start:11.6905,len:4.5717,in:0};
-S.clips.fuer={start:22.9098,len:9.1433,in:0};
-S.clips.system={start:70.9357,len:4.5717,in:0};
-S.clips.kanal={start:100.384,len:2.2858,in:0};
-S.clips.formats={start:102.6698,len:13.715,in:0};
-S.clips.flex={start:116.3848,len:2.2858,in:0};
+S.clips.fuer={start:25.1956,len:11.4291,in:0,rate:0.8};
+S.clips.system={start:84.627,len:4.5717,in:0};
+S.clips.kanal={start:115.4857,len:2.2858,in:0};
+S.clips.formats={start:117.7715,len:13.715,in:0};
+S.clips.flex={start:131.4865,len:2.2858,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};
-S.clips.endtxt={start:141.6439,len:16.0008,in:0};
-S.clips.endc={start:157.6447,len:7.0,in:0};
+S.clips.endtxt={start:162.3452,len:16.1648,in:0};
+S.clips.endc={start:178.51,len:11.49,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 2.5, "popGap": 99, "end": 12, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
-Object.assign(S.comps.c4.params,{"len": 4, "outAt": 3.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
+Object.assign(S.comps.c4.params,{"len": 7, "outAt": 6.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
 Object.assign(S.comps.colors.params,{"beatsC": 4.75});FM.colors=COMPS.colors.model(S.comps.colors.params);
+Object.assign(S.comps.people.params,{"sb": 4});FM.people=COMPS.people.model(S.comps.people.params);
+Object.assign(S.comps.c3.params,{"len": 8, "outAt": 7.15});FM.c3=COMPS.c3.model(S.comps.c3.params);
+Object.assign(S.comps.c5.params,{"len": 8, "outAt": 7.15});FM.c5=COMPS.c5.model(S.comps.c5.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
@@ -4158,7 +4161,7 @@ function mRender(){
   for(const k in COMPS)if(!ON[k])COMPS[k].show(false); // erst alles aus, dann ein: Doppel-Clips teilen sich eine Ebene
   for(const k in COMPS){const pre=isPre(k),t=pre?tD:tR,c=S.clips[k],on=ON[k];if(!on)continue;COMPS[k].show(true);
     if(pre){mT=tD;if(cc)S.clips.colors=Object.assign({},cc,{start:WB})}
-    try{COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))}finally{if(pre){mT=tR;if(cc)S.clips.colors=cc}}}
+    try{COMPS[k].render(FM[k],Math.min(c.in+(t-c.start)*(c.rate||1),FM[k].total))}finally{if(pre){mT=tR;if(cc)S.clips.colors=cc}}}
 }
 function mUi(){$('mTc').textContent=`${fmtTime(mT)} · Frame ${Math.round(mT*FPS)}`;$('ph').style.left=(mT*pps)+'px'}
 let sel='tags';
