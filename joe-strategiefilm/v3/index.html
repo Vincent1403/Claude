@@ -3721,6 +3721,8 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
   note:'Ersetzt „Deal“ (gleicher Clip auf der Timeline). Bilder und Layouts nach den gelieferten Anzeigen-Zuständen.'};
 
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // Schluss: Logo bleibt stehen, kein Übergang zum App-Icon
+const LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);
+const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'},render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf dem Verlauf auf und bleibt stehen
 /* Partnerfilm: Partner-Szene neu erzählt – erst „Viele Marken.“ in der Mitte, die Partner kreisen darum;
    dann ersetzt das jö-Logo die Worte, die Partner fliegen hinein, das Logo verschwindet und
    „Eine starke Verbindung.“ steigt auf. */
@@ -4013,7 +4015,7 @@ const ENDTXT={
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,flex:FLEX,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,flex:FLEX,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -4063,7 +4065,7 @@ S.clips.partner={start:64.0546,len:9.1433,in:0,rate:0.75};
 S.clips.brand={start:73.1979,len:9.1433,in:0,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:18.3381,len:6.8575,in:0,rate:0.6666666666666666};
+S.clips.colors={start:20.6239,len:6.8575,in:0,rate:0.6666666666666666};
 S.clips.deal={start:133.7723,len:5.1431,in:0};
 S.clips.prod={start:82.3412,len:2.2858,in:0.634};
 S.clips.c7={start:156.6307,len:2.2858,in:0};
@@ -4081,7 +4083,7 @@ S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
 S.clips.julian={start:11.6905,len:4.5717,in:0};
 S.clips.white2={start:11.6905,len:4.5717,in:0};
-S.clips.fuer={start:25.1956,len:11.4291,in:0,rate:0.8};
+S.clips.fuer={start:27.4814,len:9.1433,in:0};
 S.clips.system={start:84.627,len:4.5717,in:0};
 S.clips.kanal={start:115.4857,len:2.2858,in:0};
 S.clips.formats={start:117.7715,len:13.715,in:0};
@@ -4091,6 +4093,7 @@ S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};
 S.clips.endtxt={start:162.3452,len:16.1648,in:0};
 S.clips.endc={start:178.51,len:11.49,in:0};
+S.clips.logo3={start:18.3381,len:2.2858,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 2.5, "popGap": 99, "end": 12, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
