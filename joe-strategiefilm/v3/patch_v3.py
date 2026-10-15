@@ -207,7 +207,7 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
 CARDS = ["c2", "c3", "c4", "c5", "c6", "c7", "c8"]
 cards = (
     card("c2", "Das neue Jö", ["Das *neue Jö."], 150, BEIGE, BURG, step=.75, inAt=0)
-    + card("c3", "So persönlich wie nie zuvor", ["So persönlich", "wie nie *zuvor."], 150, BEIGE, BURG, step=.25, inAt=.25)
+    + card("c3", "So persönlich wie nie zuvor", ["So *persönlich", "wie nie zuvor."], 150, BEIGE, BURG, step=.25, inAt=.25)
     + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 150, BEIGE, BURG, step=.25, inAt=.25)
     + card("c5", "03 Integration der Partner", ["Wir bringen eure Marke", "dorthin, wo sie *wirkt."], 150, BEIGE, BURG, step=.375, inAt=.5)
     + card("c6", "03 Unter-Headline Look", ["Eure Angebote", "im neuen jö *Look."], 150, BEIGE, BURG, step=.25, inAt=.25)
