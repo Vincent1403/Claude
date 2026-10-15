@@ -427,9 +427,9 @@ CLIPS["logo3"] = C(0, BARL)
 LAYOUT = [  # (Clip, Takte, rate) – rate None = Tempo bleibt
     ("logo3", 1, None), ("colors", 3, 2 / 3), ("fuer", 4, None), ("rcblock", 5, None), ("c3", 2, None), ("pers", 1, None), ("people", 4, None),
     ("partner", 4, .75), ("brand", 4, .75), ("prod", 1, None), ("system", 2, None), ("badges", 4.375, None), ("wall", 4, None),
-    ("tags", 3.125, .8), ("kanal", 1, None), ("formats", 6, None), ("flex", 1, None), ("deal", 2.25, None), ("c4", 1.75, None),
-    ("box", 2, round(3.5 / (2 * BARL), 4)), ("c5", 2, None), ("city", 2, round(4.317 / (2 * BARL), 4)), ("c7", 1, None),
-    ("bill", 1.5, round(3.0611 / (1.5 * BARL), 4)), ("endtxt", 6, None)]
+    ("tags", 3.125, .8), ("kanal", 1, None), ("formats", 6, None), ("flex", 1, None), ("deal", 2.25, None), 
+    ("c5", 3, None), ("city", 3, round(4.317 / (3 * BARL), 4)), ("c7", 1.75, None),
+    ("bill", 2.5, round(3.0611 / (2.5 * BARL), 4)), ("endtxt", 6, None)]
 NATIVE_CO = CLIPS["colors"]["len"]
 _t = CLIPS["c2"]["start"] + CLIPS["c2"]["len"]
 for k, bars, rate in LAYOUT:
@@ -448,7 +448,11 @@ CLIPS["endtxt"]["len"] = round(CLIPS["endc"]["start"] - CLIPS["endtxt"]["start"]
 PARAMS["people"] = {"sb": 4}                              # 4 Schläge pro Person (4 Takte)
 PARAMS["c3"] = {"len": 8, "outAt": 7.15}                  # Tafeln halten länger
 PARAMS["c4"] = {"len": 7, "outAt": 6.3, "outDir": -1}
-PARAMS["c5"] = {"len": 8, "outAt": 7.15}
+PARAMS["c5"] = {"len": 12, "outAt": 11.15}
+PARAMS["c7"] = {"len": 7, "outAt": 6.15}
+# „Alles in einer App“ und Bento-Box entfallen (Zeit geht an „Wir bringen …“, Citylight, „Sichtbar …“ und Billboard)
+for k in ("c4", "box"):
+    CLIPS[k]["start"] = 9000.0
 # Logo auf dem Drop entfällt: Julian beginnt direkt auf dem Drop (ohne App-Icon, gleich mit der Karte) und endet wie bisher
 _je = CLIPS["julian"]["start"] + CLIPS["julian"]["len"]
 for k in ("julian", "white2"):
