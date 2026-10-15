@@ -3965,8 +3965,8 @@ S.clips.c3={start:38.9084,len:2.2755,in:0};
 S.clips.pers={start:41.1839,len:2.2858,in:0};
 S.clips.rabatt={start:27.4814,len:3.5997,in:0};
 S.clips.cloud={start:30.5241,len:8.3843,in:0};
-S.clips.c4={start:125.1439,len:2.5032,in:0};
-S.clips.box={start:138.2122,len:3.5,in:0};
+S.clips.c4={start:116.9571,len:2.2858,in:0};
+S.clips.box={start:119.2429,len:3.5,in:0};
 S.clips.c5={start:141.7122,len:4.1312,in:0};
 S.clips.partner={start:50.3322,len:6.8835,in:0};
 S.clips.brand={start:57.2157,len:6.8625,in:0};
@@ -4004,6 +4004,7 @@ Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.71});FM.brand=COMPS.brand.model(S.comps.brand.params);
+Object.assign(S.comps.c4.params,{"len": 4, "outAt": 3.15});FM.c4=COMPS.c4.model(S.comps.c4.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}

@@ -373,6 +373,11 @@ CLIPS["formats"] = C(FM_AT, 6 * BARL)
 FX_AT = round(FM_AT + 6 * BARL, 4)
 CLIPS["flex"] = C(FX_AT, BARL)
 CLIPS["deal"]["start"] = round(FX_AT + BARL, 4)
+# „Alles in einer App: einfach und bequem.“ (1 Takt) und danach die Bento-Box, beide aus der Ablage
+C4_AT = round(CLIPS["deal"]["start"] + CLIPS["deal"]["len"], 4)
+CLIPS["c4"] = C(C4_AT, BARL)
+CLIPS["box"]["start"] = round(C4_AT + BARL, 4)
+PARAMS["c4"] = {"len": 4, "outAt": 3.15}
 WR0_REAL = 215.0
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
