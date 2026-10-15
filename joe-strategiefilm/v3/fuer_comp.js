@@ -5,7 +5,7 @@
    ===================================================================== */
 // Namen-Durchlauf: Name + Profilbild (Index in CLI.av, -1 = Kian)
 const FU_NM=[['Kian',-1],['Lena',0],['Jonas',7],['Mei',8],['Elif',16],['Walter',4]];
-const FU_PH=['mehr Möglichkeiten.','mehr Begeisterung.',...FU_NM.map(n=>n[0]+'.'),'jeden.'],FU_N0=2,FU_PW=330,FU_PHH=170;
+const FU_PH=['mehr Möglichkeiten.','mehr Begeisterung.',...FU_NM.map(n=>n[0]+'.'),'jeden.'],FU_N0=2,FU_PW=340,FU_PHH=210;
 // Profil-Wolke um „Für jeden.“: Rasterlage, ohne Überlappung, Schrift frei (x, y relativ zur Bildmitte, Durchmesser); FU_KI = Kian
 const FU_POS=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -232, 122], [-386, -177, 132], [-129, -198, 127], [116, -234, 178], [422, -231, 134], [678, -220, 182], [-853, -2, 114], [-564, 21, 115], [561, 8, 155], [820, 10, 134], [-703, 192, 110], [-385, 235, 155], [-116, 217, 136], [127, 189, 183], [405, 179, 140], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [304, 404, 200], [510, 418, 154], [829, 396, 131]],FU_KI=27,FU_TI=12; // FU_TI = Tamara (Index in FU_AV)
 const FUL=document.createElement('div');FUL.id='fuerL';FUL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
