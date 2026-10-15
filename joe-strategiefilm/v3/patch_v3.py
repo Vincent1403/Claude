@@ -271,7 +271,7 @@ s = s[:i0] + ("function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&
   "  abufAt='loop';return out}") + s[i1:]
 rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
-aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});\n"
+aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // Schluss: Logo bleibt stehen, kein Übergang zum App-Icon\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "formats_comp.js").read_text(encoding="utf-8") + "\n"

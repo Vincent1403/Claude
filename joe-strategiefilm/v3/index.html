@@ -3720,7 +3720,7 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
     ['Anzeige 4',`${F(T[3])}–${F(M.total)}`,'Bildfläche wird breiter (Vater mit Tochter), Preis-Kreis weg; danach nimmt die Bento-Parallaxe die Anzeige nach links mit']]},
   note:'Ersetzt „Deal“ (gleicher Clip auf der Timeline). Bilder und Layouts nach den gelieferten Anzeigen-Zuständen.'};
 
-const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)'});
+const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // Schluss: Logo bleibt stehen, kein Übergang zum App-Icon
 /* Partnerfilm: Partner-Szene neu erzählt – erst „Viele Marken.“ in der Mitte, die Partner kreisen darum;
    dann ersetzt das jö-Logo die Worte, die Partner fliegen hinein, das Logo verschwindet und
    „Eine starke Verbindung.“ steigt auf. */
