@@ -4,6 +4,9 @@
 {const mk=(id,html,size)=>{const d=document.createElement('div');d.id=id;d.style.cssText=`position:absolute;left:0;right:0;top:${540-size*.62}px;height:${Math.round(size*1.3)}px;overflow:hidden;text-align:center;color:#670003;font-size:${size}px;font-weight:900;letter-spacing:-.02em;line-height:${Math.round(size*1.3)}px;white-space:nowrap;pointer-events:none`;d.innerHTML=`<div style="display:inline-block">${html}</div>`;PT.insertBefore(d,$('ptLogo'));return d.firstChild};
  PTE.words=mk('ptWords','Viele Marken.',150);
  PTE.sent=mk('ptSent',`Eine starke <span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent">Verbindung.</span>`,150);
+ // jö als App-Icon: weißes, abgerundetes Quadrat hinter dem Verlauf-Logo (skaliert mit dem Logo)
+ {const sq=document.createElement('div');sq.style.cssText='position:absolute;left:-60px;top:-128.5px;width:540px;height:540px;border-radius:124px;background:#fff;box-shadow:0 34px 80px rgba(90,30,0,.18)';
+  const L=$('ptLogo');L.insertBefore(sq,L.firstChild);L.querySelector('svg').style.transform='translate(-1%,4%) scale(.8)'}
  Object.assign(PARTNER.DEF,{swap:2,lOut:4.25,sent:4.4});
  PARTNER.params.unshift(
   {k:'swap',label:'jö-Logo ersetzt „Viele Marken.“ bei',min:.5,max:4,step:1/24,fmt:v=>Math.round(v*24)+' F'},
