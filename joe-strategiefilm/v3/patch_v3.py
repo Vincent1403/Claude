@@ -333,6 +333,16 @@ for k in ("c3", "pers", "people", "partner"):
     CLIPS[k]["start"] = round(CLIPS[k]["start"] + _blk, 4)
 CLIPS["cloud"]["start"] = round(_q0 + CLIPS["cloud"]["start"] - _r0, 4)
 CLIPS["rabatt"]["start"] = _q0        # Flieder/Beige-Fläche, deren Kante dem Julian-Scroll folgt
+# „Dein jö“-Slot ist durch „Für [Bild] Name.“ abgedeckt: kommt als Reserve in die Ablage; Badges, Wand, Tags und Stories rücken
+# um 14 Schläge vor (schließt auch die Lücke danach), Partner läuft bis zum Start der Badges
+SL_D = round(14 * BEAT, 4)
+_b0 = CLIPS["badges"]["start"]
+for k in CLIPS:
+    if _b0 - 1e-3 <= CLIPS[k]["start"] < 100:
+        CLIPS[k]["start"] = round(CLIPS[k]["start"] - SL_D, 4)
+WR0_REAL = round(WR0_REAL - SL_D, 4)
+CLIPS["partner"]["len"] = round(CLIPS["badges"]["start"] - CLIPS["partner"]["start"], 4)
+CLIPS["slot"]["start"] = 202.0
 CLIPS["ivKochen"] = C(0, CLIPS["hl1"]["len"])   # Video „Kochen“ unter der ersten Headline
 CLIPS["ivTanken"] = C(CLIPS["hl1b"]["start"], CLIPS["hl1b"]["len"])   # Video „Tanken“ unter der zweiten
 CLIPS["ivBrille"] = C(CLIPS["hl1c"]["start"], CLIPS["hl1c"]["len"])   # Video „Brille“ unter der dritten
