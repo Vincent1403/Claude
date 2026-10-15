@@ -903,7 +903,7 @@ JL.innerHTML=`
   <span id="jHalloT" style="font-size:35px;font-weight:700;color:${BG}">Hallo Julian</span>
   <svg viewBox="0 0 24 24" style="margin-left:auto;width:34px;height:34px"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="${BG}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 <div class="jg" id="j100" style="left:1290px;top:246px;width:427px;height:99px;display:flex;align-items:center;gap:26px;padding:0 24px">
-  <svg viewBox="0 0 80 80" style="width:80px;height:80px;flex:none"><circle cx="40" cy="40" r="30" fill="none" stroke="#f1e7dd" stroke-width="9"/><circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" stroke-dasharray="188.5 188.5" stroke-dashoffset="188.5" transform="rotate(-90 40 40) scale(1 -1) translate(0 -80)"/></svg>
+  <svg viewBox="0 0 80 80" style="width:80px;height:80px;flex:none"><circle cx="40" cy="40" r="30" fill="none" stroke="#f1e7dd" stroke-width="9"/><circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" stroke-linecap="round" stroke-dasharray="188.5 188.5" stroke-dashoffset="188.5" transform="rotate(-90 40 40) scale(1 -1) translate(0 -80)"/></svg>
   <div><div style="font-size:27px;font-weight:700;color:${BG};display:flex;align-items:center;gap:6px">100 ${oesSvg(BG).replace('class="oesg"','class="oesg" style="height:27px"').replace('class="oess"','class="oess" style="font-size:15px"')}</div>
   <div style="font-size:17px;font-weight:500;color:${BG};margin-top:4px">Bis zu 10% erhalten</div></div></div>
 <div class="jg" id="j83" style="left:1339px;top:585px;width:246px;height:211px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px">
@@ -3258,7 +3258,7 @@ const FUER={
 function makeSeq(key,name,PH,beats,def,note){
   const nl=Math.max(...PH.map(p=>p.split('|').length)),MH=270+(nl-1)*165; // „|“ = Zeilenumbruch, die Maske wächst mit
   const L=document.createElement('div');L.id=key+'L';L.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);background:#f4f1ea';
-  L.innerHTML=`<div style="position:absolute;left:0;right:0;top:${540-MH/2}px;height:${MH}px;overflow:hidden">${PH.map(p=>`<div class="sqP" style="position:absolute;left:0;right:0;top:50px;text-align:center;color:#670003;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:${nl>1?1.1:1};white-space:nowrap">${p.replaceAll('|','<br>').split(' ').map(w=>w.startsWith('*')?`<span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent">${w.slice(1)}</span>`:w).join(' ')}</div>`).join('')}</div>`;
+  L.innerHTML=`<div style="position:absolute;left:0;right:0;top:${540-MH/2}px;height:${MH}px;overflow:hidden">${PH.map(p=>`<div class="sqP" style="position:absolute;left:0;right:0;top:50px;text-align:center;color:#670003;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:${nl>1?1.1:1};white-space:nowrap">${p.replaceAll('|','<br>').split(' ').map(w=>w.startsWith('*')?`<span style="background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;padding-bottom:.22em;margin-bottom:-.22em">${w.slice(1)}</span>`:w).join(' ')}</div>`).join('')}</div>`;
   $('stage').appendChild(L);
   const ph=[...L.querySelectorAll('.sqP')];
   return {
