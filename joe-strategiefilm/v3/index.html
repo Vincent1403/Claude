@@ -3630,11 +3630,11 @@ const PROD={key:'prod',name:'Prämien',lane:'laneV5',cls:'logo',
   render(M,t){const P=M.P,playing=(view==='main'?mPlaying:cPlaying),sync=(V,vt,rate)=>{V.playbackRate=rate;if(playing){if(V.paused)V.play().catch(()=>{});if(Math.abs(V.currentTime-vt)>.12)V.currentTime=vt}else{if(!V.paused)V.pause();if(Math.abs(V.currentTime-vt)>.01)V.currentTime=vt}};
     PNL.style.display=P.mode===1?'':'none';PPL.style.display=P.mode===2?'':'none';PDV.style.display=P.mode?'none':'';
     if(P.mode===2){if(!PDV.paused)PDV.pause();PNE.v.forEach(v=>{if(!v.paused)v.pause()});const f=eStFlow,O=PR_O;
-      PPE.forEach((q,k)=>{const a=O+k*P.ppStag,p=f(seg(t,a,a+.5));q.el.style.transform=`translateY(${((1-p)*700).toFixed(1)}px) scale(${PP_S})`;
-        const b=f(seg(t,a+.18,a+.6));q.bg.style.transform=`translateX(${((1-b)*1080).toFixed(1)}px)`; /* Verlauf füllt den ganzen Post, schiebt sich von rechts rein */
-        const v=f(seg(t,a+.2,a+.62));q.v.style.transform=`translateX(${((1-v)*900).toFixed(1)}px) rotate(18deg)`; /* nur von rechts reingleiten, keine Skalierung */q.v.style.opacity=v>0?1:0;sync(q.v,Math.max(0,Math.min(5,.8+(t-a)*.85)),.85); /* Rotation läuft schon beim Reinfliegen (Start mitten in der Drehung) */
-        const l=f(seg(t,a+.28,a+.6));q.lock.style.opacity=l.toFixed(3);q.lock.style.transform=`translateY(${((1-l)*30).toFixed(1)}px)`;
-        const fa=a+.8,pi=f(seg(t,a+.5,a+.8)),fl=f(seg(t,fa,fa+.4)),ck=f(seg(t,fa+.4,fa+.6));
+      PPE.forEach((q,k)=>{const a=O+k*P.ppStag,g=P.ppIn||1,p=f(seg(t,a,a+.5*g));q.el.style.transform=`translateY(${((1-p)*700).toFixed(1)}px) scale(${PP_S})`;
+        const b=f(seg(t,a+.18*g,a+.6*g));q.bg.style.transform=`translateX(${((1-b)*1080).toFixed(1)}px)`; /* Verlauf füllt den ganzen Post, schiebt sich von rechts rein */
+        const v=f(seg(t,a+.2*g,a+.62*g));q.v.style.transform=`translateX(${((1-v)*900).toFixed(1)}px) rotate(18deg)`; /* nur von rechts reingleiten, keine Skalierung */q.v.style.opacity=v>0?1:0;sync(q.v,Math.max(0,Math.min(5,.8+(t-a)*.85)),.85); /* Rotation läuft schon beim Reinfliegen (Start mitten in der Drehung) */
+        const l=f(seg(t,a+.28*g,a+.6*g));q.lock.style.opacity=l.toFixed(3);q.lock.style.transform=`translateY(${((1-l)*30).toFixed(1)}px)`;
+        const fa=a+.8,pi=f(seg(t,a+.5*g,a+.8*g)),fl=f(seg(t,fa,fa+.4)),ck=f(seg(t,fa+.4,fa+.6));
         q.pill.style.opacity=pi.toFixed(3);q.pill.style.transform=`translateY(${((1-pi)*40).toFixed(1)}px)`;q.arc.setAttribute('stroke-dashoffset',(PR_RC*(1-fl)).toFixed(1));q.n.textContent=Math.round(PR_SC[k].oes*fl)+'/'+PR_SC[k].oes;q.ck.setAttribute('stroke-dashoffset',(1-ck).toFixed(3))});
       return}
     PPE.forEach(q=>{if(!q.v.paused)q.v.pause()});
@@ -3720,7 +3720,7 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
     ['Anzeige 4',`${F(T[3])}–${F(M.total)}`,'Bildfläche wird breiter (Vater mit Tochter), Preis-Kreis weg; danach nimmt die Bento-Parallaxe die Anzeige nach links mit']]},
   note:'Ersetzt „Deal“ (gleicher Clip auf der Timeline). Bilder und Layouts nach den gelieferten Anzeigen-Zuständen.'};
 
-const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // Schluss: Logo bleibt stehen, kein Übergang zum App-Icon
+const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“
 const LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);
 const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt
 /* Partnerfilm: Partner-Szene – erst „Viele Marken. / Eine starke Verbindung.“ in der Mitte, die Partner-Logos liegen
@@ -4130,17 +4130,17 @@ S.clips.rabatt={start:38.0159,len:4.4943,in:0,rate:0.80095};
 S.clips.cloud={start:41.9532,len:8.3843,in:0};
 S.clips.c4={start:9000.0,len:2.2858,in:0};
 S.clips.box={start:9000.0,len:3.5,in:0};
-S.clips.c5={start:143.487,len:2.2858,in:0};
+S.clips.c5={start:144.0125,len:2.2875,in:0};
 S.clips.partner={start:66.3404,len:11.4291,in:0,rate:0.75};
 S.clips.brand={start:77.7695,len:9.1433,in:0.0625,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
 S.clips.colors={start:18.504,len:8.9774,in:0.2,rate:0.48697};
-S.clips.deal={start:138.3439,len:5.1431,in:0};
+S.clips.deal={start:138.3439,len:5.6686,in:0};
 S.clips.prod={start:86.9128,len:4.5717,in:0.634,rate:0.4972};
 S.clips.c7={start:9000.0,len:5.1431,in:0};
-S.clips.city={start:145.7728,len:5.7146,in:0,rate:0.7554};
-S.clips.bill={start:156.6305,len:7.6015,in:0,rate:0.5357};
+S.clips.city={start:146.3,len:6.8625,in:0,rate:0.6291};
+S.clips.bill={start:157.7375,len:6.4945,in:0,rate:0.5357};
 S.clips.c8={start:9000.0,len:5.9952,in:0};
 S.clips.logo2={start:175.77,len:4.8967,in:0};
 S.clips.slot={start:9000.0,len:4.5717,in:0};
@@ -4164,7 +4164,7 @@ S.clips.ivBrille={start:4.575,len:2.0016,in:0};
 S.clips.endtxt={start:164.232,len:16.4347,in:0};
 S.clips.endc={start:180.6667,len:9.3333,in:0};
 S.clips.logo3={start:11.7953,len:2.4833,in:0.475};
-S.clips.ubahn={start:151.4874,len:5.1431,in:0};
+S.clips.ubahn={start:153.1625,len:4.575,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 4.8, "lOut": 6.4, "sent": 6.45, "sent2": 7.4, "popGap": 99, "end": 15, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
@@ -4172,19 +4172,21 @@ Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.75});FM.brand=COMPS.brand.model(S.comps.brand.params);
 Object.assign(S.comps.c4.params,{"len": 7, "outAt": 6.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
-Object.assign(S.comps.colors.params,{"beatsB": 2.75, "beatsC": 3.0});FM.colors=COMPS.colors.model(S.comps.colors.params);
+Object.assign(S.comps.colors.params,{"beatsB": 1.6856, "beatsC": 4.0644});FM.colors=COMPS.colors.model(S.comps.colors.params);
 Object.assign(S.comps.people.params,{"sb": 4});FM.people=COMPS.people.model(S.comps.people.params);
 Object.assign(S.comps.c3.params,{"len": 8, "outAt": 7.15});FM.c3=COMPS.c3.model(S.comps.c3.params);
 Object.assign(S.comps.c5.params,{"len": 4, "outAt": 3.15});FM.c5=COMPS.c5.model(S.comps.c5.params);
 Object.assign(S.comps.system.params,{"len": 4, "step": 1.75, "outAt": 3.6});FM.system=COMPS.system.model(S.comps.system.params);
 Object.assign(S.comps.fuer.params,{"len": 20, "nStep": 1.0, "nMove": 0.45, "cloudAt": 12, "zoomAt": 15.9, "outAt": 20});FM.fuer=COMPS.fuer.model(S.comps.fuer.params);
 Object.assign(S.comps.c7.params,{"len": 7, "outAt": 6.15});FM.c7=COMPS.c7.model(S.comps.c7.params);
-Object.assign(S.comps.ubahn.params,{"len": 5.1431});FM.ubahn=COMPS.ubahn.model(S.comps.ubahn.params);
+Object.assign(S.comps.ubahn.params,{"len": 4.575});FM.ubahn=COMPS.ubahn.model(S.comps.ubahn.params);
 Object.assign(S.comps.endtxt.params,{"len": 29.24, "aIn": 0.25, "aOut": 4.25, "bIn": 5.25, "hold": 3.525, "bOut": 14.5, "cOut": 19.88, "cIn": 15.25});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
 Object.assign(S.comps.endc.params,{"flyAt": 0.35, "txAt": 0.95, "wmAt": 1.0, "outAt": 1.693, "linkAt": 1.893, "pillAt": 2.193});FM.endc=COMPS.endc.model(S.comps.endc.params);
 Object.assign(S.comps.kanal.params,{"len": 6.001, "inAt": 0, "outAt": 5.151});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
 Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.3835});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);
 Object.assign(S.comps.formats.params,{"sh": 1.09});FM.formats=COMPS.formats.model(S.comps.formats.params);
+Object.assign(S.comps.prod.params,{"ppIn": 0.5, "ppStag": 0.1});FM.prod=COMPS.prod.model(S.comps.prod.params);
+Object.assign(S.comps.logo2.params,{"outAt": 2.4467});FM.logo2=COMPS.logo2.model(S.comps.logo2.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}

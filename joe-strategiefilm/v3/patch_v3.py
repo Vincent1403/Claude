@@ -271,7 +271,7 @@ s = s[:i0] + ("function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&
   "  abufAt='loop';return out}") + s[i1:]
 rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
-aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // Schluss: Logo bleibt stehen, kein Übergang zum App-Icon\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt\n"
+aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "formats_comp.js").read_text(encoding="utf-8") + "\n"
@@ -498,6 +498,12 @@ CLIPS["endc"] = C(_ec, round(190 - _ec, 4))
 _pa = round(BASS - _ec, 3)                                             # Pill-Start auf dem Bass
 PARAMS["endc"] = {"flyAt": .35, "txAt": .95, "wmAt": 1.0, "outAt": round(_pa - .5, 3), "linkAt": round(_pa - .3, 3), "pillAt": _pa}
 rep("    const drift=0;\n    E.cards.forEach((c,i)=>{const a=i*fl,", "    const drift=0;FC.style.background=t<.85?'transparent':'#f4f1ea'; // durchsichtig, solange Julian darunter ausläuft\n    E.cards.forEach((c,i)=>{const a=i*fl,")
+# Prämien: die 3 Posts gleiten schneller rein (Faktor ppIn auf die Einflug-Phasen, Zählen bleibt)
+rep("PPE.forEach((q,k)=>{const a=O+k*P.ppStag,p=f(seg(t,a,a+.5));", "PPE.forEach((q,k)=>{const a=O+k*P.ppStag,g=P.ppIn||1,p=f(seg(t,a,a+.5*g));")
+rep("const b=f(seg(t,a+.18,a+.6));q.bg", "const b=f(seg(t,a+.18*g,a+.6*g));q.bg")
+rep("const v=f(seg(t,a+.2,a+.62));q.v", "const v=f(seg(t,a+.2*g,a+.62*g));q.v")
+rep("const l=f(seg(t,a+.28,a+.6));q.lock", "const l=f(seg(t,a+.28*g,a+.6*g));q.lock")
+rep("pi=f(seg(t,a+.5,a+.8))", "pi=f(seg(t,a+.5*g,a+.8*g))")
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)
@@ -528,6 +534,18 @@ PARAMS["fuer"] = {**PARAMS["fuer"], "cloudAt": 12}            # Profil-Wolke auf
 PARAMS["brand"] = {**PARAMS.get("brand", {}), "step": .75}  # bei rate .75 = exakt ein Schlag pro Partnerfarbe (vorher .71 = 13,0 F → driftete bis 7 F vom Hit)
 PARAMS["formats"] = {**PARAMS.get("formats", {}), "sh": 1.09}
 CLIPS["brand"]["in"] = .0625   # 2 F Vorlauf, damit die Kreise sichtbar genau auf dem Schlag aufgehen  # Bildschirm 2 und 3 starten auf F3072 / F3182
+# Mockup-Teil: Schnitte auf die Takt-Einsen (vorher auf Schlag 4/2/3 → fühlte sich off-beat an)
+_db = lambda k: round((3456.3 + k * 54.9) / 24, 4)   # gemessene Takt-Einsen ab F3456
+CLIPS["c5"]["start"], CLIPS["c5"]["len"] = _db(0), round(_db(1) - _db(0), 4)
+CLIPS["deal"]["len"] = round(_db(0) - CLIPS["deal"]["start"], 4)
+CLIPS["city"] = {**C(_db(1), round(_db(4) - _db(1), 4)), "rate": round(4.317 / (_db(4) - _db(1)), 4)}   # 3 Takte
+CLIPS["ubahn"] = C(_db(4), round(_db(6) - _db(4), 4)); PARAMS["ubahn"] = {"len": CLIPS["ubahn"]["len"]}  # 2 Takte
+CLIPS["bill"]["start"] = _db(6); CLIPS["bill"]["len"] = round(_et - _db(6), 4)                           # bis zum Schluss-Text
+# Farben → Verlauf auf den Hit bei F548 (vorher ~F579): Wechsel 30 F früher, Verlaufs-Phase entsprechend länger
+_sh = 30 / 24 * CLIPS["colors"]["rate"] / BEAT
+PARAMS["colors"] = {**PARAMS["colors"], "beatsB": round(PARAMS["colors"]["beatsB"] - _sh, 4), "beatsC": round(PARAMS["colors"]["beatsC"] + _sh, 4)}
+PARAMS["prod"] = {**PARAMS.get("prod", {}), "ppIn": .5, "ppStag": .1}
+PARAMS["logo2"] = {**PARAMS.get("logo2", {}), "outAt": round((4278.7 - 1.5) / 24 - CLIPS["logo2"]["start"] + CLIPS["logo2"]["in"], 4)}   # Übergang ins App-Icon auf dem Hit
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
