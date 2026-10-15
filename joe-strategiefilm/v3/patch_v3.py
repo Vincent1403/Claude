@@ -474,7 +474,7 @@ for k in ("julian", "white2"):
 _cut, _ce = 19.482, CLIPS["colors"]["start"] + CLIPS["colors"]["len"]
 for k in ("julian", "white2"):
     CLIPS[k]["len"] = round(_cut - CLIPS[k]["start"], 4); CLIPS[k]["rate"] = round(4.0 / CLIPS[k]["len"], 5)
-CLIPS["colors"] = C(_cut, round(_ce - _cut, 4), .45); CLIPS["colors"]["rate"] = round((NATIVE_CO - .45) / CLIPS["colors"]["len"], 5)
+CLIPS["colors"] = C(_cut, round(_ce - _cut, 4), 1.05); CLIPS["colors"]["rate"] = round((NATIVE_CO - 1.05) / CLIPS["colors"]["len"], 5)
 rep("const q=f(seg(t,T[1]+i*P.stag,T[1]+i*P.stag+.55)),", "const q=f(seg(t,T[1]-.55+i*P.stag*.6,T[1]-.55+i*P.stag*.6+.3)),")  # Abstufungen: früher und schneller
 rep("${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;color:transparent;`:''}", "${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.22em;margin-bottom:-.22em;`:''}")  # Verlaufswörter: Unterlängen (g, p) nicht abschneiden
 rep('<circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" ', '<circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" stroke-linecap="round" ')  # Julian: Fortschrittsring mit runden Enden
