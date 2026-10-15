@@ -94,7 +94,7 @@ CLIPS["tags"] = C(WALL_END, round(10 * BEAT, 4))     # Tag-System direkt nach de
 STORY_AT = round(WALL_END + 10 * BEAT, 4)               # Stories starten mit dem Schnitt
 WR0_REAL = round(STORY_AT - (8.196 - 4.8333) * _wk, 4)  # Story-Block (Design-Zeit) so verschoben
 CLIPS["showcase"] = C(121.2994, 8.47)   # Ablage; wird unten noch um die Intro-/Einschub-Verschiebungen versetzt (Editor: 146,443)          # Icon-Showcase: in der Ablage hinter dem Schluss
-T_LEN = 190                                    # Timeline länger als der Track (96 s)
+T_LEN = 236                                    # Timeline länger als der Track (96 s)
 # Intro: vier Headlines vor dem Logo. Musik und alles ab dem Logo rücken um INTRO_D nach hinten (Beat-Sync bleibt).
 INTRO_HL = [("hl1", 4.2), ("hl1b", 3.8), ("hl1c", 3.5), ("hl1d", 4.6)]   # Länge je Headline in Schlägen
 INTRO_D = round(sum(l for _, l in INTRO_HL) * BEAT - 2.35, 4)          # alte Headline lief 0–2,35 s
@@ -277,12 +277,13 @@ aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Log
            + (here / "formats_comp.js").read_text(encoding="utf-8") + "\n"
            + (here / "box_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "ooh_mod.js").read_text(encoding="utf-8") + "\n"
+           + (here / "endtext_comp.js").read_text(encoding="utf-8") + "\n"
            "const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});\n")
 old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) + 2]
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,flex:FLEX,white2:WHITE2,logo2:LOGO2};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,flex:FLEX,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -403,6 +404,14 @@ for k in CLIPS:
     if k not in ("brand", "prod") and PR_AT - 1e-3 <= CLIPS[k]["start"] < 145:
         CLIPS[k]["start"] = round(CLIPS[k]["start"] + BARL, 4)
 CLIPS["prod"] = C(PR_AT, BARL, .634)
+# Schluss nach dem Billboard: Schluss-Text (6 Takte) auf dem Verlauf, danach das jö-Logo (Logo-Animation, Länge wie bisher)
+ET_AT = round(CLIPS["bill"]["start"] + CLIPS["bill"]["len"], 4)
+CLIPS["logo2"] = C(round(ET_AT + 6 * BARL, 4), CLIPS["logo2"]["len"], CLIPS["logo2"]["in"])
+CLIPS["endtxt"] = C(ET_AT, round(6 * BARL + CLIPS["logo2"]["len"], 4))   # läuft unter dem Logo weiter (Verlauf als Hintergrund)
+# Ablage hinter dem Filmende neu sortiert, damit nichts in den Schluss ragt
+CLIPS["showcase"] = C(208.0, 8.47)
+CLIPS["full"] = C(218.0, CLIPS["full"]["len"])
+CLIPS["c6"] = C(227.0, CLIPS["c6"]["len"])
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}}};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
