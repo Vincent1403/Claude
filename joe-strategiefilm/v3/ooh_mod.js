@@ -9,8 +9,8 @@
 {const PN=PT_N2,D=86,G=12; // alle 15 Partner, in zwei Reihen
  const row=document.createElement('div');row.style.cssText=`position:absolute;left:1180px;top:521px;width:${8*D+7*G}px;display:flex;flex-wrap:wrap;gap:${G}px`;
  row.innerHTML=PN.map(n=>`<img class="bbPt" src="${PTA[n]}" alt="" style="width:${D}px;height:${D}px;border-radius:50%;box-shadow:0 8px 20px rgba(60,10,0,.22)">`).join('');
- $('bbStore').before(row);BBL.querySelector('.bbLine').parentNode.parentNode.style.top='48px'; // Claim nach oben: gleicher Abstand oben wie die Store-Buttons unten (48), Logos und Buttons gleichmäßig dazwischen
- row.style.top=(952-(2*D+G))+'px'; // Logos unten mit gleichem Rand wie der Claim oben
+ $('bbStore').before(row);BBL.querySelector('.bbLine').parentNode.parentNode.style.top='178px'; // Claim nach oben: gleicher Abstand oben wie die Store-Buttons unten (48), Logos und Buttons gleichmäßig dazwischen
+ row.style.top=(798-(2*D+G))+'px'; // Claim oben und Logos unten bündig mit dem jö-Logo (205–798)
  // Store-Buttons + „App jetzt herunterladen“ in einer weißen Pille unten über dem Handy
  {const pill=document.createElement('div');pill.id='bbPill';pill.style.cssText='position:absolute;left:2395px;top:800px;height:144px;padding:0 44px 0 12px;border-radius:72px;background:#fff;display:flex;align-items:center;gap:16px;box-shadow:0 24px 60px rgba(60,10,0,.28);white-space:nowrap';
   const st=$('bbStore'),ct=$('bbCta');Object.assign(st.style,{position:'static',display:'flex',gap:'16px'});Object.assign(ct.style,{position:'static',color:'#670003',fontWeight:'700',marginLeft:'12px'});
