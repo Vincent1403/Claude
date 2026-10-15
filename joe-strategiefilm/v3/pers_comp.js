@@ -31,5 +31,6 @@ const PERS=makeSeq('pers','Persönlich. Relevant. Ganz nach dir.',['Persönlich.
   'Frames bei 24 fps ab Beginn der Subebene. Ein Takt; ersetzt „Mach dein Jö draus!“.');
 const SYSTEM=makeSeq('system','Ein System. Unzählige Möglichkeiten.',['Ein System.','Unzählige *Möglichkeiten.'],8,{inAt:0,step:3,move:.3,outAt:7.6},
   'Frames bei 24 fps ab Beginn der Subebene. Zwei Takte, nach den Marken-Lockups; zwei Aussagen nacheinander.');
-const KANAL=makeSeq('kanal','Konsistent über alle Kanäle.',['Konsistent über|alle *Kanäle.'],4,{inAt:0,step:1,move:.22,outAt:3.6},
-  'Frames bei 24 fps ab Beginn der Subebene. Ein Takt, nach dem Tag-System; danach harter Schnitt auf die Stories.');
+// „Konsistent über alle Kanäle.“ als Tafel wie die anderen Headlines: Wort für Wort aus der Zeilenmaske
+const KANAL=makeHL('kanal','Konsistent über alle Kanäle.','laneV2',['Konsistent über','alle *Kanäle.'],
+  {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach dem Tag-System.'});
