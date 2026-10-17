@@ -652,6 +652,16 @@ for k in ("brand", "people", "system", "badges"):
     CLIPS[k]["start"] = round(CLIPS[k]["start"] + BARL, 4)
 _wn = CLIPS["wall"]["rate"] * CLIPS["wall"]["len"]
 CLIPS["wall"]["start"] = round(CLIPS["wall"]["start"] + BARL, 4); CLIPS["wall"]["len"] = round(CLIPS["wall"]["len"] - BARL, 4); CLIPS["wall"]["rate"] = round(_wn / CLIPS["wall"]["len"], 4)
+# Kunde: „Ganz nach dir.“ raus; sein Takt geht an den Julian-Screen mit allen Karten (Slider startet 1 Takt später) –
+# Farben, Für, Kian, Wolken und Tamara rücken genau 1 Takt nach hinten und bleiben damit auf den Takt-Hits
+_jp = CLIPS["pers"]["start"]; CLIPS["pers"]["start"] = 9000.0
+PARAMS["julian"] = {**PARAMS["julian"], "sStart": round(PARAMS["julian"]["sStart"] + BARL * CLIPS["julian"]["rate"], 4)}
+_js0 = CLIPS["julian"]["start"]
+for k, v in CLIPS.items():
+    if _js0 + .5 < v["start"] < _jp - .01:
+        v["start"] = round(v["start"] + BARL, 4)
+for k in ("julian", "white2"):
+    CLIPS[k]["len"] = round(CLIPS[k]["len"] + BARL, 4)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
