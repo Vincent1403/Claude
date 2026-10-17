@@ -5,9 +5,9 @@
    ===================================================================== */
 // Namen-Durchlauf: Name + Profilbild (Index in CLI.av, -1 = Kian)
 const FU_NM=[['Kian',-1],['Lena',0],['Jonas',7],['Mei',8],['Elif',16],['Walter',4]];
-const FU_PH=['So persönlich wie nie zuvor.',...FU_NM.map(n=>n[0]+'.'),'Eine Marke für Millionen.'],FU_N0=1,FU_FS2=104,FU_PW=340,FU_PHH=210;
+const FU_PH=['So persönlich wie nie zuvor.',...FU_NM.map(n=>n[0]+'.'),'Eine Marke für Millionen.'],FU_N0=1,FU_FS2=150,FU_FS0=140,FU_PW=340,FU_PHH=210;
 // Profil-Wolke um „Für jeden.“: Rasterlage, ohne Überlappung, Schrift frei (x, y relativ zur Bildmitte, Durchmesser); FU_KI = Kian
-const FU_POS=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -232, 122], [-386, -177, 132], [-129, -198, 127], [116, -234, 178], [422, -231, 134], [678, -220, 182], [-868, -2, 100], [-700, 21, 110], [700, 8, 120], [860, 10, 110], [-703, 192, 110], [-385, 235, 155], [-116, 217, 136], [127, 189, 183], [405, 179, 140], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [304, 404, 200], [510, 418, 154], [829, 396, 131]],FU_KI=27,FU_TI=12; // FU_TI = Tamara (Index in FU_AV)
+const FU_POS=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -232, 122], [-386, -177, 132], [-129, -198, 127], [116, -234, 178], [422, -231, 134], [678, -220, 182], [-868, -2, 0], [-700, 21, 0], [700, 8, 0], [860, 10, 0], [-703, 192, 110], [-385, 235, 155], [-116, 217, 136], [127, 205, 183], [405, 179, 140], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [304, 404, 200], [510, 418, 154], [829, 396, 131]],FU_KI=27,FU_TI=12; // FU_TI = Tamara (Index in FU_AV)
 const FUL=document.createElement('div');FUL.id='fuerL';FUL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
 FUL.innerHTML=`<div style="position:absolute;inset:0;background:${JG_CSS}"></div>
 <div id="fuCloud" style="position:absolute;left:960px;top:540px;width:0;height:0">${FU_POS.filter((p,i)=>i!==FU_KI).map((p,i)=>`<img class="fuAv" src="${i===FU_TI?'__TAM0__':CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:0;top:0;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);transform-origin:50% 50%">`).join('')}</div>
@@ -15,7 +15,7 @@ FUL.innerHTML=`<div style="position:absolute;inset:0;background:${JG_CSS}"></div
 <div id="fuRow" style="position:absolute;left:0;top:0;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
  <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="fuFix" style="display:inline-block;margin-top:30px">Für</span></div>
  <div id="fuPill" style="position:absolute;left:0;top:${75-FU_PHH/2-14}px;height:${FU_PHH}px;width:0;overflow:hidden;border-radius:${FU_PHH/2}px;box-shadow:0 18px 40px rgba(60,10,0,.22)">${FU_NM.map(n=>`<img class="fuPi" src="${n[1]<0?'__KIAN0__':CLI.av[n[1]]}" alt="" style="position:absolute;left:0;top:0;width:${FU_PW}px;height:${FU_PHH}px;max-width:none;object-fit:cover;object-position:50% ${n[1]<0?'25%':'45%'}">`).join('')}</div>
- <div id="fuMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${FU_PH.map((p,i)=>`<span class="fuP" style="position:absolute;left:0;top:${i&&i<FU_PH.length-1?30:30+(150-FU_FS2)/2}px;display:inline-block${i&&i<FU_PH.length-1?'':';font-size:'+FU_FS2+'px'}">${p}</span>`).join('')}</div>
+ <div id="fuMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${FU_PH.map((p,i)=>{const z=i?150:FU_FS0;return `<span class="fuP" style="position:absolute;left:0;top:${30+(150-z)/2}px;display:inline-block;font-size:${z}px">${p}</span>`}).join('')}</div>
 </div>`;
 $('stage').appendChild(FUL);
 const FUE={row:$('fuRow'),fix:$('fuFix'),mask:$('fuMask'),ph:[...FUL.querySelectorAll('.fuP')],pill:$('fuPill'),pi:[...FUL.querySelectorAll('.fuPi')],cloud:$('fuCloud'),av:[...FUL.querySelectorAll('.fuAv')],kian:$('fuKian')};

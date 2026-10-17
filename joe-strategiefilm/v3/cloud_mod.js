@@ -1,14 +1,15 @@
 /* Partnerfilm: Profil-Wolke nach dem Kian-Video – gleiche Anordnung wie die Wolke um „Für jeden.“ (fuer_comp.js), auf dem jö-Verlauf.
    Die Kamera zieht aus Kian genau dorthin zurück, wo sie hineingezoomt hat („Für jeden.“ steht wieder in der Mitte), dann Zoom in Tamara. */
-{const fs=150,W=document.createElement('div');W.id='clFW';W.style.cssText='position:absolute;left:960px;top:540px;width:0;height:0';
- W.innerHTML=FU_AV.map((p,i)=>`<img class="clFAv" src="${CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:${p[0]-p[2]/2}px;top:${p[1]-p[2]/2}px;width:${p[2]}px;height:${p[2]}px;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);${i===FU_TI?'visibility:hidden':''}">`).join('')
-  +`<div style="position:absolute;left:0;top:-88px;transform:translateX(-50%);color:#fff;font-size:86px;font-weight:900;letter-spacing:-.02em;line-height:1.02;white-space:nowrap;text-align:center">Mit Möglichkeiten für<br>jeden Einzelnen.</div>`;
+{const CL2_AV=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -242, 122], [-386, -246, 130], [-129, -244, 127], [116, -246, 130], [422, -246, 130], [678, -246, 130], [-868, -2, 0], [-700, 21, 0], [700, 8, 0], [860, 10, 0], [-703, 192, 110], [-385, 246, 130], [-116, 246, 130], [127, 246, 130], [405, 246, 130], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [510, 418, 154], [829, 396, 131]]; // eigene Anordnung für die zweite Wolke: Platz für die zweizeilige Headline
+ const fs=150,W=document.createElement('div');W.id='clFW';W.style.cssText='position:absolute;left:960px;top:540px;width:0;height:0';
+ W.innerHTML=CL2_AV.map((p,i)=>`<img class="clFAv" src="${CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:${p[0]-p[2]/2}px;top:${p[1]-p[2]/2}px;width:${p[2]}px;height:${p[2]}px;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);${i===FU_TI?'visibility:hidden':''}">`).join('')
+  +`<div style="position:absolute;left:0;top:-153px;transform:translateX(-50%);color:#fff;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1.02;white-space:nowrap;text-align:center">Mit Möglichkeiten für<br>jeden Einzelnen.</div>`;
  $('clW').after(W);$('clW').style.display='none';CLL.style.background=JG_CSS;
  const AV=[...W.querySelectorAll('.clFAv')],CT=$('clT'),flo=(i,t)=>[9*Math.sin(t*(1+i*.11)+i*1.7),7*Math.cos(t*(.9+i*.13)+i*1.1)];
  const fit=(el,w,h,ty)=>{const iw=Math.max(w,h*16/9),ih=iw*9/16;Object.assign(el.style,{width:iw.toFixed(1)+'px',height:ih.toFixed(1)+'px',left:((w-iw)/2).toFixed(1)+'px',top:((h-ih)*ty).toFixed(1)+'px'})};
  const box=(el,cx,cy,w,h,r)=>Object.assign(el.style,{left:(cx-w/2).toFixed(1)+'px',top:(cy-h/2).toFixed(1)+'px',width:w.toFixed(1)+'px',height:h.toFixed(1)+'px',borderRadius:r.toFixed(1)+'px',transform:'none'});
  const r0=CLOUD.render;
- CLOUD.render=function(M,t){r0.call(this,M,t);const P=M.P,f=eStFlow,[kx,ky,kd]=FU_POS[FU_KI],[tx,ty,td]=FU_AV[FU_TI];
+ CLOUD.render=function(M,t){r0.call(this,M,t);const P=M.P,f=eStFlow,[kx,ky,kd]=FU_POS[FU_KI],[tx,ty,td]=CL2_AV[FU_TI];
   // Phase 1: Vollbild Kian → sein Kreis an seinem Platz in der Wolke (genau umgekehrt zum Zoom in „Für jeden.“)
   const u=f(seg(t,P.hold,P.hold+P.dur)),w1=1-u,kw=kd+(1920-kd)*w1,kh=kd+(1080-kd)*w1;
   // Phase 2: Zoom in Tamara (gleiche Kamera-Logik)
