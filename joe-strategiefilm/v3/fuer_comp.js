@@ -5,9 +5,9 @@
    ===================================================================== */
 // Namen-Durchlauf: Name + Profilbild (Index in CLI.av, -1 = Kian)
 const FU_NM=[['Kian',-1],['Lena',0],['Jonas',7],['Mei',8],['Elif',16],['Walter',4]];
-const FU_PH=['mehr Möglichkeiten.','mehr Begeisterung.',...FU_NM.map(n=>n[0]+'.'),'jeden.'],FU_N0=2,FU_PW=340,FU_PHH=210;
+const FU_PH=['So persönlich wie nie zuvor.',...FU_NM.map(n=>n[0]+'.'),'Eine Marke für Millionen.'],FU_N0=1,FU_FS2=104,FU_PW=340,FU_PHH=210;
 // Profil-Wolke um „Für jeden.“: Rasterlage, ohne Überlappung, Schrift frei (x, y relativ zur Bildmitte, Durchmesser); FU_KI = Kian
-const FU_POS=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -232, 122], [-386, -177, 132], [-129, -198, 127], [116, -234, 178], [422, -231, 134], [678, -220, 182], [-853, -2, 114], [-564, 21, 115], [561, 8, 155], [820, 10, 134], [-703, 192, 110], [-385, 235, 155], [-116, 217, 136], [127, 189, 183], [405, 179, 140], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [304, 404, 200], [510, 418, 154], [829, 396, 131]],FU_KI=27,FU_TI=12; // FU_TI = Tamara (Index in FU_AV)
+const FU_POS=[[-813, -406, 144], [-510, -412, 131], [-269, -405, 114], [-22, -409, 127], [279, -392, 183], [512, -422, 132], [781, -391, 136], [-686, -232, 122], [-386, -177, 132], [-129, -198, 127], [116, -234, 178], [422, -231, 134], [678, -220, 182], [-868, -2, 100], [-700, 21, 110], [700, 8, 120], [860, 10, 110], [-703, 192, 110], [-385, 235, 155], [-116, 217, 136], [127, 189, 183], [405, 179, 140], [719, 199, 132], [-786, 403, 140], [-508, 431, 183], [-305, 393, 155], [29, 408, 127], [304, 404, 200], [510, 418, 154], [829, 396, 131]],FU_KI=27,FU_TI=12; // FU_TI = Tamara (Index in FU_AV)
 const FUL=document.createElement('div');FUL.id='fuerL';FUL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
 FUL.innerHTML=`<div style="position:absolute;inset:0;background:${JG_CSS}"></div>
 <div id="fuCloud" style="position:absolute;left:960px;top:540px;width:0;height:0">${FU_POS.filter((p,i)=>i!==FU_KI).map((p,i)=>`<img class="fuAv" src="${i===FU_TI?'__TAM0__':CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:0;top:0;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);transform-origin:50% 50%">`).join('')}</div>
@@ -15,7 +15,7 @@ FUL.innerHTML=`<div style="position:absolute;inset:0;background:${JG_CSS}"></div
 <div id="fuRow" style="position:absolute;left:0;top:0;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
  <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="fuFix" style="display:inline-block;margin-top:30px">Für</span></div>
  <div id="fuPill" style="position:absolute;left:0;top:${75-FU_PHH/2-14}px;height:${FU_PHH}px;width:0;overflow:hidden;border-radius:${FU_PHH/2}px;box-shadow:0 18px 40px rgba(60,10,0,.22)">${FU_NM.map(n=>`<img class="fuPi" src="${n[1]<0?'__KIAN0__':CLI.av[n[1]]}" alt="" style="position:absolute;left:0;top:0;width:${FU_PW}px;height:${FU_PHH}px;max-width:none;object-fit:cover;object-position:50% ${n[1]<0?'25%':'45%'}">`).join('')}</div>
- <div id="fuMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${FU_PH.map(p=>`<span class="fuP" style="position:absolute;left:0;top:30px;display:inline-block">${p}</span>`).join('')}</div>
+ <div id="fuMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${FU_PH.map((p,i)=>`<span class="fuP" style="position:absolute;left:0;top:${i&&i<FU_PH.length-1?30:30+(150-FU_FS2)/2}px;display:inline-block${i&&i<FU_PH.length-1?'':';font-size:'+FU_FS2+'px'}">${p}</span>`).join('')}</div>
 </div>`;
 $('stage').appendChild(FUL);
 const FUE={row:$('fuRow'),fix:$('fuFix'),mask:$('fuMask'),ph:[...FUL.querySelectorAll('.fuP')],pill:$('fuPill'),pi:[...FUL.querySelectorAll('.fuPi')],cloud:$('fuCloud'),av:[...FUL.querySelectorAll('.fuAv')],kian:$('fuKian')};
@@ -41,22 +41,21 @@ const FUER={
   show(on){FUL.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b,E=FUE,fs=150;
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
-    const gap=P.gap*fs,tw=E._wf+gap+Math.max(...E._wp),xa=960-tw/2,xc=960-(E._wf+gap+E._wp[E._wp.length-1])/2,
-      cs=(M.st[FU_PH.length-1]+P.center)*b,x0=xa+(xc-xa)*eIO(seg(t,cs,cs+P.cDur)); // am Ende gleitet „Für jeden.“ in die Mitte
+    const gap=P.gap*fs,xP0=960-(E._wf+gap)-E._wp[0]/2,xF=960-(E._wf+gap)-E._wp[E._wp.length-1]/2; // erster und letzter Satz stehen allein mittig (ohne „Für“)
     Object.assign(E.row.style,{top:(540-fs*.55).toFixed(1)+'px'});
     // Profilbild-Pille zwischen „Für“ und Namen: öffnet beim ersten Namen, schließt zu „jeden.“
     const ns=M.st[FU_N0]*b,ne=M.st[FU_PH.length-1]*b,ow=eIO(seg(t,ns-.05,ns+P.move))*(1-eIO(seg(t,ne,ne+P.nMove+.08))),pw=FU_PW*ow;
     Object.assign(E.pill.style,{left:(E._wf+gap).toFixed(1)+'px',width:pw.toFixed(1)+'px',visibility:ow>.002?'visible':'hidden'});
     E.mask.style.left=(E._wf+gap+ow*(FU_PW+gap)).toFixed(1)+'px';E.mask.style.width=(Math.max(...E._wp)+40)+'px';
     const a=P.inAt*b,o=P.outAt*b,rin=eExpo(seg(t,a,a+.5)),rout=eInCub(seg(t,o,o+.3));
-    E.fix.style.transform=`translateY(${((1-rin)*120+rout*120).toFixed(1)}%)`;
+    {const fi=eExpo(seg(t,ns-.1,ns+.4)),fo=eInCub(seg(t,ne,ne+.3));E.fix.style.transform=`translateY(${((1-fi)*120-fo*120+rout*120).toFixed(1)}%)`} // „Für“ nur zu den Namen
     // Position auf der „Walze“: 0 = erstes Satzende, 1 = zweites …; jedes läuft von unten rein und oben raus
     let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<FU_PH.length;k++){const s=M.st[k]*b;p+=k>FU_N0?.5-.5*Math.cos(Math.PI*seg(t,s,s+P.nMove)):eIO(seg(t,s,s+P.move)) /* Namen: weiche Sinus-Kurve */}
     p+=eInCub(seg(t,o+.04,o+.34));
     // ab dem ersten Namen steht die Kombi „Für [Bild] Name.“ mittig (Breite folgt dem laufenden Namen), endet als „Für jeden.“ in der Mitte
     {const q=Math.max(0,Math.min(p,FU_PH.length-1)),nL=FU_PH.length-2,wM=Math.max(...E._wp.slice(FU_N0,nL+1)),wn=q<=nL?wM:wM+(E._wp[nL+1]-wM)*(q-nL), // „Für“ steht still: zentriert auf den längsten Namen, erst zu „jeden.“ rückt die Zeile nach
-      xm=960-(E._wf+gap+ow*(FU_PW+gap)+wn)/2,m=Math.max(eIO(seg(t,ns-.05,ns+P.move)),eIO(seg(t,cs,cs+P.cDur)));
-     E.row.style.left=(x0+(xm-x0)*m).toFixed(1)+'px'}
+      xm=960-(E._wf+gap+ow*(FU_PW+gap)+wn)/2,m1=eIO(seg(t,ns-.05,ns+P.move)),m2=eIO(seg(t,ne,ne+P.nMove+.08));
+     E.row.style.left=(xP0+(xm-xP0)*m1+(xF-xm)*m2).toFixed(1)+'px'}
     E.ph.forEach((el,i)=>{const d=i-p;el.style.transform=`translateY(${(d*240).toFixed(1)}px)`;el.style.opacity=Math.abs(d)<1.05?'1':'0'});
     E.pi.forEach((el,i)=>{const d=i+FU_N0-Math.min(p,FU_PH.length-2);el.style.transform=`translate(${((pw-FU_PW)/2).toFixed(1)}px,${(d*FU_PHH).toFixed(1)}px)`;el.style.visibility=Math.abs(d)<1.02?'visible':'hidden'});
     // Profil-Wolke (Kian gehört von Anfang an dazu), Kamera zieht beim Aufbau auf

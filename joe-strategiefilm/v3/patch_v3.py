@@ -451,7 +451,7 @@ PARAMS["c3"] = {"len": 8, "outAt": 7.15}                  # Tafeln halten länge
 PARAMS["c4"] = {"len": 7, "outAt": 6.3, "outDir": -1}
 PARAMS["c5"] = {"len": 4, "outAt": 3.15}
 PARAMS["system"] = {"len": 4, "step": 1.75, "outAt": 3.6}   # „Ein System. Unzählige Möglichkeiten.“ nur noch 1 Takt
-PARAMS["fuer"] = {**PARAMS.get("fuer", {}), "len": 20, "nStep": 1.0, "nMove": .45, "cloudAt": 12.25, "zoomAt": 17.5, "outAt": 20}   # Namen laufen langsamer durch (1 Takt mehr)
+PARAMS["fuer"] = {**PARAMS.get("fuer", {}), "len": 20, "hold": 4, "nStep": 1.0, "nMove": .45, "cloudAt": 12.25, "zoomAt": 17.5, "outAt": 20}   # Namen laufen langsamer durch (1 Takt mehr)
 PARAMS["c7"] = {"len": 7, "outAt": 6.15}
 # „Alles in einer App“ und Bento-Box entfallen (Zeit geht an „Wir bringen …“, Citylight, „Sichtbar …“ und Billboard)
 for k in ("c4", "box"):

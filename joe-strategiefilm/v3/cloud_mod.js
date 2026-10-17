@@ -2,7 +2,7 @@
    Die Kamera zieht aus Kian genau dorthin zurück, wo sie hineingezoomt hat („Für jeden.“ steht wieder in der Mitte), dann Zoom in Tamara. */
 {const fs=150,W=document.createElement('div');W.id='clFW';W.style.cssText='position:absolute;left:960px;top:540px;width:0;height:0';
  W.innerHTML=FU_AV.map((p,i)=>`<img class="clFAv" src="${CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:${p[0]-p[2]/2}px;top:${p[1]-p[2]/2}px;width:${p[2]}px;height:${p[2]}px;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);${i===FU_TI?'visibility:hidden':''}">`).join('')
-  +`<div style="position:absolute;left:0;top:${-fs*.55}px;transform:translateX(-50%);display:flex;color:#fff;font-size:${fs}px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap"><span>Für</span><span style="margin-left:${.28*fs}px">jeden.</span></div>`;
+  +`<div style="position:absolute;left:0;top:${-fs*.55+(fs-FU_FS2)/2}px;transform:translateX(-50%);display:flex;color:#fff;font-size:${FU_FS2}px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">Eine Marke für Millionen.</div>`;
  $('clW').after(W);$('clW').style.display='none';CLL.style.background=JG_CSS;
  const AV=[...W.querySelectorAll('.clFAv')],CT=$('clT'),flo=(i,t)=>[9*Math.sin(t*(1+i*.11)+i*1.7),7*Math.cos(t*(.9+i*.13)+i*1.1)];
  const fit=(el,w,h,ty)=>{const iw=Math.max(w,h*16/9),ih=iw*9/16;Object.assign(el.style,{width:iw.toFixed(1)+'px',height:ih.toFixed(1)+'px',left:((w-iw)/2).toFixed(1)+'px',top:((h-ih)*ty).toFixed(1)+'px'})};
