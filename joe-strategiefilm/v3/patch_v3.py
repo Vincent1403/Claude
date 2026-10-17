@@ -511,6 +511,28 @@ rep("c.setAttribute('fill','#fff');c.style.opacity=js>0.02?1:0})}", "c.setAttrib
 # Kundenfeedback: jö-Logo statt „Mehr für euch!“ auf der Julian-Karte
 rep("""<div style="position:absolute;left:24px;top:20px;color:${INK};font-size:72px;font-weight:800;letter-spacing:-.015em;line-height:.95">Mehr für<br>euch!</div>""",
     """<svg viewBox="0 0 271.15 182.86" style="position:absolute;left:30px;top:52px;width:250px;overflow:visible"><path d="${LP.J} ${LP.E}" fill="${INK}"/><circle cx="87.99" cy="16.8" r="16.8" fill="${INK}"/><circle cx="152.94" cy="16.8" r="16.8" fill="${INK}"/><circle cx="207.17" cy="16.8" r="16.8" fill="${INK}"/></svg>""")
+# Kundenfeedback Julian-Start: „Meine Lieblingsmarken“ statt 100 Ös, „Meine Gesamtersparnis“ statt Einlösen, neu „Letzte Einkäufe“
+_a = s.index('<div class="jg" id="j100"'); _b = s.index('<div class="jui" id="ui_fav">')
+rep(s[_a:_b],
+    """<div class="jg" id="j100" style="left:1250px;top:226px;width:440px;height:150px;padding:20px 26px;box-sizing:border-box">
+  <div style="font-size:24px;font-weight:700;color:${BG}">Meine Lieblingsmarken</div>
+  <div id="j100Row" style="display:flex;gap:14px;margin-top:14px"></div></div>
+<div class="jg" id="j83" style="left:1290px;top:585px;width:340px;height:170px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:0 30px;box-sizing:border-box">
+  <div style="font-size:24px;font-weight:700;color:${BG}">Meine Gesamtersparnis</div>
+  <div style="display:flex;align-items:baseline;gap:8px;color:${BG}"><span class="bnum" id="j83n" style="font-size:64px;font-weight:800;letter-spacing:-.02em">0,00</span><span style="font-size:44px;font-weight:800">€</span></div></div>
+<div class="jg" id="jLast" style="left:228px;top:560px;width:437px;height:226px;padding:20px 26px;box-sizing:border-box">
+  <div style="font-size:24px;font-weight:700;color:${BG}">Letzte Einkäufe</div>
+  <div id="jLastRows" style="margin-top:12px;display:flex;flex-direction:column;gap:12px"></div></div>
+""")
+rep("const fsCircle=(n,d)=>`<img src=\"${PTA[n]}\" alt=\"\" style=\"width:${d}px;height:${d}px;border-radius:50%;flex:none\">`;",
+    "const fsCircle=(n,d)=>`<img src=\"${PTA[n]}\" alt=\"\" style=\"width:${d}px;height:${d}px;border-radius:50%;flex:none\">`;\n"
+    "$('j100Row').innerHTML=['adeg','bipa','omv','penny'].map(n=>fsCircle(n,72)).join('');\n"
+    "$('jLastRows').innerHTML=[['bipa','BIPA','Heute','24,90 €'],['adeg','ADEG','Gestern','61,35 €']].map(([n,b,d,v])=>`<div style=\"display:flex;align-items:center;gap:16px\">${fsCircle(n,60)}<div style=\"flex:1\"><div style=\"font-size:22px;font-weight:700;color:#79211b\">${b}</div><div style=\"font-size:17px;font-weight:500;color:#79211b;opacity:.75\">${d}</div></div><div style=\"font-size:22px;font-weight:700;color:#79211b\">${v}</div></div>`).join('');")
+rep("model(P){const c=[P.firstCard,P.firstCard+P.cardGap,P.firstCard+2*P.cardGap];", "model(P){const c=[P.firstCard,P.firstCard+P.cardGap,P.firstCard+2*P.cardGap,P.firstCard+3*P.cardGap];")
+rep("[['jHallo',0,-40,1.2],['j100',1,40,1.12],['j83',2,40,1.28]].forEach(", "[['jHallo',0,-40,1.2],['j100',1,40,1.12],['j83',2,40,1.28],['jLast',3,-40,1.16]].forEach(")
+rep("e.style.transformOrigin=['100% 50%','100% 50%','0 30%'][i]});", "e.style.transformOrigin=['100% 50%','100% 50%','0 30%','100% 50%'][i]});")
+rep("const cc=eIO(seg(t,M.c[1]+.15,M.c[1]+1));$('j100Arc').setAttribute('stroke-dashoffset',(188.5*(1-Math.min(1,P.oes/100)*cc)).toFixed(1));\n", "")
+rep("$('j83n').textContent=Math.round(P.oes*eIO(seg(t,M.c[2]+.1,M.c[2]+.9)));", "$('j83n').textContent=(327.65*eIO(seg(t,M.c[2]+.1,M.c[2]+.9))).toFixed(2).replace('.',',');")
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)

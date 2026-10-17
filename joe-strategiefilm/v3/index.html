@@ -902,13 +902,15 @@ JL.innerHTML=`
   <div style="width:106px;height:106px;border-radius:50%;overflow:hidden;background:#eee;flex:none"><img src="${BA.avatar}" alt="" style="width:100%;height:100%;object-fit:cover"></div>
   <span id="jHalloT" style="font-size:35px;font-weight:700;color:${BG}">Hallo Julian</span>
   <svg viewBox="0 0 24 24" style="margin-left:auto;width:34px;height:34px"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="${BG}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-<div class="jg" id="j100" style="left:1290px;top:246px;width:427px;height:99px;display:flex;align-items:center;gap:26px;padding:0 24px">
-  <svg viewBox="0 0 80 80" style="width:80px;height:80px;flex:none"><circle cx="40" cy="40" r="30" fill="none" stroke="#f1e7dd" stroke-width="9"/><circle id="j100Arc" cx="40" cy="40" r="30" fill="none" stroke="url(#rg1)" stroke-width="9" stroke-linecap="round" stroke-dasharray="188.5 188.5" stroke-dashoffset="188.5" transform="rotate(-90 40 40) scale(1 -1) translate(0 -80)"/></svg>
-  <div><div style="font-size:27px;font-weight:700;color:${BG};display:flex;align-items:center;gap:6px">100 ${oesSvg(BG).replace('class="oesg"','class="oesg" style="height:27px"').replace('class="oess"','class="oess" style="font-size:15px"')}</div>
-  <div style="font-size:17px;font-weight:500;color:${BG};margin-top:4px">Bis zu 10% erhalten</div></div></div>
-<div class="jg" id="j83" style="left:1339px;top:585px;width:246px;height:211px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px">
-  <div style="display:flex;align-items:center;gap:8px;color:${BG}"><span class="bnum" id="j83n" style="font-size:60px;font-weight:700;letter-spacing:-.02em">83</span>${oesSvg(BG).replace('class="oesg"','class="oesg" style="height:58px"').replace('class="oess"','class="oess" style="font-size:28px"')}</div>
-  <span style="background:${BG};color:#fff;font-weight:800;font-size:25px;padding:14px 34px;border-radius:99px">Einlösen</span></div>
+<div class="jg" id="j100" style="left:1250px;top:226px;width:440px;height:150px;padding:20px 26px;box-sizing:border-box">
+  <div style="font-size:24px;font-weight:700;color:${BG}">Meine Lieblingsmarken</div>
+  <div id="j100Row" style="display:flex;gap:14px;margin-top:14px"></div></div>
+<div class="jg" id="j83" style="left:1290px;top:585px;width:340px;height:170px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:0 30px;box-sizing:border-box">
+  <div style="font-size:24px;font-weight:700;color:${BG}">Meine Gesamtersparnis</div>
+  <div style="display:flex;align-items:baseline;gap:8px;color:${BG}"><span class="bnum" id="j83n" style="font-size:64px;font-weight:800;letter-spacing:-.02em">0,00</span><span style="font-size:44px;font-weight:800">€</span></div></div>
+<div class="jg" id="jLast" style="left:228px;top:560px;width:437px;height:226px;padding:20px 26px;box-sizing:border-box">
+  <div style="font-size:24px;font-weight:700;color:${BG}">Letzte Einkäufe</div>
+  <div id="jLastRows" style="margin-top:12px;display:flex;flex-direction:column;gap:12px"></div></div>
 <div class="jui" id="ui_fav"></div><div class="jui" id="ui_plus"></div>`;
 $('stage').insertBefore(JL,GL);$('stage').insertBefore(LBOX,GL);
 $('lpIn').innerHTML=lpPageHTML(LPA,LP)+lpMoreHTML(LPA);
@@ -989,7 +991,7 @@ const JULIAN={
     {k:'lpHold',label:'Website: Ausklang',min:.25,max:4,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'nach dem Zoom; das Bild zoomt langsam weiter, nichts steht still'},
     {k:'push',label:'Push-in',min:0,max:.06,step:.005,fmt:v=>num(v*100,1)+' %'},
     {k:'len',label:'Länge',min:2,max:10,step:1/24,fmt:v=>num(v)+' s · '+Math.round(v*24)+' F'}],
-  model(P){const c=[P.firstCard,P.firstCard+P.cardGap,P.firstCard+2*P.cardGap];
+  model(P){const c=[P.firstCard,P.firstCard+P.cardGap,P.firstCard+2*P.cardGap,P.firstCard+3*P.cardGap];
     const sp=s=>1+(s-1)*P.depth;
     let items=UI_LAYOUT.map(it=>({...it,s:sp(it.s),wx:it.wx+P.gapRef}));
     const lack=1945-Math.min(...items.map(it=>it.wx));if(lack>0)items=items.map(it=>({...it,wx:it.wx+lack}));
@@ -1086,12 +1088,11 @@ const JULIAN={
       [[E.cta,0],[E.storeT,.1],[E.stores,.16]].forEach(([e,o])=>{const a=M.SK[0]-.45+o,p=seg(t,a,a+.55);e.style.opacity=Math.min(1,p*3).toFixed(3);e.style.transform=`scale(${(.7+.3*eBack(p)).toFixed(4)})`})}}
     // Karten
     const fl=P.float;
-    [['jHallo',0,-40,1.2],['j100',1,40,1.12],['j83',2,40,1.28]].forEach(([id,i,dx,ps])=>{const ds=d*M.sp(ps);const e=$(id),p=seg(t,M.c[i],M.c[i]+.55),b=eBack(p);
+    [['jHallo',0,-40,1.2],['j100',1,40,1.12],['j83',2,40,1.28],['jLast',3,-40,1.16]].forEach(([id,i,dx,ps])=>{const ds=d*M.sp(ps);const e=$(id),p=seg(t,M.c[i],M.c[i]+.55),b=eBack(p);
       const fy=Math.sin((t-M.c[i])*1.6+i*1.7)*6*fl*seg(t,M.c[i]+.5,M.c[i]+1.2);
-      e.style.opacity=Math.min(1,p*3).toFixed(3);e.style.transform=`translate(${((1-eExpo(p))*dx-ds).toFixed(1)}px,${fy.toFixed(1)}px) scale(${((.85+.15*b)*P.hud).toFixed(4)})`;e.style.transformOrigin=['100% 50%','100% 50%','0 30%'][i]});
+      e.style.opacity=Math.min(1,p*3).toFixed(3);e.style.transform=`translate(${((1-eExpo(p))*dx-ds).toFixed(1)}px,${fy.toFixed(1)}px) scale(${((.85+.15*b)*P.hud).toFixed(4)})`;e.style.transformOrigin=['100% 50%','100% 50%','0 30%','100% 50%'][i]});
     $('jHalloT').textContent='Hallo '+P.name;
-    const cc=eIO(seg(t,M.c[1]+.15,M.c[1]+1));$('j100Arc').setAttribute('stroke-dashoffset',(188.5*(1-Math.min(1,P.oes/100)*cc)).toFixed(1));
-    $('j83n').textContent=Math.round(P.oes*eIO(seg(t,M.c[2]+.1,M.c[2]+.9)));
+        $('j83n').textContent=(327.65*eIO(seg(t,M.c[2]+.1,M.c[2]+.9))).toFixed(2).replace('.',',');
   },
   marks(M){return [[0,'Morph'],[M.P.morph*.45,'Julian'],[M.c[0],'Hallo'],[M.c[1],'100 Ös'],[M.c[2],'83 Ös'],[M.P.sStart,'Parallax'],[M.allOut,'UI raus'],[M.tL,'Landung'],[M.P.fsAt,'Drop'],...(M.NN?M.LAND.slice(1).map((x,i)=>[x,M.NAMES[i+1]]):[]),[M.tPO,'Rauszoomen'],[M.tVS,'Scroll ↓'],[M.SK[1],'Karten'],[M.SK[2],'Partner'],...(M.P.endZoom?[[M.tZ,'Zoom']]:[[M.tEnd,'steht']]),[M.lpEnd,'Ende']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P;return [
@@ -1888,6 +1889,8 @@ const POSTER={
 const FS_BG='#670003';
 const fsCard=(x,y,w,h,inner,cls='')=>`<div class="fsc ${cls}" style="left:${x}px;top:${y}px;width:${w}px;min-height:${h}px;display:flex;flex-direction:column;justify-content:center">${inner}</div>`;
 const fsCircle=(n,d)=>`<img src="${PTA[n]}" alt="" style="width:${d}px;height:${d}px;border-radius:50%;flex:none">`;
+$('j100Row').innerHTML=['adeg','bipa','omv','penny'].map(n=>fsCircle(n,72)).join('');
+$('jLastRows').innerHTML=[['bipa','BIPA','Heute','24,90 €'],['adeg','ADEG','Gestern','61,35 €']].map(([n,b,d,v])=>`<div style="display:flex;align-items:center;gap:16px">${fsCircle(n,60)}<div style="flex:1"><div style="font-size:22px;font-weight:700;color:#79211b">${b}</div><div style="font-size:17px;font-weight:500;color:#79211b;opacity:.75">${d}</div></div><div style="font-size:22px;font-weight:700;color:#79211b">${v}</div></div>`).join('');
 const fsRing=(id,d,sw,val)=>{const r=(d-sw)/2,c=2*Math.PI*r;return `<svg viewBox="0 0 ${d} ${d}" style="width:${d}px;height:${d}px;flex:none"><circle cx="${d/2}" cy="${d/2}" r="${r}" fill="none" stroke="rgba(103,0,3,.08)" stroke-width="${sw}"/><circle class="fsArc" data-c="${c.toFixed(2)}" data-v="${val}" cx="${d/2}" cy="${d/2}" r="${r}" fill="none" stroke="url(#fsRg)" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c.toFixed(2)} ${c.toFixed(2)}" stroke-dashoffset="${c.toFixed(2)}" transform="rotate(-90 ${d/2} ${d/2})"/></svg>`};
 const fsOes=(h,f)=>oesSvg(FS_BG).replace('class="oesg"',`class="oesg" style="height:${h}px"`).replace('class="oess"',`class="oess" style="font-size:${f}px"`);
 const fsBtn=t=>`<span style="background:${FS_BG};color:#fff;font-weight:800;font-size:24px;padding:14px 30px;border-radius:99px;white-space:nowrap">${t}</span>`;
