@@ -41,23 +41,21 @@ const FUER={
   show(on){FUL.style.display=on?'':'none'},
   render(M,t){const P=M.P,b=M.b,E=FUE,fs=150;
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
-    const gap=P.gap*fs,xP0=960-(E._wf+gap)-E._wp[0]/2,xF=960-(E._wf+gap)-E._wp[E._wp.length-1]/2; // erster und letzter Satz stehen allein mittig (ohne „Für“)
+    const gap=P.gap*fs,nL=FU_PH.length-2,wM=Math.max(...E._wp.slice(FU_N0,nL+1)),ML=E._wf+gap+FU_PW+gap,R=960-(ML+wM)/2; // Zeile steht fest (zentriert auf „Für [Bild] längster Name“) – keine seitlichen Bewegungen, nur nach oben
     Object.assign(E.row.style,{top:(540-fs*.55).toFixed(1)+'px'});
     // Profilbild-Pille zwischen „Für“ und Namen: öffnet beim ersten Namen, schließt zu „jeden.“
-    const ns=M.st[FU_N0]*b,ne=M.st[FU_PH.length-1]*b,ow=eIO(seg(t,ns-.05,ns+P.move))*(1-eIO(seg(t,ne,ne+P.nMove+.08))),pw=FU_PW*ow;
-    Object.assign(E.pill.style,{left:(E._wf+gap).toFixed(1)+'px',width:pw.toFixed(1)+'px',visibility:ow>.002?'visible':'hidden'});
-    E.mask.style.left=(E._wf+gap+ow*(FU_PW+gap)).toFixed(1)+'px';E.mask.style.width=(Math.max(...E._wp)+40)+'px';
+    const ns=M.st[FU_N0]*b,ne=M.st[FU_PH.length-1]*b,ow=eIO(seg(t,ns-.05,ns+P.move)),pk=eInCub(seg(t,ne,ne+.3)),pw=FU_PW*ow;
+    Object.assign(E.pill.style,{left:(E._wf+gap).toFixed(1)+'px',width:pw.toFixed(1)+'px',visibility:ow>.002&&pk<1?'visible':'hidden',transform:`translateY(${(-pk*230).toFixed(1)}px)`,opacity:(1-pk).toFixed(3)}); // Pille fährt am Ende mit „Für“ nach oben raus
+    E.mask.style.left=(-R).toFixed(1)+'px';E.mask.style.width='1920px';
     const a=P.inAt*b,o=P.outAt*b,rin=eExpo(seg(t,a,a+.5)),rout=eInCub(seg(t,o,o+.3));
     {const fi=eExpo(seg(t,ns+.18,ns+.6)),fo=eInCub(seg(t,ne,ne+.3));E.fix.style.transform=`translateY(${((1-fi)*120-fo*120+rout*120).toFixed(1)}%)`} // „Für“ nur zu den Namen
     // Position auf der „Walze“: 0 = erstes Satzende, 1 = zweites …; jedes läuft von unten rein und oben raus
     let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<FU_PH.length;k++){const s=M.st[k]*b;p+=k>FU_N0?.5-.5*Math.cos(Math.PI*seg(t,s,s+P.nMove)):eIO(seg(t,s,s+P.move)) /* Namen: weiche Sinus-Kurve */}
     p+=eInCub(seg(t,o+.04,o+.34));
     // ab dem ersten Namen steht die Kombi „Für [Bild] Name.“ mittig (Breite folgt dem laufenden Namen), endet als „Für jeden.“ in der Mitte
-    {const q=Math.max(0,Math.min(p,FU_PH.length-1)),nL=FU_PH.length-2,wM=Math.max(...E._wp.slice(FU_N0,nL+1)),wn=q<=nL?wM:wM+(E._wp[nL+1]-wM)*(q-nL), // „Für“ steht still: zentriert auf den längsten Namen, erst zu „jeden.“ rückt die Zeile nach
-      xm=960-(E._wf+gap+ow*(FU_PW+gap)+wn)/2,m1=eIO(seg(t,ns-.05,ns+P.move)),m2=eIO(seg(t,ne,ne+P.nMove+.08));
-     E.row.style.left=(xP0+(xm-xP0)*m1+(xF-xm)*m2).toFixed(1)+'px'}
+    E.row.style.left=R.toFixed(1)+'px';
     {const k=Math.max(0,Math.min(1,p));E.mask.style.clipPath=`inset(${(50*k).toFixed(1)}px 0 ${(70*k).toFixed(1)}px 0)`} // Maske nur für den zweizeiligen ersten Satz größer
-    E.ph.forEach((el,i)=>{const d=i-p;el.style.transform=`translateY(${(d*(i===0&&d<0?340:240)).toFixed(1)}px)`; /* erster Satz ist zweizeilig: läuft weiter nach oben raus */el.style.opacity=Math.abs(d)<1.05?'1':'0'});
+    E.ph.forEach((el,i)=>{const d=i-p;el.style.left=(i===0||i===FU_PH.length-1?960-E._wp[i]/2:R+ML).toFixed(1)+'px';el.style.transform=`translateY(${(d*(i===0&&d<0?340:240)).toFixed(1)}px)`; /* erster Satz ist zweizeilig: läuft weiter nach oben raus */el.style.opacity=Math.abs(d)<1.05?'1':'0'});
     E.pi.forEach((el,i)=>{const d=i+FU_N0-Math.min(p,FU_PH.length-2);el.style.transform=`translate(${((pw-FU_PW)/2).toFixed(1)}px,${(d*FU_PHH).toFixed(1)}px)`;el.style.visibility=Math.abs(d)<1.02?'visible':'hidden'});
     // Profil-Wolke (Kian gehört von Anfang an dazu), Kamera zieht beim Aufbau auf
     const c0=P.cloudAt*b,zu=eIO(seg(t,c0,c0+P.cloudZoom)),[kx,ky,kd]=FU_POS[FU_KI],D=CL_D;
