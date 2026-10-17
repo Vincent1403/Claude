@@ -18,7 +18,7 @@ const FM_S1=[ // x, y, w, h, Hintergrund, Inhalt
   <div style="position:absolute;left:44px;top:44px">${fmTag('hg','Letzte Chance',S2_INK,'#fff',42)}</div>
   <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:58px;font-weight:800;line-height:1.02;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Exklusive</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sportdeals</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">entdecken!</div></div></div>
   <div style="position:absolute;left:44px;top:322px">${fmJoPill('49&#8239;€',70)}</div>
-  <div class="fmIm" style="position:absolute;left:440px;top:36px;width:320px;height:392px;border-radius:40px 0 0 40px;background:#f2bf62;overflow:hidden"><img data-z="1" class="fmIm" src="${S2I.girl}" alt="" style="position:absolute;left:-14px;top:18px;width:300px;max-width:none"></div>`],
+  <div class="fmIm" style="position:absolute;left:440px;top:0;width:320px;height:428px;border-radius:40px 0 0 40px;background:#f2bf62;overflow:hidden"><img data-z="1" class="fmIm" src="${S2I.girl}" alt="" style="position:absolute;left:-14px;top:54px;width:300px;max-width:none"></div>`],
  [594,619.5,324.5,324.5,'#e4e1ea',`
   <img data-z="1" class="fmIm" src="${S2I.pad}" alt="" style="position:absolute;left:-18px;top:58px;width:360px;max-width:none">
   <div style="position:absolute;left:22px;top:22px">${fmTag('x','Games',S2_INK,'#fff',38)}</div>
