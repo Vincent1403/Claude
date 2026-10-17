@@ -89,7 +89,8 @@ const FM_S3=[
   <div style="position:absolute;left:34px;top:620px;color:#fff;font-size:56px;font-weight:800;line-height:1.02;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sammeln &amp;</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sparen</div></div></div>`],
  [1070,136,760,427.5,ST_OR,`
   <div style="position:absolute;left:44px;top:44px">${fmTag('hg','Letzte Chance',S2_INK,'#fff',42)}</div>
-  <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:54px;font-weight:800;line-height:1.04;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Clever sparen</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">bei deinem</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Wocheneinkauf.</div></div></div>
+  <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:44px;font-weight:800;line-height:1.04;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Clever sparen</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">bei deinem</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Wocheneinkauf.</div></div></div>
+  <div style="position:absolute;left:420px;top:0;width:340px;height:428px;border-radius:40px 0 0 40px;background:#e3e0ea"></div>
   <img data-z="1" class="fmIm" src="${S6I.bag}" alt="" style="position:absolute;left:452px;top:70px;width:300px;max-width:none">
   <div style="position:absolute;left:520px;top:40px">${fmJoPill('-&#8239;25%',70)}</div>`],
  [1070,619.5,324.5,324.5,JG_CSS,fmEtikett(52,34,220,256,'','Bonus-<br>box','250').replace('font-size:76.8px','font-size:52px')],
