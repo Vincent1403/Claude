@@ -253,10 +253,10 @@ rep("let sel='julian';", "let sel='tags';")
 rep("const gOn=clipOn(g,tD);$('bg').style.display=gOn?'':'none';", "const jOn=S.clips.julian&&clipOn(S.clips.julian,tR),gOn=clipOn(g,tD)||jOn;$('bg').style.display=gOn?'':'none';$('bg').style.background=(tR<WA+WPD||jOn)?JG_CSS:''; // Intro (Headline + Logo) im jö-Verlauf wie „Dein jö“")
 # ---------- 5e. Intro: vier Headlines statt „Eine Marke mitten im Leben.“ ----------
 rep("const HL1=makeHL('hl1','Headline 1','laneV3',['Eine Marke mitten im Leben.'],\n  {size:120,top:470,color:'#fff',step:.4,inAt:.25,outAt:3.4,len:4.1,",
-    "const HL1=makeHL('hl1','Headline 1a','laneV3',['Eine Marke für das','tägliche Leben.'],\n  {size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,")
+    "const HL1=makeHL('hl1','Headline 1a','laneV3',['Das Leben ist','voller Vielfalt.'],\n  {size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,")
 rep("const HL2=makeHL('hl2',",
     "const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Das Leben ist vielfältig.'],{size:150,top:447,color:'#fff',step:.3,inAt:.25,outAt:3.2,len:3.8,shadow:1,note:'Intro, zweite Zeile.'});\n"
-    "const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Voller Möglichkeiten.'],{size:150,top:447,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,note:'Intro, dritte Zeile.'});\n"
+    "const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und voller','Möglichkeiten.'],{size:150,top:354,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,note:'Intro, dritte Zeile.'});\n"
     "const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});\n"
     "const HL2=makeHL('hl2',")
 # ---------- 5f. Hintergrundvideos der Intro-Headlines (introvid_comp.js) ----------
@@ -563,6 +563,7 @@ CLIPS["endc"] = C(_ec2, round(190 - _ec2, 4))
 PARAMS["endc"] = {**PARAMS["endc"], **{k: round(PARAMS["endc"][k] + _ed, 3) for k in ("outAt", "linkAt", "pillAt")}}
 for k in ("logo2", "endtxt"):
     CLIPS[k]["len"] = round(_ec2 - CLIPS[k]["start"], 4)
+CLIPS["hl1b"]["start"] = 9000.0   # Kundenfeedback: Headline 1b entfällt, das Tanken-Video läuft allein
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
