@@ -691,7 +691,7 @@ block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.cli
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
 rep("COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))", "COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))")  # Clip-Tempo: rate < 1 = langsamer; clipHold = Standbild-Abschnitt
-rep("function wDesign(", f"const CL_HOLD={{julian:[4.95,{round(BARL*.76873,4)}],white2:[4.95,{round(BARL*.76873,4)}]}};function clipHold(k,u){{const h=CL_HOLD[k];return h&&u>h[0]?Math.max(h[0],u-h[1]):u}} // Kunde: Julian-UI-Screen (jö-Karte, Ersparnis, Favoriten, 3x, 83) steht 1 Takt länger\nfunction wDesign(")
+rep("function wDesign(", f"const CL_HOLD={{julian:[4.1,.5,{round(BARL*.76873,4)}],white2:[4.1,.5,{round(BARL*.76873,4)}]}};function clipHold(k,u){{const h=CL_HOLD[k];if(!h||u<=h[0])return u;const L=h[1]+h[2];return u<h[0]+L?h[0]+(u-h[0])*h[1]/L:u-h[2]}} // Kunde: Julian-UI-Screen 1 Takt länger – Zeitlupe statt Standbild, die Karten driften weiter\nfunction wDesign(")
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())

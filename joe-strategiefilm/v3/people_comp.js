@@ -18,7 +18,7 @@ PFL.innerHTML=`
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="pfRg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#c0233a"/><stop offset=".5" stop-color="#ee2a06"/><stop offset="1" stop-color="#ff7024"/></linearGradient></defs></svg>
 <div id="pfBg" style="position:absolute;inset:0;background:${PF_SCENES[0].bg}"></div>
 <div id="pfRig" style="position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 50%">
- <div class="pfLy" style="position:absolute;inset:0;transform-origin:50% 50%"><div id="pfName" style="position:absolute;left:0;right:0;top:250px;text-align:center;color:#fff;font-size:440px;font-weight:900;letter-spacing:-.04em;line-height:1;white-space:nowrap;transform-origin:50% 60%"></div></div>
+ <div class="pfLy" style="position:absolute;inset:0;transform-origin:50% 50%"><div id="pfName" style="position:absolute;left:0;right:0;top:0;height:1080px;text-align:center;color:#fff;font-size:440px;font-weight:900;letter-spacing:-.04em;line-height:1;white-space:nowrap;transform-origin:50% 50%"></div></div>
  <div class="pfLy" style="position:absolute;inset:0;transform-origin:50% 50%"><img id="pfPerson" alt="" style="position:absolute;transform-origin:50% 100%;display:none"></div>
  <div class="pfLy" style="position:absolute;inset:0;transform-origin:50% 50%">${PF_SCENES.map((s,i)=>`<div class="pfHud" data-i="${i}" style="position:absolute;inset:0;display:none">${s.A.replace('class="fsc ','class="fsc fsA ')}${s.B.replace('class="fsc ','class="fsc fsB ')}</div>`).join('').replaceAll('url(#fsRg)','url(#pfRg)')}</div>
 </div>`;
@@ -51,7 +51,7 @@ const PEOPLE={
     E.rig.style.transform=`rotateY(${rot.toFixed(2)}deg)`;
     E.L.forEach((el,k)=>el.style.transform=`translateZ(${zs[k]}px) scale(${zc(zs[k]).toFixed(5)})`);
     // Name: steigt beim ersten Bild auf, wächst danach ganz langsam
-    if(!E.name._jo){E.name._jo=1;E.name.innerHTML=`<svg viewBox="0 0 271.15 182.86" style="width:1200px;overflow:visible;display:inline-block"><path d="${LP.J} ${LP.E}" fill="#fff"/><circle cx="87.99" cy="16.8" r="16.8" fill="#fff"/><circle cx="152.94" cy="16.8" r="16.8" fill="#fff"/><circle cx="207.17" cy="16.8" r="16.8" fill="#fff"/></svg>`} // Kundenfeedback: jö-Logo statt Name im Hintergrund
+    if(!E.name._jo){E.name._jo=1;E.name.innerHTML=`<svg viewBox="0 0 271.15 182.86" style="position:absolute;left:360px;top:135px;width:1200px;overflow:visible"><path d="${LP.J} ${LP.E}" fill="#fff"/><circle cx="87.99" cy="16.8" r="16.8" fill="#fff"/><circle cx="152.94" cy="16.8" r="16.8" fill="#fff"/><circle cx="207.17" cy="16.8" r="16.8" fill="#fff"/></svg>`} // Kundenfeedback: jö-Logo statt Name im Hintergrund
     const ni=idx===0?eExpo(seg(lt,.05,.6)):1;
     E.name.style.fontSize=P.nameSize+'px';
     E.name.style.transform=`translateY(${((1-ni)*160).toFixed(1)}px) scale(${(1+.04*dr).toFixed(4)})`;E.name.style.opacity=ni.toFixed(3);
