@@ -675,10 +675,16 @@ for k in ("brand", "people", "system", "badges"):
 _wn = CLIPS["wall"]["rate"] * CLIPS["wall"]["len"]
 CLIPS["wall"]["start"] = round(CLIPS["wall"]["start"] - BARL, 4); CLIPS["wall"]["len"] = round(CLIPS["wall"]["len"] + BARL, 4); CLIPS["wall"]["rate"] = round(_wn / CLIPS["wall"]["len"], 4)
 PARAMS["formats"] = {**PARAMS["formats"], "sh": round(PARAMS["formats"]["sh"] - BARL, 4)}
+# Kunde: Julian-UI-Screen 1 Takt länger (Standbild in Julian), dafür startet Farben 1 Takt später (Ende bleibt, etwas schneller)
+for k in ("julian", "white2"):
+    CLIPS[k]["len"] = round(CLIPS[k]["len"] + BARL, 4)
+_cn = CLIPS["colors"]["len"] * CLIPS["colors"]["rate"]
+CLIPS["colors"]["start"] = round(CLIPS["colors"]["start"] + BARL, 4); CLIPS["colors"]["len"] = round(CLIPS["colors"]["len"] - BARL, 4); CLIPS["colors"]["rate"] = round(_cn / CLIPS["colors"]["len"], 5)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
-rep("COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))", "COMPS[k].render(FM[k],Math.min(c.in+(t-c.start)*(c.rate||1),FM[k].total))")  # Clip-Tempo: rate < 1 = langsamer
+rep("COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))", "COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))")  # Clip-Tempo: rate < 1 = langsamer; clipHold = Standbild-Abschnitt
+rep("function wDesign(", f"const CL_HOLD={{julian:[4.95,{round(BARL*.76873,4)}],white2:[4.95,{round(BARL*.76873,4)}]}};function clipHold(k,u){{const h=CL_HOLD[k];return h&&u>h[0]?Math.max(h[0],u-h[1]):u}} // Kunde: Julian-UI-Screen (jö-Karte, Ersparnis, Favoriten, 3x, 83) steht 1 Takt länger\nfunction wDesign(")
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())

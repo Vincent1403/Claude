@@ -4144,7 +4144,7 @@ S.clips.partner={start:52.6254,len:9.1433,in:0,rate:0.75};
 S.clips.brand={start:61.7687,len:9.1433,in:0.0625,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:20.7898,len:8.9774,in:0.2,rate:0.48697};
+S.clips.colors={start:23.0756,len:6.6916,in:0.2,rate:0.65332};
 S.clips.deal={start:120.0585,len:5.6686,in:0};
 S.clips.prod={start:9000.0,len:4.5717,in:0.634,rate:0.4972};
 S.clips.c7={start:9000.0,len:5.1431,in:0};
@@ -4160,8 +4160,8 @@ S.clips.showcase={start:9000.0,len:8.47,in:0};
 S.clips.hl1b={start:9000.0,len:2.1731,in:0};
 S.clips.hl1c={start:4.575,len:2.0016,in:0};
 S.clips.hl1d={start:6.5766,len:2.6306,in:0};
-S.clips.julian={start:14.2786,len:8.2072,in:0,rate:0.76873};
-S.clips.white2={start:14.2786,len:8.2072,in:0,rate:0.76873};
+S.clips.julian={start:14.2786,len:10.493,in:0,rate:0.76873};
+S.clips.white2={start:14.2786,len:10.493,in:0,rate:0.76873};
 S.clips.fuer={start:29.7672,len:10.5345,in:0};
 S.clips.system={start:80.0553,len:2.2858,in:0};
 S.clips.kanal={start:100.6281,len:2.6698,in:0};
@@ -4245,6 +4245,7 @@ function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
 const WA=4.8333,WB=14.95,WSPAN=17.018; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar
 function warpK(){return Math.max(.2,WSPAN/(WB-WA))}
 const WPD=6.8572;
+const CL_HOLD={julian:[4.95,1.7572],white2:[4.95,1.7572]};function clipHold(k,u){const h=CL_HOLD[k];return h&&u>h[0]?Math.max(h[0],u-h[1]):u} // Kunde: Julian-UI-Screen (jö-Karte, Ersparnis, Favoriten, 3x, 83) steht 1 Takt länger
 function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA+WPD?t*WA/(WA+WPD):t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)
 function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x*(WA+WPD)/WA:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit
 const PRE=new Set(['grad','white','story','story2','story4','story3','story5','story6']);
@@ -4259,7 +4260,7 @@ function mRender(){
   for(const k in COMPS)if(!ON[k])COMPS[k].show(false); // erst alles aus, dann ein: Doppel-Clips teilen sich eine Ebene
   for(const k in COMPS){const pre=isPre(k),t=pre?tD:tR,c=S.clips[k],on=ON[k];if(!on)continue;COMPS[k].show(true);
     if(pre){mT=tD;if(cc)S.clips.colors=Object.assign({},cc,{start:WB})}
-    try{COMPS[k].render(FM[k],Math.min(c.in+(t-c.start)*(c.rate||1),FM[k].total))}finally{if(pre){mT=tR;if(cc)S.clips.colors=cc}}}
+    try{COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))}finally{if(pre){mT=tR;if(cc)S.clips.colors=cc}}}
 }
 function mUi(){$('mTc').textContent=`${fmtTime(mT)} · Frame ${Math.round(mT*FPS)}`;$('ph').style.left=(mT*pps)+'px'}
 let sel='tags';
