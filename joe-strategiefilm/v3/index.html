@@ -3896,7 +3896,8 @@ const FM_S3=[
   <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:44px;font-weight:800;line-height:1.04;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Clever sparen</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">bei deinem</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Wocheneinkauf.</div></div></div>
   <div style="position:absolute;left:420px;top:0;width:340px;height:428px;border-radius:40px 0 0 40px;background:#e3e0ea"></div>
   <img data-z="1" class="fmIm" src="${S6I.bag}" alt="" style="position:absolute;left:452px;top:70px;width:300px;max-width:none">
-  <div style="position:absolute;left:520px;top:40px">${fmJoPill('-&#8239;25%',70)}</div>`],
+  <div style="position:absolute;left:520px;top:40px">${fmJoPill('-&#8239;25%',70)}</div>
+  <div class="fmAppPill" style="position:absolute;left:44px;top:300px;width:380px;height:80px"></div>`],
  [1070,619.5,324.5,324.5,JG_CSS,fmEtikett(52,34,220,256,'','Bonus-<br>box','250').replace('font-size:76.8px','font-size:52px')],
  [1434.5,619.5,395.5,324.5,'#fff',`
   <img src="${PTA.adeg}" alt="" style="position:absolute;left:18px;top:16px;width:38px;height:38px;border-radius:50%">
@@ -3987,6 +3988,7 @@ const FORMATS={
   const st=$('bbStore'),ct=$('bbCta');Object.assign(st.style,{position:'static',display:'flex',gap:'16px'});Object.assign(ct.style,{position:'static',color:'#670003',fontWeight:'700',marginLeft:'12px'});
   st.querySelectorAll('.bbBtn').forEach(b=>b.style.background='#f4f1ea');pill.append(st,ct);$('bbPhoneWrap').after(pill);
   const r1=BILL.render;BILL.render=function(M,t){r1.call(this,M,t);const q=eBack(seg(t,M.P.storeAt-.1,M.P.storeAt+.35));pill.style.transform=`scale(${q.toFixed(4)})`;pill.style.transformOrigin='50% 50%'}}
+ {const h=document.querySelector('.fmAppPill'),src=$('bbPill');if(h&&src){const c=src.cloneNode(true);c.removeAttribute('id');Object.assign(c.style,{left:'0',top:'0',transform:'scale(.48)',transformOrigin:'0 0',boxShadow:'0 14px 34px rgba(60,10,0,.18)'});h.appendChild(c)}}
  const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;
  BILL.render=function(M,t){r0.call(this,M,t);const P=M.P;pts.forEach((p,i)=>{const a=P.lineAt+.3+i*.035,q=eBack(seg(t,a,a+.4));p.style.transform=`scale(${q.toFixed(4)})`})};}
 
