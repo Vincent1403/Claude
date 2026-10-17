@@ -535,7 +535,7 @@ rep("const cc=eIO(seg(t,M.c[1]+.15,M.c[1]+1));$('j100Arc').setAttribute('stroke-
 rep("$('j83n').textContent=Math.round(P.oes*eIO(seg(t,M.c[2]+.1,M.c[2]+.9)));", "$('j83n').textContent=(327.65*eIO(seg(t,M.c[2]+.1,M.c[2]+.9))).toFixed(2).replace('.',',');")
 rep("E.plus.style.transform=`translateY(${(-40*fl).toFixed(1)}px) scale(${(.5+.5*e).toFixed(4)})", "E.plus.style.transform=`translateY(${(-40*fl).toFixed(1)}px) scale(${((.5+.5*e)*1.45).toFixed(4)})")   # Kundenfeedback: +Ös-Pille bei Tamara größer
 # Formate: App-Download-Pille (wie auf dem Billboard) unten in der Wocheneinkauf-Karte
-rep("const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;", "{const h=document.querySelector('.fmAppPill'),src=$('bbPill');if(h&&src){const c=src.cloneNode(true);c.removeAttribute('id');Object.assign(c.style,{left:'0',top:'0',transform:'scale(.48)',transformOrigin:'0 0',boxShadow:'0 14px 34px rgba(60,10,0,.18)'});h.appendChild(c)}}\n const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;")
+rep("const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;", "{const h=document.querySelector('.fmAppPill'),src=$('bbPill');if(h&&src){const c=src.cloneNode(true);c.removeAttribute('id');Object.assign(c.style,{left:'0',top:'0',transform:'scale(.34)',transformOrigin:'0 0',boxShadow:'0 14px 34px rgba(60,10,0,.18)'});h.appendChild(c)}}\n const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;")
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)

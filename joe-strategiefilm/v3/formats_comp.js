@@ -93,7 +93,7 @@ const FM_S3=[
   <div style="position:absolute;left:420px;top:0;width:340px;height:428px;border-radius:40px 0 0 40px;background:#e3e0ea"></div>
   <img data-z="1" class="fmIm" src="${S6I.bag}" alt="" style="position:absolute;left:452px;top:70px;width:300px;max-width:none">
   <div style="position:absolute;left:520px;top:40px">${fmJoPill('-&#8239;25%',70)}</div>
-  <div class="fmAppPill" style="position:absolute;left:44px;top:300px;width:380px;height:80px"></div>`],
+  <div class="fmAppPill" style="position:absolute;left:44px;top:322px;width:380px;height:80px"></div>`],
  [1070,619.5,324.5,324.5,JG_CSS,fmEtikett(52,34,220,256,'','Bonus-<br>box','250').replace('font-size:76.8px','font-size:52px')],
  [1434.5,619.5,395.5,324.5,'#fff',`
   <img src="${PTA.adeg}" alt="" style="position:absolute;left:18px;top:16px;width:38px;height:38px;border-radius:50%">
