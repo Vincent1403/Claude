@@ -4246,7 +4246,7 @@ function clipOn(c,t){return t>=c.start&&t<c.start+c.len}
 const WA=4.8333,WB=14.95,WSPAN=17.018; // Partnerfilm: Design-Abschnitt WA…WB (Julian + Stories) läuft ab S.warp.r0, als Block verschiebbar
 function warpK(){return Math.max(.2,WSPAN/(WB-WA))}
 const WPD=6.8572;
-const CL_HOLD={julian:[4.1,.5,1.7572],white2:[4.1,.5,1.7572]};function clipHold(k,u){const h=CL_HOLD[k];if(!h||u<=h[0])return u;const L=h[1]+h[2];return u<h[0]+L?h[0]+(u-h[0])*h[1]/L:u-h[2]} // Kunde: Julian-UI-Screen 1 Takt länger – Zeitlupe statt Standbild, die Karten driften weiter
+const CL_HOLD={julian:[3.75,1.6,1.7572],white2:[3.75,1.6,1.7572]};function clipHold(k,u){const h=CL_HOLD[k];if(!h||u<=h[0])return u;const L=h[1]+h[2];if(u>=h[0]+L)return u-h[2];const x=(u-h[0])/L,m=.9,f=(1-m)*x+m*(.5+4*Math.pow(x-.5,3));return h[0]+h[1]*f} // Kunde: Julian-UI-Screen – schnell rein, in der Mitte ganz langsam (nie stehend), schnell wieder raus
 function wDesign(t){const k=warpK(),r0=S.warp.r0;return t<=WA+WPD?t*WA/(WA+WPD):t<r0?1e6:t<=r0+WSPAN?WA+(t-r0)/k:t-r0-WSPAN+WB} // echte Zeit → Design-Zeit (vor dem Block: nichts davon sichtbar)
 function wReal(x){const k=warpK(),r0=S.warp.r0;return x<WA?x*(WA+WPD)/WA:x<=WB?r0+(x-WA)*k:x-WB+r0+WSPAN} // Design-Zeit → echte Zeit
 const PRE=new Set(['grad','white','story','story2','story4','story3','story5','story6']);
