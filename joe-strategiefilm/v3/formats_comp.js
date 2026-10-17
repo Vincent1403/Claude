@@ -53,7 +53,7 @@ const FM_S2=[
   <div style="position:absolute;left:44px;top:44px">${fmTag('x','Games',S2_INK,'#fff',42)}</div>
   <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:64px;font-weight:800;line-height:1.02;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Spielen &amp;</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Gewinnen</div></div></div>
   <div style="position:absolute;left:44px;top:300px">${FM_PILL(s2Jo(58)+'Jetzt spielen',70)}</div>
-  <div class="fmIm" style="position:absolute;left:420px;top:0;width:340px;height:428px;border-radius:40px 0 0 40px;background:#e4e1ea;overflow:hidden"><img data-z="1" class="fmIm" src="${S2I.pad}" alt="" style="position:absolute;left:-60px;top:146px;width:400px;max-width:none"></div>`],
+  <div class="fmIm" style="position:absolute;left:420px;top:0;width:340px;height:428px;border-radius:40px 0 0 40px;background:#e4e1ea;overflow:hidden"><img data-z="1" class="fmIm" src="${BA.couple}" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 40%"></div>`],
  [90,619.5,324.5,324.5,'#000',`
   <img data-z="1" class="fmIm" src="${STI.man}" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover">
   <div style="position:absolute;left:146px;top:240px">${fmOesPill('500',58)}</div>`],
@@ -68,7 +68,7 @@ const FM_S2=[
  [900,724.5,426,219.5,'#e4e1ea',fmPush('Neuer Deal bei Hirter','-25 % mit deinen Ös.')],
  [1376,136,454,808,'#e4e1ea',`
   <div class="fmIm" style="position:absolute;left:0;top:300px;width:454px;height:508px;border-radius:48px 48px 0 0;background:${JG_CSS}"></div>
-  <img data-z="1" class="fmIm" src="${S4I.girl}" alt="" style="position:absolute;left:-46px;top:36px;width:540px;max-width:none">
+  <img data-z="1" class="fmIm" src="${UI2.girl}" alt="" style="position:absolute;left:-20px;top:20px;width:470px;max-width:none">
   <div style="position:absolute;left:30px;top:30px">${fmTag('ci','Aktion','#fff','#e3301b',40)}</div>
   <div style="position:absolute;left:54px;top:440px">${fmJoPill('Sportdeals',66)}</div>
   <div style="position:absolute;left:34px;top:676px;color:#fff;font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Mehr Bewegung,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">mehr Ös.</div></div></div>`]];

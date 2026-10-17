@@ -17,7 +17,7 @@ UBL.innerHTML=`<div id="ubCam" style="position:absolute;inset:0;transform-origin
      <circle cx="150" cy="150" r="120" fill="none" stroke="#f4f0ea" stroke-width="40"/>
      <circle id="ubArc" cx="150" cy="150" r="120" fill="none" stroke="url(#ubRg)" stroke-width="40" stroke-linecap="round" stroke-dasharray="0 1000" transform="rotate(90 150 150)"/></svg>
     <div id="ubN" style="position:absolute;left:0;right:0;top:191px;transform:translateY(-50%);text-align:center;font-size:58px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums">0</div></div>
-   <div id="ubTag" style="position:absolute;left:1204px;top:48px;width:404px;height:252px;border-radius:126px;background:#ffb655;color:#6b1206;display:grid;place-items:center;font-size:150px;font-weight:900;letter-spacing:-.03em">-25%</div>
+   <div id="ubTag" style="display:none!important;position:absolute;left:1204px;top:48px;width:404px;height:252px;border-radius:126px;background:#ffb655;color:#6b1206;display:grid;place-items:center;font-size:150px;font-weight:900;letter-spacing:-.03em">-25%</div>
    <div id="ubFr" style="position:absolute;left:788px;top:0;width:900px;height:1000px;border-radius:150px 0 0 150px;overflow:hidden;pointer-events:none"><img id="ubImg" src="__UBFRAU__" alt="" style="position:absolute;left:40px;top:4px;width:780px;height:1170px;max-width:none;transform-origin:50% 100%"></div>
    <div id="ubPill" style="position:absolute;right:46px;top:766px;height:170px;border-radius:85px;background:#fff;display:flex;align-items:center;gap:30px;padding:0 12px 0 52px;color:#3a0a06;font-size:84px;font-weight:800;white-space:nowrap;overflow:hidden">-10&#8239;%${s2Jo(146)}</div>
   </div></div></div>`;

@@ -680,6 +680,8 @@ for k in ("julian", "white2"):
     CLIPS[k]["len"] = round(CLIPS[k]["len"] + BARL, 4)
 _cn = CLIPS["colors"]["len"] * CLIPS["colors"]["rate"]
 CLIPS["colors"]["start"] = round(CLIPS["colors"]["start"] + BARL, 4); CLIPS["colors"]["len"] = round(CLIPS["colors"]["len"] - BARL, 4); CLIPS["colors"]["rate"] = round(_cn / CLIPS["colors"]["len"], 5)
+PARAMS["city"] = {**PARAMS.get("city", {}), "start": 0, "speed": 1.8}   # Kunde: Citylight nicht so lange leer – Aufbau sofort und schneller
+PARAMS["ubahn"] = {**PARAMS["ubahn"]}
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
