@@ -3286,9 +3286,11 @@ const PERS=makeSeq('pers','Ganz nach dir.',['Ganz nach *dir.'],4,{inAt:0,step:1,
 const SYSTEM=makeSeq('system','Ein System. Unzählige Möglichkeiten.',['Ein System.','Unzählige *Möglichkeiten.'],8,{inAt:0,step:3,move:.3,outAt:7.6},
   'Frames bei 24 fps ab Beginn der Subebene. Zwei Takte, nach den Marken-Lockups; zwei Aussagen nacheinander.');
 // „Konsistent über alle Kanäle.“ als Tafel wie die anderen Headlines: Wort für Wort aus der Zeilenmaske
-const KANAL=makeHL('kanal','Konsistent über alle Kanäle.','laneV2',['Konsistent über','alle *Kanäle.'],
+const KANAL=makeHL('kanal','Flexibel im Zusammenspiel.','laneV2',['Flexibel im','*Zusammenspiel.'],
   {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach dem Tag-System.'});
-const FLEX=makeHL('flex','Flexibel im Zusammenspiel.','laneV2',['Flexibel im','*Zusammenspiel.'],
+const WELT=makeHL('welt','Eine Welt voller Marken.','laneV2',['Eine Welt voller Marken.'],
+  {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel nach den Menschen, vor den Prämien.'});
+const FLEX=makeHL('flex','Konsistent über alle Kanäle.','laneV2',['Konsistent über','alle *Kanäle.'],
   {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach den Formaten; danach die Anzeigen.'});
 
 const WHL=document.createElement('div');WHL.id='whiteL';WHL.style.cssText='position:absolute;inset:0;display:none';WHL.innerHTML='<div id="whO" style="position:absolute;inset:0;background:#e4e0eb"></div><div id="whB" style="position:absolute;inset:0;background:#f4f1ea"></div>';
@@ -4088,7 +4090,7 @@ const ENDTXT={
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -4126,7 +4128,7 @@ S.warp={r0:9000.0};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9000.0,len:2.4833,in:0.475};
 S.clips.c2={start:9.2072,len:2.5881,in:0};
-S.clips.people={start:52.6254,len:13.715,in:0};
+S.clips.people={start:73.1978,len:11.4291,in:0};
 S.clips.c3={start:9000.0,len:4.5717,in:0};
 S.clips.pers={start:50.3396,len:2.2858,in:0};
 S.clips.rabatt={start:38.0159,len:4.4943,in:0,rate:0.80095};
@@ -4134,8 +4136,8 @@ S.clips.cloud={start:41.9532,len:8.3843,in:0};
 S.clips.c4={start:9000.0,len:2.2858,in:0};
 S.clips.box={start:9000.0,len:3.5,in:0};
 S.clips.c5={start:144.0125,len:2.2875,in:0};
-S.clips.partner={start:66.3404,len:11.4291,in:0,rate:0.75};
-S.clips.brand={start:77.7695,len:9.1433,in:0.0625,rate:0.75};
+S.clips.partner={start:52.6254,len:11.4291,in:0,rate:0.75};
+S.clips.brand={start:64.0545,len:9.1433,in:0.0625,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
 S.clips.colors={start:18.504,len:8.9774,in:0.2,rate:0.48697};
@@ -4168,15 +4170,16 @@ S.clips.endtxt={start:164.232,len:15.2472,in:0};
 S.clips.endc={start:179.4792,len:10.5208,in:0};
 S.clips.logo3={start:11.7953,len:2.4833,in:0.475};
 S.clips.ubahn={start:153.1625,len:4.575,in:0};
+S.clips.welt={start:84.6269,len:2.2859,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
-Object.assign(S.comps.partner.params,{"hit": 4.8, "lOut": 6.4, "sent": 6.45, "sent2": 7.4, "popGap": 99, "end": 15, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
+Object.assign(S.comps.partner.params,{"hit": 4.8, "lOut": 6.4, "sent": 1000, "sent2": 6.45, "popGap": 99, "end": 15, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
 Object.assign(S.comps.brand.params,{"step": 0.75});FM.brand=COMPS.brand.model(S.comps.brand.params);
 Object.assign(S.comps.c4.params,{"len": 7, "outAt": 6.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
 Object.assign(S.comps.colors.params,{"beatsB": 1.6856, "beatsC": 4.0644});FM.colors=COMPS.colors.model(S.comps.colors.params);
-Object.assign(S.comps.people.params,{"sb": 6});FM.people=COMPS.people.model(S.comps.people.params);
+Object.assign(S.comps.people.params,{"sb": 5});FM.people=COMPS.people.model(S.comps.people.params);
 Object.assign(S.comps.c3.params,{"len": 8, "outAt": 7.15});FM.c3=COMPS.c3.model(S.comps.c3.params);
 Object.assign(S.comps.c5.params,{"len": 4, "outAt": 3.15});FM.c5=COMPS.c5.model(S.comps.c5.params);
 Object.assign(S.comps.system.params,{"len": 4, "step": 1.75, "outAt": 3.6});FM.system=COMPS.system.model(S.comps.system.params);
@@ -4191,6 +4194,7 @@ Object.assign(S.comps.formats.params,{"sh": 2.5998, "clearUntil": 0.75});FM.form
 Object.assign(S.comps.prod.params,{"ppIn": 0.5, "ppStag": 0.1});FM.prod=COMPS.prod.model(S.comps.prod.params);
 Object.assign(S.comps.logo2.params,{"outAt": 2.4467});FM.logo2=COMPS.logo2.model(S.comps.logo2.params);
 Object.assign(S.comps.cloud.params,{"banner": 0});FM.cloud=COMPS.cloud.model(S.comps.cloud.params);
+Object.assign(S.comps.welt.params,{"len": 4.0, "outAt": 3.15});FM.welt=COMPS.welt.model(S.comps.welt.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}

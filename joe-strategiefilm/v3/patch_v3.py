@@ -284,7 +284,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -599,6 +599,15 @@ CLIPS["pers"]["start"] = _c3
 CLIPS["people"]["start"] = round(_c3 + CLIPS["pers"]["len"], 4); CLIPS["people"]["len"] = round(_pe - CLIPS["people"]["start"], 4)
 PARAMS["people"] = {**PARAMS["people"], "sb": 6}
 CLIPS["c3"]["start"] = 9000.0
+# Neue Reihenfolge (Kunde): Partner (ohne „Eine Welt voller Marken.“) → Marken-Lockups → Menschen → „Eine Welt voller Marken.“ → Prämien
+_p0, _pr = CLIPS["people"]["start"], CLIPS["prod"]["start"]
+CLIPS["partner"]["start"] = _p0
+CLIPS["brand"]["start"] = round(_p0 + CLIPS["partner"]["len"], 4)
+CLIPS["people"] = C(round(CLIPS["brand"]["start"] + CLIPS["brand"]["len"], 4), round(5 * BARL, 4))
+PARAMS["people"] = {**PARAMS["people"], "sb": 5}
+CLIPS["welt"] = C(round(CLIPS["people"]["start"] + CLIPS["people"]["len"], 4), 0); CLIPS["welt"]["len"] = round(_pr - CLIPS["welt"]["start"], 4)
+PARAMS["welt"] = {"len": round(CLIPS["welt"]["len"] * 4 / BARL, 3), "outAt": round(CLIPS["welt"]["len"] * 4 / BARL - .85, 3)}
+PARAMS["partner"] = {**PARAMS["partner"], "sent": 1000, "sent2": 6.45}
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
