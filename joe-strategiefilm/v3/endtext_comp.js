@@ -3,13 +3,13 @@
    1) „Gemeinsam mehr / erreichen.“ Wort für Wort  →  2) „Mehr“ steht, Satzenden laufen durch: Sichtbarkeit. → Relevanz. → Verbindung.
    →  3) „Österreichs größte / tägliche Markenbühne.“ Wort für Wort; danach das jö-Logo (eigener Clip).
    ===================================================================== */
-const ET_A=['Gemeinsam mehr','erreichen.'],ET_PH=['Sichtbarkeit.','Relevanz.','Verbindung.'],ET_C=['Österreichs größte','tägliche Markenbühne.'];
+const ET_A=['Gemeinsam mehr'],ET_PH=['Sichtbarkeit.','Relevanz.','Verbindung.'],ET_C=['Österreichs größte','tägliche Markenbühne.'];
 const ETL=document.createElement('div');ETL.id='endTxtL';ETL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
 const etBlock=(id,lines)=>`<div id="${id}" style="position:absolute;left:0;right:0;top:${540-lines.length*93}px;text-align:center;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1">${lines.map(l=>`<div style="height:186px;overflow:hidden;padding-top:10px;box-sizing:border-box">${l.split(' ').map(w=>`<span class="etW" style="display:inline-block">${w}</span>`).join(' ')}</div>`).join('')}</div>`;
-ETL.innerHTML=`<div id="etBg" style="position:absolute;inset:0;background:${JG_CSS}"></div>${etBlock('etA',ET_A)}${etBlock('etC',ET_C)}
-<div id="etRow" style="position:absolute;left:0;top:${540-82}px;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
- <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="etFix" style="display:inline-block;margin-top:30px">Mehr</span></div>
- <div id="etMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${ET_PH.map(p=>`<span class="etP" style="position:absolute;left:0;top:30px;display:inline-block">${p}</span>`).join('')}</div></div>`;
+ETL.innerHTML=`<div id="etBg" style="position:absolute;inset:0;background:${JG_CSS}"></div>${etBlock('etA',ET_A).replace('top:'+(540-93)+'px','top:'+(540-176)+'px')}${etBlock('etC',ET_C)}
+<div id="etRow" style="position:absolute;left:0;top:${540+20}px;width:1920px;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
+ <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="etFix" style="display:none;margin-top:30px"></span></div>
+ <div id="etMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${ET_PH.map(p=>`<span class="etP" style="position:absolute;left:0;width:1920px;text-align:center;top:30px;display:inline-block">${p}</span>`).join('')}</div></div>`;
 $('bg').after(ETL); // unter allen Szenen: der Verlauf bleibt hinter dem jö-Logo stehen
 const ETE={bg:$('etBg'),a:[...$('etA').querySelectorAll('.etW')],c:[...$('etC').querySelectorAll('.etW')],row:$('etRow'),fix:$('etFix'),mask:$('etMask'),ph:[...ETL.querySelectorAll('.etP')]};
 const ENDTXT={
@@ -34,8 +34,7 @@ const ENDTXT={
     words(E.a,P.aIn,P.aOut);words(E.c,P.cIn,P.cOut);
     // „Mehr“ + Walze
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
-    const gap=P.gap*150,tw=E._wf+gap+Math.max(...E._wp);E.row.style.left=(960-tw/2).toFixed(1)+'px';
-    E.mask.style.left=(E._wf+gap).toFixed(1)+'px';E.mask.style.width=(Math.max(...E._wp)+40)+'px';
+    E.row.style.left='0px';E.mask.style.left='0px';E.mask.style.width='1920px'; // „Gemeinsam mehr“ steht oben, das Satzende läuft mittig darunter durch
     const a=P.bIn*b,o=P.bOut*b,rin=eExpo(seg(t,a,a+.5)),rout=eInCub(seg(t,o,o+.3));
     E.fix.style.transform=`translateY(${((1-rin)*120-rout*120).toFixed(1)}%)`;E.fix.style.visibility=rin>0&&rout<1?'visible':'hidden';
     let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<ET_PH.length;k++){const s=(P.bIn+k*P.hold)*b;p+=eIO(seg(t,s,s+P.move))}

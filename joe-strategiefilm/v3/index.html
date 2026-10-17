@@ -3728,6 +3728,7 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
 
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“
 const LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);
+const LOGO4=Object.assign(Object.create(LOGO),{key:'logo4',name:'Logo (Schluss, vor „Markenbühne“)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf und bleibt stehen, kein App-Icon
 const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt
 /* Partnerfilm: Partner-Szene – erst „Viele Marken. / Eine starke Verbindung.“ in der Mitte, die Partner-Logos liegen
    oben und unten drumherum; dann ersetzt das jö-App-Icon die Worte, die Partner fliegen hinein, das Icon verschwindet,
@@ -4042,13 +4043,13 @@ const UBAHN={
    1) „Gemeinsam mehr / erreichen.“ Wort für Wort  →  2) „Mehr“ steht, Satzenden laufen durch: Sichtbarkeit. → Relevanz. → Verbindung.
    →  3) „Österreichs größte / tägliche Markenbühne.“ Wort für Wort; danach das jö-Logo (eigener Clip).
    ===================================================================== */
-const ET_A=['Gemeinsam mehr','erreichen.'],ET_PH=['Sichtbarkeit.','Relevanz.','Verbindung.'],ET_C=['Österreichs größte','tägliche Markenbühne.'];
+const ET_A=['Gemeinsam mehr'],ET_PH=['Sichtbarkeit.','Relevanz.','Verbindung.'],ET_C=['Österreichs größte','tägliche Markenbühne.'];
 const ETL=document.createElement('div');ETL.id='endTxtL';ETL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);color:#fff';
 const etBlock=(id,lines)=>`<div id="${id}" style="position:absolute;left:0;right:0;top:${540-lines.length*93}px;text-align:center;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1">${lines.map(l=>`<div style="height:186px;overflow:hidden;padding-top:10px;box-sizing:border-box">${l.split(' ').map(w=>`<span class="etW" style="display:inline-block">${w}</span>`).join(' ')}</div>`).join('')}</div>`;
-ETL.innerHTML=`<div id="etBg" style="position:absolute;inset:0;background:${JG_CSS}"></div>${etBlock('etA',ET_A)}${etBlock('etC',ET_C)}
-<div id="etRow" style="position:absolute;left:0;top:${540-82}px;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
- <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="etFix" style="display:inline-block;margin-top:30px">Mehr</span></div>
- <div id="etMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${ET_PH.map(p=>`<span class="etP" style="position:absolute;left:0;top:30px;display:inline-block">${p}</span>`).join('')}</div></div>`;
+ETL.innerHTML=`<div id="etBg" style="position:absolute;inset:0;background:${JG_CSS}"></div>${etBlock('etA',ET_A).replace('top:'+(540-93)+'px','top:'+(540-176)+'px')}${etBlock('etC',ET_C)}
+<div id="etRow" style="position:absolute;left:0;top:${540+20}px;width:1920px;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">
+ <div style="position:absolute;left:0;top:-30px;height:200px;overflow:hidden"><span id="etFix" style="display:none;margin-top:30px"></span></div>
+ <div id="etMask" style="position:absolute;top:-30px;height:200px;overflow:hidden">${ET_PH.map(p=>`<span class="etP" style="position:absolute;left:0;width:1920px;text-align:center;top:30px;display:inline-block">${p}</span>`).join('')}</div></div>`;
 $('bg').after(ETL); // unter allen Szenen: der Verlauf bleibt hinter dem jö-Logo stehen
 const ETE={bg:$('etBg'),a:[...$('etA').querySelectorAll('.etW')],c:[...$('etC').querySelectorAll('.etW')],row:$('etRow'),fix:$('etFix'),mask:$('etMask'),ph:[...ETL.querySelectorAll('.etP')]};
 const ENDTXT={
@@ -4073,8 +4074,7 @@ const ENDTXT={
     words(E.a,P.aIn,P.aOut);words(E.c,P.cIn,P.cOut);
     // „Mehr“ + Walze
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
-    const gap=P.gap*150,tw=E._wf+gap+Math.max(...E._wp);E.row.style.left=(960-tw/2).toFixed(1)+'px';
-    E.mask.style.left=(E._wf+gap).toFixed(1)+'px';E.mask.style.width=(Math.max(...E._wp)+40)+'px';
+    E.row.style.left='0px';E.mask.style.left='0px';E.mask.style.width='1920px'; // „Gemeinsam mehr“ steht oben, das Satzende läuft mittig darunter durch
     const a=P.bIn*b,o=P.bOut*b,rin=eExpo(seg(t,a,a+.5)),rout=eInCub(seg(t,o,o+.3));
     E.fix.style.transform=`translateY(${((1-rin)*120-rout*120).toFixed(1)}%)`;E.fix.style.visibility=rin>0&&rout<1?'visible':'hidden';
     let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<ET_PH.length;k++){const s=(P.bIn+k*P.hold)*b;p+=eIO(seg(t,s,s+P.move))}
@@ -4091,7 +4091,7 @@ const ENDTXT={
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -4148,7 +4148,7 @@ S.clips.c7={start:9000.0,len:5.1431,in:0};
 S.clips.city={start:125.7271,len:9.15,in:0,rate:0.4718};
 S.clips.bill={start:139.4521,len:6.4945,in:0,rate:0.5357};
 S.clips.c8={start:9000.0,len:5.9952,in:0};
-S.clips.logo2={start:157.4846,len:3.7092,in:0};
+S.clips.logo2={start:159.0997,len:2.0941,in:1.6151};
 S.clips.slot={start:9000.0,len:4.5717,in:0};
 S.clips.badges={start:82.3411,len:9.1433,in:0,rate:1.0937};
 S.clips.wall={start:91.4844,len:9.1437,in:0,rate:1.0};
@@ -4172,6 +4172,7 @@ S.clips.endc={start:161.1938,len:10.5208,in:0};
 S.clips.logo3={start:11.7953,len:2.4833,in:0.475};
 S.clips.ubahn={start:134.8771,len:4.575,in:0};
 S.clips.welt={start:9000.0,len:2.2859,in:0};
+S.clips.logo4={start:152.2372,len:3.1453,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 2.0, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 4.8, "lOut": 5.6, "sent": 1000, "sent2": 5.65, "popGap": 99, "end": 15, "spread": 1.15});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
@@ -4187,7 +4188,7 @@ Object.assign(S.comps.system.params,{"len": 4, "step": 1.75, "outAt": 3.6});FM.s
 Object.assign(S.comps.fuer.params,{"len": 20, "hold": 4, "nStep": 1.0, "nMove": 0.45, "cloudAt": 12, "zoomAt": 15.9, "outAt": 20});FM.fuer=COMPS.fuer.model(S.comps.fuer.params);
 Object.assign(S.comps.c7.params,{"len": 7, "outAt": 6.15});FM.c7=COMPS.c7.model(S.comps.c7.params);
 Object.assign(S.comps.ubahn.params,{"len": 4.575});FM.ubahn=COMPS.ubahn.model(S.comps.ubahn.params);
-Object.assign(S.comps.endtxt.params,{"len": 29.24, "aIn": 0.25, "aOut": 4.25, "bIn": 5.25, "hold": 3.525, "bOut": 14.5, "cOut": 19.88, "cIn": 15.25});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
+Object.assign(S.comps.endtxt.params,{"len": 29.24, "aIn": 0.25, "aOut": 11.0, "bIn": 1.25, "hold": 3.5, "bOut": 11.0, "cOut": 22.25, "cIn": 16.75});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
 Object.assign(S.comps.endc.params,{"flyAt": 0.35, "txAt": 0.95, "wmAt": 1.0, "outAt": 2.881, "linkAt": 3.08, "pillAt": 3.381});FM.endc=COMPS.endc.model(S.comps.endc.params);
 Object.assign(S.comps.kanal.params,{"len": 4.672, "inAt": 0, "outAt": 3.833});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
 Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.3835, "banner": 0, "sc": 1.15, "y": 300, "cx": 720});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);

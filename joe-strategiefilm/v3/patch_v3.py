@@ -271,7 +271,7 @@ s = s[:i0] + ("function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&
   "  abufAt='loop';return out}") + s[i1:]
 rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,")
 # ---------- 6. Doppel-Clip: Logo am Schluss ----------
-aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt\n"
+aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO4=Object.assign(Object.create(LOGO),{key:'logo4',name:'Logo (Schluss, vor „Markenbühne“)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf und bleibt stehen, kein App-Icon\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "formats_comp.js").read_text(encoding="utf-8") + "\n"
@@ -284,7 +284,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -636,6 +636,14 @@ rep("abufAt='loop';return out}",
 rep("PEAKS.push(...tail)}\n", "PEAKS.push(...tail)}\n"
     f"const AU_CA={AU_CA},AU_CD={AU_CD};{{const per=(96.0522+AU_LN*AU_LL)/PEAKS.length;PEAKS.splice(Math.round(AU_CA/per),Math.round(AU_CD/per));"
     "const nb=BEATS.filter(v=>v<AU_CA-.02).concat(BEATS.filter(v=>v>=AU_CA+AU_CD-.02).map(v=>+(v-AU_CD).toFixed(3)));BEATS.length=0;BEATS.push(...nb);BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n")
+# Kunde, Ende: „Gemeinsam mehr“ steht, darunter Sichtbarkeit. → Relevanz. → Verbindung. → jö-Logo → „Österreichs größte tägliche Markenbühne.“ → jö im App-Icon (Hit) → H·A
+_e0 = CLIPS["endtxt"]["start"]
+PARAMS["endtxt"] = {**PARAMS["endtxt"], "aIn": .25, "aOut": 11.0, "bIn": 1.25, "hold": 3.5, "bOut": 11.0, "cIn": 16.75, "cOut": 22.25}
+CLIPS["logo4"] = C(round(_e0 + 11.0 * BEAT, 4), round(5.5 * BEAT, 4))
+_mo = CLIPS["logo2"]["start"] + PARAMS["logo2"]["outAt"] - CLIPS["logo2"]["in"]          # Übergang ins App-Icon bleibt auf dem Hit
+_l2 = round(_e0 + 23.0 * BEAT, 4); _end2 = CLIPS["logo2"]["start"] + CLIPS["logo2"]["len"]
+CLIPS["logo2"] = C(_l2, round(_end2 - _l2, 4), round(PARAMS["logo2"]["outAt"] - (_mo - _l2), 4))
+PARAMS["logo2"] = {**PARAMS["logo2"]}
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
