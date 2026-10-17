@@ -533,6 +533,7 @@ rep("[['jHallo',0,-40,1.2],['j100',1,40,1.12],['j83',2,40,1.28]].forEach(", "[['
 rep("e.style.transformOrigin=['100% 50%','100% 50%','0 30%'][i]});", "e.style.transformOrigin=['100% 50%','100% 50%','0 30%','100% 50%'][i]});")
 rep("const cc=eIO(seg(t,M.c[1]+.15,M.c[1]+1));$('j100Arc').setAttribute('stroke-dashoffset',(188.5*(1-Math.min(1,P.oes/100)*cc)).toFixed(1));\n", "")
 rep("$('j83n').textContent=Math.round(P.oes*eIO(seg(t,M.c[2]+.1,M.c[2]+.9)));", "$('j83n').textContent=(327.65*eIO(seg(t,M.c[2]+.1,M.c[2]+.9))).toFixed(2).replace('.',',');")
+rep("E.plus.style.transform=`translateY(${(-40*fl).toFixed(1)}px) scale(${(.5+.5*e).toFixed(4)})", "E.plus.style.transform=`translateY(${(-40*fl).toFixed(1)}px) scale(${((.5+.5*e)*1.45).toFixed(4)})")   # Kundenfeedback: +Ös-Pille bei Tamara größer
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)
@@ -589,6 +590,15 @@ PARAMS["endc"] = {**PARAMS["endc"], **{k: round(PARAMS["endc"][k] + _ed, 3) for 
 for k in ("logo2", "endtxt"):
     CLIPS[k]["len"] = round(_ec2 - CLIPS[k]["start"], 4)
 CLIPS["hl1b"]["start"] = 9000.0   # Kundenfeedback: Headline 1b entfällt, das Tanken-Video läuft allein
+# Kundenfeedback: Banner „Mehr für Kian/Tamara.“ raus, Rabattsammler-Pill größer; Tafel „So persönlich wie nie zuvor.“ raus –
+# ihre 2 Takte gehen an die Menschen (6 Schläge pro Person), alles danach bleibt stehen
+PARAMS["rabatt"] = {**PARAMS["rabatt"], "banner": 0, "sc": 1.15, "y": 300, "cx": 720}
+PARAMS["cloud"] = {**PARAMS.get("cloud", {}), "banner": 0}
+_c3 = CLIPS["c3"]["start"]; _pe = CLIPS["people"]["start"] + CLIPS["people"]["len"]
+CLIPS["pers"]["start"] = _c3
+CLIPS["people"]["start"] = round(_c3 + CLIPS["pers"]["len"], 4); CLIPS["people"]["len"] = round(_pe - CLIPS["people"]["start"], 4)
+PARAMS["people"] = {**PARAMS["people"], "sb": 6}
+CLIPS["c3"]["start"] = 9000.0
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

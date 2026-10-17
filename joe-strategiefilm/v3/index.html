@@ -2386,7 +2386,7 @@ const APPVID={
     {const h=E.rcptIn.scrollHeight,o=eMorph(seg(t,P.billAt,P.billAt+.6*K));E.rcpt.style.height=(h*o).toFixed(1)+'px';
      E.items.forEach((it,k)=>{const p=eExpo(seg(t,P.billAt+(.2+k*.07)*K,P.billAt+(.6+k*.07)*K));it.style.opacity=p.toFixed(3);it.style.transform=`translateY(${((1-p)*14).toFixed(1)}px)`});
      const sp=eBack(seg(t,P.billAt+.75*K,P.billAt+1.15*K));$('vdSaved').style.transform=`scale(${(.9+.1*sp).toFixed(4)})`}E.tick.setAttribute('stroke-dashoffset',(22*(1-eOut(seg(t,P.payAt+.25*K,P.payAt+.55*K)))).toFixed(2));
-    {const p=seg(t,P.plusAt,P.plusAt+.45*K),e=eBack(p),fl=eOut(seg(t,P.plusAt+.45,M.total));E.plus.style.opacity=Math.min(1,p*3).toFixed(3);E.plus.style.transform=`translateY(${(-40*fl).toFixed(1)}px) scale(${(.5+.5*e).toFixed(4)}) rotate(${(-6*(1-e)).toFixed(2)}deg)`;E.plusN.textContent=P.plus}
+    {const p=seg(t,P.plusAt,P.plusAt+.45*K),e=eBack(p),fl=eOut(seg(t,P.plusAt+.45,M.total));E.plus.style.opacity=Math.min(1,p*3).toFixed(3);E.plus.style.transform=`translateY(${(-40*fl).toFixed(1)}px) scale(${((.5+.5*e)*1.45).toFixed(4)}) rotate(${(-6*(1-e)).toFixed(2)}deg)`;E.plusN.textContent=P.plus}
     pop(E.sum,P.sumAt,2);const c=eIO(seg(t,P.sumAt+.2,P.sumAt+.9));E.sumN.textContent=Math.round(P.from+P.plus*c);
     if(E.arc){const C=+E.arc.dataset.c;E.arc.setAttribute('stroke-dashoffset',(C*(1-(.82+.08*c))).toFixed(1))}},
   marks(M){return [[0,'Video']]},
@@ -3281,7 +3281,7 @@ function makeSeq(key,name,PH,beats,def,note){
   table(M){const F=s=>Math.round(s*FPS),P=M.P,b=M.b;return PH.map((x,k)=>[x.replace('*','').replace('|',' '),String(F((P.inAt+k*P.step)*b)),'steigt mittig aus der Maske, schiebt die vorige Aussage nach oben']).concat([['Ausstieg',String(F(P.outAt*b)),'fällt nach oben raus']])},
   note};
 }
-const PERS=makeSeq('pers','Individuell. Relevant. Ganz nach dir.',['Individuell.','Relevant.','Ganz nach *dir.'],4,{inAt:0,step:1,move:.22,outAt:3.6},
+const PERS=makeSeq('pers','Ganz nach dir.',['Ganz nach *dir.'],4,{inAt:0,step:1,move:.22,outAt:3.6},
   'Frames bei 24 fps ab Beginn der Subebene. Ein Takt; ersetzt „Mach dein Jö draus!“.');
 const SYSTEM=makeSeq('system','Ein System. Unzählige Möglichkeiten.',['Ein System.','Unzählige *Möglichkeiten.'],8,{inAt:0,step:3,move:.3,outAt:7.6},
   'Frames bei 24 fps ab Beginn der Subebene. Zwei Takte, nach den Marken-Lockups; zwei Aussagen nacheinander.');
@@ -3777,7 +3777,7 @@ const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „D
    Die Kamera zieht aus Kian genau dorthin zurück, wo sie hineingezoomt hat („Für jeden.“ steht wieder in der Mitte), dann Zoom in Tamara. */
 {const fs=150,W=document.createElement('div');W.id='clFW';W.style.cssText='position:absolute;left:960px;top:540px;width:0;height:0';
  W.innerHTML=FU_AV.map((p,i)=>`<img class="clFAv" src="${CLI.av[i%CLI.av.length]}" alt="" style="position:absolute;left:${p[0]-p[2]/2}px;top:${p[1]-p[2]/2}px;width:${p[2]}px;height:${p[2]}px;max-width:none;border-radius:50%;box-shadow:0 18px 40px rgba(60,10,0,.22);${i===FU_TI?'visibility:hidden':''}">`).join('')
-  +`<div style="position:absolute;left:0;top:${-fs*.55+(fs-FU_FS2)/2}px;transform:translateX(-50%);display:flex;color:#fff;font-size:${FU_FS2}px;font-weight:900;letter-spacing:-.02em;line-height:1;white-space:nowrap">Eine Marke für Millionen.</div>`;
+  +`<div style="position:absolute;left:0;top:-98px;transform:translateX(-50%);color:#fff;font-size:96px;font-weight:900;letter-spacing:-.02em;line-height:1.02;white-space:nowrap;text-align:center">Mit Möglichkeiten für<br>jeden Einzelnen.</div>`;
  $('clW').after(W);$('clW').style.display='none';CLL.style.background=JG_CSS;
  const AV=[...W.querySelectorAll('.clFAv')],CT=$('clT'),flo=(i,t)=>[9*Math.sin(t*(1+i*.11)+i*1.7),7*Math.cos(t*(.9+i*.13)+i*1.1)];
  const fit=(el,w,h,ty)=>{const iw=Math.max(w,h*16/9),ih=iw*9/16;Object.assign(el.style,{width:iw.toFixed(1)+'px',height:ih.toFixed(1)+'px',left:((w-iw)/2).toFixed(1)+'px',top:((h-ih)*ty).toFixed(1)+'px'})};
@@ -4126,9 +4126,9 @@ S.warp={r0:9000.0};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9000.0,len:2.4833,in:0.475};
 S.clips.c2={start:9.2072,len:2.5881,in:0};
-S.clips.people={start:57.1971,len:9.1433,in:0};
-S.clips.c3={start:50.3396,len:4.5717,in:0};
-S.clips.pers={start:54.9113,len:2.2858,in:0};
+S.clips.people={start:52.6254,len:13.715,in:0};
+S.clips.c3={start:9000.0,len:4.5717,in:0};
+S.clips.pers={start:50.3396,len:2.2858,in:0};
 S.clips.rabatt={start:38.0159,len:4.4943,in:0,rate:0.80095};
 S.clips.cloud={start:41.9532,len:8.3843,in:0};
 S.clips.c4={start:9000.0,len:2.2858,in:0};
@@ -4176,7 +4176,7 @@ Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model
 Object.assign(S.comps.brand.params,{"step": 0.75});FM.brand=COMPS.brand.model(S.comps.brand.params);
 Object.assign(S.comps.c4.params,{"len": 7, "outAt": 6.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
 Object.assign(S.comps.colors.params,{"beatsB": 1.6856, "beatsC": 4.0644});FM.colors=COMPS.colors.model(S.comps.colors.params);
-Object.assign(S.comps.people.params,{"sb": 4});FM.people=COMPS.people.model(S.comps.people.params);
+Object.assign(S.comps.people.params,{"sb": 6});FM.people=COMPS.people.model(S.comps.people.params);
 Object.assign(S.comps.c3.params,{"len": 8, "outAt": 7.15});FM.c3=COMPS.c3.model(S.comps.c3.params);
 Object.assign(S.comps.c5.params,{"len": 4, "outAt": 3.15});FM.c5=COMPS.c5.model(S.comps.c5.params);
 Object.assign(S.comps.system.params,{"len": 4, "step": 1.75, "outAt": 3.6});FM.system=COMPS.system.model(S.comps.system.params);
@@ -4186,10 +4186,11 @@ Object.assign(S.comps.ubahn.params,{"len": 4.575});FM.ubahn=COMPS.ubahn.model(S.
 Object.assign(S.comps.endtxt.params,{"len": 29.24, "aIn": 0.25, "aOut": 4.25, "bIn": 5.25, "hold": 3.525, "bOut": 14.5, "cOut": 19.88, "cIn": 15.25});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
 Object.assign(S.comps.endc.params,{"flyAt": 0.35, "txAt": 0.95, "wmAt": 1.0, "outAt": 2.881, "linkAt": 3.08, "pillAt": 3.381});FM.endc=COMPS.endc.model(S.comps.endc.params);
 Object.assign(S.comps.kanal.params,{"len": 4.672, "inAt": 0, "outAt": 3.833});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
-Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.3835});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);
+Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.3835, "banner": 0, "sc": 1.15, "y": 300, "cx": 720});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);
 Object.assign(S.comps.formats.params,{"sh": 2.5998, "clearUntil": 0.75});FM.formats=COMPS.formats.model(S.comps.formats.params);
 Object.assign(S.comps.prod.params,{"ppIn": 0.5, "ppStag": 0.1});FM.prod=COMPS.prod.model(S.comps.prod.params);
 Object.assign(S.comps.logo2.params,{"outAt": 2.4467});FM.logo2=COMPS.logo2.model(S.comps.logo2.params);
+Object.assign(S.comps.cloud.params,{"banner": 0});FM.cloud=COMPS.cloud.model(S.comps.cloud.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}

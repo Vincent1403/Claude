@@ -27,7 +27,7 @@ function makeSeq(key,name,PH,beats,def,note){
   table(M){const F=s=>Math.round(s*FPS),P=M.P,b=M.b;return PH.map((x,k)=>[x.replace('*','').replace('|',' '),String(F((P.inAt+k*P.step)*b)),'steigt mittig aus der Maske, schiebt die vorige Aussage nach oben']).concat([['Ausstieg',String(F(P.outAt*b)),'fällt nach oben raus']])},
   note};
 }
-const PERS=makeSeq('pers','Individuell. Relevant. Ganz nach dir.',['Individuell.','Relevant.','Ganz nach *dir.'],4,{inAt:0,step:1,move:.22,outAt:3.6},
+const PERS=makeSeq('pers','Ganz nach dir.',['Ganz nach *dir.'],4,{inAt:0,step:1,move:.22,outAt:3.6},
   'Frames bei 24 fps ab Beginn der Subebene. Ein Takt; ersetzt „Mach dein Jö draus!“.');
 const SYSTEM=makeSeq('system','Ein System. Unzählige Möglichkeiten.',['Ein System.','Unzählige *Möglichkeiten.'],8,{inAt:0,step:3,move:.3,outAt:7.6},
   'Frames bei 24 fps ab Beginn der Subebene. Zwei Takte, nach den Marken-Lockups; zwei Aussagen nacheinander.');
