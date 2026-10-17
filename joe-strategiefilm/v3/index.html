@@ -918,7 +918,7 @@ const LPE={chars:[...JL.querySelectorAll('.lpc')],nav:[...JL.querySelectorAll('[
  const UIG='radial-gradient(85% 120% at 0% 100%,rgba(192,32,58,.95) 0%,rgba(192,32,58,0) 48%),radial-gradient(90% 95% at 100% 0%,#ff7024 0%,rgba(255,112,36,0) 62%),#ee2a06' /* dunkelster Teil immer unten links */,CR='#f4efe8',INK='#6b0505';
  $('ui_jump').innerHTML=`<div style="position:absolute;inset:0;border-radius:26px;overflow:hidden;background:${CR}">
    <div style="position:absolute;left:324px;top:0;right:0;bottom:0;border-radius:28px 0 0 28px;background:${UIG}"></div>
-   <div style="position:absolute;left:24px;top:20px;color:${INK};font-size:72px;font-weight:800;letter-spacing:-.015em;line-height:.95">Mehr für<br>euch!</div>
+   <svg viewBox="0 0 271.15 182.86" style="position:absolute;left:30px;top:52px;width:250px;overflow:visible"><path d="${LP.J} ${LP.E}" fill="${INK}"/><circle cx="87.99" cy="16.8" r="16.8" fill="${INK}"/><circle cx="152.94" cy="16.8" r="16.8" fill="${INK}"/><circle cx="207.17" cy="16.8" r="16.8" fill="${INK}"/></svg>
    <img src="${UI2.girl}" alt="" style="position:absolute;left:261px;top:17px;width:283px;max-width:none">
    <div style="position:absolute;left:20px;top:296px;width:273px;height:41px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 14px;box-sizing:border-box;color:${INK};font-size:17px;font-weight:800;white-space:nowrap">Jetzt Rabatte teilen<span style="display:flex">${[0,1,2].map(i=>`<img class="uiAv" alt="" style="width:31px;height:31px;border-radius:50%;max-width:none;${i?'margin-left:-9px':''}">`).join('')}</span></div></div>`;
  $('ui_save').innerHTML=`<div style="position:absolute;inset:0;border-radius:26px;overflow:hidden;background:${CR}">
