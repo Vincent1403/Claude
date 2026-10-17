@@ -29,7 +29,7 @@ function makeSeq(key,name,PH,beats,def,note){
 }
 const PERS=makeSeq('pers','Ganz nach dir.',['Ganz nach *dir.'],4,{inAt:0,step:1,move:.22,outAt:3.6},
   'Frames bei 24 fps ab Beginn der Subebene. Ein Takt; ersetzt „Mach dein Jö draus!“.');
-const SYSTEM=makeSeq('system','Ein System. Unzählige Möglichkeiten.',['Ein System.','Unzählige *Möglichkeiten.'],8,{inAt:0,step:3,move:.3,outAt:7.6},
+const SYSTEM=makeSeq('system','Ein neues Design System. Unzählige Möglichkeiten.',['Ein neues Design System.','Unzählige *Möglichkeiten.'],8,{inAt:0,step:3,move:.3,outAt:7.6},
   'Frames bei 24 fps ab Beginn der Subebene. Zwei Takte, nach den Marken-Lockups; zwei Aussagen nacheinander.');
 // „Konsistent über alle Kanäle.“ als Tafel wie die anderen Headlines: Wort für Wort aus der Zeilenmaske
 const KANAL=makeHL('kanal','Flexibel im Zusammenspiel.','laneV2',['Flexibel im','*Zusammenspiel.'],

@@ -608,6 +608,34 @@ PARAMS["people"] = {**PARAMS["people"], "sb": 5}
 CLIPS["welt"] = C(round(CLIPS["people"]["start"] + CLIPS["people"]["len"], 4), 0); CLIPS["welt"]["len"] = round(_pr - CLIPS["welt"]["start"], 4)
 PARAMS["welt"] = {"len": round(CLIPS["welt"]["len"] * 4 / BARL, 3), "outAt": round(CLIPS["welt"]["len"] * 4 / BARL - .85, 3)}
 PARAMS["partner"] = {**PARAMS["partner"], "sent": 1000, "sent2": 6.45}
+# Kunde: „Eine Welt voller Marken.“-Tafel, Prämien, Tag-System, „Eigenständig im Auftritt.“ raus → Film genau 8 Takte kürzer.
+# Musik-Schnitt bei 100,545 s um 8 Takte (18,285 s): die Takte davor klingen wie die vor dem Drop, der Film springt direkt in den Drop;
+# alles ab „Flexibel im Zusammenspiel.“ rückt um genau diese Länge vor und bleibt dadurch auf den Hits
+AU_CA, AU_CD = 100.545, round(8 * 45.7136 / 20, 5)
+_ce = CLIPS["city"]["start"] + CLIPS["city"]["len"]
+CLIPS["city"] = {**C(CLIPS["c5"]["start"], round(_ce - CLIPS["c5"]["start"], 4)), "rate": round(4.317 / (_ce - CLIPS["c5"]["start"]), 4)}  # Citylight bekommt den Takt von „Eigenständig“
+for k in ("welt", "prod", "tags", "c5"):
+    CLIPS[k]["start"] = 9000.0
+_kn2 = round(CLIPS["kanal"]["start"] - AU_CD, 4)
+CLIPS["partner"]["len"] = round(4 * BARL, 4); PARAMS["partner"] = {**PARAMS["partner"], "lOut": 5.6, "sent2": 5.65}
+CLIPS["brand"]["start"] = round(CLIPS["partner"]["start"] + CLIPS["partner"]["len"], 4)
+CLIPS["people"] = C(round(CLIPS["brand"]["start"] + CLIPS["brand"]["len"], 4), round(4 * BARL, 4)); PARAMS["people"] = {**PARAMS["people"], "sb": 4}
+CLIPS["system"]["start"] = round(CLIPS["people"]["start"] + CLIPS["people"]["len"], 4)
+_bo = CLIPS["badges"]["len"]
+CLIPS["badges"] = {**C(round(CLIPS["system"]["start"] + CLIPS["system"]["len"], 4), round(4 * BARL, 4)), "rate": round(_bo / (4 * BARL), 4)}
+_wo = CLIPS["wall"]["len"]; _ws = round(CLIPS["badges"]["start"] + CLIPS["badges"]["len"], 4)
+CLIPS["wall"] = {**C(_ws, round(_kn2 - _ws, 4)), "rate": round(_wo / (_kn2 - _ws), 4)}
+for k, v in CLIPS.items():
+    if 118.0 <= v["start"] < 1000:
+        v["start"] = round(v["start"] - AU_CD, 4)
+rep(f"const T_MAIN={T_LEN}, FPS=24, TRACK_LEN=187.48;", f"const T_MAIN={round(T_LEN - AU_CD, 2)}, FPS=24, TRACK_LEN={round(187.48 - AU_CD, 2)};")
+rep("abufAt='loop';return out}",
+    "abufAt='loop';{const ca=Math.round(AU_CA*sr),cd=Math.round(AU_CD*sr),o2=actx.createBuffer(abuf0.numberOfChannels,n-cd,sr); // 8-Takt-Schnitt (Kunde): Takte vor dem Drop fallen weg\n"
+    "    for(let ch=0;ch<abuf0.numberOfChannels;ch++){const d=out.getChannelData(ch),e=o2.getChannelData(ch);e.set(d.subarray(0,ca));e.set(d.subarray(ca+cd),ca);for(let i=0;i<xf;i++){const w=i/xf;e[ca+i]=d[ca+cd+i]*w+d[ca+i]*(1-w)}}\n"
+    "    return o2}}")
+rep("PEAKS.push(...tail)}\n", "PEAKS.push(...tail)}\n"
+    f"const AU_CA={AU_CA},AU_CD={AU_CD};{{const per=(96.0522+AU_LN*AU_LL)/PEAKS.length;PEAKS.splice(Math.round(AU_CA/per),Math.round(AU_CD/per));"
+    "const nb=BEATS.filter(v=>v<AU_CA-.02).concat(BEATS.filter(v=>v>=AU_CA+AU_CD-.02).map(v=>+(v-AU_CD).toFixed(3)));BEATS.length=0;BEATS.push(...nb);BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n")
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

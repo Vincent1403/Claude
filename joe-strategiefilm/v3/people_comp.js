@@ -51,7 +51,7 @@ const PEOPLE={
     E.rig.style.transform=`rotateY(${rot.toFixed(2)}deg)`;
     E.L.forEach((el,k)=>el.style.transform=`translateZ(${zs[k]}px) scale(${zc(zs[k]).toFixed(5)})`);
     // Name: steigt beim ersten Bild auf, wächst danach ganz langsam
-    if(E.name._n!==sc.name){E.name._n=sc.name;E.name.textContent=sc.name}
+    if(!E.name._jo){E.name._jo=1;E.name.innerHTML=`<svg viewBox="0 0 271.15 182.86" style="width:860px;overflow:visible;display:inline-block"><path d="${LP.J} ${LP.E}" fill="#fff"/><circle cx="87.99" cy="16.8" r="16.8" fill="#fff"/><circle cx="152.94" cy="16.8" r="16.8" fill="#fff"/><circle cx="207.17" cy="16.8" r="16.8" fill="#fff"/></svg>`} // Kundenfeedback: jö-Logo statt Name im Hintergrund
     const ni=idx===0?eExpo(seg(lt,.05,.6)):1;
     E.name.style.fontSize=P.nameSize+'px';
     E.name.style.transform=`translateY(${((1-ni)*160).toFixed(1)}px) scale(${(1+.04*dr).toFixed(4)})`;E.name.style.opacity=ni.toFixed(3);
