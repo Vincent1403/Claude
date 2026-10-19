@@ -439,9 +439,10 @@ STEP.forEach(([f,name,desc,std])=>{
 def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stufe ins Bild, dann kommt die Headline.',{badge:'std',dur:3.6,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Deine','Sportwoche.']);const P=pill(st,'Jetzt entdecken',{size:3.4});P.style.left='57cqw';P.style.top=(h-13)+'cqw';
  return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));hl(t-.9,3.2);tf(P,{s:ePop(seg(t,1.4,1.8))*(1-eOut(seg(t,3.2,3.4)))})}}});
-def('trans','tr-step','Stufe wechseln','Die Kachel wandert von Stufe zu Stufe, 25, 50, 75 %. Der Text weicht mit.',{dur:5,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h);const tx=mk(st,'tx','Mehr<br>Ös.','font-size:6.6cqw;color:var(--wine);left:7cqw');
- return t=>{const f=lerp(.25,.5,eMorph(seg(t,1.2,1.9)))+.25*eMorph(seg(t,2.7,3.4))-.5*eMorph(seg(t,4.4,4.95));K.set(t<.3?0:(t<1.1?.25*eFlow(seg(t,.3,1.1)):f));tx.style.right=(100*Math.max(f,.25)+5)+'cqw';tx.style.opacity=t<1.1?seg(t,.8,1):1}}});
+def('trans','tr-step','Stufe wechseln','Die Kachel wandert von Stufe zu Stufe, 25, 50, 75 %. Bei 75 % ist kein Platz für die Headline: Sie geht vorher ab und kommt erst zurück, wenn die Kachel wieder kleiner ist.',{dur:7,bg:'bg-lilac',build(st,h){
+ const K=kachel(st,'r',h);const tx=textBlock(st,['Mehr','Ös.'],{color:'var(--wine)',size:6.6,x:7,right:55});
+ return t=>{const f=t<1.1?.25*eFlow(seg(t,.3,1.1)):.25+.25*eMorph(seg(t,1.9,2.6))+.25*eMorph(seg(t,3.6,4.3))-.5*eMorph(seg(t,5.2,5.9));K.set(f);
+  if(t<5.6)tx(t-1.0,2.3);else tx(t-5.9)}}});
 def('trans','tr-full','Kachel wird Vollbild','Erst geht der Text ab, dann wächst die Kachel aus der Stufe über das ganze Bild. Die Rundung verlässt es über den Rand. Für neue Kapitel.',{dur:5.4,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const a=headline(st,'r',h,.5,['Aktiv sein','lohnt sich.']);const b=textBlock(st,['Deine','Sportwoche.'],{size:6.6});
  return t=>{K.set(t<2.8?.5*eFlow(seg(t,.2,.9)):lerp(.5,1+KR(h)/100+.02,eMorph(seg(t,2.8,3.5))));a(t-.8,1.6);b(t-3.35,9)}}});
