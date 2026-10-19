@@ -599,7 +599,7 @@ CLIPS["fuer"]["len"] = round(_fe - CLIPS["fuer"]["start"], 4)
 # Kian-Video: Banner „Mehr für Kian.“ auf F933, Pill auf den nächsten Schlag F946, Pill schrumpft auf F988
 PARAMS["rabatt"] = {**PARAMS.get("rabatt", {}), "banAt": .3544, "inAt": .875, "outAt": 2.3835}
 PARAMS["fuer"] = {**PARAMS["fuer"], "cloudAt": 12}            # Profil-Wolke auf F823
-PARAMS["brand"] = {**PARAMS.get("brand", {}), "step": .75, "accent": 0, "fast": 2}  # 16 Partner (mit BILLA Reisen) in derselben Zeit: die letzten 2 im halben Schlag  # Kunde: jö-Logo nur weiß, keine Partner-Akzentfarbe in den Punkten  # bei rate .75 = exakt ein Schlag pro Partnerfarbe (vorher .71 = 13,0 F → driftete bis 7 F vom Hit)
+PARAMS["brand"] = {**PARAMS.get("brand", {}), "step": .75, "accent": 0, "fast": 0}  # Kunde: alle Marken gleiches Tempo (je 1 Schlag)  # Kunde: jö-Logo nur weiß, keine Partner-Akzentfarbe in den Punkten  # bei rate .75 = exakt ein Schlag pro Partnerfarbe (vorher .71 = 13,0 F → driftete bis 7 F vom Hit)
 PARAMS["formats"] = {**PARAMS.get("formats", {}), "sh": 1.09}
 CLIPS["brand"]["in"] = .0625   # 2 F Vorlauf, damit die Kreise sichtbar genau auf dem Schlag aufgehen  # Bildschirm 2 und 3 starten auf F3072 / F3182
 # Mockup-Teil: Schnitte auf die Takt-Einsen (vorher auf Schlag 4/2/3 → fühlte sich off-beat an)
@@ -768,6 +768,9 @@ for _i, _k in enumerate(("pos", "pos2", "pos3")):
     CLIPS[_k] = C(round(_p0 + _i * _pl, 4), _pl); PARAMS[_k] = {"len": round(_pl / BEAT, 3), "outAt": round(_pl / BEAT + 1, 3)}
 CLIPS["endtxt"]["start"] = _e1; CLIPS["endtxt"]["len"] = round(CLIPS["endtxt"]["len"] - _X, 4)
 PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(CLIPS["endtxt"]["len"] / BEAT + .5, 2), "hold": 2.5, "bOut": 8.75, "aOut": 8.75, "cIn": 9.25, "cOut": round((CLIPS["logo2"]["start"] - .1 - _e1) / BEAT, 2)}
+# Markenfarben: 16 Marken à 1 Schlag brauchen einen Schlag mehr – den gibt das Ende der Partner-Szene ab, alles danach bleibt
+CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BEAT, 4)
+CLIPS["brand"]["start"] = round(CLIPS["brand"]["start"] - BEAT, 4); CLIPS["brand"]["len"] = round(CLIPS["brand"]["len"] + BEAT, 4)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
