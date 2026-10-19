@@ -784,6 +784,15 @@ rep("BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(
     f"PEAKS.splice(Math.round({AU_CB}/per),Math.round({AU_CBD}/per));const nb2=BEATS.filter(v=>v<{AU_CB}-.02).concat(BEATS.filter(v=>v>={round(AU_CB + AU_CBD, 4)}-.02).map(v=>+(v-{AU_CBD}).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);"
     "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n")
 rep("function spliceAudio(){", f"const AU_CB={AU_CB},AU_CBD={AU_CBD};function spliceAudio(){{")
+# Kunde: Ende ab den POS-Platzhaltern lag neben dem Takt → alle Schnitte auf Taktanfänge (Taktstriche nach dem zweiten Musikschnitt)
+_bars = [134.898, 137.173, 139.472]                      # Taktanfänge laut Beat-Analyse
+_p0 = CLIPS["pos"]["start"]
+for _k, _a, _b in (("pos", _p0, _bars[0]), ("pos2", _bars[0], _bars[1]), ("pos3", _bars[1], _bars[2])):
+    CLIPS[_k] = C(_a, round(_b - _a, 4)); PARAMS[_k] = {"len": round((_b - _a) / BEAT, 3), "outAt": round((_b - _a) / BEAT + 1, 3)}
+_es = _bars[2]; _el = round(CLIPS["logo2"]["start"] - _es, 4)
+CLIPS["endtxt"] = C(_es, _el)
+PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(_el / BEAT, 3), "aIn": 0, "bIn": 2, "hold": 2, "aOut": 8, "bOut": 8, "cIn": 8.5,
+                    "cOut": round((CLIPS["logo2"]["start"] - .1 - _es) / BEAT, 2)}   # Gemeinsam mehr auf der Eins, Satzenden auf 2/4/6, Markenbühne nach dem Taktwechsel
 # Markenfarben: 16 Marken à 1 Schlag brauchen einen Schlag mehr – den gibt das Ende der Partner-Szene ab, alles danach bleibt
 CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BEAT, 4)
 CLIPS["brand"]["start"] = round(CLIPS["brand"]["start"] - BEAT, 4); CLIPS["brand"]["len"] = round(CLIPS["brand"]["len"] + BEAT, 4)
