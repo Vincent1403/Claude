@@ -357,7 +357,7 @@ function photo(p,src,pos){const e=mk(p,'photo');e.style.backgroundImage=`url(${s
 function pillBuild(st,text,{size=4.4,x=8,y=20,center=false,right}={}){const br=right!==undefined;const P=pill(st,text,{size,badgeFirst:!br});P.style.top=y+'cqw';const txt=br?P.firstChild:P.lastChild;txt.style.display='inline-block';const Hc=size*2.15;let Wn=0;
  if(br){P.style.justifyContent='flex-end';txt.style.cssText+=`;position:absolute;left:${size*.9}cqw`}
  return (t,out=99)=>{if(!Wn&&st.clientWidth){P.style.width='auto';if(br)txt.style.position='static';Wn=P.offsetWidth/st.clientWidth*100;if(br)txt.style.position='absolute';P.style.left=(center?50-Wn/2:x)+'cqw'}if(!Wn)return;
-  const q2=t-out,o=1-eOut(seg(q2,.15,.4));tf(P.querySelector('.jb'),{s:ePop(seg(t,0,.42))});const p=eFlow(seg(t,.35,.95)),w=lerp(Hc,Wn,p);P.style.width=w+'cqw';if(br)P.style.left=(right-w)+'cqw';P.style.background=t<.35?'transparent':'#fff';
+  const q2=t-out,o=1-eOut(seg(q2,.15,.4));/* jö-Punkt poppt gleich mit weißem Ring auf (ganze Pill als Kreis), dann zieht sie sich auf */P.style.transformOrigin=br?`calc(100% - ${Hc/2}cqw) 50%`:`${Hc/2}cqw 50%`;tf(P,{s:ePop(seg(t,0,.42))});const p=eFlow(seg(t,.35,.95)),w=lerp(Hc,Wn,p);P.style.width=w+'cqw';if(br)P.style.left=(right-w)+'cqw';P.style.background='#fff';
   /* Abgang: erst steigt der Text oben aus der Pill, dann blendet die Pill aus */
   tf(txt,{y:(1-eIn(seg(t,.7,1.15)))*3-eOut(seg(q2,0,.22))*size*1.6,o:seg(t,.7,.85)});P.style.opacity=o}}
 /* Tag-Aufbau: erst nur das Icon als Quadrat (Pop 0–0,38 s), dann schiebt sich der Tag auf (0,45–0,9 s) und gibt das Wort frei (0,65–1,05 s) */
