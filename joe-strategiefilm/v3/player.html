@@ -1561,7 +1561,7 @@ const BRAND={
     // Logo- und Namensfarbe: oberster Kreis, der schon über Logo und Namen gewachsen ist
     let uk=-1;for(let k=n;k>=0;k--){if(rad[k]>300){uk=k;break}}
     const c=uk>=0&&uk<n?M.list[uk]:null;use=c;const nameOn=uk>=0&&rad[uk]>340;
-    const fg=use?use[2]:'#fff',ac=use&&P.accent&&use[3]?use[3]:fg;
+    const fg='#fff',ac=use&&P.accent&&use[3]?use[3]:fg;
     E.lj.setAttribute('fill',fg);E.dots.forEach(dd=>dd.setAttribute('fill',ac));
     // die drei Punkte hüpfen kurz, beginnend beim Punkt, aus dem die Farbe platzt
     E.dots.forEach((dd,j)=>{const ht=lt-Math.abs(j-i%3)*P.hopStag;let y=0,k=0;
@@ -2457,8 +2457,8 @@ const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und voller','Möglichkeiten.']
 const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});
 const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','und *Vorteile sinnvoll','miteinander verbindet.'],
   {size:118,top:345,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.5,inAt:.5,outAt:7,len:8,cls:'logo',note:'Eigene Texttafel, genau 2 Takte zwischen „Deal“ und „Partner“; beginnt und endet auf einer Takt-Eins. „Entscheidungen“ und „Vorteile“ im jö-Verlauf.'});
-const C2=makeHL('c2','Das neue Jö','laneV2',["Das *neue Jö."],
-  {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.75,inAt:0,outAt:3.676,len:4.526,cls:'logo',note:'Tafel des Partnerfilms (Das neue Jö).'});
+const C2=makeHL('c2','Das neue jö','laneV2',["Das *neue jö."],
+  {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.75,inAt:0,outAt:3.676,len:4.526,cls:'logo',note:'Tafel des Partnerfilms (Das neue jö).'});
 const C3=makeHL('c3','So persönlich wie nie zuvor','laneV2',["So *persönlich", "wie nie zuvor."],
   {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:0.25,inAt:0.25,outAt:3.129,len:3.979,cls:'logo',note:'Tafel des Partnerfilms (So persönlich wie nie zuvor).'});
 const C4=makeHL('c4','02 Digitaler Begleiter','laneV2',["Alles in einer App:", "*einfach und *bequem."],
@@ -4210,7 +4210,7 @@ Object.assign(S.comps.partner.params,{"hit": 3.086, "lOut": 4.473, "sent": 1000,
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
-Object.assign(S.comps.brand.params,{"step": 0.75});FM.brand=COMPS.brand.model(S.comps.brand.params);
+Object.assign(S.comps.brand.params,{"step": 0.75, "accent": 0});FM.brand=COMPS.brand.model(S.comps.brand.params);
 Object.assign(S.comps.c4.params,{"len": 7, "outAt": 6.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
 Object.assign(S.comps.colors.params,{"beatsB": 1.6856, "beatsC": 4.0644});FM.colors=COMPS.colors.model(S.comps.colors.params);
 Object.assign(S.comps.people.params,{"sb": 4});FM.people=COMPS.people.model(S.comps.people.params);

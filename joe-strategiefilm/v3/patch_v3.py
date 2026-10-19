@@ -206,7 +206,7 @@ def card(key, name, lines, size, bg, color, kicker=None, kc=None, step=.5, inAt=
 
 CARDS = ["c2", "c3", "c4", "c5", "c6", "c7", "c8"]
 cards = (
-    card("c2", "Das neue Jö", ["Das *neue Jö."], 150, BEIGE, BURG, step=.75, inAt=0)
+    card("c2", "Das neue jö", ["Das *neue jö."], 150, BEIGE, BURG, step=.75, inAt=0)
     + card("c3", "So persönlich wie nie zuvor", ["So *persönlich", "wie nie zuvor."], 150, BEIGE, BURG, step=.25, inAt=.25)
     + card("c4", "02 Digitaler Begleiter", ["Alles in einer App:", "*einfach und *bequem."], 150, BEIGE, BURG, step=.25, inAt=.25)
     + card("c5", "03 Eigenständig im Auftritt", ["*Eigenständig", "im Auftritt."], 150, BEIGE, BURG, step=.375, inAt=.5)
@@ -598,7 +598,7 @@ CLIPS["fuer"]["len"] = round(_fe - CLIPS["fuer"]["start"], 4)
 # Kian-Video: Banner „Mehr für Kian.“ auf F933, Pill auf den nächsten Schlag F946, Pill schrumpft auf F988
 PARAMS["rabatt"] = {**PARAMS.get("rabatt", {}), "banAt": .3544, "inAt": .875, "outAt": 2.3835}
 PARAMS["fuer"] = {**PARAMS["fuer"], "cloudAt": 12}            # Profil-Wolke auf F823
-PARAMS["brand"] = {**PARAMS.get("brand", {}), "step": .75}  # bei rate .75 = exakt ein Schlag pro Partnerfarbe (vorher .71 = 13,0 F → driftete bis 7 F vom Hit)
+PARAMS["brand"] = {**PARAMS.get("brand", {}), "step": .75, "accent": 0}  # Kunde: jö-Logo nur weiß, keine Partner-Akzentfarbe in den Punkten  # bei rate .75 = exakt ein Schlag pro Partnerfarbe (vorher .71 = 13,0 F → driftete bis 7 F vom Hit)
 PARAMS["formats"] = {**PARAMS.get("formats", {}), "sh": 1.09}
 CLIPS["brand"]["in"] = .0625   # 2 F Vorlauf, damit die Kreise sichtbar genau auf dem Schlag aufgehen  # Bildschirm 2 und 3 starten auf F3072 / F3182
 # Mockup-Teil: Schnitte auf die Takt-Einsen (vorher auf Schlag 4/2/3 → fühlte sich off-beat an)
@@ -772,6 +772,7 @@ block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMP
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
 rep("COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))", "COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))")  # Clip-Tempo: rate < 1 = langsamer; clipHold = Standbild-Abschnitt
 rep("function wDesign(", f"const CL_HOLD={{julian:[3.75,1.6,{round(BARL*.76873,4)}],white2:[3.75,1.6,{round(BARL*.76873,4)}]}};function clipHold(k,u){{const h=CL_HOLD[k];if(!h||u<=h[0])return u;const L=h[1]+h[2];if(u>=h[0]+L)return u-h[2];const x=(u-h[0])/L,m=.9,f=(1-m)*x+m*(.5+4*Math.pow(x-.5,3));return h[0]+h[1]*f}} // Kunde: Julian-UI-Screen – schnell rein, in der Mitte ganz langsam (nie stehend), schnell wieder raus\nfunction wDesign(")
+rep("const fg=use?use[2]:'#fff',", "const fg='#fff',")  # Kunde: jö-Logo (und ×) im Partner-Lockup immer weiß, auch auf hellen Partnerfarben
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
