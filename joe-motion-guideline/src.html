@@ -76,6 +76,7 @@ h2{font-size:clamp(2.6rem,6vw,5.2rem);font-weight:900;letter-spacing:-.045em;lin
 .tx.center{text-align:center}
 .tl{display:block;overflow-y:clip;overflow-x:visible;padding:.04em 0 .14em;margin-bottom:-.14em}
 .tl > span{display:inline-block;transform-origin:50% 80%}
+.tl > span.grad{background:linear-gradient(100deg,#b93040 0%,#ef2700 45%,#fb6321 80%,#ff7024 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em .22em 0;margin-bottom:-.22em}
 
 /* jö-Bausteine */
 .lg{overflow:visible}
@@ -176,7 +177,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 
  <section id="typografie">
   <h2>Typografie</h2>
-  <p class="lede">Für Text gibt es eine Sammlung fertiger Vorlagen. Wähle nach Botschaft, Format und Länge. Du kannst sie kombinieren, aber übertreib es nicht: Einfachheit geht vor.</p>
+  <p class="lede">Für Text gibt es drei Vorlagen. Der Standard ist Wort für Wort. Ein einzelnes Wort darf den jö-Verlauf tragen, Zoom setzen wir sparsam ein.</p>
   <h3 class="sub">Vorlagen</h3>
   <div class="grid" data-group="text"></div>
  </section>
@@ -336,9 +337,9 @@ function textBlock(p,lines,o={}){const{mode='word',size=7.4,color='#fff',align='
   if(perLine){const s=document.createElement('span');s.innerHTML=ln.replace(/\*(.+?)\*/g,'<em style="font-style:normal;color:var(--hl)">$1</em>');L.appendChild(s);units.push({el:s,d:li*.28,li})}
   else ln.split(' ').forEach((wd,wi,arr)=>{const hl=/^\*.*\*[,.]?$/.test(wd);wd=wd.replace(/\*/g,'');
    if(mode==='letter'){[...wd].forEach(ch=>{const s=document.createElement('span');s.textContent=ch;if(hl)s.style.color='var(--hl)';L.appendChild(s);units.push({el:s,d:(k++)*.03,li})})}
-   else{const s=document.createElement('span');s.textContent=wd;if(hl)s.style.color='var(--hl)';L.appendChild(s);units.push({el:s,d:(k++)*.14,li})}
+   else{const s=document.createElement('span');s.textContent=wd;if(hl){if(o.hl==='grad')s.className='grad';else s.style.color='var(--hl)'}L.appendChild(s);units.push({el:s,d:(k++)*.14,li})}
    if(wi<arr.length-1)L.appendChild(document.createTextNode(' '))})});
- if(o.hl)w.style.setProperty('--hl',o.hl);
+ if(o.hl&&o.hl!=='grad')w.style.setProperty('--hl',o.hl);
  return (t,out=99)=>units.forEach((u,i)=>{let y=0,xx=0,sc=1,op=1;const q=t-u.d;
   if(t>=out){y=110*eOut(seg(t-out,i*.03,i*.03+.22))}
   else if(mode==='word'||mode==='line')y=110*(1-eIn(seg(q,0,.45)));
@@ -379,13 +380,8 @@ def('logo','ll-icon','Logo wird Icon','Das Logo zeichnet sich, schrumpft und die
 /* Typografie */
 const TXT=(g,id,name,desc,o)=>def(g,id,name,desc,{dur:4.2,...o,build(st){const d=textBlock(st,o.lines,o.t);return t=>d(t-.25,3.2)}});
 TXT('text','tx-word','Wort für Wort','Wörter steigen nacheinander aus einer unsichtbaren Kante. Der Standard für Headlines.',{badge:'std',bg:'bg-orange',lines:['Aktiv sein','lohnt sich.'],t:{color:'var(--wine)'}});
-TXT('text','tx-line','Zeile für Zeile','Ganze Zeilen kommen nacheinander, für längere Sätze.',{bg:'bg-jg',lines:['Deine','Sportwoche.']});
-TXT('text','tx-letter','Buchstabe für Buchstabe','Buchstaben erscheinen einzeln. Für kurze Wörter, die zählen.',{bg:'bg-wine',lines:['Mehr Ös.']});
-TXT('text','tx-left','Von links','Zeilen schieben sich von links ins Bild, wie beim Wischen.',{bg:'bg-lilac',lines:['Neuer Deal','bei Hirter.'],t:{mode:'left',color:'var(--wine)'}});
-TXT('text','tx-spring','Mit Feder','Wörter springen mit der jö-Feder auf. Für Claims und Endtafeln.',{badge:'acc',bg:'bg-jg',lines:['Mehr Bewegung,','mehr *Ös.*'],t:{mode:'spring',align:'center',hl:'var(--wine)'}});
-TXT('text','tx-linespring','Zeilen mit Feder','Ganze Zeilen federn auf, zentriert gesetzt.',{bg:'bg-wine',lines:['Einfach mehr','für *mich.*'],t:{mode:'lineSpring',align:'center',hl:'var(--lorange)'}});
 TXT('text','tx-zoom','Zoom','Wörter kommen aus der Nähe und setzen sich. Sparsam einsetzen.',{bg:'bg-orange',lines:['Jetzt','entdecken.'],t:{mode:'zoom',align:'center',color:'#fff'}});
-TXT('text','tx-hl','Mit Hervorhebung','Ein Wort in Rot trägt die Aussage. Die Bewegung bleibt Wort für Wort.',{bg:'bg-sand',lines:['Sammeln,','*sparen*, teilen.'],t:{color:'var(--ink)',hl:'var(--red)'}});
+TXT('text','tx-hl','Wort für Wort mit Verlauf','Ein Wort im jö-Verlauf trägt die Aussage. Die Bewegung bleibt Wort für Wort.',{bg:'bg-white',lines:['Mehr *Bewegung*,','mehr Ös.'],t:{color:'var(--wine)',hl:'grad'}});
 
 /* Kachel: Übergänge (A = Ausgangsbild, B = neues Bild in der Kachel) */
 function sceneA(st){const a=mk(st,'fill bg-lilac');const tx=textBlock(a,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:6.4});tx(9);return a}
