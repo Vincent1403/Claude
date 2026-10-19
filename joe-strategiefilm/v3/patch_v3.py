@@ -284,7 +284,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -722,6 +722,13 @@ _dn = CLIPS["deal"]["len"] * CLIPS["deal"].get("rate", 1)
 CLIPS["deal"]["len"] = round(CLIPS["deal"]["len"] + BARL, 4); CLIPS["deal"]["rate"] = round(_dn / CLIPS["deal"]["len"], 4)
 _cn2 = CLIPS["city"]["len"] * CLIPS["city"]["rate"]
 CLIPS["city"]["start"] = round(CLIPS["city"]["start"] + BARL, 4); CLIPS["city"]["len"] = round(CLIPS["city"]["len"] - BARL, 4); CLIPS["city"]["rate"] = round(_cn2 / CLIPS["city"]["len"], 4)
+# Kunde: U-Bahn und Billboard so lang wie das Citylight (2 Takte); die freie Zeit bis zum Schluss-Text = schwarzer Platzhalter „POS-System“
+_L2 = CLIPS["city"]["len"]
+CLIPS["ubahn"]["len"] = _L2; PARAMS["ubahn"] = {**PARAMS["ubahn"], "len": _L2}
+_bn = CLIPS["bill"]["len"] * CLIPS["bill"].get("rate", 1); _be = CLIPS["bill"]["start"] + CLIPS["bill"]["len"]
+CLIPS["bill"]["start"] = round(CLIPS["ubahn"]["start"] + _L2, 4); CLIPS["bill"]["len"] = _L2; CLIPS["bill"]["rate"] = round(_bn / _L2, 4)
+CLIPS["pos"] = C(round(CLIPS["bill"]["start"] + _L2, 4), 0); CLIPS["pos"]["len"] = round(_be - CLIPS["pos"]["start"], 4)
+PARAMS["pos"] = {"len": round(CLIPS["pos"]["len"] / BEAT, 3), "outAt": round(CLIPS["pos"]["len"] / BEAT + 1, 3)}
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
