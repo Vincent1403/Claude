@@ -574,8 +574,8 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
  const labels=[];const gt=(x,y,txt,c=W,anchor='start')=>{const t=svgEl(gs,'text',{x,y,'font-size':11,'font-family':MONO,fill:c,'text-anchor':anchor},txt);labels.push(t);return t};
  /* Easing-Kurven: jede läuft synchron zur Bewegung, die sie gerade antreibt */
  /* in einer Reihe unten, auf das 50er-Raster gesetzt, in der Reihenfolge, in der sie im Ablauf vorkommen */
- const curves=[[100,'jö-Feder',x=>spring(x*.9),1.77,2.9],[300,'Flow',eFlow,4.2,5.0],[550,'Pop',ePop,4.75,5.17],[750,'Auftritt',eIn,5.65,6.1]].map(([x,name,f,a,b])=>{const y=430;
-  const gg=svgEl(gs,'g',{transform:`translate(${x} ${y})`}),W2=150,H2=70,Y=v=>H2-((v+.1)/1.45)*H2;
+ const curves=[[100,'jö-Feder',x=>spring(x*.9),1.77,2.9],[300,'Flow',eFlow,4.2,5.0],[550,'Pop',ePop,4.75,5.17],[750,'Auftritt',eIn,5.65,6.1]].map(([x,name,f,a,b])=>{const y=450;/* genau ein Rasterfeld hoch (50), drei breit */
+  const gg=svgEl(gs,'g',{transform:`translate(${x} ${y})`}),W2=150,H2=50,Y=v=>H2-((v+.1)/1.45)*H2;
   svgEl(gg,'line',{x1:0,y1:H2,x2:W2,y2:H2,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'});svgEl(gg,'line',{x1:0,y1:0,x2:0,y2:H2,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'});
   svgEl(gg,'line',{x1:0,y1:Y(1),x2:W2,y2:Y(1),stroke:F,'stroke-width':1,'stroke-dasharray':'3 3','vector-effect':'non-scaling-stroke'});
   let d='';for(let i=0;i<=60;i++){const u=i/60;d+=(i?'L':'M')+(u*W2).toFixed(1)+','+Y(f(u)).toFixed(1)}
