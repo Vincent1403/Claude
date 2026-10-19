@@ -470,9 +470,10 @@ def('morph','mo-split','Fläche teilt sich','Aus einer Fläche wird ein Banner: 
  const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:6.2,x:8});const P=mk(st,'c');const Pi=innerPhoto(P,'img/kian.webp');const pl=pill(st,'Jetzt entdecken',{size:3.2});pl.style.left='8cqw';pl.style.top='40cqw';
  const txEl=st.querySelector('.tx');
  return t=>{tx(t-.2,9);const p=eMorph(seg(t,1.0,1.8));box(P,lerp(102,52,p),0,50,H,0);P.style.borderRadius=`${lerp(0,3.4,p)}cqw 0 0 ${lerp(0,3.4,p)}cqw`;tf(Pi,{s:pushIn(t,1.8,4)});tf(pl,{s:ePop(seg(t,1.7,2.1))})}}});
-def('morph','mo-stack','Kacheln stapeln','Volle Breite, von unten: Orange schiebt sich auf, dann legt sich Burgund darüber, dann der Verlauf. Jede Kachel bleibt etwas tiefer, so bleibt die vorige lesbar.',{dur:4.6,bg:'bg-lilac',build(st,h){
+def('morph','mo-stack','Kacheln stapeln','Oben steht die Headline auf dem Hintergrund. Darunter, volle Breite, von unten: Orange schiebt sich auf, dann legt sich Burgund darüber, dann der Verlauf. Jede Kachel bleibt etwas tiefer, so bleibt die vorige lesbar.',{dur:4.6,bg:'bg-lilac',build(st,h){
  const L=[['bg-orange','Neu bei BILLA','var(--wine)',.78],['bg-wine','500 Ös gesammelt','#fff',.56],['kg-b','Deine Sportwoche','#fff',.34]].map(([c,txt,col,f])=>{const k=kachel(st,'b',h,c);mk(k,'',txt,`position:absolute;left:5cqw;top:3.2cqw;color:${col};font-weight:700;font-size:3.6cqw`);k.f=f;return k});
- return t=>L.forEach((k,i)=>k.set(k.f*eFlow(seg(t,.3+i*.7,1.1+i*.7))))}});
+ const hl=textBlock(st,['Alles in einer App.'],{color:'var(--wine)',size:4.4,x:5,top:3.6});
+ return t=>{hl(t-.15);L.forEach((k,i)=>k.set(k.f*eFlow(seg(t,.6+i*.7,1.4+i*.7))))}}});
 def('morph','mo-flip','Karte dreht sich','Vorderseite Produkt, Rückseite Rabatt: Die Karte dreht sich mit der Flip-Kurve und wird dabei schmaler. Auf jeder Seite baut sich die Pill auf wie der Pill-Button.',{dur:5.4,bg:'bg-lilac',build(st){
  st.style.perspective='120cqw';const K=mk(st,'c');K.style.transformStyle='preserve-3d';const CH=31,R=5.4;
  const f=mk(K,'fill bg-orange');f.style.borderRadius=R+'cqw';f.style.overflow='hidden';
