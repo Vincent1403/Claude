@@ -887,11 +887,12 @@ function lpSpline(K){const n=K.length,d=[],m=new Array(n).fill(0);
 const UI_LAYOUT=[
  // Zwei Bänder; innerhalb eines Bandes stehen schnellere Elemente immer links von langsameren,
  // so holt kein Element ein anderes ein und sie überlappen sich nie stärker als geplant.
- {id:'jump',name:'Sprung-Kachel',wx:1960,y:70,w:560,h:368,s:1,z:2},
- {id:'save',name:'Ersparnis',wx:2643,y:96,w:537,h:248,s:1,z:2},
- {id:'ring',name:'Ring',wx:3545,y:560,w:312,h:405,s:1.25,z:3},
- {id:'plus',name:'3x Ös (ganz vorne)',wx:2604,y:756,w:330,h:165,s:1.55,z:4},
- {id:'fav',name:'Favoriten (vorne)',wx:2819,y:600,w:542,h:355,s:1.3,z:4}];
+ {id:'jump',name:'Sprung-Kachel',wx:1960,y:28,w:560,h:368,s:1,z:2},
+ {id:'save',name:'Ersparnis',wx:2643,y:60,w:537,h:248,s:1,z:2},
+ {id:'hl',name:'Headline',wx:2130,y:418,w:1240,h:250,s:1.12,z:5},
+ {id:'ring',name:'Ring',wx:3545,y:650,w:312,h:405,s:1.25,z:3},
+ {id:'plus',name:'3x Ös (ganz vorne)',wx:2604,y:860,w:330,h:165,s:1.55,z:4},
+ {id:'fav',name:'Favoriten (vorne)',wx:2819,y:700,w:542,h:355,s:1.3,z:4}];
 const JL=document.createElement('div');JL.id='julianL';JL.style.cssText='position:absolute;inset:0;display:none;font-family:var(--font)';
 JL.innerHTML=`
 <div id="lpWin"><div id="lpIn"></div></div>
@@ -912,7 +913,7 @@ JL.innerHTML=`
 <div class="jg" id="jLast" style="left:228px;top:560px;width:437px;height:226px;padding:20px 26px;box-sizing:border-box">
   <div style="font-size:24px;font-weight:700;color:${BG}">Letzte Einkäufe</div>
   <div id="jLastRows" style="margin-top:12px;display:flex;flex-direction:column;gap:12px"></div></div>
-<div class="jui" id="ui_fav"></div><div class="jui" id="ui_plus"></div>`;
+<div class="jui" id="ui_hl" style="filter:none;color:#6b0505;font-size:96px;font-weight:900;letter-spacing:-.02em;line-height:1.04;text-align:center;display:flex;flex-direction:column;justify-content:center"><div>Dein persönlicher</div><div>digitaler Begleiter.</div></div><div class="jui" id="ui_fav"></div><div class="jui" id="ui_plus"></div>`;
 $('stage').insertBefore(JL,GL);$('stage').insertBefore(LBOX,GL);
 $('lpIn').innerHTML=lpPageHTML(LPA,LP)+lpMoreHTML(LPA);
 const LPE={chars:[...JL.querySelectorAll('.lpc')],nav:[...JL.querySelectorAll('[data-n]')],body:[...JL.querySelectorAll('.lpbi')],win:$('lpWin'),inn:$('lpIn'),img:$('lpImg'),logo:$('lpLogo'),logoIn:$('lpLogoIn'),cta:$('lpCta'),storeT:$('lpStoreT'),stores:$('lpStores'),cards:[...JL.querySelectorAll('.lpcard')],mq:[...JL.querySelectorAll('.lpmq')],gcard:$('lpGcard'),lgGirl:$('lgGirl'),lgLogo:$('lgLogo'),lgText:$('lgText'),lgPill:$('lgPill'),heads:[...JL.querySelectorAll('.lph')],slot:[...JL.querySelectorAll('.lpsc')],reel:$('lpReel'),reelIn:$('lpReelIn'),slides:[...JL.querySelectorAll('.lps')]};

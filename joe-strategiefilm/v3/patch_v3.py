@@ -539,6 +539,10 @@ rep("const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;", "{const h=do
 # Kunde: Julian-UI – nur die beigen Karten haben runde Ecken, die Verlaufsflächen sind eckig (von der Karte beschnitten)
 for _r in ("border-radius:28px 0 0 28px;background:${UIG}", "border-radius:40px 40px 0 0;background:${UIG}", "border-radius:22px 22px 0 0;background:${UIG}", "border-radius:0 0 30px 30px;background:${UIG}"):
     rep(_r, "border-radius:0;background:${UIG}")
+# Kunde: Julian-UI-Elemente rund um die Headline „Dein persönlicher digitaler Begleiter.“, die mit derselben Parallaxe mitläuft
+rep(" {id:'jump',name:'Sprung-Kachel',wx:1960,y:70,w:560,h:368,s:1,z:2},\n {id:'save',name:'Ersparnis',wx:2643,y:96,w:537,h:248,s:1,z:2},\n {id:'ring',name:'Ring',wx:3545,y:560,w:312,h:405,s:1.25,z:3},\n {id:'plus',name:'3x Ös (ganz vorne)',wx:2604,y:756,w:330,h:165,s:1.55,z:4},\n {id:'fav',name:'Favoriten (vorne)',wx:2819,y:600,w:542,h:355,s:1.3,z:4}];",
+    " {id:'jump',name:'Sprung-Kachel',wx:1960,y:28,w:560,h:368,s:1,z:2},\n {id:'save',name:'Ersparnis',wx:2643,y:60,w:537,h:248,s:1,z:2},\n {id:'hl',name:'Headline',wx:2130,y:418,w:1240,h:250,s:1.12,z:5},\n {id:'ring',name:'Ring',wx:3545,y:650,w:312,h:405,s:1.25,z:3},\n {id:'plus',name:'3x Ös (ganz vorne)',wx:2604,y:860,w:330,h:165,s:1.55,z:4},\n {id:'fav',name:'Favoriten (vorne)',wx:2819,y:700,w:542,h:355,s:1.3,z:4}];")
+rep('<div class="jui" id="ui_fav"></div>', '<div class="jui" id="ui_hl" style="filter:none;color:#6b0505;font-size:96px;font-weight:900;letter-spacing:-.02em;line-height:1.04;text-align:center;display:flex;flex-direction:column;justify-content:center"><div>Dein persönlicher</div><div>digitaler Begleiter.</div></div><div class="jui" id="ui_fav"></div>')
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)
