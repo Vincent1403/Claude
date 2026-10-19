@@ -11,7 +11,7 @@ const WL_CARDS={ // je Foto eine Karte: Partner(logo), Name, Pill, Icon, Text, B
  hirter:{l:'billa',n:'BILLA',p:'250',k:'oes',t:'-25 % auf Hirter Privat Pils',b:'Aktivieren',img:'__WL:hirter__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-25%</div>'},
  see:{l:'raiffeisen',n:'RAIFFEISEN',p:'+3000',k:'oes',t:'3000 Ös bei Abschluss',b:'Mehr erfahren',img:'__WL:raiffeisen__'},
  brille:{l:'pearle',n:'PEARLE',p:'150&#8239;€',k:'jo',t:'150 € Zuschuss für deine neue Brille',b:'Mehr erfahren',img:'__WL:brille__'},
- schreibwaren:{l:'pagro',n:'PAGRO',p:'100',k:'oes',t:'-15 % und 100 Ös auf Schulartikel',b:'Aktivieren',img:'__WL:schreibwaren__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-15%</div>'},
+ schreibwaren:{l:'pagro',n:'PAGRO',p:'100',k:'oes',t:'-15 % und 100 Ös auf Schulartikel',b:'Aktivieren',img:'__WL:pagro__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-15%</div>'},
  stifte:{l:'pagro',n:'PAGRO',p:'3fach',k:'oes',t:'3fach Ös auf Malsachen',b:'Aktivieren',img:'__WL:stifte__'},
  wasch:{l:'omv',n:'OMV',p:'2fach',k:'oes',t:'Doppelte Ös bei der Autowäsche',b:'Aktivieren',img:'__WL:waschstrasse__'},
  thule:{l:'forstinger',n:'FORSTINGER',p:'400&#8239;€',k:'jo',t:'400 € Rabatt auf Fahrradträger',b:'Einlösen',img:'__WL:thule__'}};
