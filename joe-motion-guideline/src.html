@@ -525,13 +525,17 @@ def('elem','el-count','Ös zählen','Die Ziffern rollen in 2 s bis 500: langsam 
 def('elem','el-ring','Fortschrittsring','Der Ring füllt sich im jö-Verlauf, die Zahl in der Mitte zählt im selben Tempo mit: langsam los, schnell, langsam aus. Am Ende steigt die Zahl nach oben ab.',{dur:4.6,bg:'bg-beige',build(st){
  const W=mk(st,'c');rect(W,50,H/2,32,32);
  const sv=svgEl(W,'svg',{viewBox:'0 0 100 100'});sv.style.cssText='position:absolute;inset:0;width:100%;height:100%;overflow:visible';
- const gid='rg'+(uid++),df=svgEl(sv,'defs',{}),lg=svgEl(df,'radialGradient',{id:gid,gradientUnits:'userSpaceOnUse',cx:'10',cy:'88',r:'105'/* im gedrehten Kreis: entspricht oben links */});
- svgEl(lg,'stop',{offset:'0','stop-color':'#b2333a'});svgEl(lg,'stop',{offset:'.55','stop-color':'#dc4220'});svgEl(lg,'stop',{offset:'1','stop-color':'#ec7b39'});
  svgEl(sv,'circle',{cx:50,cy:50,r:43.5,fill:'none',stroke:'#fff','stroke-width':12.5});
- const arc=svgEl(sv,'circle',{cx:50,cy:50,r:43.5,fill:'none',stroke:`url(#${gid})`,'stroke-width':12.5,'stroke-linecap':'round',pathLength:100,'stroke-dasharray':'0 100',transform:'rotate(90 50 50)'});
+ /* Verlauf entlang des Bogens (wie Vorlage): unten Orange, oben links dunkles Rot, rechts wieder Orange */
+ const CS=[[0,'#e4552f'],[90,'#d4432b'],[140,'#b9373a'],[190,'#c83c31'],[260,'#de552d'],[300,'#ea6b38'],[360,'#ee7a3c']];
+ const hx=h=>[1,3,5].map(o=>parseInt(h.substr(o,2),16));
+ const col=a=>{let k=0;while(a>CS[k+1][0])k++;const[a0,c0]=CS[k],[a1,c1]=CS[k+1],q=(a-a0)/(a1-a0),A=hx(c0),B=hx(c1);return 'rgb('+A.map((v,i)=>Math.round(v+(B[i]-v)*q)).join(',')+')'};
+ const pt=a=>{const r=a*Math.PI/180;return[50-43.5*Math.sin(r),50+43.5*Math.cos(r)]};/* 0° = unten, im Uhrzeigersinn */
+ const N=150,segs=[];for(let k=0;k<N;k++){const a0=k*360/N,a1=(k+1.4)*360/N,[x0,y0]=pt(a0),[x1,y1]=pt(a1);segs.push(svgEl(sv,'path',{d:`M${x0.toFixed(2)},${y0.toFixed(2)} A43.5,43.5 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)}`,fill:'none',stroke:col(a0),'stroke-width':12.5}))}
+ const capA=svgEl(sv,'circle',{r:6.25,fill:col(0)}),capB=svgEl(sv,'circle',{r:6.25});
  const clip=mk(W,'','','position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:1.25em;overflow:hidden;clip-path:inset(0);text-align:center;font-weight:800;font-size:7cqw;line-height:1.25em;color:var(--wine);font-variant-numeric:tabular-nums;letter-spacing:-.02em');
  const num=mk(clip,'','0','display:inline-block');const eCount=bez(.76,0,.24,1),TARGET=83;
- return t=>{const p=eCount(seg(t,.7,2.7));arc.setAttribute('stroke-dasharray',`${(TARGET*p).toFixed(2)} 100`);arc.style.opacity=TARGET*p>.6?1:0;
+ return t=>{const p=eCount(seg(t,.7,2.7));const deg=3.6*TARGET*p,on=deg>1;segs.forEach((g,k)=>g.style.display=on&&k*360/N<deg-1?'':'none');const[ax,ay]=pt(0),[bx,by]=pt(deg);capA.setAttribute('cx',ax);capA.setAttribute('cy',ay);capB.setAttribute('cx',bx);capB.setAttribute('cy',by);capB.setAttribute('fill',col(Math.min(deg,359)));capA.style.display=capB.style.display=on?'':'none';
   num.textContent=Math.round(TARGET*p);
   tf(num,{y:(1-eIn(seg(t,.45,.9)))*12-eOut(seg(t,3.9,4.12))*12});
   tf(W,{s:t<.7?ePop(seg(t,.05,.5)):(t>2.7?1+.04*(1-spring(t-2.7)):1),o:1-eOut(seg(t,4.05,4.3))})}}});
