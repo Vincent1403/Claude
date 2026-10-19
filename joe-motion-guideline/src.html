@@ -351,6 +351,18 @@ function osBadge(p,size){const b=mk(p,'os');b.style.width=b.style.height=size+'c
 function tag(p,kind,text){const e=mk(p,'tag '+kind,'<i></i>');e.append(text);return e}
 function photo(p,src,pos){const e=mk(p,'photo');e.style.backgroundImage=`url(${src})`;if(pos)e.style.backgroundPosition=pos;return e}
 
+/* Pill-Button-Aufbau: jö-Punkt poppt (0–0,42 s), Pill zieht sich auf Textlänge auf (0,35–0,95 s), Text steigt (0,7–1,15 s). x/y = linke obere Ecke, center = waagrecht mittig */
+function pillBuild(st,text,{size=4.4,x=8,y=20,center=false}={}){const P=pill(st,text,{size});P.style.top=y+'cqw';const txt=P.lastChild;txt.style.display='inline-block';const Hc=size*2.15;let Wn=0;
+ return (t,out=99)=>{if(!Wn&&st.clientWidth){P.style.width='auto';Wn=P.offsetWidth/st.clientWidth*100;P.style.left=(center?50-Wn/2:x)+'cqw'}if(!Wn)return;
+  const o=1-eOut(seg(t-out,0,.25));tf(P.querySelector('.jb'),{s:ePop(seg(t,0,.42))});const p=eFlow(seg(t,.35,.95));P.style.width=lerp(Hc,Wn,p)+'cqw';P.style.background=t<.35?'transparent':'#fff';
+  tf(txt,{y:(1-eIn(seg(t,.7,1.15)))*3,o:seg(t,.7,.85)});P.style.opacity=o}}
+/* Tag-Aufbau: erst nur das Icon als Quadrat (Pop 0–0,38 s), dann schiebt sich der Tag auf (0,45–0,9 s) und gibt das Wort frei (0,65–1,05 s) */
+function tagBuild(st,kind,text,{size=4.4,x=8,y=20,center=false}={}){const T=mk(st,'tag '+kind+' c','<i></i><span>'+text+'</span>');
+ T.style.cssText+=`;font-size:${size}cqw;padding:${size*.36}cqw ${size*.5}cqw;gap:${size*.41}cqw;border-radius:${size*.32}cqw;overflow:hidden;transform-origin:0 50%`;
+ const ic=T.firstChild,tx=T.lastChild;ic.style.cssText=`width:${size*.55}cqw;height:${size*.55}cqw;flex:none`+(kind==='akt'?'':'');tx.style.display='inline-block';let Wf=0,Wi=0;
+ return (t,out=99)=>{if(!Wf&&st.clientWidth){T.style.width='auto';const hh=T.offsetHeight;Wf=T.offsetWidth/st.clientWidth*100;Wi=hh/st.clientWidth*100;const pl=(Wi-size*.55)/2;T.style.paddingLeft=T.style.paddingRight=pl+'cqw';Wf+=2*(pl-size*.5);
+   T.style.left=(center?50-Wf/2:x)+'cqw';T.style.top=(center?H/2-hh/st.clientWidth*50:y)+'cqw'}if(!Wf)return;
+  tf(T,{s:ePop(seg(t,0,.38)),o:seg(t,0,.06)*(1-eOut(seg(t-out,0,.22)))});const p=eFlow(seg(t,.45,.9));T.style.width=lerp(Wi,Wf,p)+'cqw';tf(tx,{x:(1-eIn(seg(t,.65,1.05)))*-2,o:seg(t,.65,.8)})}}
 /* Textblock mit Kante (Maske je Zeile) */
 function textBlock(p,lines,o={}){const{mode='word',size=7.4,color='#fff',align='left',x=8,weight=800}=o;
  const w=mk(p,'tx'+(align==='center'?' center':''));w.style.fontSize=size+'cqw';w.style.color=color;w.style.left=x+'cqw';w.style.right=(o.right??x)+'cqw';w.style.zIndex=3;w.style.fontWeight=weight;if(o.top!==undefined){w.style.top=o.top+'cqw';w.style.transform='none'}
@@ -376,12 +388,9 @@ function textBlock(p,lines,o={}){const{mode='word',size=7.4,color='#fff',align='
 const SC=[];const def=(g,id,name,desc,o)=>SC.push({g,id,name,desc,...o});
 
 /* Prinzipien */
-def('prinzip','p-klar','Klar','Pro Moment ein Fokus. Elemente kommen nacheinander, nie alle auf einmal.',{dur:4,bg:'bg-lilac',build(st){
- const tg=tag(st,'neu','Neu');box(tg,8,10,0,0);tg.style.width=tg.style.height='auto';
- const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:7,top:19});
- const pl=pill(st,'Jetzt entdecken',{size:3.6});pl.style.left='8cqw';pl.style.top='40cqw';
- return t=>{const a=ePop(seg(t,.2,.62));tf(tg,{s:a,o:seg(t,.2,.3)});tx(t-.55,3.3);
-  const b=eIn(seg(t,1.25,1.75));tf(pl,{y:(1-b)*4,o:seg(t,1.25,1.4)*(1-seg(t,3.3,3.5))});tf(tg,{s:a*(1-eOut(seg(t,3.3,3.5)))})}}});
+def('prinzip','p-klar','Klar','Pro Moment ein Fokus. Tag, Headline und Pill kommen nacheinander, jedes mit seinem eigenen Aufbau.',{dur:4.6,bg:'bg-lilac',build(st){
+ const tg=tagBuild(st,'neu','Neu',{size:2.6,x:8,y:9});const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:7,top:17});const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:8,y:39});
+ return t=>{tg(t-.2,3.9);tx(t-1.0,3.8);pl(t-1.9,3.9)}}});
 def('prinzip','p-freundlich','Freundlich','Weich beschleunigen, ruhig ankommen. Auch beim Halten bleibt das Bild leicht in Bewegung.',{dur:4.2,bg:'bg-sand',build(st,h){
  const K=kachel(st,'r',h,'');K.style.overflow='hidden';const ph=photo(K,'img/kian.webp');ph.style.cssText+=';position:absolute;inset:0;background-size:cover;background-position:40% 50%';
  const hl=headline(st,'r',h,.5,['Mehr','für dich.']);
@@ -475,14 +484,9 @@ def('morph','mo-flip','Karte dreht sich','Vorderseite Angebot, Rückseite Ös: D
 
 /* Elemente */
 def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich nach rechts genau auf die Länge des Texts auf, dann kommt der Text.',{badge:'std',dur:3.6,bg:'bg-orange',build(st){
- const P=pill(st,'Jetzt entdecken',{size:4.4});P.style.top=(H/2-4.73)+'cqw';const txt=P.lastChild;txt.style.display='inline-block';let Wn=0;
- return t=>{if(!Wn&&st.clientWidth){P.style.width='auto';Wn=P.offsetWidth/st.clientWidth*100;P.style.left=(50-Wn/2)+'cqw'}if(!Wn)return;
-  tf(P.querySelector('.jb'),{s:ePop(seg(t,.3,.72))});const p=eFlow(seg(t,.65,1.25));P.style.width=lerp(9.46,Wn,p)+'cqw';P.style.background=t<.65?'transparent':'#fff';tf(txt,{y:(1-eIn(seg(t,1.0,1.45)))*3,o:seg(t,1.0,1.15)})}}});
+ const d=pillBuild(st,'Jetzt entdecken',{size:4.4,y:H/2-4.73,center:true});return t=>d(t-.3)}});
 def('elem','el-tags','Tag','Erst poppt nur das Icon auf, dann schiebt sich der Tag nach rechts auf und gibt das Wort frei.',{dur:3,bg:'bg-lilac',build(st){
- const T=mk(st,'tag neu c','<i></i><span>Neu</span>');T.style.cssText+=';font-size:4.4cqw;padding:1.6cqw 2.2cqw;gap:1.8cqw;border-radius:1.4cqw;overflow:hidden;transform-origin:0 50%';
- const ic=T.firstChild,tx=T.lastChild;ic.style.cssText='width:2.4cqw;height:2.4cqw;flex:none';tx.style.display='inline-block';let Wf=0,Wi=0;
- return t=>{if(!Wf&&st.clientWidth){T.style.width='auto';const Hh=T.offsetHeight;Wf=T.offsetWidth/st.clientWidth*100;Wi=Hh/st.clientWidth*100;const pl=(Wi-2.4)/2;T.style.paddingLeft=T.style.paddingRight=pl+'cqw';Wf+=2*(pl-2.2);T.style.left=(50-Wf/2)+'cqw';T.style.top=(H/2-T.offsetHeight/st.clientWidth*50)+'cqw'}if(!Wf)return;
-  tf(T,{s:ePop(seg(t,.3,.68)),o:seg(t,.3,.36)});const p=eFlow(seg(t,.75,1.2));T.style.width=lerp(Wi,Wf,p)+'cqw';tf(tx,{x:(1-eIn(seg(t,.95,1.35)))*-2,o:seg(t,.95,1.1)})}}});
+ const d=tagBuild(st,'neu','Neu',{size:4.4,center:true});return t=>d(t-.3)}});
 def('elem','el-count','Ös zählen','Die Zahl zählt in einem Zug bis 500. Die Pill wächst mit jeder neuen Stelle mit, so steht die Zahl immer mittig in ihrem Feld.',{badge:'std',dur:4.6,bg:'bg-white',build(st){
  const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);const P=pill(st,'1',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='0 50%';P.style.gap='0';
  const n=P.firstChild;n.style.cssText+=';display:inline-block;text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap';
