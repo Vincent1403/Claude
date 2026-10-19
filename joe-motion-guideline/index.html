@@ -408,10 +408,10 @@ def('logo','lg-script','Script',"Linien zeichnen sich in einem Zug, die Punkte s
 def('logoloop','ll-load','Loading','Die Punkte springen nacheinander im Loop, für Ladezustände.',{dur:1.4,bg:'bg-white',loop:true,build(st){
  const L=logo(st,30,50,H/2,'var(--wine)');logoDone(L);
  return t=>L.dots.forEach((c,i)=>{const ph=t-i*.12;const y=(ph>0&&ph<.42)?-Math.sin(Math.PI*ph/.42)*24:0;const land=ph-.42;const k=(land>=0&&land<.16)?Math.exp(-land/.045):0;setDot(c,y,1,k)})}});
-def('logo','ll-icon','Logo wird Icon','Das Logo zeichnet sich, schrumpft und wird zum App-Icon. Diese Variante nutzen wir, wenn die App und das Digitale im Vordergrund stehen sollen.',{dur:4,bg:'bg-white',build(st){
+def('logo','ll-icon','Logo wird App-Icon','Das Logo zeichnet sich, schrumpft und wird zum App-Icon. Diese Variante nutzen wir, wenn die App und das Digitale im Vordergrund stehen sollen.',{dur:4,bg:'bg-white',build(st){
  const T=mk(st,'tile bg-jg c');rect(T,50,H/2,24,24);const L=logo(st,34,50,H/2,'var(--wine)');
  return t=>{drawLogo(L,t,{pre:.15});const p=eMorph(seg(t,2.1,2.75)),b=t<2.25?0:spring(t-2.25);rect(L.el,50,H/2,lerp(34,18.5,p),lerp(34,18.5,p)*LR);tf(T,{s:b});L.el.style.color=p>.5?'#fff':'var(--wine)'}}});
-def('logo','ll-circle','Logo wird Kreis','Das Logo zeichnet sich, schrumpft und steht am Ende im Kreis. Gleicher Ablauf wie „Logo wird Icon“, nur in der runden Form.',{dur:4,bg:'bg-white',build(st){
+def('logo','ll-circle','Logo wird Kreis','Das Logo zeichnet sich, schrumpft und steht am Ende im Kreis. Gleicher Ablauf wie „Logo wird App-Icon“, nur in der runden Form.',{dur:4,bg:'bg-white',build(st){
  const T=mk(st,'bg-jg c');T.style.borderRadius='50%';rect(T,50,H/2,26,26);const L=logo(st,34,50,H/2,'var(--wine)');
  return t=>{drawLogo(L,t,{pre:.15});const p=eMorph(seg(t,2.1,2.75)),b=t<2.25?0:spring(t-2.25);rect(L.el,50,H/2+.3,lerp(34,17,p),lerp(34,17,p)*LR);tf(T,{s:b});L.el.style.color=p>.5?'#fff':'var(--wine)'}}});
 
