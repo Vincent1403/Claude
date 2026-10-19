@@ -819,6 +819,70 @@ _p = _p.replace("vp.addEventListener('click',()=>document.getElementById('mPlay'
  setInterval(()=>{const t=window.__t?window.__t.mT:0,e=END();if(!drag)rg.value=Math.round(Math.min(1,t/e)*1000);lb.textContent=fm(t)+' / '+fm(e)},100);""", 1)
 (here / "player.html").write_text(_p, encoding="utf-8")
 
+# Stage-Version für den Video-Export: 3840×2160, 4118 Frames @ 24 fps, Bild kommt nur aus useTime()
+ST_W, ST_H, ST_FPS, ST_FRAMES = 3840, 2160, 24, 4118
+_sc = f"""<style id="stageOnly">
+html,body{{margin:0;background:#000;overflow:hidden}}
+.wrap{{display:none!important}}
+#c2v{{position:fixed;left:0;top:0;width:{ST_W}px;height:{ST_H}px;transform-origin:0 0;background:#000}}
+#c2v #vp{{position:absolute!important;inset:0!important;width:{ST_W}px!important;height:{ST_H}px!important;margin:0!important;border-radius:0!important;max-width:none!important;aspect-ratio:auto!important}}
+</style>"""
+_ss = f"""<div id="c2v"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+<script type="text/babel" data-presets="react">
+const {{createContext, useContext, useEffect, useLayoutEffect, useRef, useState}} = React;
+const WIDTH = {ST_W}, HEIGHT = {ST_H}, FPS = {ST_FPS}, DURATION = {ST_FRAMES};
+
+// Stage/useTime: vom Renderer bereitgestellt, sonst eigene Variante (spielt automatisch, ohne Klick)
+const TimeCtx = createContext(0);
+function LocalStage({{width, height, fps, durationInFrames, children}}) {{
+  const [frame, setFrame] = useState(() => Math.max(0, Math.min(durationInFrames - 1, +(new URLSearchParams(location.search).get('frame') || 0))));
+  const ref = useRef(null);
+  useEffect(() => {{
+    if (new URLSearchParams(location.search).has('frame')) return;   // Einzelbild-Modus
+    let raf, t0 = performance.now() - frame / fps * 1000;
+    const tick = () => {{ setFrame(Math.floor((performance.now() - t0) / 1000 * fps) % durationInFrames); raf = requestAnimationFrame(tick); }};
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }}, []);
+  useLayoutEffect(() => {{
+    const fit = () => {{ const k = Math.min(innerWidth / width, innerHeight / height); ref.current.parentNode.style.transform = `translate(${{(innerWidth - width * k) / 2}}px,${{(innerHeight - height * k) / 2}}px) scale(${{k}})`; }};
+    fit(); addEventListener('resize', fit); return () => removeEventListener('resize', fit);
+  }}, []);
+  window.__frame = frame;
+  return <TimeCtx.Provider value={{frame}}><div ref={{ref}} style={{{{width, height, position: 'relative', overflow: 'hidden'}}}}>{{children}}</div></TimeCtx.Provider>;
+}}
+const Stage = window.Stage || LocalStage;
+const useTime = window.useTime || (() => useContext(TimeCtx));
+
+// Hängt das Film-Stage-Element ein und setzt es pro Frame auf die passende Zeit
+function PartnerFilm() {{
+  const t = useTime();
+  const frame = typeof t === 'number' ? t : t.frame;
+  const host = useRef(null);
+  useLayoutEffect(() => {{
+    const vp = document.getElementById('vp');
+    host.current.appendChild(vp);
+    try {{ fit(); }} catch (e) {{}}
+  }}, []);
+  useLayoutEffect(() => {{ window.__t.mSeek(frame / FPS); }}, [frame]);
+  return <div ref={{host}} style={{{{position: 'absolute', inset: 0}}}} />;
+}}
+
+ReactDOM.createRoot(document.getElementById('c2v')).render(
+  <Stage width={{WIDTH}} height={{HEIGHT}} fps={{FPS}} durationInFrames={{DURATION}} autoPlay loop={{false}}>
+    <PartnerFilm />
+  </Stage>
+);
+</script>"""
+_s = s.replace("</head>", _sc + "</head>", 1).replace("</body>", _ss + "</body>", 1)
+_s = _s.replace("db=window.claude&&window.claude.use?await window.claude.use('db'):null", "db=null /* Stage: keine Datenbank, Timing ist eingebaut */", 1)
+_s = _s.replace("<title>jö Strategiefilm</title>", "<title>jö Partnerfilm 4K</title>", 1)
+_s = _s.replace("$('stage').style.transform=`scale(${$('vp').clientWidth/1920})`", "$('stage').style.transform=`scale(${($('vp').clientWidth||" + str(ST_W) + ")/1920})`", 1)
+(here / "stage.html").write_text(_s, encoding="utf-8")
+
 tl = json.loads((here / "timeline_markenfilm.json").read_text())
 for k in DROP:
     tl["clips"].pop(k, None)
