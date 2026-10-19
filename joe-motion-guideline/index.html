@@ -356,15 +356,16 @@ function photo(p,src,pos){const e=mk(p,'photo');e.style.backgroundImage=`url(${s
 function pillBuild(st,text,{size=4.4,x=8,y=20,center=false,right}={}){const br=right!==undefined;const P=pill(st,text,{size,badgeFirst:!br});P.style.top=y+'cqw';const txt=br?P.firstChild:P.lastChild;txt.style.display='inline-block';const Hc=size*2.15;let Wn=0;
  if(br){P.style.justifyContent='flex-end';txt.style.cssText+=`;position:absolute;left:${size*.9}cqw`}
  return (t,out=99)=>{if(!Wn&&st.clientWidth){P.style.width='auto';if(br)txt.style.position='static';Wn=P.offsetWidth/st.clientWidth*100;if(br)txt.style.position='absolute';P.style.left=(center?50-Wn/2:x)+'cqw'}if(!Wn)return;
-  const o=1-eOut(seg(t-out,0,.25));tf(P.querySelector('.jb'),{s:ePop(seg(t,0,.42))});const p=eFlow(seg(t,.35,.95)),w=lerp(Hc,Wn,p);P.style.width=w+'cqw';if(br)P.style.left=(right-w)+'cqw';P.style.background=t<.35?'transparent':'#fff';
-  tf(txt,{y:(1-eIn(seg(t,.7,1.15)))*3,o:seg(t,.7,.85)});P.style.opacity=o}}
+  const q2=t-out,o=1-eOut(seg(q2,.15,.4));tf(P.querySelector('.jb'),{s:ePop(seg(t,0,.42))});const p=eFlow(seg(t,.35,.95)),w=lerp(Hc,Wn,p);P.style.width=w+'cqw';if(br)P.style.left=(right-w)+'cqw';P.style.background=t<.35?'transparent':'#fff';
+  /* Abgang: erst steigt der Text oben aus der Pill, dann blendet die Pill aus */
+  tf(txt,{y:(1-eIn(seg(t,.7,1.15)))*3-eOut(seg(q2,0,.22))*size*1.6,o:seg(t,.7,.85)});P.style.opacity=o}}
 /* Tag-Aufbau: erst nur das Icon als Quadrat (Pop 0–0,38 s), dann schiebt sich der Tag auf (0,45–0,9 s) und gibt das Wort frei (0,65–1,05 s) */
 function tagBuild(st,kind,text,{size=4.4,x=8,y=20,center=false}={}){const T=mk(st,'tag '+kind+' c','<i></i><span>'+text+'</span>');
  T.style.cssText+=`;font-size:${size}cqw;padding:${size*.36}cqw ${size*.5}cqw;gap:${size*.41}cqw;border-radius:${size*.32}cqw;overflow:hidden;transform-origin:0 50%`;
  const ic=T.firstChild,tx=T.lastChild;ic.style.cssText=`width:${size*.55}cqw;height:${size*.55}cqw;flex:none`+(kind==='akt'?'':'');tx.style.display='inline-block';let Wf=0,Wi=0;
  return (t,out=99)=>{if(!Wf&&st.clientWidth){T.style.width='auto';const hh=T.offsetHeight;Wf=T.offsetWidth/st.clientWidth*100;Wi=hh/st.clientWidth*100;const pl=(Wi-size*.55)/2;T.style.paddingLeft=T.style.paddingRight=pl+'cqw';Wf+=2*(pl-size*.5);
    T.style.left=(center?50-Wf/2:x)+'cqw';T.style.transformOrigin=`${Wi/2}cqw 50%`;T.style.top=(center?H/2-hh/st.clientWidth*50:y)+'cqw'}if(!Wf)return;
-  tf(T,{s:ePop(seg(t,0,.38)),o:seg(t,0,.06)*(1-eOut(seg(t-out,0,.22)))});const p=eFlow(seg(t,.45,.9));T.style.width=lerp(Wi,Wf,p)+'cqw';tf(tx,{x:(1-eIn(seg(t,.65,1.05)))*-2,o:seg(t,.65,.8)})}}
+  tf(T,{s:ePop(seg(t,0,.38)),o:seg(t,0,.06)*(1-eOut(seg(t-out,.15,.37)))});const p=eFlow(seg(t,.45,.9));T.style.width=lerp(Wi,Wf,p)+'cqw';tf(tx,{x:(1-eIn(seg(t,.65,1.05)))*-2,y:-eOut(seg(t-out,0,.2))*size*1.6,o:seg(t,.65,.8)})}}/* Abgang: Wort steigt oben aus dem Tag, dann blendet der Tag aus */
 /* Textblock mit Kante (Maske je Zeile) */
 function textBlock(p,lines,o={}){const{mode='word',size=7.4,color='#fff',align='left',x=8,weight=800}=o;
  const w=mk(p,'tx'+(align==='center'?' center':''));w.style.fontSize=size+'cqw';w.style.color=color;w.style.left=x+'cqw';w.style.right=(o.right??x)+'cqw';w.style.zIndex=3;w.style.fontWeight=weight;if(o.top!==undefined){w.style.top=o.top+'cqw';w.style.transform='none'}
