@@ -504,10 +504,10 @@ def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich
  const d=pillBuild(st,'Jetzt entdecken',{size:4.4,y:H/2-4.73,center:true});return t=>d(t-.3)}});
 def('elem','el-tags','Tag','Erst poppt nur das Icon auf, dann schiebt sich der Tag nach rechts auf und gibt das Wort frei.',{dur:3,bg:'bg-lilac',build(st){
  const d=tagBuild(st,'neu','Neu',{size:4.4,center:true});return t=>d(t-.3)}});
-def('elem','el-count','Ös zählen','Die Zahl zählt in 2 s bis 500, wie beim Fortschrittsring: langsam los, in der Mitte schnell, zum Ende wieder langsam. Mit jeder neuen Stelle wächst die Pill mit. Auf- und Abbau wie beim Pill-Button.',{dur:5.2,bg:'bg-white',build(st){
+def('elem','el-count','Ös zählen','Die Zahl zählt in 2 s von 0 bis zum jeweiligen Wert, wie beim Fortschrittsring: langsam los, in der Mitte schnell, zum Ende wieder langsam. Mit jeder neuen Stelle wächst die Pill mit. Auf- und Abbau wie beim Pill-Button.',{dur:5.2,bg:'bg-white',build(st){
  const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);ph.style.backgroundSize='cover';const P=pill(st,'',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='calc(100% - 5.375cqw) 50%';P.style.gap='0';
  const n=P.firstChild;n.style.cssText+=';display:inline-block;text-align:center;font-variant-numeric:tabular-nums;line-height:1.2em;height:1.2em;white-space:nowrap;margin-right:.45em';
- const eCount=bez(.76,0,.24,1),val=t=>lerp(1,500,eCount(seg(t,1.3,3.3)));/* langsam los, schnell, langsam aus */
+ const eCount=bez(.76,0,.24,1),val=t=>lerp(0,500,eCount(seg(t,1.3,3.3)));/* langsam los, schnell, langsam aus */
  const cross=[10,100].map(k=>{let t=1.3;while(t<3.3&&val(t)<k)t+=.002;return t});
  return t=>{const v=val(t);
   const g1=eFlow(seg(t,cross[0]-.2,cross[0]+.1)),g2=eFlow(seg(t,cross[1]-.2,cross[1]+.1));
