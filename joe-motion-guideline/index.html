@@ -63,6 +63,7 @@ h2{font-size:clamp(2.6rem,6vw,5.2rem);font-weight:900;letter-spacing:-.045em;lin
 .fill{position:absolute;inset:0}
 .bg-white{background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
 .bg-sand{background:var(--sand)}
+.bg-beige{background:var(--tile)}
 .bg-lilac{background:var(--lilac)}
 .bg-orange{background:var(--orange)}
 .bg-wine{background:var(--wine)}
@@ -567,7 +568,7 @@ def('miss','mi-all','Nicht alles auf einmal','Wenn alles gleichzeitig kommt, wei
 /* Hero: Logo-Konstruktion. Raster und Hilfslinien zeichnen sich, das Logo baut sich darin auf,
    schiebt nach links und gibt Platz für die Pill „Motion Guide“ (Aufbau wie der Pill-Button). */
 function svgEl(p,tag,a,txt){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!==undefined)e.textContent=txt;p.appendChild(e);return e}
-def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
+def('hero','hero','','',{dur:9.6,bg:'bg-beige',build(st){
  const G='#e8371a',O='#f9781e',W='rgba(91,15,12,.55)',F='rgba(91,15,12,.12)',GR='#2f9e6e',MONO='ui-monospace,SF Mono,Menlo,monospace';
  /* globales Raster und Rahmen (1000 × 562,5) */
  const gs=svgEl(st,'svg',{viewBox:'0 0 1000 562.5',preserveAspectRatio:'none'});gs.style.cssText='position:absolute;inset:0;width:100%;height:100%;overflow:visible';
