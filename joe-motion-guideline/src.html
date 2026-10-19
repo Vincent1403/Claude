@@ -457,14 +457,6 @@ def('trans','tr-out','Vollbild wird Kachel','Die volle Fläche zieht sich auf ei
  return t=>{K.set(lerp(1+KR(h)/100+.03,.5,eMorph(seg(t,1.3,2.0))));a(t-.1,1.05);b(t-2.0,9)}}});
 
 /* Layout-Morphs */
-def('morph','mo-format','Formatwechsel','Aus der Story wird das Querformat. Die Kachel wandert dabei von unten an die Seite, die Headline rückt mit.',{badge:'std',dur:5.4,bg:'bg-white',build(st){
- const F=mk(st,'bg-lilac');F.style.overflow='hidden';const K=mk(F,'kg-r');K.style.position='absolute';const T=mk(F,'tx','Mehr<br>Ös.','color:var(--wine);transform:none');
- return t=>{const p=eMorph(seg(t,1.2,2.1))*(1-eMorph(seg(t,3.6,4.5)));
-  const w=lerp(22,70,p),hh=39.4;rect(F,50,H/2,w,hh,1.4);const r=.14*Math.min(w,hh);
-  /* Kachel: Hochformat von unten 50 %, Querformat von rechts 50 % */
-  const kl=lerp(0,w/2,p),kt=lerp(hh/2,0,p),kw=lerp(w,w/2,p),kh=lerp(hh/2,hh,p);box(K,kl,kt,kw+.2,kh+.2);
-  K.style.borderRadius=`${r}cqw ${lerp(r,0,p)}cqw 0 ${lerp(0,r,p)}cqw`;
-  T.style.left=lerp(2.4,4,p)+'cqw';T.style.top=lerp(3,hh/2-4.6,p)+'cqw';T.style.fontSize=lerp(4.6,4.8,p)+'cqw'}}});
 def('morph','mo-swap','Bildwechsel in der Kachel','Die Kachel bleibt stehen, die Bilder darin wechseln. Das neue schiebt sich mit Flow hinein, das alte weicht etwas langsamer. Jedes Bild zoomt sanft, solange es steht.',{dur:6,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h,'');K.style.overflow='hidden';K.set(.5);const hl=headline(st,'r',h,.5,['Mehr','für dich.']);
  const imgs=['img/kian.webp','img/tamara.webp','img/see.webp'].map(src=>{const e=photo(K,src);e.style.cssText+=';position:absolute;inset:0;background-size:cover;background-position:45% 50%';return e});
