@@ -841,14 +841,16 @@ function LocalStage({{width, height, fps, durationInFrames, children}}) {{
   const [frame, setFrame] = useState(() => Math.max(0, Math.min(durationInFrames - 1, +(new URLSearchParams(location.search).get('frame') || 0))));
   const ref = useRef(null);
   useEffect(() => {{
-    if (new URLSearchParams(location.search).has('frame')) return;   // Einzelbild-Modus
+    window.__setFrame = setFrame;
+    if (window.__render || new URLSearchParams(location.search).has('frame')) return;   // Export/Einzelbild: Bild nur über __seek bzw. ?frame
+    if (window.__seeking) return;
     let raf, t0 = performance.now() - frame / fps * 1000;
-    const tick = () => {{ setFrame(Math.floor((performance.now() - t0) / 1000 * fps) % durationInFrames); raf = requestAnimationFrame(tick); }};
+    const tick = () => {{ if (window.__seeking) return; setFrame(Math.floor((performance.now() - t0) / 1000 * fps) % durationInFrames); raf = requestAnimationFrame(tick); }};
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }}, []);
   useLayoutEffect(() => {{
-    const fit = () => {{ const k = Math.min(innerWidth / width, innerHeight / height); ref.current.parentNode.style.transform = `translate(${{(innerWidth - width * k) / 2}}px,${{(innerHeight - height * k) / 2}}px) scale(${{k}})`; }};
+    const fit = () => {{ if (window.__render) {{ ref.current.parentNode.style.transform = 'none'; return; }} const k = Math.min(innerWidth / width, innerHeight / height); ref.current.parentNode.style.transform = `translate(${{(innerWidth - width * k) / 2}}px,${{(innerHeight - height * k) / 2}}px) scale(${{k}})`; }};
     fit(); addEventListener('resize', fit); return () => removeEventListener('resize', fit);
   }}, []);
   window.__frame = frame;
@@ -867,7 +869,7 @@ function PartnerFilm() {{
     host.current.appendChild(vp);
     try {{ fit(); }} catch (e) {{}}
   }}, []);
-  useLayoutEffect(() => {{ window.__t.mSeek(frame / FPS); }}, [frame]);
+  useLayoutEffect(() => {{ if (!window.__seeking) window.__t.mSeek(frame / FPS); }}, [frame]);
   return <div ref={{host}} style={{{{position: 'absolute', inset: 0}}}} />;
 }}
 
@@ -877,7 +879,22 @@ ReactDOM.createRoot(document.getElementById('c2v')).render(
   </Stage>
 );
 </script>"""
-_s = s.replace("</head>", _sc + "</head>", 1).replace("</body>", _ss + "</body>", 1)
+# Export-Schnittstelle des Claude-Design-Stage-Starters: window.__videoMeta + window.__seek(t), ?__render=1 ohne Skalierung
+_sm = f"""<script>
+window.__videoMeta={{width:{ST_W},height:{ST_H},duration:{round(ST_FRAMES / ST_FPS, 6)},fps:{ST_FPS}}};
+window.__render=new URLSearchParams(location.search).has('__render');
+window.__seek=async function(t){{
+  window.__seeking=true;
+  while(!(window.__t&&window.__t.mSeek))await new Promise(r=>setTimeout(r,20));
+  t=Math.max(0,Math.min(t,window.__videoMeta.duration));
+  if(window.__setFrame)window.__setFrame(Math.round(t*{ST_FPS}));
+  window.__t.mSeek(t);
+  const vs=[...document.querySelectorAll('#stage video')].filter(v=>v.seeking);
+  await Promise.all(vs.map(v=>new Promise(r=>{{v.addEventListener('seeked',r,{{once:true}});setTimeout(r,1500)}})));
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+}};
+</script>"""
+_s = s.replace("</head>", _sc + _sm + "</head>", 1).replace("</body>", _ss + "</body>", 1)
 _s = _s.replace("db=window.claude&&window.claude.use?await window.claude.use('db'):null", "db=null /* Stage: keine Datenbank, Timing ist eingebaut */", 1)
 _s = _s.replace("<title>jö Strategiefilm</title>", "<title>jö Partnerfilm 4K</title>", 1)
 _s = _s.replace("$('stage').style.transform=`scale(${$('vp').clientWidth/1920})`", "$('stage').style.transform=`scale(${($('vp').clientWidth||" + str(ST_W) + ")/1920})`", 1)
