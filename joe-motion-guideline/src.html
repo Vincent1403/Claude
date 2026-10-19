@@ -473,12 +473,15 @@ def('morph','mo-flip','Karte dreht sich','Vorderseite Angebot, Rückseite Ös: D
  return t=>{const p=eFlip(seg(t,1.0,1.83)),a=180*p;tf(K,{ry:a});vis(f,a<90);vis(b,a>=90);tf(b,{sx:-1})}}});
 
 /* Elemente */
-def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich nach rechts auf, dann kommt der Text.',{badge:'std',dur:3.6,bg:'bg-orange',build(st){
- const P=pill(st,'Jetzt entdecken',{size:4.4});P.style.left='22cqw';P.style.top=(H/2-4.73)+'cqw';const txt=P.lastChild;txt.style.display='inline-block';const W=P.offsetWidth;
- return t=>{const b=P.querySelector('.jb');tf(b,{s:ePop(seg(t,.3,.72))});const p=eFlow(seg(t,.65,1.25));P.style.width=lerp(9.46,56,p)+'cqw';P.style.background=t<.65?'transparent':'#fff';tf(txt,{y:(1-eIn(seg(t,1.0,1.45)))*3,o:seg(t,1.0,1.15)})}}});
-def('elem','el-tags','Tags','Tags poppen nacheinander auf, klein und schnell.',{dur:3,bg:'bg-lilac',build(st){
- const T=[['neu','Neu'],['akt','Aktion'],['deal','Deals']].map(([k,x],i)=>{const e=tag(st,k,x);e.style.left=(14+i*25)+'cqw';e.style.top=(H/2-3)+'cqw';e.style.transformOrigin='0 50%';return e});
- return t=>T.forEach((e,i)=>tf(e,{s:ePop(seg(t,.3+i*.12,.72+i*.12)),o:seg(t,.3+i*.12,.36+i*.12)}))}});
+def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich nach rechts genau auf die Länge des Texts auf, dann kommt der Text.',{badge:'std',dur:3.6,bg:'bg-orange',build(st){
+ const P=pill(st,'Jetzt entdecken',{size:4.4});P.style.top=(H/2-4.73)+'cqw';const txt=P.lastChild;txt.style.display='inline-block';let Wn=0;
+ return t=>{if(!Wn&&st.clientWidth){P.style.width='auto';Wn=P.offsetWidth/st.clientWidth*100;P.style.left=(50-Wn/2)+'cqw'}if(!Wn)return;
+  tf(P.querySelector('.jb'),{s:ePop(seg(t,.3,.72))});const p=eFlow(seg(t,.65,1.25));P.style.width=lerp(9.46,Wn,p)+'cqw';P.style.background=t<.65?'transparent':'#fff';tf(txt,{y:(1-eIn(seg(t,1.0,1.45)))*3,o:seg(t,1.0,1.15)})}}});
+def('elem','el-tags','Tag','Erst poppt nur das Icon auf, dann schiebt sich der Tag nach rechts auf und gibt das Wort frei.',{dur:3,bg:'bg-lilac',build(st){
+ const T=mk(st,'tag neu c','<i></i><span>Neu</span>');T.style.cssText+=';font-size:4.4cqw;padding:1.6cqw 2.2cqw;gap:1.8cqw;border-radius:1.4cqw;overflow:hidden;transform-origin:0 50%';
+ const ic=T.firstChild,tx=T.lastChild;ic.style.cssText='width:2.4cqw;height:2.4cqw;flex:none';tx.style.display='inline-block';let Wf=0,Wi=0;
+ return t=>{if(!Wf&&st.clientWidth){T.style.width='auto';const Hh=T.offsetHeight;Wf=T.offsetWidth/st.clientWidth*100;Wi=Hh/st.clientWidth*100;const pl=(Wi-2.4)/2;T.style.paddingLeft=T.style.paddingRight=pl+'cqw';Wf+=2*(pl-2.2);T.style.left=(50-Wf/2)+'cqw';T.style.top=(H/2-T.offsetHeight/st.clientWidth*50)+'cqw'}if(!Wf)return;
+  tf(T,{s:ePop(seg(t,.3,.68)),o:seg(t,.3,.36)});const p=eFlow(seg(t,.75,1.2));T.style.width=lerp(Wi,Wf,p)+'cqw';tf(tx,{x:(1-eIn(seg(t,.95,1.35)))*-2,o:seg(t,.95,1.1)})}}});
 def('elem','el-count','Ös zählen','Die Zahl zählt in einem Zug bis 500. Die Pill wächst mit jeder neuen Stelle mit, so steht die Zahl immer mittig in ihrem Feld.',{badge:'std',dur:4.6,bg:'bg-white',build(st){
  const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);const P=pill(st,'1',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='0 50%';P.style.gap='0';
  const n=P.firstChild;n.style.cssText+=';display:inline-block;text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap';
