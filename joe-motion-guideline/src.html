@@ -539,7 +539,7 @@ def('elem','el-ring','Fortschrittsring','Der Ring füllt sich im jö-Verlauf, di
   num.textContent=Math.round(TARGET*p);
   tf(num,{y:(1-eIn(seg(t,.45,.9)))*12-eOut(seg(t,3.9,4.12))*12});
   tf(W,{s:t<.7?ePop(seg(t,.05,.5)):(t>2.7?1+.04*(1-spring(t-2.7)):1),o:1-eOut(seg(t,4.05,4.3))})}}});
-def('elem','el-plus','Ös-Gutschrift','Die Pill poppt mit Überschwinger auf und steigt danach ganz langsam nach oben, wie eine Gutschrift, die davonschwebt.',{dur:4.4,bg:'bg-jg',build(st){
+def('elem','el-plus','Ös-Gutschrift','Die Pill poppt mit Überschwinger auf und steigt danach ganz langsam nach oben, wie eine Gutschrift, die davonschwebt.',{dur:4.4,bg:'bg-beige',build(st){
  const P=mk(st,'c','','position:absolute;display:flex;align-items:center;gap:0;padding:0 4.6cqw;height:13cqw;border-radius:999px;background:var(--jg);box-shadow:0 2.2cqw 5cqw rgba(110,25,10,.35);color:#fff;font-weight:900;font-size:7.6cqw;letter-spacing:-.02em;white-space:nowrap');
  mk(P,'','+ 25','position:static');const ob=osBadge(P,15);ob.style.margin='-1cqw 0 -1cqw -1.6cqw';ob.style.cssText+=';position:static;background:transparent';
  P.style.left='50%';P.style.top=(H/2-6.5)+'cqw';P.style.marginLeft='0';
