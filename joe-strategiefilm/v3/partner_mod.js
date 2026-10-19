@@ -15,7 +15,7 @@
  const blk=(id,lines)=>{const d=document.createElement('div');d.id=id;d.style.cssText=`position:absolute;left:0;right:0;top:${540-lines.length*LH/2}px;text-align:center;color:#670003;font-size:150px;font-weight:900;letter-spacing:-.02em;line-height:${LH}px;white-space:nowrap;pointer-events:none`;
   d.innerHTML=lines.map(l=>`<div style="height:${LH+34}px;margin-bottom:-34px;overflow:hidden">${l.split(' ').map(w=>`<span class="ptW" style="display:inline-block${w.startsWith('*')?`;background:${JG_TXT};-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.22em;margin-bottom:-.22em`:''}">${w.replace('*','')}</span>`).join(' ')}</div>`).join('');
   PT.insertBefore(d,$('ptLogo'));return [...d.querySelectorAll('.ptW')]};
- PTE.w0=blk('ptWords',['Eine Welt voller','starker Marken.']);
+ PTE.w0=blk('ptWords',['Eine Welt voller','*starker Marken.']);
  PTE.w1=blk('ptSent1',['Eine Welt voller Marken.']);
  PTE.w2=blk('ptSent2',['Ein *gemeinsames','Markenerlebnis.']);
  // jö als App-Icon: weißes, abgerundetes Quadrat hinter dem Verlauf-Logo (skaliert mit dem Logo)
