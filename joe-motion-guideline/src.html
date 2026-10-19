@@ -573,7 +573,7 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
  const cx1=gl(500,0,500,562.5,'rgba(232,55,26,.5)'),cy1=gl(0,281.25,1000,281.25,'rgba(232,55,26,.5)');
  const labels=[];const gt=(x,y,txt,c=W,anchor='start')=>{const t=svgEl(gs,'text',{x,y,'font-size':11,'font-family':MONO,fill:c,'text-anchor':anchor},txt);labels.push(t);return t};
  /* Easing-Kurven: jede läuft synchron zur Bewegung, die sie gerade antreibt */
- const curves=[[60,62,'Flow',eFlow,4.2,5.0],[790,62,'jö-Feder',x=>spring(x*.9),1.77,2.9],[60,392,'Pop',ePop,4.75,5.17],[790,392,'Auftritt',eIn,5.45,5.9]].map(([x,y,name,f,a,b])=>{
+ const curves=[[60,62,'Flow',eFlow,4.2,5.0],[790,62,'jö-Feder',x=>spring(x*.9),1.77,2.9],[60,392,'Pop',ePop,4.75,5.17],[790,392,'Auftritt',eIn,5.65,6.1]].map(([x,y,name,f,a,b])=>{
   const gg=svgEl(gs,'g',{transform:`translate(${x} ${y})`}),W2=150,H2=90,Y=v=>H2-((v+.1)/1.45)*H2;
   svgEl(gg,'line',{x1:0,y1:H2,x2:W2,y2:H2,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'});svgEl(gg,'line',{x1:0,y1:0,x2:0,y2:H2,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'});
   svgEl(gg,'line',{x1:0,y1:Y(1),x2:W2,y2:Y(1),stroke:F,'stroke-width':1,'stroke-dasharray':'3 3','vector-effect':'non-scaling-stroke'});
@@ -619,7 +619,7 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
   const s=eFlow(seg(t,4.2,5.0)),gap=4,total=LW+gap+PW,lx=lerp(50,50-total/2+LW/2,s);rect(L.el,lx,H/2,LW,LH);
   const px=50-total/2+LW+gap,py=H/2-PH/2+.6,q=t-4.75;
   P.style.left=px+'cqw';P.style.top=py+'cqw';P.style.height=PH+'cqw';P.style.width=lerp(PH,PW,eFlow(seg(q,.35,.95)))+'cqw';
-  tf(P,{s:q<0?0:ePop(seg(q,0,.42))});tf(pt,{y:(1-eIn(seg(q,.7,1.15)))*3,o:seg(q,.7,.85)})}}});
+  tf(P,{s:q<0?0:ePop(seg(q,0,.42))});tf(pt,{y:(1-eIn(seg(q,.9,1.35)))*PH*.8,o:q>=.9?1:0})}}});/* Text steigt aus der Unterkante der Pill */
 
 /* ---------- Kacheln aufbauen ---------- */
 const stages=[];
