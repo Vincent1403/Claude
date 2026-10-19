@@ -768,6 +768,22 @@ for _i, _k in enumerate(("pos", "pos2", "pos3")):
     CLIPS[_k] = C(round(_p0 + _i * _pl, 4), _pl); PARAMS[_k] = {"len": round(_pl / BEAT, 3), "outAt": round(_pl / BEAT + 1, 3)}
 CLIPS["endtxt"]["start"] = _e1; CLIPS["endtxt"]["len"] = round(CLIPS["endtxt"]["len"] - _X, 4)
 PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(CLIPS["endtxt"]["len"] / BEAT + .5, 2), "hold": 2.5, "bOut": 8.75, "aOut": 8.75, "cIn": 9.25, "cOut": round((CLIPS["logo2"]["start"] - .1 - _e1) / BEAT, 2)}
+# Kunde: U-Bahn- und Billboard-Screen raus → Film genau so viel kürzer; die Musik bekommt an derselben Stelle einen zweiten Schnitt,
+# alles danach rückt um dieselbe Länge vor und bleibt dadurch auf den Hits
+AU_CB = CLIPS["ubahn"]["start"]; AU_CBD = round(CLIPS["bill"]["start"] + CLIPS["bill"]["len"] - AU_CB, 4)
+for k in ("ubahn", "bill"):
+    CLIPS[k]["start"] = 9000.0
+for k, v in CLIPS.items():
+    if AU_CB + AU_CBD - 1e-3 <= v["start"] < 1000:
+        v["start"] = round(v["start"] - AU_CBD, 4)
+rep("const T_MAIN=173.71, FPS=24, TRACK_LEN=169.19;", f"const T_MAIN={round(173.71 - AU_CBD, 2)}, FPS=24, TRACK_LEN={round(169.19 - AU_CBD, 2)};")
+rep("    return o2}}", "    {const cb=Math.round(AU_CB*sr),cbd=Math.round(AU_CBD*sr),o3=actx.createBuffer(o2.numberOfChannels,o2.length-cbd,sr); // zweiter Schnitt (Kunde): U-Bahn + Billboard raus\n"
+    "    for(let ch=0;ch<o2.numberOfChannels;ch++){const d=o2.getChannelData(ch),e=o3.getChannelData(ch);e.set(d.subarray(0,cb));e.set(d.subarray(cb+cbd),cb);for(let i=0;i<xf;i++){const w=i/xf;e[cb+i]=d[cb+cbd+i]*w+d[cb+i]*(1-w)}}\n"
+    "    return o3}}}")
+rep("BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n",
+    f"PEAKS.splice(Math.round({AU_CB}/per),Math.round({AU_CBD}/per));const nb2=BEATS.filter(v=>v<{AU_CB}-.02).concat(BEATS.filter(v=>v>={round(AU_CB + AU_CBD, 4)}-.02).map(v=>+(v-{AU_CBD}).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);"
+    "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n")
+rep("function spliceAudio(){", f"const AU_CB={AU_CB},AU_CBD={AU_CBD};function spliceAudio(){{")
 # Markenfarben: 16 Marken à 1 Schlag brauchen einen Schlag mehr – den gibt das Ende der Partner-Szene ab, alles danach bleibt
 CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BEAT, 4)
 CLIPS["brand"]["start"] = round(CLIPS["brand"]["start"] - BEAT, 4); CLIPS["brand"]["len"] = round(CLIPS["brand"]["len"] + BEAT, 4)
@@ -839,7 +855,7 @@ _p = _p.replace("vp.addEventListener('click',()=>document.getElementById('mPlay'
 (here / "player.html").write_text(_p, encoding="utf-8")
 
 # Stage-Version für den Video-Export: 3840×2160, 4118 Frames @ 24 fps, Bild kommt nur aus useTime()
-ST_W, ST_H, ST_FPS, ST_FRAMES = 3840, 2160, 24, 4118
+ST_W, ST_H, ST_FPS, ST_FRAMES = 3840, 2160, 24, 4118 - round(AU_CBD * 24)
 _sc = f"""<style id="stageOnly">
 html,body{{margin:0;background:#000;overflow:hidden}}
 .wrap{{display:none!important}}
