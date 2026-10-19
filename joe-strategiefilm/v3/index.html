@@ -920,22 +920,22 @@ const LPE={chars:[...JL.querySelectorAll('.lpc')],nav:[...JL.querySelectorAll('[
  const oes=(c,h,sf)=>oesSvg(c).replace('class="oesg"',`class="oesg" style="height:${h}px"`).replace('class="oess"',`class="oess" style="font-size:${sf}px;color:${c}"`);
  const UIG='radial-gradient(85% 120% at 0% 100%,rgba(192,32,58,.95) 0%,rgba(192,32,58,0) 48%),radial-gradient(90% 95% at 100% 0%,#ff7024 0%,rgba(255,112,36,0) 62%),#ee2a06' /* dunkelster Teil immer unten links */,CR='#f4efe8',INK='#6b0505';
  $('ui_jump').innerHTML=`<div style="position:absolute;inset:0;border-radius:26px;overflow:hidden;background:${CR}">
-   <div style="position:absolute;left:324px;top:0;right:0;bottom:0;border-radius:28px 0 0 28px;background:${UIG}"></div>
+   <div style="position:absolute;left:324px;top:0;right:0;bottom:0;border-radius:0;background:${UIG}"></div>
    <svg viewBox="0 0 271.15 182.86" style="position:absolute;left:30px;top:52px;width:250px;overflow:visible"><path d="${LP.J} ${LP.E}" fill="${INK}"/><circle cx="87.99" cy="16.8" r="16.8" fill="${INK}"/><circle cx="152.94" cy="16.8" r="16.8" fill="${INK}"/><circle cx="207.17" cy="16.8" r="16.8" fill="${INK}"/></svg>
    <img src="${UI2.girl}" alt="" style="position:absolute;left:261px;top:17px;width:283px;max-width:none">
    <div style="position:absolute;left:20px;top:296px;width:273px;height:41px;border-radius:99px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 14px;box-sizing:border-box;color:${INK};font-size:17px;font-weight:800;white-space:nowrap">Jetzt Rabatte teilen<span style="display:flex">${[0,1,2].map(i=>`<img class="uiAv" alt="" style="width:31px;height:31px;border-radius:50%;max-width:none;${i?'margin-left:-9px':''}">`).join('')}</span></div></div>`;
  $('ui_save').innerHTML=`<div style="position:absolute;inset:0;border-radius:26px;overflow:hidden;background:${CR}">
    <div style="position:absolute;right:38px;top:28px;font-size:29px;font-weight:500;color:${INK};white-space:nowrap">Meine Ersparnis 2026</div>
-   <div style="position:absolute;left:0;right:0;top:86px;bottom:0;border-radius:40px 40px 0 0;background:${UIG}"></div>
+   <div style="position:absolute;left:0;right:0;top:86px;bottom:0;border-radius:0;background:${UIG}"></div>
    <div style="position:absolute;right:40px;top:132px;font-size:100px;font-weight:800;letter-spacing:-.015em;color:${CR};white-space:nowrap;line-height:1">327,65€</div></div>`;
  const rc=2*Math.PI*111;
  $('ui_ring').innerHTML=`<div style="position:absolute;inset:0;border-radius:24px;overflow:hidden;background:${CR}">
    <svg viewBox="0 0 312 312" style="position:absolute;left:0;top:0;width:312px;height:312px"><defs><linearGradient id="rgU" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#c0233a"/><stop offset=".5" stop-color="#ee2a06"/><stop offset="1" stop-color="#ff7024"/></linearGradient></defs>
     <circle cx="151" cy="151" r="111" fill="none" stroke="#fff" stroke-width="31"/><circle id="uRingArc" cx="151" cy="151" r="111" fill="none" stroke="url(#rgU)" stroke-width="31" stroke-linecap="round" stroke-dasharray="${rc} ${rc}" stroke-dashoffset="${rc*(1-.74)}" transform="rotate(92 151 151)"/></svg>
    <div style="position:absolute;left:0;top:0;width:302px;height:302px;display:grid;place-items:center;color:${INK};font-size:64px;font-weight:900;letter-spacing:-.01em">83</div>
-   <div style="position:absolute;left:0;right:0;top:311px;bottom:0;border-radius:22px 22px 0 0;background:${UIG};display:flex;align-items:center;justify-content:center;text-align:center;color:${CR};font-size:28px;font-weight:700;line-height:1.15">Noch 76 Ös<br>für 10%</div></div>`;
+   <div style="position:absolute;left:0;right:0;top:311px;bottom:0;border-radius:0;background:${UIG};display:flex;align-items:center;justify-content:center;text-align:center;color:${CR};font-size:28px;font-weight:700;line-height:1.15">Noch 76 Ös<br>für 10%</div></div>`;
  $('ui_fav').innerHTML=`<div style="position:absolute;inset:0;border-radius:26px;overflow:hidden;background:${CR}">
-   <div style="position:absolute;left:0;right:0;top:0;height:122px;border-radius:0 0 30px 30px;background:${UIG}"></div>
+   <div style="position:absolute;left:0;right:0;top:0;height:122px;border-radius:0;background:${UIG}"></div>
    <div style="position:absolute;left:35px;top:36px;font-size:38px;font-weight:700;color:${CR};white-space:nowrap">Meine Favoriten</div>
    ${[['#24892f',BA.adeg,112],[BA.bipaCol,BA.bipa,118],[BA.pennyCol,BA.penny,124]].map((c,i)=>`<div style="position:absolute;left:${33+i*165}px;top:165px;width:150px;height:150px;border-radius:50%;background:${c[0]};display:grid;place-items:center;overflow:hidden"><img src="${c[1]}" alt="" style="width:${c[2]}px;max-width:none"></div>`).join('')}</div>`;
  $('ui_plus').innerHTML=`<div style="position:absolute;inset:0;border-radius:99px;background:#f2eee6;box-shadow:0 18px 40px rgba(90,30,0,.16)"></div>
