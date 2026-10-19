@@ -732,6 +732,14 @@ PARAMS["pos"] = {"len": round(CLIPS["pos"]["len"] / BEAT, 3), "outAt": round(CLI
 # Kunde: Beige fährt ruhiger rein – Farben startet 0,5 s später (Ende bleibt, etwas schneller)
 _cn3 = CLIPS["colors"]["len"] * CLIPS["colors"]["rate"]
 CLIPS["colors"]["start"] = round(CLIPS["colors"]["start"] + .5, 4); CLIPS["colors"]["len"] = round(CLIPS["colors"]["len"] - .5, 4); CLIPS["colors"]["rate"] = round(_cn3 / CLIPS["colors"]["len"], 5)
+# Kunde: „Eine Welt voller starker Marken.“ zu lang – 1 Takt raus (Partner-Ablauf früher), der Takt geht an die Angebots-Wand
+_pd3 = round(BARL * .75, 3)
+PARAMS["partner"] = {**PARAMS["partner"], **{k: round(PARAMS["partner"][k] - _pd3, 3) for k in ("swap", "hit", "lOut", "sent2")}}
+CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BARL, 4)
+for k in ("brand", "people", "system", "badges"):
+    CLIPS[k]["start"] = round(CLIPS[k]["start"] - BARL, 4)
+_wn3 = CLIPS["wall"]["rate"] * CLIPS["wall"]["len"]
+CLIPS["wall"]["start"] = round(CLIPS["wall"]["start"] - BARL, 4); CLIPS["wall"]["len"] = round(CLIPS["wall"]["len"] + BARL, 4); CLIPS["wall"]["rate"] = round(_wn3 / CLIPS["wall"]["len"], 4)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
