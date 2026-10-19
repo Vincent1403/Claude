@@ -504,11 +504,11 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
 def('elem','el-push','Push-Nachricht','Die Nachricht kommt von oben, steht kurz und geht schneller wieder, als sie kam.',{dur:3.8,bg:'bg-lilac',build(st){
  const P=mk(st,'push c','<div class="ic"><svg></svg></div><div><small>jö · jetzt</small><b>Neuer Deal bei Hirter</b><span>-25 % mit deinen Ös.</span></div>');staticLogo(P.querySelector('svg'));P.style.left='14cqw';P.style.right='14cqw';P.style.top='18cqw';
  return t=>{const a=eIn(seg(t,.4,.85)),b=eOut(seg(t,2.9,3.2));tf(P,{y:(1-a)*-30+b*-30,o:seg(t,.4,.5)})}}});
-def('elem','el-cutout','Freisteller','Die Person tritt aus der Kachel, die Pill springt dazu. Wie im Banner.',{dur:3.8,bg:'bg-white',build(st){
- const top=mk(st,'bg-lilac');box(top,30,4,40,H/2,0);top.style.borderRadius='2.8cqw 2.8cqw 0 0';const bot=mk(st,'bg-jg');box(bot,30,4+H/2-4,40,H/2-4,0);bot.style.borderRadius='0 0 2.8cqw 2.8cqw';
- const fr=mk(st,'photo c');fr.style.cssText+='background-image:url(img/frau.webp);background-size:contain;background-repeat:no-repeat;background-position:center bottom';box(fr,32,6,36,H-14);
- const P=pill(st,'Sportdeals',{size:3.2,badgeFirst:false});P.style.left='34cqw';P.style.top='34cqw';
- return t=>{const p=eFlow(seg(t,.2,1.0));tf(top,{sy:p,o:1});top.style.transformOrigin='50% 100%';tf(bot,{sy:p});bot.style.transformOrigin='50% 0';tf(fr,{y:(1-eIn(seg(t,.8,1.4)))*10,o:seg(t,.8,.95)});tf(P,{s:ePop(seg(t,1.35,1.75))})}}});
+def('elem','el-cutout','Freisteller','Die Kachel schiebt sich von der Seite herein, die Person tritt vor ihre Kante, die Pill springt dazu. Wie im Banner.',{dur:4,bg:'bg-lilac',build(st,h){
+ const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr Bewegung,','mehr Ös.'],{size:4.4});
+ const fr=mk(st,'c');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,47,3,40,h-3);
+ const P=pill(st,'Sportdeals',{size:3.2,badgeFirst:false});P.style.left='66cqw';P.style.top=(h-14)+'cqw';P.style.zIndex=4;
+ return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(fr,{y:(1-eIn(seg(t,.75,1.35)))*12,o:seg(t,.75,.9)});hl(t-1.0,3.5);tf(P,{s:ePop(seg(t,1.4,1.8))})}}});
 
 /* Timing: Kurven */
 function curveScene(f,dur,col,lbl){return {dur:3,bg:'bg-white',build(st){
