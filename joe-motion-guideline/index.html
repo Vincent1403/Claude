@@ -195,11 +195,6 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  <section id="kachel">
   <h2>Die Kachel</h2>
   <p class="lede">Der Kreis ist Geschichte. Unsere Form ist die Kachel: eine Fläche im jö-Verlauf, die immer angeschnitten ist. Sie ragt von unten oder von der Seite ins Bild, nie frei schwebend. Wie weit, legen drei Stufen fest.</p>
-  <div class="rules">
-   <div><b>Immer im Anschnitt</b><span>Die Kachel berührt drei Bildkanten. Im Hochformat kommt sie von unten, im Querformat von der Seite.</span></div>
-   <div><b>Drei Stufen</b><span>Sie ragt 25, 50 oder 75 % ins Bild. Den Rest behält der Hintergrund, zum Beispiel für die Headline.</span></div>
-   <div><b>Rundung nur innen</b><span>Nur die zwei Ecken im Bild sind gerundet, mit 14 % der kurzen Bildseite.</span></div>
-  </div>
   <h3 class="sub">Stufen im Hochformat</h3>
   <div class="grid g3 keep" data-group="kb"></div>
   <h3 class="sub">Stufen im Querformat</h3>
@@ -438,7 +433,7 @@ STEP.forEach(([f,name,desc,std])=>{
   const K=kachel(st,'b',h);const hl=f<.75?headline(st,'b',h,f,['Mehr','Ös.']):textBlock(st,['Mehr','Ös.'],{size:11,x:7,top:h*(1-f)+10});
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}});
  def('kr','kr-'+f*100,name,desc,{badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
-  const K=kachel(st,'r',h);const hl=f<.75?headline(st,'r',h,f,['Aktiv sein','lohnt sich.']):textBlock(st,['Aktiv sein','lohnt sich.'],{size:5.6,x:100*(1-f)+6,right:6});
+  const K=kachel(st,'r',h);const hl=f<.75?headline(st,'r',h,f,['Aktiv sein','lohnt sich.']):textBlock(st,['Aktiv sein','lohnt sich.'],{size:6.6,x:100*(1-f)+6,right:4});
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}})});
 
 def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stufe ins Bild, dann kommt die Headline.',{badge:'std',dur:3.6,bg:'bg-lilac',build(st,h){
@@ -494,7 +489,7 @@ def('morph','mo-flip','Karte dreht sich','Vorderseite Produkt, Rückseite Rabatt
  const b=mk(K,'fill bg-wine');b.style.borderRadius=R+'cqw';b.style.overflow='hidden';
  mk(b,'','Rabatt','position:absolute;left:0;right:0;top:3.4cqw;text-align:center;color:#fff;font-weight:700;font-size:2.6cqw');
  mk(b,'','5 €','position:absolute;left:0;right:0;top:6.4cqw;text-align:center;color:#fff;font-weight:800;font-size:8cqw;letter-spacing:-.02em');
- const bp=pill(b,'250',{size:3.6,badge:'os',badgeFirst:false});bp.style.cssText+=';position:absolute;top:20.6cqw;justify-content:flex-end;font-weight:800;transform-origin:100% 50%;padding-left:0';const bn=bp.firstChild;bn.style.cssText+=';position:absolute;left:3cqw;display:inline-block';
+ const bp=pill(b,'250',{size:3.6,badge:'os',badgeFirst:false});bp.style.cssText+=';position:absolute;top:20.6cqw;justify-content:flex-end;font-weight:800;transform-origin:calc(100% - 3.87cqw) 50%;padding-left:0';const bn=bp.firstChild;bn.style.cssText+=';position:absolute;left:3cqw;display:inline-block';
  const BW=27,bHc=3.6*2.15;
  return t=>{
   if(!fW&&st.clientWidth){fp.style.width='auto';fW=fp.offsetWidth/st.clientWidth*100}
@@ -529,7 +524,7 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
  const T=mk(L,'bg-wine c','<div style="position:absolute;left:0;right:0;top:1.8cqw;text-align:center;color:#fff;font-weight:700;font-size:1.8cqw">Rabatt</div><div style="position:absolute;left:0;right:0;top:3.6cqw;text-align:center;color:#fff;font-weight:800;font-size:5.2cqw;letter-spacing:-.02em">5 €</div>');
  T.style.cssText+=';position:absolute;left:57cqw;top:-.2cqw;width:17.8cqw;height:20.4cqw;border-radius:0 0 3.4cqw 3.4cqw';
  const P=pill(T,'250',{size:2.9,badge:'os',badgeFirst:false});P.style.position='absolute';P.style.left='1.2cqw';P.style.right='1.2cqw';P.style.top='12.2cqw';P.style.justifyContent='space-between';P.style.paddingLeft='2.4cqw';P.style.fontWeight='800';
- const num=P.firstChild,ob=P.lastChild;num.style.cssText+=';position:absolute;left:2.4cqw;display:inline-block';P.style.justifyContent='flex-end';P.style.transformOrigin='100% 50%';P.style.paddingLeft='0';
+ const num=P.firstChild,ob=P.lastChild;num.style.cssText+=';position:absolute;left:2.4cqw;display:inline-block';P.style.justifyContent='flex-end';P.style.transformOrigin='calc(100% - 3.12cqw) 50%';P.style.paddingLeft='0';
  /* Ring um das Badge ist überall gleich breit (0,2 × Größe), damit die Kreise zentriert ineinander sitzen. Wie der Pill-Button: Ös-Punkt poppt, die Pill zieht sich nach links auf, dann steigt die Zahl */
  return t=>{const a=eIn(seg(t,.4,1.0)),b=eOut(seg(t,3.2,3.5));tf(T,{y:-21*(1-a)-21*b});
   tf(P,{s:ePop(seg(t,1.0,1.42))});const e=eFlow(seg(t,1.35,1.95));P.style.left=lerp(10.36,1.2,e)+'cqw';
