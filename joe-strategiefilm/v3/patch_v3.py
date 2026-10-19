@@ -505,7 +505,7 @@ rep("const v=f(seg(t,a+.2,a+.62));q.v", "const v=f(seg(t,a+.2*g,a+.62*g));q.v")
 rep("const l=f(seg(t,a+.28,a+.6));q.lock", "const l=f(seg(t,a+.28*g,a+.6*g));q.lock")
 rep("pi=f(seg(t,a+.5,a+.8))", "pi=f(seg(t,a+.5*g,a+.8*g))")
 # Endcard startet aus dem App-Icon (Endzustand des Schluss-Logos), nicht mehr aus dem weißen jö
-rep("""fill="#fff"/>`).join('')}</svg>\n<div style="position:absolute;left:0;right:0;top:412px""", """fill="#fff"/>`).join('')}</svg>\n<img id="ecIcon" src="__ECICON__" style="position:absolute;left:710px;top:290px;width:500px;height:500px;border-radius:112.5px;box-shadow:0 30px 60px rgba(90,30,0,.18);transform-origin:50% 50%">\n<div style="position:absolute;left:0;right:0;top:412px""")
+rep("""fill="#fff"/>`).join('')}</svg>\n<div style="position:absolute;left:0;right:0;top:412px""", """fill="#fff"/>`).join('')}</svg>\n<img id="ecIcon" src="__ECICON__" style="position:absolute;left:710px;top:290px;width:500px;height:500px;border-radius:50%;box-shadow:0 30px 60px rgba(90,30,0,.18);transform-origin:50% 50%">\n<div style="position:absolute;left:0;right:0;top:412px""")
 rep("E.jo.style.transform=`scale(${js.toFixed(4)})`;E.jo.style.opacity=js>0.02?1:0;", "E.jo.style.opacity=0;{const ic=$('ecIcon');ic.style.transform=`scale(${js.toFixed(4)})`;ic.style.opacity=js>0.02?1:0} /* App-Icon schrumpft statt des weißen jö */")
 rep("c.setAttribute('fill','#fff');c.style.opacity=js>0.02?1:0})}", "c.setAttribute('fill','#fff');c.style.opacity=0})} /* die Punkte gehören zum weißen jö – mit App-Icon unsichtbar */")
 # Kundenfeedback: jö-Logo statt „Mehr für euch!“ auf der Julian-Karte
@@ -566,6 +566,10 @@ rep('<div id="bbBig" style="position:absolute;left:0;top:0;width:2300px;height:1
     '<div style="position:absolute;inset:0;background:${JG_CSS}"></div><div id="bbBig" style="position:absolute;right:-2px;top:-2px;width:0;height:1004px;border-radius:200px 0 0 200px;background:#f4f1ea"></div>')
 rep("E.big.style.width=(3300-1000*b).toFixed(1)+'px';E.big.style.borderRadius=`0 ${(200*b).toFixed(1)}px ${(200*b).toFixed(1)}px 0`;",
     "E.big.style.width=(1002*b).toFixed(1)+'px';E.big.style.borderRadius=`${(200*b).toFixed(1)}px 0 0 ${(200*b).toFixed(1)}px`;")
+# Schluss-Logo (logo2) wird zum Kreis statt zum App-Icon (Parameter circ)
+rep("const lw0=LOGO_W*SC,lw=lw0+(P.icon*.81-lw0)*ps,sz=lw/.81,sc=lw/lw0;", "const lf=P.circ?.6:.81,lw0=LOGO_W*SC,lw=lw0+(P.icon*lf-lw0)*ps,sz=lw/lf,sc=lw/lw0;")
+rep("borderRadius:(b*.225).toFixed(2)+'px'});", "borderRadius:(b*(P.circ?.5:.225)).toFixed(2)+'px'});")
+rep("round ${(b*.225).toFixed(2)}px)", "round ${(b*(P.circ?.5:.225)).toFixed(2)}px)")
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)
@@ -745,6 +749,10 @@ for k in ("brand", "people", "system", "badges"):
     CLIPS[k]["start"] = round(CLIPS[k]["start"] - BARL, 4)
 _wn3 = CLIPS["wall"]["rate"] * CLIPS["wall"]["len"]
 CLIPS["wall"]["start"] = round(CLIPS["wall"]["start"] - BARL, 4); CLIPS["wall"]["len"] = round(CLIPS["wall"]["len"] + BARL, 4); CLIPS["wall"]["rate"] = round(_wn3 / CLIPS["wall"]["len"], 4)
+# Kunde: jö-Logo nach „Verbindung.“ raus – die drei Satzenden stehen dafür länger, „Markenbühne“ kommt wie bisher; Schluss-Logo im Kreis
+CLIPS["logo4"]["start"] = 9000.0
+PARAMS["endtxt"] = {**PARAMS["endtxt"], "hold": 5.25, "bOut": 16.0, "aOut": 16.0}
+PARAMS["logo2"] = {**PARAMS["logo2"], "circ": 1}
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
