@@ -391,7 +391,7 @@ const SC=[];const def=(g,id,name,desc,o)=>SC.push({g,id,name,desc,...o});
 
 /* Prinzipien */
 def('prinzip','p-klar','Klar','Pro Moment ein Fokus. Tag, Headline und Pill kommen nacheinander, jedes mit seinem eigenen Aufbau.',{dur:4.6,bg:'bg-lilac',build(st){
- const tg=tagBuild(st,'neu','Neu',{size:2.6,x:8,y:9});const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:7,top:17});const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:8,y:39});
+ const tg=tagBuild(st,'neu','Neu',{size:1.9,x:8,y:10});const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:7,top:17});const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:8,y:39});
  return t=>{tg(t-.2,3.9);tx(t-1.0,3.8);pl(t-1.9,3.9)}}});
 def('prinzip','p-freundlich','Freundlich','Weich beschleunigen, ruhig ankommen. Auch beim Halten bleibt das Bild leicht in Bewegung.',{dur:4.2,bg:'bg-sand',build(st,h){
  const K=kachel(st,'r',h,'');K.style.overflow='hidden';const ph=photo(K,'img/kian.webp');ph.style.cssText+=';position:absolute;inset:0;background-size:cover;background-position:40% 50%';
