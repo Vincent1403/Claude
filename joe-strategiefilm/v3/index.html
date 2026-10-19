@@ -3808,11 +3808,11 @@ const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „D
    c.style.transform=`scale(${k.toFixed(4)})`;c.style.visibility=pre&&k>.001?'visible':'hidden'})};
 }
 
-/* Partnerfilm (Kunde): „Farben“ – der Verlauf kommt von oben und drückt die Farbspalten nur in die untere Bildhälfte,
-   die Hex-Erklärung läuft in der oberen Hälfte (alle Markenfarben bleiben sichtbar); zum Schluss wird der Verlauf Vollbild. */
+/* Partnerfilm (Kunde): „Farben“ – der Verlauf kommt von oben und drückt die Farbspalten ins untere Viertel,
+   die Hex-Erklärung läuft in den oberen drei Vierteln (alle Markenfarben bleiben sichtbar); zum Schluss wird der Verlauf Vollbild. */
 {const box=FCE.box,wrap=document.createElement('div');wrap.style.cssText='position:absolute;inset:0;filter:drop-shadow(0 24px 40px rgba(60,20,30,.18))';
  box.parentNode.insertBefore(wrap,box);wrap.appendChild(box);box.style.boxShadow='none';box.style.borderRadius='0';
- const HALF=540,PY=[455,362,269,176,83]; // Pills auf der Diagonale, nur obere Hälfte
+ const HALF=810,PY=[700,547,394,241,88]; // Kunde: Farben nur noch im unteren Viertel; Pills auf der Diagonale in den oberen 75 %
  FCE.ps.forEach((d,k)=>{const x=173+k*346,y=PY[k],c=typeof jgAt==='function'?jgAt(x,y):JG_PILLS[k][2];d.style.top=(y-40)+'px';
   d.firstElementChild.style.background=c;d.lastElementChild.textContent=c.toUpperCase()});
  const r0=COLORS.render;
