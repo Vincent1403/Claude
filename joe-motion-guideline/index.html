@@ -489,14 +489,20 @@ def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich
  const d=pillBuild(st,'Jetzt entdecken',{size:4.4,y:H/2-4.73,center:true});return t=>d(t-.3)}});
 def('elem','el-tags','Tag','Erst poppt nur das Icon auf, dann schiebt sich der Tag nach rechts auf und gibt das Wort frei.',{dur:3,bg:'bg-lilac',build(st){
  const d=tagBuild(st,'neu','Neu',{size:4.4,center:true});return t=>d(t-.3)}});
-def('elem','el-count','Ös zählen','Die Zahl zählt in einem Zug bis 500. Die Pill wächst mit jeder neuen Stelle mit, so steht die Zahl immer mittig in ihrem Feld.',{badge:'std',dur:4.6,bg:'bg-white',build(st){
- const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);const P=pill(st,'1',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='0 50%';P.style.gap='0';
- const n=P.firstChild;n.style.cssText+=';display:inline-block;text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap';
- const D=5*.62,W1=D+3.2,val=t=>Math.max(1,Math.round(lerp(1,500,eFlow(seg(t,.6,2.8)))));
- /* Zeitpunkte, an denen die Zahl 10 und 100 erreicht: dort wächst das Feld um eine Stelle */
- const cross=[10,100].map(k=>{let t=.6;while(t<2.8&&val(t)<k)t+=.002;return t});
- return t=>{const v=val(t);let w=W1;cross.forEach(c=>w+=D*eFlow(seg(t,c-.18,c+.07)));n.style.width=w+'cqw';n.textContent=v;
-  tf(P,{s:t<.6?ePop(seg(t,.1,.45)):(t>2.8?1+.06*(1-spring(t-2.8)):1)})}}});
+def('elem','el-count','Ös zählen','Die Ziffern rollen weich bis 500 und werden zum Ende langsamer. Mit jeder neuen Stelle wächst die Pill mit, so steht die Zahl immer mittig in ihrem Feld.',{badge:'std',dur:6,bg:'bg-white',build(st){
+ const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);const P=pill(st,'',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='0 50%';P.style.gap='0';
+ const n=P.firstChild;n.style.cssText+=';display:inline-flex;font-variant-numeric:tabular-nums;line-height:1.2em;height:1.2em;overflow:hidden;margin-right:.45em';
+ /* Ziffern-Rollen: Hunderter, Zehner, Einer; jede Rolle zeigt 0–9 und noch einmal 0 */
+ const cols=[0,1,2].map(()=>{const c=document.createElement('span');c.style.cssText='display:inline-block;height:1.2em;overflow:hidden;position:relative';
+  const r=document.createElement('span');r.style.cssText='position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;align-items:center';r.innerHTML=[0,1,2,3,4,5,6,7,8,9,0].map(d=>`<span style="height:1.2em">${d}</span>`).join('');c.appendChild(r);c.r=r;n.appendChild(c);return c});
+ const val=t=>lerp(1,500,eSoft(seg(t,.9,4.3)));
+ const cross=[10,100].map(k=>{let t=.9;while(t<4.3&&val(t)<k)t+=.002;return t});
+ return t=>{const v=val(t),one=v%10,ten=Math.floor(v/10)%10,ex1=Math.max(0,one-9);
+  const pos=[Math.floor(v/100)%10+(ten===9?ex1:0),ten+ex1,one];
+  const g=[eFlow(seg(t,cross[1]-.2,cross[1]+.1)),eFlow(seg(t,cross[0]-.2,cross[0]+.1)),1];
+  /* leichte Bewegungsunschärfe auf den Einern, solange sie schnell rollen */const sp=(val(t+.01)-v)*100;
+  cols.forEach((c,k)=>{c.style.width=(.62*g[k])+'em';c.style.display=g[k]<.01?'none':'inline-block';c.r.style.transform=`translateY(${(-pos[k]*1.2).toFixed(4)}em)`;c.r.style.filter=k===2&&sp>30?`blur(${Math.min(.05,sp/6000).toFixed(3)}em)`:''});
+  tf(P,{s:t<.6?ePop(seg(t,.1,.45)):(t>4.3?1+.05*(1-spring(t-4.3)):1)})}}});
 def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkante herein und hängt an ihr. Die Ös-Pill baut sich auf wie der Pill-Button.',{badge:'acc',dur:3.8,bg:'bg-lilac',build(st){
  const L=mk(st,'');box(L,8.8,7,82.4,42.6,5);L.style.border='.12cqw solid var(--ink)';L.style.overflow='hidden';
  const T=mk(L,'bg-wine c','<div style="position:absolute;left:0;right:0;top:1.8cqw;text-align:center;color:#fff;font-weight:700;font-size:1.8cqw">Rabatt</div><div style="position:absolute;left:0;right:0;top:3.6cqw;text-align:center;color:#fff;font-weight:800;font-size:5.2cqw;letter-spacing:-.02em">5 €</div>');
