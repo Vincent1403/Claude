@@ -378,7 +378,7 @@ function textBlock(p,lines,o={}){const{mode='word',size=7.4,color='#fff',align='
    if(wi<arr.length-1)L.appendChild(document.createTextNode(' '))})});
  if(o.hl&&o.hl!=='grad')w.style.setProperty('--hl',o.hl);
  return (t,out=99)=>units.forEach((u,i)=>{let y=0,xx=0,sc=1,op=1;const q=t-u.d;
-  if(t>=out){const e=seg(t-out,i*.03,i*.03+.22);y=130*eOut(e);if(e>=1)op=0}
+  if(t>=out){const e=seg(t-out,i*.03,i*.03+.22);y=-130*eOut(e);if(e>=1)op=0}/* Abgang nach oben aus der Kante */
   else if(mode==='word'||mode==='line'){y=130*(1-eIn(seg(q,0,.45)));if(q<=0)op=0}
   else if(mode==='letter'){y=60*(1-eIn(seg(q,0,.6)));op=seg(q,0,.25)}
   else if(mode==='left'){xx=-(1-eIn(seg(q,0,.7)))*120}
