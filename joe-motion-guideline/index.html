@@ -63,16 +63,6 @@ button:focus-visible,a:focus-visible,video:focus-visible{outline:2px solid var(-
 
 /* Rhythmus */
 .grid2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:start}
-.beat-wrap{background:var(--chip);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:14px}
-.beat-svg{width:100%;height:auto;display:block}
-.rules{list-style:none;margin:0;padding:0;display:grid;gap:14px}
-.rules li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px}
-.rules li::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--burg);margin-top:5px}
-.rules b{font-weight:800}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.stat{display:grid;gap:2px}
-.stat .v{font-size:1.7rem;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.stat .l{font-size:.82rem;color:var(--muted)}
 
 /* Easing */
 .eases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
@@ -141,7 +131,7 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
 
 @media (max-width:900px){
  .hero,.grid2,.board{grid-template-columns:minmax(0,1fr)}
- .principles,.spec,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .principles,.spec{grid-template-columns:repeat(2,minmax(0,1fr))}
  .eases{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:560px){
@@ -153,64 +143,41 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
 </style>
 
 <div class="wrap">
- <div class="top"><span><b>jö</b> Brand · Motion Guideline</span><span>Entwurf v0.1 · Oktober 2026 · abgeleitet aus dem jö Markenfilm</span></div>
+ <div class="top"><span><b>jö</b> Brand · Motion Guideline</span><span>Entwurf v0.2 · Oktober 2026</span></div>
 
  <header class="hero">
   <div class="txt">
    <span class="eyebrow">Motion Guideline</span>
    <h1>So bewegt sich jö.</h1>
-   <p class="lede">Im Takt der Musik, mit einem kleinen Sprung und ruhiger Schrift. Diese Seite fasst zusammen, wie sich die Marke im Markenfilm bewegt, damit jede neue Animation gleich aussieht.</p>
+   <p class="lede">Freundlich, klar und mit einem kleinen Sprung. Diese Seite legt fest, wie sich jö bewegt, egal ob in Film, Social, Display oder App. So sieht jede Animation nach derselben Marke aus.</p>
    <div class="facts">
-    <span class="fact"><b>24</b> fps</span><span class="fact"><b>105</b> BPM</span><span class="fact">1 Schlag = <b>0,572 s</b></span><span class="fact">1 Takt = <b>2,286 s</b></span>
+    <span class="fact"><b>6</b> Kurven</span><span class="fact"><b>1</b> Feder als Signatur</span><span class="fact"><b>5</b> Dauerstufen</span><span class="fact">Auftritt <b>0,45 s</b></span>
    </div>
   </div>
   <div style="display:grid;gap:10px;min-width:0">
    <div class="stage" id="heroStage" aria-label="Live-Animation des jö-Logos"><svg class="logo-svg" viewBox="-10 -60 291 253" aria-hidden="true"></svg></div>
-   <div class="stage-bar"><button class="btn" data-logo="heroStage" type="button">▶ Logo abspielen</button><span>Live gerendert aus den Originalpfaden des Markenfilms</span></div>
+   <div class="stage-bar"><button class="btn" data-logo="heroStage" type="button">▶ Logo abspielen</button><span>Live gerendert aus den Original-Logopfaden</span></div>
   </div>
  </header>
 
  <nav class="toc" aria-label="Inhalt"><ul>
-  <li><a href="#prinzipien">Prinzipien</a></li><li><a href="#rhythmus">Rhythmus</a></li><li><a href="#easing">Easing</a></li><li><a href="#timing">Timing</a></li><li><a href="#text">Text</a></li><li><a href="#logo">Logo</a></li><li><a href="#uebergaenge">Übergänge</a></li><li><a href="#regeln">Do &amp; Don’t</a></li><li><a href="#referenz">Kurzreferenz</a></li><li><a href="#offen">Offene Punkte</a></li>
+  <li><a href="#prinzipien">Prinzipien</a></li><li><a href="#easing">Easing</a></li><li><a href="#timing">Timing</a></li><li><a href="#text">Text</a></li><li><a href="#logo">Logo</a></li><li><a href="#uebergaenge">Übergänge</a></li><li><a href="#regeln">Do &amp; Don’t</a></li><li><a href="#referenz">Kurzreferenz</a></li><li><a href="#offen">Offene Punkte</a></li>
  </ul></nav>
 
  <!-- Prinzipien -->
  <section id="prinzipien">
   <div class="sec-head"><span class="eyebrow">Prinzipien</span><h2>Vier Regeln, die alles andere erklären</h2></div>
   <div class="principles">
-   <div class="pr"><span class="k">01</span><h3>Im Takt</h3><p>Jeder Schnitt liegt auf der Eins eines Takts. Szenen dauern ganze Takte. Wird etwas länger oder kürzer, verschiebt sich der Rest um ganze Takte.</p></div>
+   <div class="pr"><span class="k">01</span><h3>Eins nach dem anderen</h3><p>Pro Moment gibt es einen Fokus. Elemente kommen nacheinander mit festen Abständen, nie alle gleichzeitig. So weiß das Auge immer, wohin es schauen soll.</p></div>
    <div class="pr"><span class="k">02</span><h3>Der jö-Sprung</h3><p>Die Punkte im Logo springen und federn nach. Diese Feder ist unsere Signatur. Wir setzen sie gezielt als Akzent ein, nicht auf jedes Element.</p></div>
    <div class="pr"><span class="k">03</span><h3>Ruhige Schrift</h3><p>Text steigt Wort für Wort aus einer unsichtbaren Kante. Er geht schneller ab, als er kommt. Satzenden bleiben länger stehen.</p></div>
    <div class="pr"><span class="k">04</span><h3>Nie ganz still</h3><p>Schnell rein, langsam treiben, schnell raus. Auch in Haltephasen wächst oder driftet das Bild leicht. Standbilder gibt es nicht.</p></div>
   </div>
  </section>
 
- <!-- Rhythmus -->
- <section id="rhythmus">
-  <div class="sec-head"><span class="eyebrow">Rhythmus</span><h2>Die Musik gibt das Raster vor</h2><p class="muted">Alle Zeiten im Film leiten sich vom Tempo des Tracks ab. Wer in Frames arbeitet, rechnet mit 13,7 Frames pro Schlag und 55 Frames pro Takt.</p></div>
-  <div class="stats">
-   <div class="stat"><span class="v">24 fps</span><span class="l">Bildrate aller Exporte</span></div>
-   <div class="stat"><span class="v">105 BPM</span><span class="l">Tempo des Markenfilm-Tracks</span></div>
-   <div class="stat"><span class="v">13,7 F</span><span class="l">1 Schlag · 0,572 s</span></div>
-   <div class="stat"><span class="v">55 F</span><span class="l">1 Takt (4 Schläge) · 2,286 s</span></div>
-  </div>
-  <div class="grid2">
-   <div class="beat-wrap">
-    <svg class="beat-svg" id="beatSvg" viewBox="0 0 640 170" role="img" aria-label="Taktraster: vier Takte zu je vier Schlägen, Schnitte auf der Eins"></svg>
-    <div class="stage-bar"><button class="btn" id="beatBtn" type="button" aria-pressed="false">▶ Im Tempo abspielen</button><button class="btn" id="clickBtn" type="button" aria-pressed="false">Klick hörbar</button><span>Der Punkt springt auf jedem Schlag, Schnitte fallen auf die Eins.</span></div>
-   </div>
-   <ul class="rules">
-    <li><span><b>Schnitte auf die Eins.</b> Schnitte auf Schlag 2, 3 oder 4 wirken im Film neben der Musik und wurden alle auf die Eins verlegt.</span></li>
-    <li><span><b>2 Frames Vorlauf.</b> Eine Bewegung startet 2 Frames vor dem Schlag, damit sie genau auf dem Schlag sichtbar wird.</span></li>
-    <li><span><b>Nur ganze Takte verschieben.</b> „Einen Takt kürzer, der Takt geht an die nächste Szene“: so bleibt jeder folgende Schnitt auf der Musik.</span></li>
-    <li><span><b>Unterteilungen.</b> Kleinere Abstände sind ¼, ½ oder 1 Schlag, zum Beispiel Wörter im Sechzehntel-Abstand oder Farbwechsel auf jedem Schlag.</span></li>
-   </ul>
-  </div>
- </section>
-
  <!-- Easing -->
  <section id="easing">
-  <div class="sec-head"><span class="eyebrow">Easing</span><h2>Sechs Kurven und eine Feder</h2><p class="muted">Im Film stecken über fünfzehn leicht verschiedene Kurven. Für neue Arbeiten gilt nur dieses Set. Karte antippen, um die Kurve abzuspielen.</p></div>
+  <div class="sec-head"><span class="eyebrow">Easing</span><h2>Sechs Kurven und eine Feder</h2><p class="muted">Für alle Bewegungen gilt nur dieses Set. Karte antippen, um die Kurve abzuspielen.</p></div>
   <div class="stage-bar"><button class="btn" id="easeAll" type="button">▶ Alle abspielen</button></div>
   <div class="eases" id="eases"></div>
   <p class="note">Die <b>jö-Feder</b> ist kein Bézier: Sie schlägt alle 4 Frames in die Gegenrichtung aus, und jeder Ausschlag ist etwa 40 % so groß wie der vorige. Nach rund 0,9 Sekunden steht sie. Sie steckt in den Logo-Punkten, den Bounce-Varianten der Schrift und den Coin-Übergängen.</p>
@@ -218,20 +185,20 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
 
  <!-- Timing -->
  <section id="timing">
-  <div class="sec-head"><span class="eyebrow">Timing</span><h2>Dauern in fünf Stufen</h2><p class="muted">Kleine Dinge sind schnell, große Flächen brauchen Zeit. Abgänge dauern etwa halb so lang wie Auftritte.</p></div>
+  <div class="sec-head"><span class="eyebrow">Timing</span><h2>Dauern in fünf Stufen</h2><p class="muted">Kleine Dinge sind schnell, große Flächen brauchen Zeit. Abgänge dauern etwa halb so lang wie Auftritte. Frames gelten bei 24 fps.</p></div>
   <div class="tbl-wrap"><table>
-   <thead><tr><th>Stufe</th><th>Dauer</th><th>Frames</th><th>Kurve</th><th>Beispiele aus dem Film</th></tr></thead>
+   <thead><tr><th>Stufe</th><th>Dauer</th><th>Frames</th><th>Kurve</th><th>Beispiele</th></tr></thead>
    <tbody id="durRows"></tbody>
   </table></div>
   <div class="tbl-wrap"><table>
-   <thead><tr><th>Versatz (Stagger)</th><th>Wert</th><th>Im Raster</th><th>Einsatz</th></tr></thead>
+   <thead><tr><th>Versatz (Stagger)</th><th>Wert</th><th>Frames</th><th>Einsatz</th></tr></thead>
    <tbody>
     <tr><td>Buchstaben</td><td class="n">0,03 s</td><td class="n">≈ 1 F</td><td>Buchstabe-für-Buchstabe-Reveal</td></tr>
     <tr><td>Wörter beim Abgang</td><td class="n">0,03 s</td><td class="n">≈ 1 F</td><td>Text fällt fast gemeinsam zurück in die Kante</td></tr>
     <tr><td>Logo-Punkte, Partner-Logos</td><td class="n">0,083 s</td><td class="n">2 F</td><td>Punkte landen nacheinander, Logos fliegen nacheinander ein</td></tr>
     <tr><td>Karten</td><td class="n">0,21 s</td><td class="n">5 F</td><td>Kartenstapel, App-Karten</td></tr>
-    <tr><td>Wörter beim Auftritt</td><td class="n">0,143 s</td><td class="n">¼ Schlag</td><td>Standard für Headlines</td></tr>
-    <tr><td>Zeilen</td><td class="n">0,286 s</td><td class="n">½ Schlag</td><td>Zeile-für-Zeile-Reveal</td></tr>
+    <tr><td>Wörter beim Auftritt</td><td class="n">0,14 s</td><td class="n">3–4 F</td><td>Standard für Headlines</td></tr>
+    <tr><td>Zeilen</td><td class="n">0,28 s</td><td class="n">7 F</td><td>Zeile-für-Zeile-Reveal</td></tr>
    </tbody>
   </table></div>
  </section>
@@ -257,14 +224,14 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
   </div>
   <div class="spec">
    <div><span class="v">110 % der Zeile</span><span class="l">Weg von unten durch die Kante</span></div>
-   <div><span class="v">0,45 s · Auftritt</span><span class="l">Expo-out, Wortabstand ¼ Schlag</span></div>
+   <div><span class="v">0,45 s · Auftritt</span><span class="l">Expo-out, Wortabstand 0,14 s</span></div>
    <div><span class="v">0,22 s · Abgang</span><span class="l">Cubic-in, zurück in die Kante</span></div>
    <div><span class="v">+2,5 % beim Halten</span><span class="l">Der Textblock wächst langsam weiter</span></div>
   </div>
   <div class="boards">
    <div class="board">
     <video src="videos/text_reveal_aligned_left.mp4" muted loop playsinline preload="metadata" aria-label="Referenz: Text-Reveal linksbündig, vier Varianten"></video>
-    <div class="meta"><h3>Linksbündig</h3><p class="muted">Für Headlines und Aussagen im Film. Alle vier Varianten brauchen etwa 18 Frames, ohne Überschwinger.</p>
+    <div class="meta"><h3>Linksbündig</h3><p class="muted">Für Headlines und Aussagen. Alle vier Varianten brauchen etwa 18 Frames, ohne Überschwinger.</p>
      <ul class="vlist">
       <li><span class="pos">↖</span><span>Wort für Wort<span class="chip std">Standard</span></span></li>
       <li><span class="pos">↗</span><span>Buchstabe für Buchstabe<span class="chip opt">Variante</span></span></li>
@@ -305,7 +272,7 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
     </tbody>
    </table></div>
   </div>
-  <p class="note">Die Landung der Punkte ist der Schlüsselmoment. Wir legen ihn auf einen Schlag der Musik: Der Clip beginnt 1,33 s vor dem gewünschten Schlag.</p>
+  <p class="note">Die Landung der Punkte ist der Schlüsselmoment, 1,33 s nach Clipstart. Soll sie mit einem Schnitt, Sound oder Akzent zusammenfallen, startet die Animation 1,33 s davor.</p>
   <div class="boards">
    <div class="board">
     <video src="videos/logo_animation.mp4" muted loop playsinline preload="metadata" aria-label="Referenz: Logo-Animation, Board 1"></video>
@@ -342,7 +309,7 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
 
  <!-- Übergänge -->
  <section id="uebergaenge">
-  <div class="sec-head"><span class="eyebrow">Übergänge</span><h2>Schnitt auf der Eins, Coin als Akzent</h2><p class="muted">Der Standard ist der harte Schnitt auf dem Takt. Der Coin, die runde Form aus dem Logo, öffnet neue Kapitel. Weitere Übergänge kommen nur dort vor, wo die Bewegung etwas erzählt.</p></div>
+  <div class="sec-head"><span class="eyebrow">Übergänge</span><h2>Harter Schnitt, Coin als Akzent</h2><p class="muted">Der Standard ist der harte Schnitt. Der Coin, die runde Form aus dem Logo, öffnet neue Kapitel. Weitere Übergänge kommen nur dort vor, wo die Bewegung etwas erzählt.</p></div>
   <div class="board">
    <video src="videos/transition.mp4" muted loop playsinline preload="metadata" aria-label="Referenz: Coin-Übergänge, vier Varianten"></video>
    <div class="meta"><h3>Coin-Shape</h3><p class="muted">Ein schräg liegender Coin wächst aus einem Punkt bis über das Bild. Vollbild in rund 9 Frames, Masken federn bis etwa Frame 46 nach.</p>
@@ -356,12 +323,12 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
   <div class="tbl-wrap"><table>
    <thead><tr><th>Übergang</th><th>Dauer</th><th>Kurve</th><th>Wann</th></tr></thead>
    <tbody>
-    <tr><td><b>Harter Schnitt</b></td><td class="n">0 F, auf der Eins</td><td>–</td><td>Standard zwischen Szenen</td></tr>
+    <tr><td><b>Harter Schnitt</b></td><td class="n">0 F</td><td>–</td><td>Standard zwischen Szenen. Läuft Musik, liegt der Schnitt auf einem Akzent.</td></tr>
     <tr><td><b>Coin / Kreis-Reveal</b></td><td class="n">0,4–0,8 s</td><td>Morph</td><td>Neues Kapitel, Farbwechsel, Logo-Auftritt</td></tr>
     <tr><td><b>Panel schiebt herein</b></td><td class="n">0,8–1,2 s</td><td>Flow</td><td>Beige Fläche über Bild, Karten, Formate</td></tr>
-    <tr><td><b>3D-Flip</b></td><td class="n">20 F</td><td>Flip</td><td>Personen wechseln, die 90°-Kante liegt auf dem Schlag</td></tr>
+    <tr><td><b>3D-Flip</b></td><td class="n">20 F</td><td>Flip</td><td>Personen, Seiten oder Karten wechseln</td></tr>
     <tr><td><b>Morph</b></td><td class="n">0,6–0,7 s</td><td>Morph</td><td>Icon wird Karte, Logo wird App-Icon</td></tr>
-    <tr><td><b>Zoom durch einen Kreis</b></td><td class="n">1,4–1,6 s</td><td>Flow</td><td>Von einer Person in die Profilwolke</td></tr>
+    <tr><td><b>Zoom durch einen Kreis</b></td><td class="n">1,4–1,6 s</td><td>Flow</td><td>Von einem Detail in einen neuen Raum</td></tr>
    </tbody>
   </table></div>
  </section>
@@ -371,15 +338,15 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
   <div class="sec-head"><span class="eyebrow">Do &amp; Don’t</span><h2>Woran man jö-Bewegung erkennt</h2></div>
   <div class="dd">
    <div class="c do"><h3>✓ So machen wir es</h3><ul>
-    <li>Schnitte auf die Eins, Szenen in ganzen Takten</li>
+    <li>Ein Fokus pro Moment, Elemente nacheinander</li>
     <li>Eine Feder pro Szene, auf dem wichtigsten Element</li>
-    <li>Text aus der Kante, Wort für Wort, ¼ Schlag Abstand</li>
+    <li>Text aus der Kante, Wort für Wort, 0,14 s Abstand</li>
     <li>Abgänge etwa doppelt so schnell wie Auftritte</li>
     <li>In Haltephasen leicht weiter wachsen oder driften (2–5 %)</li>
-    <li>Satzenden mindestens einen Schlag länger stehen lassen</li>
+    <li>Satzenden etwas länger stehen lassen, mindestens 0,5 s</li>
    </ul></div>
    <div class="c dont"><h3>✕ Das vermeiden wir</h3><ul>
-    <li>Schnitte auf Schlag 2, 3 oder 4</li>
+    <li>Alles gleichzeitig bewegen</li>
     <li>Alles federn lassen, sodass der Akzent verloren geht</li>
     <li>Text einblenden, ohne dass er sich bewegt, oder mit Blur-Effekten außerhalb des Buchstaben-Reveals</li>
     <li>Lineare Bewegungen, außer bei Kamerafahrten in Videos</li>
@@ -400,17 +367,17 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
 
  <!-- Offen -->
  <section id="offen">
-  <div class="sec-head"><span class="eyebrow">Offene Punkte</span><h2>Was wir noch entscheiden müssen</h2><p class="muted">Im Film sind manche Werte mehrfach und leicht unterschiedlich angelegt. Für die Guideline brauchen wir je einen.</p></div>
+  <div class="sec-head"><span class="eyebrow">Offene Punkte</span><h2>Was wir noch entscheiden müssen</h2><p class="muted">Manche Werte gibt es bisher mehrfach in leicht unterschiedlichen Varianten. Für die Guideline brauchen wir je einen.</p></div>
   <ol class="open">
    <li><b>Varianten auswählen.</b> Welche Text-, Logo- und Übergangsvarianten auf den Boards werden Standard, welche Akzent, welche fallen weg? Die Markierungen oben sind ein Vorschlag.</li>
-   <li><b>Ein Burgund.</b> Im Film stehen #821419, #670003, #6B0505 und #AA3836 (Palette). Für Flächen in Bewegung brauchen wir einen Wert.</li>
+   <li><b>Ein Burgund.</b> Bisher im Einsatz: #821419, #670003, #6B0505 und #AA3836 (Palette). Für Flächen in Bewegung brauchen wir einen Wert.</li>
    <li><b>Ein Beige.</b> #F4F1EA, #F6F1EA, #F4EFE8 und #F3EEE6 kommen vor.</li>
    <li><b>Eine Glas-Karte.</b> Vier Varianten mit Blur 16–18 px und Radius 22–28 px.</li>
-   <li><b>Tempo für andere Tracks.</b> Gilt 105 BPM als Markentempo, oder richtet sich das Raster immer nach dem jeweiligen Track?</li>
+   <li><b>Bildrate.</b> Exportieren wir in 24 oder 25 fps? Die Frame-Angaben auf dieser Seite gelten für 24 fps.</li>
   </ol>
  </section>
 
- <footer><span>jö Motion Guideline · Entwurf v0.1</span><span>Quelle: jö Markenfilm (index_markenfilm.html) und die Referenz-Boards</span></footer>
+ <footer><span>jö Motion Guideline · Entwurf v0.2</span><span>Werte abgeleitet aus dem jö Markenfilm und den Referenz-Boards</span></footer>
 </div>
 
 <script>
@@ -470,46 +437,26 @@ addEventListener('resize',()=>EASES.forEach(e=>setEase(e,1)));
 
 /* ---------- Dauer-Tabelle ---------- */
 const DUR=[
- ['XS','0,14–0,15 s','3–4','Pop','Punkte erscheinen, Badge-Morph'],
- ['S','0,22–0,3 s','5–7','Abgang','Wörter fallen zurück, Aussagen schieben sich weg'],
- ['M','0,4–0,55 s','10–13','Auftritt, Pop','Wort-Reveal, Icons und Pills, Glas-Karten'],
- ['L','0,8–1,2 s','19–29','Flow','Farbkarten, beige Panels, Formate'],
- ['XL','1,4–1,9 s','34–46','Flow','Zoom durch einen Kreis, Story-Übergänge'],
+ ['XS','0,14–0,15 s','3–4','Pop','Punkte, Badges, kleine Statuswechsel'],
+ ['S','0,22–0,3 s','5–7','Abgang','Text und Elemente verlassen das Bild'],
+ ['M','0,4–0,55 s','10–13','Auftritt, Pop','Text-Reveal, Icons, Buttons, Karten'],
+ ['L','0,8–1,2 s','19–29','Flow','Panels, große Flächen, Bildwechsel'],
+ ['XL','1,4–1,9 s','34–46','Flow','Kamerafahrten, Zoom in einen neuen Raum'],
 ];
 const max=1.9;document.getElementById('durRows').innerHTML=DUR.map(r=>{const hi=parseFloat(r[1].split('–').pop().replace(',','.'));return `<tr><td><b>${r[0]}</b></td><td class="n"><span class="bar" style="width:${Math.round(hi/max*90)}px"></span>${r[1]}</td><td class="n">${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`}).join('');
 
 /* ---------- Referenz ---------- */
 const REF=[
- ['Bildrate','24 fps','Alle Exporte'],
- ['Tempo','105 BPM · Schlag 0,572 s · Takt 2,286 s','Raster für Schnitte und Abstände'],
- ['Vorlauf','2 F vor dem Schlag','Start jeder Bewegung, die auf einem Schlag sitzen soll'],
  ...EASES.map(e=>[e.n,e.v,e.use]),
- ['Text-Auftritt','Weg 110 % · 0,45 s · Auftritt · Abstand ¼ Schlag','Standard-Headline'],
+ ['Text-Auftritt','Weg 110 % · 0,45 s · Auftritt · Abstand 0,14 s','Standard-Headline'],
  ['Text-Abgang','0,22 s · Abgang · Abstand 0,03 s','Zurück in die Kante'],
  ['Logo','Punkte landen bei 1,33 s · Sprung 12,4 % · 3 Nachsprünge à 42 % · Squash 16 %','Logo-Aufbau'],
  ['Push-in','2–5 % über die Szene · Flow','Fotos, OOH-Motive, Haltephasen'],
 ];
 document.getElementById('refRows').innerHTML=REF.map(r=>`<tr><td><b>${r[0]}</b></td><td class="mono">${r[1]}</td><td>${r[2]}</td></tr>`).join('');
 
-/* ---------- Taktraster ---------- */
-const BEAT=13.725/24,BAR=BEAT*4;
-const bs=document.getElementById('beatSvg');
-(function(){let h='';const x0=20,w=600,y=110;
- for(let b=0;b<=4;b++){const x=x0+b*w/4;h+=`<line x1="${x}" y1="40" x2="${x}" y2="${y+18}" stroke="var(--burg)" stroke-width="${b<4?2.5:1}"/>`;if(b<4)h+=`<text x="${x+6}" y="${y+40}" font-size="13" font-weight="700" fill="var(--muted)" font-family="Satoshi,sans-serif">Takt ${b+1}</text>`;if(b>0&&b<4)h+=`<text x="${x}" y="30" font-size="12" font-weight="700" fill="var(--burg)" text-anchor="middle" font-family="Satoshi,sans-serif">Schnitt</text>`}
- for(let i=0;i<16;i++){const x=x0+i*w/16;if(i%4)h+=`<line x1="${x}" y1="${y-14}" x2="${x}" y2="${y+10}" stroke="var(--line)" stroke-width="2"/>`;for(let s=1;s<4;s++){const xs=x+s*w/64;h+=`<line x1="${xs}" y1="${y-4}" x2="${xs}" y2="${y+4}" stroke="var(--line)"/>`}}
- h+=`<line x1="${x0}" y1="${y}" x2="${x0+w}" y2="${y}" stroke="var(--line)"/>`;
- h+=`<line id="ph" x1="${x0}" y1="36" x2="${x0}" y2="${y+18}" stroke="var(--accent)" stroke-width="2" opacity="0"/><circle id="bd" cx="${x0}" cy="${y-12}" r="9" fill="var(--accent)"/>`;
- bs.innerHTML=h})();
-let beatRun=false,beatT0=0,clickOn=false,AC=null,lastBeat=-1;
-const ph=bs.querySelector('#ph'),bd=bs.querySelector('#bd');
-function blip(acc){if(!clickOn)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=acc?1320:880;g.gain.setValueAtTime(.0001,AC.currentTime);g.gain.exponentialRampToValueAtTime(acc?.3:.15,AC.currentTime+.005);g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+.08);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+.1)}catch(e){}}
-function beatFrame(n){if(!beatRun)return;const t=((n-beatT0)/1000)%(BAR*4),x=20+t/(BAR*4)*600,bi=Math.floor(t/BEAT),bt=t-bi*BEAT;
- ph.setAttribute('x1',x);ph.setAttribute('x2',x);ph.setAttribute('opacity',1);
- const hop=bt<BEAT*.55?Math.sin(Math.PI*bt/(BEAT*.55)):0;bd.setAttribute('cx',20+bi*600/16);bd.setAttribute('cy',98-hop*30);
- if(bi!==lastBeat){lastBeat=bi;blip(bi%4===0)}requestAnimationFrame(beatFrame)}
-const beatBtn=document.getElementById('beatBtn');
-beatBtn.addEventListener('click',()=>{beatRun=!beatRun;beatBtn.setAttribute('aria-pressed',beatRun);beatBtn.textContent=beatRun?'❚❚ Anhalten':'▶ Im Tempo abspielen';if(beatRun){beatT0=performance.now();lastBeat=-1;requestAnimationFrame(beatFrame)}});
-const clickBtn=document.getElementById('clickBtn');clickBtn.addEventListener('click',()=>{clickOn=!clickOn;clickBtn.setAttribute('aria-pressed',clickOn);if(clickOn){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();AC.resume()}catch(e){}}});
+/* Abstände Text-Reveal: Wörter 0,14 s, Zeilen 0,28 s */
+const WORD_GAP=.14,LINE_GAP=.28;
 
 /* ---------- Text-Reveal ---------- */
 const LINES=[['Einfach','mehr'],['für','mich.']];
@@ -521,7 +468,7 @@ function buildText(){tText.innerHTML='';const units=[];
    else{const s=document.createElement('span');s.textContent=w;L.appendChild(s);units.push({el:s,li,wi})}
    if(wi<ws.length-1)L.appendChild(document.createTextNode(' '))});
   tText.appendChild(L)});
- let k=0;units.forEach(u=>{u.d=tMode==='line'?u.li*BEAT/2:tMode==='letter'?(k++)*.03:(u.li*2+u.wi)*BEAT/4;u.k=k});
+ let k=0;units.forEach(u=>{u.d=tMode==='line'?u.li*LINE_GAP:tMode==='letter'?(k++)*.03:(u.li*2+u.wi)*WORD_GAP;u.k=k});
  return units}
 let UNITS=buildText();
 function renderText(t){
