@@ -10,15 +10,15 @@ const fmJoPill=(p,h)=>`<div class="fmBd fmPl" data-side="r" style="display:inlin
 const fmTag=(sh,txt,bg,fg,h)=>`<div class="fmBd" style="display:inline-flex;align-items:center;gap:${h*.26}px;height:${h}px;padding:0 ${h*.42}px;border-radius:${h*.22}px;background:${bg};color:${fg};font-size:${h*.46}px;font-weight:800;white-space:nowrap">${tgSvg(sh,Math.round(h*.4))}${txt}</div>`;
 const FM_S1=[ // x, y, w, h, Hintergrund, Inhalt
  [90,136.0,454,808,ST_RED,`
-  <img data-z="1" class="fmIm" src="${STI.woman}" alt="" style="position:absolute;left:0;top:0;width:454px;height:454px;object-fit:cover;border-radius:0 0 48px 48px">
+  <img data-z="1" class="fmIm" src="__WL:supermarkt__" alt="" style="position:absolute;left:0;top:0;width:454px;height:454px;object-fit:cover;object-position:62% 50%;border-radius:0 0 48px 48px">
   <div style="position:absolute;left:236px;top:376px">${fmOesPill('250',66)}</div>
   <div style="position:absolute;left:38px;top:494px">${fmTag('sq','Neu',ST_OR,'#fff',46)}</div>
-  <div style="position:absolute;left:38px;top:566px;color:#fff;font-size:48px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Mehr Sport,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">doppelte Ös,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">besserer Preis!</div></div></div>`],
+  <div style="position:absolute;left:38px;top:566px;color:#fff;font-size:48px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Mehr Frische,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">doppelte Ös,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">besserer Preis!</div></div></div>`],
  [594,136.0,760,427.5,ST_OR,`
   <div style="position:absolute;left:44px;top:44px">${fmTag('hg','Letzte Chance',S2_INK,'#fff',42)}</div>
-  <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:58px;font-weight:800;line-height:1.02;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Exklusive</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sportdeals</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">entdecken!</div></div></div>
-  <div style="position:absolute;left:44px;top:322px">${fmJoPill('49&#8239;€',70)}</div>
-  <div class="fmIm" style="position:absolute;left:440px;top:0;width:320px;height:428px;border-radius:40px 0 0 40px;background:#f2bf62;overflow:visible"><img data-z="1" class="fmIm" src="${S2I.girl}" alt="" style="position:absolute;left:-14px;top:54px;width:300px;max-width:none"></div>`],
+  <div style="position:absolute;left:44px;top:112px;color:${S2_INK};font-size:58px;font-weight:800;line-height:1.02;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Exklusive</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Bürodeals</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">entdecken!</div></div></div>
+  <div style="position:absolute;left:44px;top:322px">${fmJoPill('9,99&#8239;€',70)}</div>
+  <div class="fmIm" style="position:absolute;left:440px;top:0;width:320px;height:428px;border-radius:40px 0 0 40px;background:#f2bf62;overflow:hidden"><img data-z="1" class="fmIm" src="__WL:pagro__" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:40% 50%"></div>`],
  [594,619.5,324.5,324.5,'#e4e1ea',`
   <img data-z="1" class="fmIm" src="${S2I.pad}" alt="" style="position:absolute;left:-18px;top:58px;width:360px;max-width:none">
   <div style="position:absolute;left:22px;top:22px">${fmTag('x','Games',S2_INK,'#fff',38)}</div>
@@ -47,7 +47,7 @@ const fmPush=(t1,t2)=>`<div class="fmBd" style="position:absolute;left:20px;top:
    <div style="min-width:0"><div style="color:#8a6a60;font-size:15px;font-weight:600">jö · jetzt</div><div style="color:${FM_DK};font-size:21px;font-weight:800;margin-top:3px">${t1}</div><div style="color:${FM_DK};font-size:17px;font-weight:500;margin-top:3px">${t2}</div></div></div>`;
 const fmEtikett=(x,y,w,h,top,big,oes)=>`<div class="fmBd" style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:32px;background:${FM_INK};color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:${h*.1}px 0 ${h*.08}px;box-sizing:border-box">
    <div style="text-align:center">${top?`<div style="font-size:${h*.08}px;font-weight:700">${top}</div>`:''}<div style="font-size:${h*.3}px;font-weight:800;line-height:1;letter-spacing:-.02em">${big}</div></div>${fmOesPill(oes,h*.28).replace('class="fmBd fmPl" ','class="fmPl" ')}</div>`;
-// Bildschirm 2: Sport · Games · Deals
+// Bildschirm 2: Aktiv · Games · Deals
 const FM_S2=[
  [90,136,760,427.5,ST_OR,`
   <div style="position:absolute;left:44px;top:44px">${fmTag('sq','Neu',S2_INK,'#fff',42)}</div>
@@ -63,15 +63,15 @@ const FM_S2=[
   <div style="position:absolute;left:214px;top:98px;color:#fff;font-size:30px;font-weight:800;line-height:1.1"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Hirter</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Privat Pils</div></div></div>
   <div style="position:absolute;left:206px;top:226px">${fmJoPill('-&#8239;25%',64)}</div>`],
  [900,136,426,532.5,JG_CSS,`
-  <div style="position:absolute;left:36px;top:34px;color:#fff;font-size:46px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Deine</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Sportwoche.</div></div></div>
+  <div style="position:absolute;left:36px;top:34px;color:#fff;font-size:46px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Deine</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Einkaufswoche.</div></div></div>
   ${fmEtikett(83,196,260,300,'','-&#8239;20%','500').replace('font-size:90px','font-size:68px')}`],
  [900,724.5,426,219.5,'#e4e1ea',fmPush('Neuer Deal bei Hirter','-25 % mit deinen Ös.')],
  [1376,136,454,808,'#e4e1ea',`
   <div class="fmIm" style="position:absolute;left:0;top:252px;width:454px;height:556px;background:${JG_CSS}"><div style="position:absolute;left:-1px;right:-1px;top:-1px;height:49px;border-radius:0 0 48px 48px;background:#e4e1ea"></div></div>
   <img data-z="1" class="fmIm" src="${UI2.girl}" alt="" style="position:absolute;left:-20px;top:20px;width:470px;max-width:none">
   <div style="position:absolute;left:30px;top:30px">${fmTag('ci','Aktion','#fff','#e3301b',40)}</div>
-  <div style="position:absolute;left:54px;top:440px">${fmJoPill('Sportdeals',66)}</div>
-  <div style="position:absolute;left:34px;top:676px;color:#fff;font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Mehr Bewegung,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">mehr Ös.</div></div></div>`]];
+  <div style="position:absolute;left:54px;top:440px">${fmJoPill('Top-Deals',66)}</div>
+  <div style="position:absolute;left:34px;top:676px;color:#fff;font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Mehr erleben,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">mehr Ös.</div></div></div>`]];
 // Bildschirm 3: Share · Sammeln & Sparen · Wocheneinkauf
 const FM_S3=[
  [90,136,426,532.5,'#e4e1ea',`
@@ -145,8 +145,8 @@ const FORMATS={
         else el.style.clipPath=`inset(0 ${d.toFixed(1)}px 0 0 round ${R2}px)`})})},
   marks(M){return [[0,'Bildschirm 1'],[M.T[1],'Bildschirm 2'],[M.T[2],'Bildschirm 3']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P;return [
-    ['Bildschirm 1',`0–${F(M.T[1])}`,'Story 9:16, Landscape 16:9, Square 1:1, In-App, Feed 4:5, Push: Sport-Kampagne, Rahmen gleiten von unten rein, Zeilen rollen aus Masken, Badges setzen sich'],
-    ['Bildschirm 2',`${F(M.T[1])}–${F(M.T[2])}`,'kommt von unten: Games, Deal (Hirter), Feed „Deine Sportwoche.“, Push, Story „Sportdeals“'],
+    ['Bildschirm 1',`0–${F(M.T[1])}`,'Story 9:16, Landscape 16:9, Square 1:1, In-App, Feed 4:5, Push: Einkaufs-Kampagne, Rahmen gleiten von unten rein, Zeilen rollen aus Masken, Badges setzen sich'],
+    ['Bildschirm 2',`${F(M.T[1])}–${F(M.T[2])}`,'kommt von unten: Games, Deal (Hirter), Feed „Deine Einkaufswoche.“, Push, Story „Top-Deals“'],
     ['Bildschirm 3',`${F(M.T[2])}–${F(M.total)}`,'Share, Push, Story „Sammeln & Sparen“, Landscape „Wocheneinkauf“, Bonusbox, In-App ADEG'],
     ['Wechsel',`${F(P.dur)} F`,'wie der Story-Übergang: Rahmen gleiten nach oben raus, die neuen kommen von unten, leicht versetzt (Parallaxe); Bilder, Zeilen und Badges folgen']]},
   note:'Frames bei 24 fps ab Beginn der Subebene. Ersetzt die Stories: dieselben Inhalte in verschiedenen Formaten, drei Bildschirme.'

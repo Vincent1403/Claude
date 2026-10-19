@@ -18,8 +18,8 @@
  PTE.w0=blk('ptWords',['Eine Welt voller','*starker Marken.']);
  PTE.w1=blk('ptSent1',['Eine Welt voller Marken.']);
  PTE.w2=blk('ptSent2',['Ein *gemeinsames','Markenerlebnis.']);
- // jö als App-Icon: weißes, abgerundetes Quadrat hinter dem Verlauf-Logo (skaliert mit dem Logo)
- {const sq=document.createElement('div');sq.style.cssText='position:absolute;left:-20px;top:-88.5px;width:460px;height:460px;border-radius:106px;background:#fff;box-shadow:0 34px 80px rgba(90,30,0,.18)';
+ // jö als rundes Logo: weißer Kreis hinter dem Verlauf-Logo (Kunde: rundes jö-Logo) (skaliert mit dem Logo)
+ {const sq=document.createElement('div');sq.style.cssText='position:absolute;left:-20px;top:-88.5px;width:460px;height:460px;border-radius:50%;background:#fff;box-shadow:0 34px 80px rgba(90,30,0,.18)';
   const L=$('ptLogo');L.insertBefore(sq,L.firstChild);L.querySelector('svg').style.transform='translate(-1%,4%) scale(.8)'}
  Object.assign(PARTNER.DEF,{swap:2,lOut:4.25,sent:4.3,sent2:5.3});
  PARTNER.params.unshift(
