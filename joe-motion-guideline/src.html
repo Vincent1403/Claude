@@ -572,6 +572,16 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
  for(let x=50;x<1000;x+=50)gl(x,0,x,562.5);for(let y=50;y<562.5;y+=50)gl(0,y,1000,y);
  const cx1=gl(500,0,500,562.5,'rgba(232,55,26,.5)'),cy1=gl(0,281.25,1000,281.25,'rgba(232,55,26,.5)');
  const labels=[];const gt=(x,y,txt,c=W,anchor='start')=>{const t=svgEl(gs,'text',{x,y,'font-size':11,'font-family':MONO,fill:c,'text-anchor':anchor},txt);labels.push(t);return t};
+ /* Easing-Kurven: jede läuft synchron zur Bewegung, die sie gerade antreibt */
+ const curves=[[60,62,'Flow',eFlow,4.2,5.0],[790,62,'jö-Feder',x=>spring(x*.9),1.77,2.9],[60,392,'Pop',ePop,4.75,5.17],[790,392,'Auftritt',eIn,5.45,5.9]].map(([x,y,name,f,a,b])=>{
+  const gg=svgEl(gs,'g',{transform:`translate(${x} ${y})`}),W2=150,H2=90,Y=v=>H2-((v+.1)/1.45)*H2;
+  svgEl(gg,'line',{x1:0,y1:H2,x2:W2,y2:H2,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'});svgEl(gg,'line',{x1:0,y1:0,x2:0,y2:H2,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'});
+  svgEl(gg,'line',{x1:0,y1:Y(1),x2:W2,y2:Y(1),stroke:F,'stroke-width':1,'stroke-dasharray':'3 3','vector-effect':'non-scaling-stroke'});
+  let d='';for(let i=0;i<=60;i++){const u=i/60;d+=(i?'L':'M')+(u*W2).toFixed(1)+','+Y(f(u)).toFixed(1)}
+  const path=svgEl(gg,'path',{d,fill:'none',stroke:G,'stroke-width':2,'vector-effect':'non-scaling-stroke',pathLength:1,'stroke-dasharray':'1 1'});
+  const head=svgEl(gg,'line',{x1:0,y1:0,x2:0,y2:H2,stroke:'rgba(232,55,26,.35)','stroke-width':1,'vector-effect':'non-scaling-stroke'});
+  const dot=svgEl(gg,'circle',{r:4.5,fill:O});const lab=svgEl(gg,'text',{x:0,y:H2+16,'font-size':11,'font-family':MONO,fill:W},name);
+  return {gg,path,head,dot,lab,f,a,b,Y,W2}});
  /* Zeitleiste unten */
  const tl=svgEl(gs,'g',{});for(let i=0;i<=48;i++){svgEl(tl,'line',{x1:250+i*10,y1:520,x2:250+i*10,y2:i%6?526:532,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'})}
  const ph=svgEl(tl,'line',{x1:250,y1:512,x2:250,y2:536,stroke:G,'stroke-width':2,'vector-effect':'non-scaling-stroke'});
@@ -598,7 +608,10 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
   const pp=(t%4)/4;ph.setAttribute('x1',250+pp*480);ph.setAttribute('x2',250+pp*480);
   const out=1-seg(t,8.3,8.9);
   glines.forEach((l,i)=>{l.style.strokeDashoffset=1-eFlow(seg(t,.05+i*.025,.75+i*.025));l.style.opacity=out*(t>5.4?lerp(1,.55,seg(t,5.4,6.4)):1)});
-  labels.forEach(l=>l.style.opacity=seg(t,.4,.8)*out);tl.style.opacity=seg(t,.5,.9)*out;
+  labels.forEach(l=>l.style.opacity=seg(t,.4,.8)*out);
+  curves.forEach((c,i)=>{c.path.style.strokeDashoffset=1-eFlow(seg(t,.6+i*.15,1.5+i*.15));c.gg.style.opacity=seg(t,.5+i*.15,.8+i*.15)*out;
+   const q=seg(t,c.a,c.b),x=q*c.W2,y=c.Y(c.f(q));c.dot.setAttribute('cx',x.toFixed(1));c.dot.setAttribute('cy',y.toFixed(1));c.head.setAttribute('x1',x);c.head.setAttribute('x2',x);
+   const live=t>=c.a&&t<=c.b+.3;c.dot.setAttribute('r',live?6:4.5);c.lab.setAttribute('fill',live?G:W)});tl.style.opacity=seg(t,.5,.9)*out;
   guides.forEach((e,i)=>{e.style.strokeDashoffset=1-eFlow(seg(t,.5+i*.06,1.4+i*.06));e.style.opacity=lerp(1,.35,seg(t,4.6,5.6))*out});
   tx.forEach((e,i)=>e.style.opacity=seg(t,1.2+i*.08,1.5+i*.08)*lerp(1,.35,seg(t,4.6,5.6))*out);
   drawLogo(L,t,{pre:1.3});
