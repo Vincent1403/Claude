@@ -167,7 +167,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  <section id="start" style="padding-top:20px">
   <h1>Motion</h1>
   <p class="lede">Bewegung bei jö ist freundlich, klar und hat einen kleinen Sprung. Sie kommt aus dem Logo: Linien, die sich in einem Zug zeichnen, und drei Punkte, die landen und nachfedern. Ihre Form ist die Kachel: eine Fläche im jö-Verlauf, die von unten oder von der Seite ins Bild ragt.</p>
-  <div class="stage hero" data-scene="hero" aria-label="Überblick: Logo zeichnet sich, die Fläche wird zur Kachel und teilt sich in Karten"></div>
+  <div class="stage hero" data-scene="hero" aria-label="Überblick: Logo zeichnet sich, Kachel mit Bild und Pill-Button, Kachel wird Vollbild, Logo wird Icon"></div>
  </section>
 
  <section id="prinzipien">
@@ -421,7 +421,7 @@ TXT('text','tx-hl','Wort für Wort mit Verlauf','Ein Wort im jö-Verlauf trägt 
 function sceneA(st){const a=mk(st,'fill bg-lilac');const tx=textBlock(a,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:6.4});tx(9);return a}
 /* Die Kachel: immer im Anschnitt (unten oder Seite), Stufen 25/50/75 %, Rundung 14 % der kurzen Bildseite nur innen */
 const KR=h=>.14*Math.min(100,h);
-function kachel(p,side,h,cls){const e=mk(p,'c '+(cls||'kg-'+side));const r=KR(h);
+function kachel(p,side,h,cls){const e=mk(p,'c '+(cls||'kg-'+side));e.style.position='absolute';const r=KR(h);
  e.style.borderRadius=side==='b'?`${r}cqw ${r}cqw 0 0`:`${r}cqw 0 0 ${r}cqw`;
  e.set=f=>{f=Math.max(0,f);if(side==='b')box(e,-.5,h*(1-f),101,h*f+1);else box(e,100*(1-f),-.5,100*f+1,h+1)};e.set(0);return e}
 /* Text oberhalb (Hochformat) oder links (Querformat) der Kachel */
@@ -562,19 +562,22 @@ def('miss','mi-all','Nicht alles auf einmal','Wenn alles gleichzeitig kommt, wei
  return t=>{const p=eIn(seg(t,.4,.85));[tg,tx,pl,ph].forEach(e=>{tf(e,{s:lerp(.7,1,p),o:p})})}}});
 
 /* Hero: Logo zeichnet sich, die Fläche wird zur Kachel, dann entsteht das Raster */
-def('hero','hero','','',{dur:7.5,bg:'bg-white',build(st){
- const F=mk(st,'bg-jg');const L=logo(st,26,50,H/2,'#fff');
- const K=[[3,4,44,25,'bg-orange'],[50,4,24,48,'bg-wine'],[77,4,20,48,'bg-lilac'],[3,32,19,20,'photo'],[25,32,22,20,'bg-jg']];
- const els=K.map(([x,y,w,h,c])=>{const e=mk(st,c+' c');if(c==='photo')e.style.backgroundImage='url(img/kian.webp)';return e});
- const t1=textBlock(els[0],['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:3.4,x:3});const pc=mk(els[1],'','-20%','position:absolute;left:0;right:0;top:9cqw;text-align:center;color:#fff;font-weight:800;font-size:5.6cqw');
- const pl1=pill(els[1],'500',{size:2.4,badge:'os',badgeFirst:false});pl1.style.position='absolute';pl1.style.left='4.6cqw';pl1.style.top='22cqw';
- const fr=mk(els[2],'');fr.style.cssText='position:absolute;inset:0;background:url(img/frau.webp) center bottom/auto 92% no-repeat';
- const pl2=pill(els[3],'500',{size:2,badge:'os',badgeFirst:false});pl2.style.position='absolute';pl2.style.left='2cqw';pl2.style.bottom='2cqw';
- const icon=mk(els[4],'tile','');icon.style.cssText+=';position:absolute;left:7cqw;top:4.5cqw;width:8cqw;height:8cqw;background:#fff;display:grid;place-items:center';const isv=document.createElementNS(NS,'svg');isv.style.cssText='width:66%;color:var(--red);overflow:visible';icon.appendChild(isv);staticLogo(isv);
- return t=>{drawLogo(L,t,{pre:.2});
-  const s=eMorph(seg(t,2.6,3.3));rect(F,50,H/2,lerp(100,24,s),lerp(H,24,s),lerp(0,5.4,s));tf(L.el,{s:lerp(1,.62,s),o:1-seg(t,3.35,3.5)});F.style.opacity=1-seg(t,3.35,3.5);
-  els.forEach((e,i)=>{const[x,y,w,h]=K[i];const p=eMorph(seg(t,3.3+i*.08,4.1+i*.08));box(e,lerp(38,x,p),lerp(H/2-12,y,p),lerp(24,w,p),lerp(24,h,p),lerp(5.4,2.4,p));e.style.opacity=seg(t,3.3,3.36)});
-  t1(t-4.0,7.0);tf(pc,{s:ePop(seg(t,4.2,4.6))});tf(pl1,{s:ePop(seg(t,4.4,4.8))});tf(pl2,{s:ePop(seg(t,4.5,4.9))});tf(icon,{s:t<4.3?0:spring(t-4.3)});tf(fr,{y:(1-eIn(seg(t,4.1,4.7)))*8,o:seg(t,4.1,4.25)})}}});
+/* Hero: ein Durchlauf durch die Bausteine, verbunden mit harten Schnitten.
+   1 Logo zeichnet sich · 2 Kachel mit Bild, Headline, Pill-Button · 3 Kachel wird Vollbild, Tag, Headline · 4 Logo wird Icon */
+def('hero','hero','','',{dur:13.4,bg:'bg-white',build(st){
+ const A=mk(st,'fill bg-white'),B=mk(st,'fill bg-lilac'),C=mk(st,'fill bg-lilac'),D=mk(st,'fill bg-white');
+ const L1=logo(A,30,50,H/2,'var(--wine)');
+ const KB=kachel(B,'r',H,'');const phB=innerPhoto(KB,'img/tamara.webp','40% 50%');const hB=headline(B,'r',H,.5,['Alles in','einer App.']);
+ const pB=pillBuild(st,'Jetzt entdecken',{size:3.2,x:7,y:38});
+ const KC=kachel(C,'r',H);const hC=headline(C,'r',H,.5,['Deine','Sportwoche.']);const hC2=textBlock(C,['Mehr Bewegung,','mehr Ös.'],{size:6.6});
+ const tC=tagBuild(st,'neu','Neu',{size:2.4,x:7,y:9});
+ const TD=mk(D,'tile bg-jg c');TD.style.position='absolute';rect(TD,50,H/2,24,24);const L2=logo(D,34,50,H/2,'var(--wine)');
+ return t=>{
+  const show=(el,a,b)=>{el.style.visibility=t>=a&&t<b?'visible':'hidden'};show(A,0,2.6);show(B,2.6,6.2);show(C,6.2,10.2);show(D,10.2,99);
+  drawLogo(L1,t,{pre:.2});
+  const u=t-2.6;KB.set(.5*eFlow(seg(u,.1,.9)));tf(phB,{s:pushIn(u,.5,3.6)});hB(u-.7,99);pB(u-1.3,u<0?-1:2.25);
+  const v=t-6.2;KC.set(v<.9?.5:lerp(.5,1+KR(H)/100+.02,eMorph(seg(v,.9,1.6))));hC(v,.55);hC2(v-1.55,99);tC(v-2.1,v<0?-1:1.8);
+  const w=t-10.2,p=eMorph(seg(w,2.0,2.65));drawLogo(L2,w,{pre:.1});rect(L2.el,50,H/2,lerp(34,18.5,p),lerp(34,18.5,p)*LR);tf(TD,{s:w<2.15?0:spring(w-2.15)});L2.el.style.color=p>.5?'#fff':'var(--wine)'}}});
 
 /* ---------- Kacheln aufbauen ---------- */
 const stages=[];
