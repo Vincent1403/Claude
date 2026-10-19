@@ -4,8 +4,8 @@
 {// Zwei Anordnungen (Bildpixel relativ zur Mitte, werden durch die 115-%-Ausdehnung geteilt):
  // A um „Viele Marken. / Eine starke Verbindung.“ – oben 6, links/rechts neben der kürzeren ersten Zeile je 2, unten 5;
  // B um das jö-App-Icon – oben 5, links/rechts je 3, unten 4. Beim Wechsel zum Icon wandern die Logos in die frei werdenden Flächen.
- const A=[[-750,-390],[-450,-405],[-150,-385],[150,-405],[450,-385],[750,-400],[-800,-120],[-615,-95],[615,-95],[800,-120],[-700,390],[-350,405],[0,385],[350,405],[700,390]];
- const B=[[-640,-390],[-320,-400],[0,-385],[320,-400],[640,-390],[-470,-150],[-770,10],[-470,170],[470,-150],[770,-10],[470,170],[-560,395],[-190,410],[190,395],[560,410]];
+ // 18 Partner um das runde jö-Logo: oben 6, links/rechts je 3, unten 6 (die Logos erscheinen direkt in dieser Anordnung)
+ const B=[[-700,-395],[-420,-405],[-140,-390],[140,-405],[420,-390],[700,-400],[-480,-150],[-780,10],[-480,170],[480,-150],[780,-10],[480,170],[-700,395],[-420,410],[-140,395],[140,410],[420,395],[700,405]],A=B;
  // jedes Logo bekommt den nächstgelegenen freien Platz in B (gierig), damit die Wege kurz bleiben
  const used=new Set(),mapB=A.map(()=>null),pairs=[];A.forEach((a,i)=>B.forEach((b,j)=>pairs.push([Math.hypot(a[0]-b[0],a[1]-b[1]),i,j])));pairs.sort((x,y)=>x[0]-y[0]);
  const doneA=new Set();for(const [,i,j] of pairs){if(doneA.has(i)||used.has(j))continue;mapB[i]=B[j];doneA.add(i);used.add(j)}

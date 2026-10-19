@@ -105,7 +105,7 @@ DROP = ["hl3"]
 # Parameter, die vom Markenfilm abweichen
 PARAMS = {
     "julian": {"sStart": 2.0, "pause": .3},   # Hallo Julian / 100 Ös / Einlösen stehen länger, der Slider startet später
-    "partner": {"hit": 4.8, "lOut": 6.4, "sent": 6.45, "sent2": 7.4, "popGap": 99, "end": 15, "spread": 1.15},   # Einflug nach dem Logo-Wechsel, kein Verlauf-Flut
+    "partner": {"hit": 4.8, "lOut": 6.4, "sent": 6.45, "sent2": 7.4, "popGap": 99, "end": 15, "spread": 1.15, "flyStep": round(14 * 2 / 24 / 17, 4)},  # 18 Einflüge in derselben Zeit wie früher 15   # Einflug nach dem Logo-Wechsel, kein Verlauf-Flut
     "white2": {"edge": 1925},   # Flieder-Fläche erst mit dem Slider sichtbar (vorher Kante rechts außerhalb des Bildes)
     "story": {"holdA": 1.4},    # Stories stehen länger, damit die eingeflogenen Tags lesbar bleiben
     "story2": {"hold1": 1.4},
@@ -599,7 +599,7 @@ CLIPS["fuer"]["len"] = round(_fe - CLIPS["fuer"]["start"], 4)
 # Kian-Video: Banner „Mehr für Kian.“ auf F933, Pill auf den nächsten Schlag F946, Pill schrumpft auf F988
 PARAMS["rabatt"] = {**PARAMS.get("rabatt", {}), "banAt": .3544, "inAt": .875, "outAt": 2.3835}
 PARAMS["fuer"] = {**PARAMS["fuer"], "cloudAt": 12}            # Profil-Wolke auf F823
-PARAMS["brand"] = {**PARAMS.get("brand", {}), "step": .75, "accent": 0}  # Kunde: jö-Logo nur weiß, keine Partner-Akzentfarbe in den Punkten  # bei rate .75 = exakt ein Schlag pro Partnerfarbe (vorher .71 = 13,0 F → driftete bis 7 F vom Hit)
+PARAMS["brand"] = {**PARAMS.get("brand", {}), "step": .75, "accent": 0, "fast": 2}  # 16 Partner (mit BILLA Reisen) in derselben Zeit: die letzten 2 im halben Schlag  # Kunde: jö-Logo nur weiß, keine Partner-Akzentfarbe in den Punkten  # bei rate .75 = exakt ein Schlag pro Partnerfarbe (vorher .71 = 13,0 F → driftete bis 7 F vom Hit)
 PARAMS["formats"] = {**PARAMS.get("formats", {}), "sh": 1.09}
 CLIPS["brand"]["in"] = .0625   # 2 F Vorlauf, damit die Kreise sichtbar genau auf dem Schlag aufgehen  # Bildschirm 2 und 3 starten auf F3072 / F3182
 # Mockup-Teil: Schnitte auf die Takt-Einsen (vorher auf Schlag 4/2/3 → fühlte sich off-beat an)
@@ -774,6 +774,20 @@ rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)
 rep("COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))", "COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))")  # Clip-Tempo: rate < 1 = langsamer; clipHold = Standbild-Abschnitt
 rep("function wDesign(", f"const CL_HOLD={{julian:[3.75,1.6,{round(BARL*.76873,4)}],white2:[3.75,1.6,{round(BARL*.76873,4)}]}};function clipHold(k,u){{const h=CL_HOLD[k];if(!h||u<=h[0])return u;const L=h[1]+h[2];if(u>=h[0]+L)return u-h[2];const x=(u-h[0])/L,m=.9,f=(1-m)*x+m*(.5+4*Math.pow(x-.5,3));return h[0]+h[1]*f}} // Kunde: Julian-UI-Screen – schnell rein, in der Mitte ganz langsam (nie stehend), schnell wieder raus\nfunction wDesign(")
 rep("const fg=use?use[2]:'#fff',", "const fg='#fff',")  # Kunde: jö-Logo (und ×) im Partner-Lockup immer weiß, auch auf hellen Partnerfarben
+# Kunde: neue Partner-Logos (Frisbee-Stil) überall; dazu jö Sport, jö Reisen und BILLA Reisen. joyn wurde nicht neu geliefert und bleibt wie bisher.
+_PL = {k: "data:image/webp;base64," + base64.b64encode((here / "partner_logos" / (k + ".webp")).read_bytes()).decode() for k in
+       ("adeg", "biogena", "bipa", "billa", "josport", "joreisen", "forstinger", "omv", "pagro", "pearle", "penny", "raiffeisen", "sutterluety", "universal", "zgonc", "billareisen", "libro")}
+rep("const PT_N=['adeg'", "Object.assign(PTA," + json.dumps(_PL) + ");\nconst PT_N=['adeg'")
+_BRK = {"ADEG": "adeg", "PENNY": "penny", "BILLA": "billa", "OMV": "omv", "SUTTERLÜTY": "sutterluety", "FORSTINGER": "forstinger", "PEARLE": "pearle", "PAGRO": "pagro",
+        "RAIFFEISEN": "raiffeisen", "universal": "universal", "BIOGENA": "biogena", "ZGONC": "zgonc", "BIPA": "bipa", "LIBRO": "libro", "BILLA REISEN": "billareisen"}
+rep("const BR_LX=-220,", "Object.assign(BR_LOGO,{" + ",".join(f"{json.dumps(b)}:PTA.{k}" for b, k in _BRK.items()) + "});\nconst BR_LX=-220,")
+rep("const PT_N2=['adeg','pearle','bipa','raiffeisen','penny','libro','pagro','joyn','billa','sutterluety','universal','forstinger','omv','biogena','zgonc'];",
+    "const PT_N2=['adeg','pearle','bipa','raiffeisen','penny','josport','libro','pagro','joyn','billa','sutterluety','universal','joreisen','forstinger','omv','billareisen','biogena','zgonc'];")
+rep("const PT_CLOUD=[[-120,-330,170],[190,-300,140],[430,-210,180],[660,-330,130],[520,40,160],[720,170,140],[380,260,175],[110,340,140],[-190,320,180],[-450,240,145],[-680,110,160],[-520,-40,135],[-690,-230,150],[-410,-300,170],[820,-80,120]];",
+    "const PT_CLOUD=[170,140,180,130,165,150,175,140,180,145,160,135,150,170,140,165,180,135].map(d=>[0,0,d]); // Lage kommt aus partner_mod.js")
+rep("const PT_POP=[3,9,0,12,6,14,1,10,4,7,13,2,11,5,8];", "const PT_POP=[5,11,0,14,8,17,2,12,6,9,16,3,13,7,10,1,15,4];")
+rep("const PT_FLYORD=[3,12,14,10,2,8,5,13,1,9,4,11,6,0,7]", "const PT_FLYORD=[5,12,17,0,6,9,13,4,16,1,7,10,14,3,15,2,8,11]")
+rep(" ['LIBRO','#d2322a','#ffffff','#efbd31'],", " ['BILLA REISEN','#fdd000','#ffffff',null],\n ['LIBRO','#d2322a','#ffffff','#efbd31'],")
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
