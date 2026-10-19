@@ -796,10 +796,12 @@ rep("const fg=use?use[2]:'#fff',", "const fg='#fff',")  # Kunde: jö-Logo (und �
 # Kunde: neue Partner-Logos (Frisbee-Stil) überall; dazu jö Sport, jö Reisen und BILLA Reisen. joyn wurde nicht neu geliefert und bleibt wie bisher.
 _PL = {k: "data:image/webp;base64," + base64.b64encode((here / "partner_logos" / (k + ".webp")).read_bytes()).decode() for k in
        ("adeg", "biogena", "bipa", "billa", "josport", "joreisen", "forstinger", "omv", "pagro", "pearle", "penny", "raiffeisen", "sutterluety", "universal", "zgonc", "billareisen", "libro")}
+_PL["joyn"] = "data:image/svg+xml;base64," + base64.b64encode((here / "partner_logos" / "joyn_black.svg").read_bytes()).decode()   # Kunde: joyn-Schriftzug optisch mittig (etwas tiefer)
 rep("const PT_N=['adeg'", "Object.assign(PTA," + json.dumps(_PL) + ");\nconst PT_N=['adeg'")
 _BRK = {"ADEG": "adeg", "PENNY": "penny", "BILLA": "billa", "OMV": "omv", "SUTTERLÜTY": "sutterluety", "FORSTINGER": "forstinger", "PEARLE": "pearle", "PAGRO": "pagro",
         "RAIFFEISEN": "raiffeisen", "universal": "universal", "BIOGENA": "biogena", "ZGONC": "zgonc", "BIPA": "bipa", "LIBRO": "libro", "BILLA REISEN": "billareisen"}
 rep("const BR_LX=-220,", "Object.assign(BR_LOGO,{" + ",".join(f"{json.dumps(b)}:PTA.{k}" for b, k in _BRK.items()) + "});\nconst BR_LX=-220,")
+rep("const BR_LX=-220,", "BR_LOGO.joyn=\"data:image/svg+xml;base64," + base64.b64encode((here / "partner_logos" / "joyn_white.svg").read_bytes()).decode() + "\";\nconst BR_LX=-220,")
 rep("const PT_N2=['adeg','pearle','bipa','raiffeisen','penny','libro','pagro','joyn','billa','sutterluety','universal','forstinger','omv','biogena','zgonc'];",
     "const PT_N2=['adeg','pearle','bipa','raiffeisen','penny','josport','libro','pagro','joyn','billa','sutterluety','universal','joreisen','forstinger','omv','billareisen','biogena','zgonc'];")
 rep("const PT_CLOUD=[[-120,-330,170],[190,-300,140],[430,-210,180],[660,-330,130],[520,40,160],[720,170,140],[380,260,175],[110,340,140],[-190,320,180],[-450,240,145],[-680,110,160],[-520,-40,135],[-690,-230,150],[-410,-300,170],[820,-80,120]];",
