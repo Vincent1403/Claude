@@ -342,9 +342,9 @@ function drawLogo(L,t,o={}){const pre=o.pre??.4,sp=o.speed??1,u=(t-pre)*sp;
 const logoDone=L=>drawLogo(L,9);
 function staticLogo(svg){const L=logoSVG(svg);logoDone(L);return L}
 function jbadge(p,size){const b=mk(p,'jb');b.style.width=b.style.height=size+'cqw';const svg=document.createElementNS(NS,'svg');b.appendChild(svg);staticLogo(svg);return b}
-function pill(p,text,{size=4.2,badge='jb',badgeFirst=true}={}){const e=mk(p,'pill');e.style.fontSize=size+'cqw';e.style.height=(size*2.15)+'cqw';e.style.padding=`0 ${size*.9}cqw 0 ${size*.28}cqw`;
+function pill(p,text,{size=4.2,badge='jb',badgeFirst=true}={}){const e=mk(p,'pill');e.style.fontSize=size+'cqw';e.style.height=(size*2.15)+'cqw';e.style.padding=`0 ${size*.9}cqw 0 ${size*.2}cqw`;
  const bs=size*1.75;let b;if(badge==='jb')b=jbadge(e,bs);else if(badge==='os'){b=osBadge(e,bs)}
- const t=mk(e,'','');t.textContent=text;t.style.position='static';if(!badgeFirst&&b){e.appendChild(b);e.style.padding=`0 ${size*.28}cqw 0 ${size*.9}cqw`}return e}
+ const t=mk(e,'','');t.textContent=text;t.style.position='static';if(!badgeFirst&&b){e.appendChild(b);e.style.padding=`0 ${size*.2}cqw 0 ${size*.9}cqw`}return e}
 function osBadge(p,size){const b=mk(p,'os');b.style.width=b.style.height=size+'cqw';const svg=document.createElementNS(NS,'svg');svg.style.cssText='width:76%;color:#fff;overflow:visible';b.appendChild(svg);staticLogo(svg);
  svg.querySelector('path').remove();svg.querySelector('circle').remove();svg.setAttribute('viewBox','84 -14 262 210');
  const s=document.createElementNS(NS,'text');s.setAttribute('x','262');s.setAttribute('y','182');s.setAttribute('font-size','118');s.setAttribute('font-weight','800');s.setAttribute('font-family','Satoshi,sans-serif');s.setAttribute('fill','currentColor');s.textContent='s';svg.appendChild(s);return b}
@@ -497,7 +497,7 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
  T.style.cssText+=';position:absolute;left:57cqw;top:-.2cqw;width:17.8cqw;height:20.4cqw;border-radius:0 0 3.4cqw 3.4cqw';
  const P=pill(T,'250',{size:2.9,badge:'os',badgeFirst:false});P.style.position='absolute';P.style.left='1.2cqw';P.style.right='1.2cqw';P.style.top='12.2cqw';P.style.justifyContent='space-between';P.style.paddingLeft='2.4cqw';P.style.fontWeight='800';
  const num=P.firstChild,ob=P.lastChild;num.style.cssText+=';position:absolute;left:2.4cqw;display:inline-block';P.style.justifyContent='flex-end';P.style.transformOrigin='100% 50%';P.style.paddingLeft='0';
- /* wie der Pill-Button: Ös-Punkt poppt, die Pill zieht sich nach links auf, dann steigt die Zahl */
+ /* Ring um das Badge ist überall gleich breit (0,2 × Größe), damit die Kreise zentriert ineinander sitzen. Wie der Pill-Button: Ös-Punkt poppt, die Pill zieht sich nach links auf, dann steigt die Zahl */
  return t=>{const a=eIn(seg(t,.4,1.0)),b=eOut(seg(t,3.2,3.5));tf(T,{y:-21*(1-a)-21*b});
   tf(P,{s:ePop(seg(t,1.0,1.42))});const e=eFlow(seg(t,1.35,1.95));P.style.left=lerp(10.36,1.2,e)+'cqw';
   tf(num,{y:(1-eIn(seg(t,1.7,2.15)))*2.4,o:seg(t,1.7,1.85)})}}});
