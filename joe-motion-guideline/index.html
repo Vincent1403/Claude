@@ -573,18 +573,17 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
  const cx1=gl(500,0,500,562.5,'rgba(232,55,26,.5)'),cy1=gl(0,281.25,1000,281.25,'rgba(232,55,26,.5)');
  const labels=[];const gt=(x,y,txt,c=W,anchor='start')=>{const t=svgEl(gs,'text',{x,y,'font-size':11,'font-family':MONO,fill:c,'text-anchor':anchor},txt);labels.push(t);return t};
  /* Easing-Kurven: jede läuft synchron zur Bewegung, die sie gerade antreibt */
- const curves=[[60,62,'Flow',eFlow,4.2,5.0],[790,62,'jö-Feder',x=>spring(x*.9),1.77,2.9],[60,392,'Pop',ePop,4.75,5.17],[790,392,'Auftritt',eIn,5.65,6.1]].map(([x,y,name,f,a,b])=>{
-  const gg=svgEl(gs,'g',{transform:`translate(${x} ${y})`}),W2=150,H2=90,Y=v=>H2-((v+.1)/1.45)*H2;
+ /* in einer Reihe unten, auf das 50er-Raster gesetzt, in der Reihenfolge, in der sie im Ablauf vorkommen */
+ const curves=[[100,'jö-Feder',x=>spring(x*.9),1.77,2.9],[300,'Flow',eFlow,4.2,5.0],[550,'Pop',ePop,4.75,5.17],[750,'Auftritt',eIn,5.65,6.1]].map(([x,name,f,a,b])=>{const y=430;
+  const gg=svgEl(gs,'g',{transform:`translate(${x} ${y})`}),W2=150,H2=70,Y=v=>H2-((v+.1)/1.45)*H2;
   svgEl(gg,'line',{x1:0,y1:H2,x2:W2,y2:H2,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'});svgEl(gg,'line',{x1:0,y1:0,x2:0,y2:H2,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'});
   svgEl(gg,'line',{x1:0,y1:Y(1),x2:W2,y2:Y(1),stroke:F,'stroke-width':1,'stroke-dasharray':'3 3','vector-effect':'non-scaling-stroke'});
   let d='';for(let i=0;i<=60;i++){const u=i/60;d+=(i?'L':'M')+(u*W2).toFixed(1)+','+Y(f(u)).toFixed(1)}
   const path=svgEl(gg,'path',{d,fill:'none',stroke:G,'stroke-width':2,'vector-effect':'non-scaling-stroke',pathLength:1,'stroke-dasharray':'1 1'});
   const head=svgEl(gg,'line',{x1:0,y1:0,x2:0,y2:H2,stroke:'rgba(232,55,26,.35)','stroke-width':1,'vector-effect':'non-scaling-stroke'});
   const dot=svgEl(gg,'circle',{r:4.5,fill:O});const lab=svgEl(gg,'text',{x:0,y:H2+16,'font-size':11,'font-family':MONO,fill:W},name);
-  return {gg,path,head,dot,lab,f,a,b,Y,W2}});
- /* Zeitleiste unten */
- const tl=svgEl(gs,'g',{});for(let i=0;i<=48;i++){svgEl(tl,'line',{x1:250+i*10,y1:520,x2:250+i*10,y2:i%6?526:532,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'})}
- const ph=svgEl(tl,'line',{x1:250,y1:512,x2:250,y2:536,stroke:G,'stroke-width':2,'vector-effect':'non-scaling-stroke'});
+  const link=svgEl(gs,'line',{stroke:G,'stroke-width':1,'stroke-dasharray':'4 4','vector-effect':'non-scaling-stroke'});/* Verbindung zum Element, das die Kurve gerade bewegt */
+  return {gg,path,head,dot,lab,f,a,b,Y,W2,x,y,link}});
  /* Logo mit eigenen Konstruktionslinien (Logo-Koordinaten 271,15 × 182,86) */
  const L=logo(st,28,50,H/2,'var(--wine)');const cg=svgEl(L.el,'svg',{viewBox:'0 0 271.15 182.86'});cg.style.cssText='position:absolute;inset:0;width:100%;height:100%;overflow:visible';
  const guides=[];const g=(tag,a,col=GR,dash)=>{const e=svgEl(cg,tag,{fill:'none',stroke:col,'stroke-width':1,'vector-effect':'non-scaling-stroke',pathLength:1,'stroke-dasharray':dash||'1 1',...a});guides.push(e);return e};
@@ -605,21 +604,24 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
  const pt=mk(P,'','Motion Guide','color:#fff;font-weight:700;font-size:4cqw;white-space:nowrap;display:inline-block');
  const PH=10.5,PW=33,LW=28,LH=LW*LR;
  return t=>{
-  const pp=(t%4)/4;ph.setAttribute('x1',250+pp*480);ph.setAttribute('x2',250+pp*480);
+  
   const out=1-seg(t,8.3,8.9);
   glines.forEach((l,i)=>{l.style.strokeDashoffset=1-eFlow(seg(t,.05+i*.025,.75+i*.025));l.style.opacity=out*(t>5.4?lerp(1,.55,seg(t,5.4,6.4)):1)});
   labels.forEach(l=>l.style.opacity=seg(t,.4,.8)*out);
-  curves.forEach((c,i)=>{c.path.style.strokeDashoffset=1-eFlow(seg(t,.6+i*.15,1.5+i*.15));c.gg.style.opacity=seg(t,.5+i*.15,.8+i*.15)*out;
-   const q=seg(t,c.a,c.b),x=q*c.W2,y=c.Y(c.f(q));c.dot.setAttribute('cx',x.toFixed(1));c.dot.setAttribute('cy',y.toFixed(1));c.head.setAttribute('x1',x);c.head.setAttribute('x2',x);
-   const live=t>=c.a&&t<=c.b+.3;c.dot.setAttribute('r',live?6:4.5);c.lab.setAttribute('fill',live?G:W)});tl.style.opacity=seg(t,.5,.9)*out;
   guides.forEach((e,i)=>{e.style.strokeDashoffset=1-eFlow(seg(t,.5+i*.06,1.4+i*.06));e.style.opacity=lerp(1,.35,seg(t,4.6,5.6))*out});
   tx.forEach((e,i)=>e.style.opacity=seg(t,1.2+i*.08,1.5+i*.08)*lerp(1,.35,seg(t,4.6,5.6))*out);
   drawLogo(L,t,{pre:1.3});
   /* Logo schiebt nach links, Pill erscheint rechts */
-  const s=eFlow(seg(t,4.2,5.0)),gap=4,total=LW+gap+PW,lx=lerp(50,50-total/2+LW/2,s);rect(L.el,lx,H/2,LW,LH);
+  let target={};const s=eFlow(seg(t,4.2,5.0)),gap=4,total=LW+gap+PW,lx=lerp(50,50-total/2+LW/2,s);rect(L.el,lx,H/2,LW,LH);
   const px=50-total/2+LW+gap,py=H/2-PH/2+.6,q=t-4.75;
   P.style.left=px+'cqw';P.style.top=py+'cqw';P.style.height=PH+'cqw';P.style.width=lerp(PH,PW,eFlow(seg(q,.35,.95)))+'cqw';
-  tf(P,{s:q<0?0:ePop(seg(q,0,.42))});tf(pt,{y:(1-eIn(seg(q,.9,1.35)))*PH*.8,o:q>=.9?1:0})}}});/* Text steigt aus der Unterkante der Pill */
+  tf(P,{s:q<0?0:ePop(seg(q,0,.42))});
+  {const lt=H/2-LH/2,k=LW/271.15;target={'jö-Feder':[(lx-LW/2+152.94*k)*10,(lt+16.8*k)*10],'Flow':[(lx+LW/2)*10,(H/2)*10],'Pop':[(px+PH/2)*10,(py+PH/2)*10],'Auftritt':[(px+PW/2)*10,(py+PH)*10]}}
+  curves.forEach((c,i)=>{c.path.style.strokeDashoffset=1-eFlow(seg(t,.6+i*.15,1.5+i*.15));c.gg.style.opacity=seg(t,.5+i*.15,.8+i*.15)*out;
+   const q=seg(t,c.a,c.b),x=q*c.W2,y=c.Y(c.f(q));c.dot.setAttribute('cx',x.toFixed(1));c.dot.setAttribute('cy',y.toFixed(1));c.head.setAttribute('x1',x);c.head.setAttribute('x2',x);
+   const live=t>=c.a&&t<=c.b+.3;c.dot.setAttribute('r',live?6:4.5);c.lab.setAttribute('fill',live?G:W);
+   const tg=target[c.lab.textContent];c.link.style.opacity=live&&tg?seg(t,c.a,c.a+.15)*(1-seg(t,c.b+.15,c.b+.3)):0;if(tg){c.link.setAttribute('x1',c.x+x);c.link.setAttribute('y1',c.y+y);c.link.setAttribute('x2',tg[0]);c.link.setAttribute('y2',tg[1])}});
+  tf(pt,{y:(1-eIn(seg(q,.9,1.35)))*PH*.8,o:q>=.9?1:0})}}});/* Text steigt aus der Unterkante der Pill */
 
 /* ---------- Kacheln aufbauen ---------- */
 const stages=[];
