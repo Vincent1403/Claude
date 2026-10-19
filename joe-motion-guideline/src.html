@@ -1,572 +1,563 @@
 <title>jö Motion Guideline</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-/* Layout: Markenportal wie Cash App / Klarna: feste Seitenleiste links, Inhalt in einer Spalte, jede Sektion = Titel rechts + Kacheln (Video, Name, ein Satz) */
+/* Layout: wie das Klarna-Markenportal: Navigation links, rechts je Kapitel Headline + kurze Erklärung + Raster aus Live-Beispielen (Bühne, Name, ein Satz). Weiß als Grundfarbe, jö-Elemente (Verlauf, Burgund, Pills, Tags, Kacheln) in den Beispielen. */
 @font-face{font-family:"Satoshi";src:url(data:font/woff2;base64,__FONT__) format("woff2");font-weight:300 900;font-display:block}
 :root{
- --bg:#ffffff;--ink:#0b0b0b;--muted:#6b6b6b;--faint:#a3a3a3;--line:#e7e5e1;--panel:#f7f6f3;
- --tile:#f4f1ea;--tile-ink:#141010;--burg:#821419;--accent:#e0662e;
+ color-scheme:light;
+ --page:#ffffff;--ink:#1d1211;--muted:#7b706c;--faint:#b3aaa6;--line:#efebe8;
+ --wine:#5b0f0c;--orange:#f9781e;--lorange:#ffb37c;--red:#e8371a;--lilac:#ebe8ee;--sand:#f5f2ee;
+ --jg:radial-gradient(128.6% 191.1% at -18.4% 123.6%,#5c3048 0%,#663047 2%,#8c3044 8%,#a83041 14%,#b93040 20%,#c02031 24%,#ef2700 55%,#f23e10 74%,#fb6321 90%,#ff7024 96%);
  --font:"Satoshi",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
- --side:248px;
+ --nav:260px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0e0d;--ink:#f3f1ee;--muted:#a19c96;--faint:#6d6863;--line:#2a2725;--panel:#171615;--burg:#e57f78;--accent:#f08a52;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0f0e0d;--ink:#f3f1ee;--muted:#a19c96;--faint:#6d6863;--line:#2a2725;--panel:#171615;--burg:#e57f78;--accent:#f08a52;color-scheme:dark}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;font-weight:450;-webkit-font-smoothing:antialiased}
+body{background:var(--page);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;font-weight:450;-webkit-font-smoothing:antialiased}
 p{margin:0}
-h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
-a{color:inherit}
-code,.mono{font-family:var(--mono);font-size:.85em}
+h1,h2,h3{margin:0;text-wrap:balance}
 button{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:6px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--page)}
 
-/* Seitenleiste */
-.side{position:fixed;inset:0 auto 0 0;width:var(--side);border-right:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 0 20px max(0px,env(safe-area-inset-left,0px));overflow-y:auto;z-index:20}
-.mark{display:flex;align-items:center;gap:10px;padding:0 20px 18px;border-bottom:1px solid var(--line);text-decoration:none}
-.mark .dot{width:30px;height:30px;border-radius:50%;background:var(--burg);display:grid;place-items:center}
-.mark .dot svg{width:20px;color:#fff;overflow:visible}
-.mark b{font-weight:700;font-size:.92rem}
-.navgrp{padding:16px 20px;border-bottom:1px solid var(--line);display:grid;gap:2px}
-.navgrp .h{font-weight:700;font-size:.9rem;margin-bottom:6px}
-.navgrp .lvl1{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;padding:3px 0 3px 12px;color:var(--ink);text-decoration:none}
-.navgrp .lvl1.off{color:var(--faint)}
-.navgrp .lvl1 small{font-size:.7rem;color:var(--faint)}
-.navgrp .lvl2{display:block;font-size:.88rem;padding:4px 0 4px 12px;color:var(--faint);text-decoration:none;transition:color .2s}
-.navgrp .lvl2:hover{color:var(--ink)}
-.navgrp .lvl2.on{color:var(--ink);font-weight:600}
-.side .foot{margin-top:auto;padding:16px 20px 0;font-size:.78rem;color:var(--faint)}
-
-/* Kopfzeile + Inhalt */
-.main{margin-left:var(--side)}
-.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line);height:52px;display:flex;align-items:center;justify-content:center;font-size:.92rem;font-weight:500}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+/* Navigation */
+.nav{position:fixed;inset:0 auto 0 0;width:var(--nav);padding:calc(32px + env(safe-area-inset-top,0px)) 24px 24px max(32px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:30px;overflow-y:auto;z-index:20;background:var(--page)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand svg{width:64px;color:var(--wine);overflow:visible}
+.brand .pill{height:34px;padding:0 14px;border-radius:999px;background:var(--jg);color:#fff;font-weight:700;font-size:.8rem;display:inline-flex;align-items:center;letter-spacing:.02em}
+.nav .lab{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:8px}
+.nav ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.nav a.it{position:relative;display:inline-block;padding:3px 8px;margin-left:-8px;border-radius:8px;font-size:.92rem;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav a.it:hover{color:var(--ink)}
+.nav a.it.on{color:var(--ink);font-weight:700;background:var(--sand)}
+.nav a.it.on::before{content:"→";position:absolute;left:-14px;font-weight:500}
+.nav .ver{margin-top:auto;font-size:.75rem;color:var(--faint)}
 .mnav{display:none}
-.content{max-width:1120px;padding-block:0 96px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));margin:0 auto}
 
-section{padding-block:56px;border-bottom:1px solid var(--line);display:grid;gap:36px;scroll-margin-top:60px}
-section:last-of-type{border-bottom:0}
-.half{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
-.half > .r{grid-column:2;display:grid;gap:14px;align-content:start}
-.hero-h{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start;padding-top:40px}
-.hero-h h1{font-size:clamp(3rem,7vw,4.9rem);letter-spacing:-.035em;line-height:1}
-.hero-h p{font-size:clamp(1.1rem,1.6vw,1.32rem);line-height:1.22;max-width:30em}
-h2{font-size:clamp(2rem,3.3vw,2.65rem);letter-spacing:-.025em;line-height:1}
-h3{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
-.body{font-size:.92rem;max-width:56ch}
+/* Inhalt */
+main{margin-left:var(--nav);padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px));padding-block:24px 120px}
+.wrap{max-width:1240px}
+section{padding-top:72px;scroll-margin-top:16px;display:grid;gap:22px}
+h1{font-size:clamp(3.4rem,8.5vw,7rem);font-weight:900;letter-spacing:-.045em;line-height:.92}
+h2{font-size:clamp(2.6rem,6vw,5.2rem);font-weight:900;letter-spacing:-.045em;line-height:.95}
+.lede{font-size:clamp(1.05rem,1.5vw,1.28rem);line-height:1.45;max-width:58ch}
+.sub{font-size:1.5rem;font-weight:900;letter-spacing:-.01em;text-transform:uppercase;margin-top:34px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 22px}
+.grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ex{margin:0;display:grid;gap:12px;min-width:0}
+.ex figcaption{display:grid;gap:2px}
+.ex figcaption b{font-size:1.1rem;font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ex figcaption span{font-size:.92rem;color:var(--muted);max-width:52ch}
+.badge{font-size:.66rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:6px}
+.badge.std{background:var(--wine);color:#fff}
+.badge.acc{background:var(--orange);color:#fff}
+.badge.no{background:var(--red);color:#fff}
 
-/* Medien */
-.media{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:9px;overflow:hidden;background:var(--tile)}
-.media video,.media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.hero-v{margin-top:28px}
-.tiles{display:grid;gap:28px 20px}
-.t2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.t3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.t4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.tile{display:grid;gap:10px;align-content:start;min-width:0}
-.cap{display:grid;gap:1px;font-size:.86rem}
-.cap b{font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.cap span{color:var(--muted)}
-.badge{font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
-.badge.std{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.badge.acc{background:var(--accent);color:#fff;border-color:var(--accent)}
-.empty{display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted);font-size:.86rem;background:var(--panel);border:1px dashed var(--line)}
+/* Bühne: alles darin in cqw, damit die Beispiele mit der Kachel skalieren */
+.stage{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;container-type:inline-size;cursor:pointer;isolation:isolate}
+.stage.hero{border-radius:22px}
+.stage > *{position:absolute}
+.stage .x{right:2.4cqw;top:2.4cqw;width:6cqw;height:6cqw;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:900;font-size:3.4cqw;z-index:9}
+.c{will-change:transform}
+.fill{position:absolute;inset:0}
+.bg-white{background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.bg-sand{background:var(--sand)}
+.bg-lilac{background:var(--lilac)}
+.bg-orange{background:var(--orange)}
+.bg-wine{background:var(--wine)}
+.bg-jg{background:var(--jg)}
+.bg-lor{background:var(--lorange)}
+.bg-red{background:var(--red)}
+.photo{background-size:cover;background-position:center}
 
-/* Karussell */
-.behav{display:grid;gap:22px}
-.dots{display:flex;gap:8px;justify-content:center}
-.dots button{width:7px;height:7px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer}
-.dots button[aria-current="true"]{background:var(--ink)}
-.dots button:hover{background:var(--muted)}
-.ccap{text-align:center;font-size:.82rem;color:var(--muted);min-height:1.2em}
+/* Text in der Bühne */
+.tx{position:absolute;left:8cqw;right:8cqw;top:50%;transform:translateY(-50%);font-weight:800;letter-spacing:-.03em;line-height:1.02}
+.tx.center{text-align:center}
+.tl{display:block;overflow-y:clip;overflow-x:visible;padding:.04em 0 .14em;margin-bottom:-.14em}
+.tl > span{display:inline-block;transform-origin:50% 80%}
 
-/* Unterkapitel */
-.sub{display:grid;gap:18px}
-.sub-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px}
-.sub-h p{font-size:.86rem;color:var(--muted);max-width:52ch}
+/* jö-Bausteine */
+.lg{overflow:visible}
+.tile{border-radius:22.5%}
+.card{border-radius:2.8cqw;overflow:hidden}
+.pill{display:flex;align-items:center;gap:1.6cqw;background:#fff;border-radius:999px;color:var(--ink);font-weight:700;white-space:nowrap;overflow:hidden}
+.jb{flex:none;border-radius:50%;background:var(--jg);display:grid;place-items:center}
+.jb svg{width:62%;color:#fff;overflow:visible}
+.os{flex:none;border-radius:50%;background:var(--wine);color:#fff;display:grid;place-items:center;font-weight:800;letter-spacing:-.04em}
+.tag{display:flex;align-items:center;gap:1.2cqw;padding:1cqw 1.8cqw;border-radius:.9cqw;font-weight:700;font-size:2.6cqw;white-space:nowrap}
+.tag.neu{background:var(--wine);color:#fff}.tag.neu i{width:1.5cqw;height:1.5cqw;background:#fff;border-radius:.2cqw}
+.tag.akt{background:#fff;color:var(--red)}.tag.akt i{width:1.6cqw;height:1.6cqw;background:var(--red);border-radius:50%}
+.tag.deal{background:var(--orange);color:#fff}.tag.deal i{width:1.4cqw;height:1.4cqw;background:#fff;transform:rotate(45deg);border-radius:.15cqw}
+.push{display:flex;gap:2.2cqw;align-items:center;background:#fff;border-radius:2.6cqw;padding:2.2cqw 2.6cqw;box-shadow:0 1.6cqw 4cqw rgba(60,20,10,.14)}
+.push .ic{width:9cqw;height:9cqw;border-radius:22.5%;background:var(--jg);display:grid;place-items:center;flex:none}
+.push .ic svg{width:66%;color:#fff;overflow:visible}
+.push small{display:block;font-size:2cqw;color:var(--muted)}
+.push b{display:block;font-size:2.9cqw;font-weight:700;color:var(--ink)}
+.push span{display:block;font-size:2.3cqw;color:var(--ink)}
+.curve{inset:0;width:100%;height:100%}
 
-/* Bühne (Live-Demos) */
-.stage{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:9px;overflow:hidden;background:var(--tile);color:var(--tile-ink)}
-.ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.82rem;color:var(--muted)}
-.btn{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 13px;font-size:.82rem;font-weight:600;cursor:pointer}
-.btn:hover{border-color:var(--muted)}
-.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.logo-svg{position:absolute;left:50%;top:50%;width:30%;transform:translate(-50%,-50%);overflow:visible}
-
-/* Easing */
-.ease{border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:14px;display:grid;gap:10px;cursor:pointer;text-align:left}
-.ease:hover{border-color:var(--muted)}
-.ease .hd{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-.ease .hd b{font-size:.95rem}
-.ease .hd small{font-size:.75rem;color:var(--muted)}
-.ease svg{width:100%;height:auto;display:block}
-.ease .demo{height:44px;position:relative;border-radius:7px;background:var(--tile);overflow:hidden}
-.ease .demo i{position:absolute;top:50%;left:12px;width:22px;height:22px;margin-top:-11px;border-radius:50%;background:var(--burg)}
-.ease .demo i.sq{border-radius:5px}
-.ease p{font-size:.84rem;color:var(--muted)}
-.ease .v{font-family:var(--mono);font-size:.72rem;color:var(--ink)}
-.ease.wide{grid-column:1/-1;grid-template-columns:minmax(0,220px) minmax(0,1fr);align-items:center;column-gap:24px}
-.ease.wide .hd,.ease.wide p,.ease.wide .v{grid-column:2}
-.ease.wide svg{grid-row:1/span 4;grid-column:1}
-.ease.wide .demo{grid-column:2}
-
-/* Tabellen + Details */
-details{border-top:1px solid var(--line);padding-top:14px}
-summary{cursor:pointer;font-weight:700;font-size:.9rem;list-style:none;display:flex;gap:8px;align-items:center}
-summary::before{content:"+";display:inline-grid;place-items:center;width:20px;height:20px;border:1px solid var(--line);border-radius:50%;font-weight:500}
-details[open] summary::before{content:"–"}
+/* Für Motion Designer */
+details{margin-top:8px;border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+summary{cursor:pointer;font-weight:700;display:flex;gap:10px;align-items:center;list-style:none}
 summary::-webkit-details-marker{display:none}
-.tbl{overflow-x:auto;margin-top:14px}
-table{border-collapse:collapse;width:100%;min-width:560px;font-size:.86rem}
-th,td{text-align:left;padding:9px 12px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+summary::before{content:"+";width:22px;height:22px;border-radius:50%;background:var(--sand);display:inline-grid;place-items:center;font-weight:600}
+details[open] summary::before{content:"–"}
+summary small{font-weight:450;color:var(--muted)}
+.tbl{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.88rem}
+th,td{text-align:left;padding:8px 14px 8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
 td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
-.copy{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:2px 8px;font-size:.72rem;cursor:pointer;margin-left:8px}
+.copy{border:1px solid var(--line);background:#fff;border-radius:6px;padding:1px 8px;font-size:.72rem;cursor:pointer;margin-left:8px}
+.mono{font-family:var(--mono);font-size:.82rem}
+.open{margin:0;padding-left:20px;display:grid;gap:8px;max-width:64ch}
 
-/* Text-Demo */
-.tstage{display:flex;align-items:center;padding:0 9%}
-.tstage.center{justify-content:center;text-align:center}
-.ttext{font-weight:700;font-size:clamp(1.5rem,4.4vw,3.6rem);letter-spacing:-.02em;line-height:1.04;transform-origin:left center}
-.tstage.center .ttext{transform-origin:center}
-.tline{display:block;overflow:hidden;padding:.06em 0 .12em;margin-bottom:-.12em}
-.tline span{display:inline-block;transform-origin:50% 80%}
-.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-.facts div{display:grid;gap:1px;border-top:1px solid var(--ink);padding-top:10px}
-.facts b{font-size:1.05rem;font-variant-numeric:tabular-nums}
-.facts span{font-size:.8rem;color:var(--muted)}
-
-.open{margin:0;padding-left:18px;display:grid;gap:10px;font-size:.92rem;max-width:62ch}
-
-@media (max-width:1000px){
- :root{--side:0px}
- .side{display:none}
- .mnav{display:flex;position:sticky;top:calc(env(safe-area-inset-top,0px) + 52px);z-index:9;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto;gap:2px;padding:6px max(12px,env(safe-area-inset-right,0px)) 6px max(12px,env(safe-area-inset-left,0px));scrollbar-width:none}
- .mnav a{white-space:nowrap;text-decoration:none;font-size:.85rem;padding:5px 10px;border-radius:999px;color:var(--muted)}
- .mnav a.on{color:var(--ink);background:var(--panel);font-weight:600}
- section{scroll-margin-top:100px}
- .t4{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:980px){
+ :root{--nav:0px}
+ .nav{display:none}
+ .mnav{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--page);gap:4px;overflow-x:auto;scrollbar-width:none;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+ .mnav a{white-space:nowrap;text-decoration:none;font-size:.88rem;padding:5px 11px;border-radius:999px;color:var(--muted)}
+ .mnav a.on{background:var(--sand);color:var(--ink);font-weight:700}
+ main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+ section{scroll-margin-top:60px}
+ .grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (max-width:700px){
- .hero-h,.half{grid-template-columns:minmax(0,1fr)}
- .half > .r{grid-column:1}
- .t2,.t3{grid-template-columns:minmax(0,1fr)}
- .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
- .ease.wide{grid-template-columns:minmax(0,1fr)}
- .ease.wide svg,.ease.wide .hd,.ease.wide p,.ease.wide .v,.ease.wide .demo{grid-column:1;grid-row:auto}
+@media (max-width:640px){
+ .grid,.grid.g3{grid-template-columns:minmax(0,1fr);gap:30px}
+ .stage{border-radius:14px}
 }
-@media (max-width:460px){.t4{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 
-<aside class="side" aria-label="Kapitel">
- <a class="mark" href="#top"><span class="dot"><svg viewBox="-10 -60 291 253" aria-hidden="true" data-mini></svg></span><b>jö Brand</b></a>
- <div class="navgrp">
-  <span class="h">Grundlagen</span>
-  <span class="lvl1 off">Logo <small>folgt</small></span>
-  <span class="lvl1 off">Farbe <small>folgt</small></span>
-  <span class="lvl1 off">Typografie <small>folgt</small></span>
-  <a class="lvl1" href="#top">Motion</a>
-  <nav aria-label="Motion">
-   <a class="lvl2" href="#verhalten">Verhalten</a>
-   <a class="lvl2" href="#prinzipien">Prinzipien</a>
-   <a class="lvl2" href="#easing">Easing &amp; Timing</a>
-   <a class="lvl2" href="#typografie">Typografie</a>
-   <a class="lvl2" href="#logo">Logo &amp; Endcard</a>
-   <a class="lvl2" href="#uebergaenge">Übergänge</a>
-   <a class="lvl2" href="#ressourcen">Ressourcen</a>
-   <a class="lvl2" href="#offen">Offene Punkte</a>
-  </nav>
+<nav class="nav" aria-label="Kapitel">
+ <a class="brand" href="#start"><svg viewBox="0 0 271.15 182.86" aria-hidden="true" data-static></svg><span class="pill">Brand</span></a>
+ <div>
+  <div class="lab">Motion</div>
+  <ul>
+   <li><a class="it" href="#prinzipien">Prinzipien</a></li>
+   <li><a class="it" href="#logo">Logo</a></li>
+   <li><a class="it" href="#typografie">Typografie</a></li>
+   <li><a class="it" href="#kachel">Die Kachel</a></li>
+   <li><a class="it" href="#layout">Layout-Morphs</a></li>
+   <li><a class="it" href="#elemente">Elemente</a></li>
+   <li><a class="it" href="#timing">Timing</a></li>
+   <li><a class="it" href="#fehlgebrauch">Fehlgebrauch</a></li>
+  </ul>
  </div>
- <div class="foot">Entwurf v0.3 · Oktober 2026</div>
-</aside>
+ <div class="ver">Entwurf v0.4 · Oktober 2026</div>
+</nav>
+<nav class="mnav" aria-label="Kapitel">
+ <a href="#prinzipien">Prinzipien</a><a href="#logo">Logo</a><a href="#typografie">Typografie</a><a href="#kachel">Kachel</a><a href="#layout">Layout</a><a href="#elemente">Elemente</a><a href="#timing">Timing</a><a href="#fehlgebrauch">Fehlgebrauch</a>
+</nav>
 
-<div class="main" id="top">
- <div class="topbar">Brand Guidelines</div>
- <nav class="mnav" aria-label="Motion">
-  <a href="#verhalten">Verhalten</a><a href="#prinzipien">Prinzipien</a><a href="#easing">Easing</a><a href="#typografie">Typografie</a><a href="#logo">Logo</a><a href="#uebergaenge">Übergänge</a><a href="#ressourcen">Ressourcen</a><a href="#offen">Offen</a>
- </nav>
- <div class="content">
+<main><div class="wrap">
 
-  <!-- Einstieg -->
-  <div class="hero-h">
-   <h1>Motion</h1>
-   <p>Bewegung bei jö ist freundlich, klar und hat einen kleinen Sprung. Sie kommt direkt aus dem Logo: Linien, die sich in einem Zug zeichnen, und drei Punkte, die landen und nachfedern.</p>
-  </div>
-  <div class="media hero-v"><video data-src="hero.mp4" poster="posters/hero.jpg" muted loop playsinline aria-label="Überblick: Logo-Aufbau, Text mit Feder, Coin-Übergang, Rainbow-Reveal, Loading-Punkte, 3D-Coin"></video></div>
+ <section id="start" style="padding-top:20px">
+  <h1>Motion</h1>
+  <p class="lede">Bewegung bei jö ist freundlich, klar und hat einen kleinen Sprung. Sie kommt aus dem Logo: Linien, die sich in einem Zug zeichnen, und drei Punkte, die landen und nachfedern. Ihre Form ist die Kachel, das abgerundete Rechteck aus App-Icon und Karten.</p>
+  <div class="stage hero" data-scene="hero" aria-label="Überblick: Logo zeichnet sich, die Fläche wird zur Kachel und teilt sich in Karten"></div>
+ </section>
 
-  <!-- Verhalten -->
-  <section id="verhalten">
-   <div class="half"><div class="r">
-    <h2>Verhalten</h2>
-    <p class="body">Das Motion-System baut auf drei Verhaltensweisen auf. Sie kommen aus der Marke selbst: aus dem Logo, das sich zeichnet und hüpft, und aus dem Coin, mit dem bei jö gesammelt und geteilt wird.</p>
-    <p class="body">Die drei Verhalten sind ein Rahmen, kein Katalog. Neue Animationen ordnen sich einem davon zu und übernehmen dessen Kurven und Dauern.</p>
-   </div></div>
-   <div class="tiles t3">
-    <div class="tile"><div class="media"><video data-src="clips/text_wort.mp4" poster="posters/text_wort.jpg" muted loop playsinline></video></div><div class="cap"><b>Ankommen</b><span>Aufsteigen, aufziehen, öffnen: Inhalte kommen ruhig und geordnet ins Bild.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/loading_punkte.mp4" poster="posters/loading_punkte.jpg" muted loop playsinline></video></div><div class="cap"><b>Springen</b><span>Hüpfen, federn, nachschwingen: die Freude der Marke, gezielt als Akzent.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/coin_3d_bounce.mp4" poster="posters/coin_3d_bounce.jpg" muted loop playsinline></video></div><div class="cap"><b>Verbinden</b><span>Drehen, morphen, zusammenführen: Wert wechselt zwischen Menschen und Partnern.</span></div></div>
-   </div>
+ <section id="prinzipien">
+  <h2>Prinzipien</h2>
+  <p class="lede">Bewegung erklärt, sie schmückt nicht. Drei Prinzipien sorgen dafür, dass jede Animation erkennbar jö ist, vom Social-Post bis zur App.</p>
+  <div class="grid g3" data-group="prinzip"></div>
+ </section>
 
-   <div class="behav" data-car='[["text_wort","Text steigt Wort für Wort aus der Kante"],["trans_coin_mitte","Coin öffnet das nächste Bild"],["logo_script_v1","Logo zeichnet sich in einem Zug"]]'>
-    <div class="media"><video muted playsinline></video></div><div class="ccap"></div><div class="dots"></div>
-    <div class="half"><div class="r"><h3>Ankommen</h3><p class="body">Ankommen ist der erste Schritt in die Welt von jö. Text steigt aus einer unsichtbaren Kante, Flächen ziehen auf, der Coin öffnet ein neues Bild. Alles kommt nacheinander, damit klar ist, wohin man schauen soll. Ankommen ist schnell am Anfang und ruhig am Ende.</p></div></div>
-   </div>
-   <div class="behav" data-car='[["loading_punkte","Punkte springen im Loop"],["coin_attention","Coin federt, um Aufmerksamkeit zu holen"],["text_wort_feder","Headline mit jö-Feder"],["coin_bounce_reveal","Coin springt ins Bild"]]'>
-    <div class="media"><video muted playsinline></video></div><div class="ccap"></div><div class="dots"></div>
-    <div class="half"><div class="r"><h3>Springen</h3><p class="body">Springen ist die Signatur der Marke. Die drei Punkte im Logo hüpfen, landen mit einem kleinen Squash und federn nach. Diese Feder darf überall vorkommen, aber nur einmal pro Moment, auf dem wichtigsten Element. Sonst geht der Akzent verloren.</p></div></div>
-   </div>
-   <div class="behav" data-car='[["coin_3d_bounce","Coin dreht sich ins Bild"],["coin_script_stempel","Logo wird zum Stempel"],["trans_coin_rainbow","Rainbow-Coin verbindet zwei Bilder"],["rainbow_vollbild","Rainbow-Reveal bis zur Fläche"]]'>
-    <div class="media"><video muted playsinline></video></div><div class="ccap"></div><div class="dots"></div>
-    <div class="half"><div class="r"><h3>Verbinden</h3><p class="body">Verbinden zeigt, wie bei jö Wert fließt: zwischen Menschen, Partnern und der App. Drehungen, Flips und Morphs machen sichtbar, dass etwas gegeben, getauscht oder gesammelt wird. Der Coin ist dabei die wichtigste Form.</p></div></div>
-   </div>
-  </section>
+ <section id="logo">
+  <h2>Logo</h2>
+  <p class="lede">Das Logo bewegt sich immer gleich: Die Linien von j und ö zeichnen sich, dann springen die drei Punkte herein und federn nach. Als App-Icon steht es in der Kachel. Wähle die Variante nach Format und Länge, und halte sie einfach.</p>
+  <h3 class="sub">Aufbau</h3>
+  <div class="grid" data-group="logo"></div>
+  <h3 class="sub">Akzent &amp; Loop</h3>
+  <div class="grid" data-group="logoloop"></div>
+ </section>
 
-  <!-- Prinzipien -->
-  <section id="prinzipien">
-   <div class="half"><div class="r">
-    <h2>Prinzipien</h2>
-    <p class="body">Bewegung erklärt, sie schmückt nicht. Drei Prinzipien sorgen dafür, dass jede Animation klar, freundlich und erkennbar jö ist.</p>
-   </div></div>
-   <div class="media"><video data-src="clips/coin_rainbow_reveal.mp4" poster="posters/coin_rainbow_reveal.jpg" muted loop playsinline aria-label="Coin Rainbow-Reveal"></video></div>
-   <div class="tiles t3">
-    <div class="cap"><b>Klar</b><span>Pro Moment ein Fokus. Elemente kommen nacheinander mit festen Abständen, nie alle gleichzeitig. Abgänge sind kürzer als Auftritte.</span></div>
-    <div class="cap"><b>Freundlich</b><span>Weich und fließend, nie hart oder steif. Wir beschleunigen sanft und kommen ruhig an. Auch in Haltephasen bleibt das Bild leicht in Bewegung.</span></div>
-    <div class="cap"><b>Federnd</b><span>Ein kleiner Sprung mit echter Physik. Die jö-Feder setzt Akzente, sparsam und gezielt, und gleicht ruhige, systematische Momente aus.</span></div>
-   </div>
-  </section>
+ <section id="typografie">
+  <h2>Typografie</h2>
+  <p class="lede">Für Text gibt es eine Sammlung fertiger Vorlagen. Wähle nach Botschaft, Format und Länge. Du kannst sie kombinieren, aber übertreib es nicht: Einfachheit geht vor.</p>
+  <h3 class="sub">Vorlagen</h3>
+  <div class="grid" data-group="text"></div>
+ </section>
 
-  <!-- Easing & Timing -->
-  <section id="easing">
-   <div class="half"><div class="r">
-    <h2>Easing &amp; Timing</h2>
-    <p class="body">Sechs Kurven und eine Feder decken alle Bewegungen ab. Jede Kurve hat eine feste Aufgabe. Karte antippen, um sie abzuspielen.</p>
-   </div></div>
-   <div class="ctrl"><button class="btn" id="easeAll" type="button">▶ Alle abspielen</button></div>
-   <div class="tiles t3" id="eases"></div>
-   <div class="facts">
-    <div><b>0,14 s</b><span>XS · Punkte, Badges</span></div>
-    <div><b>0,22–0,3 s</b><span>S · Abgänge</span></div>
-    <div><b>0,4–0,55 s</b><span>M · Text, Icons, Karten</span></div>
-    <div><b>0,8–1,9 s</b><span>L–XL · Flächen, Kamera</span></div>
-   </div>
-   <details><summary>Spezifikation: Dauern und Abstände</summary>
-    <div class="tbl"><table>
-     <thead><tr><th>Stufe</th><th>Dauer</th><th>Frames (24 fps)</th><th>Kurve</th><th>Beispiele</th></tr></thead>
-     <tbody>
-      <tr><td><b>XS</b></td><td class="n">0,14–0,15 s</td><td class="n">3–4</td><td>Pop</td><td>Punkte, Badges, kleine Statuswechsel</td></tr>
-      <tr><td><b>S</b></td><td class="n">0,22–0,3 s</td><td class="n">5–7</td><td>Abgang</td><td>Text und Elemente verlassen das Bild</td></tr>
-      <tr><td><b>M</b></td><td class="n">0,4–0,55 s</td><td class="n">10–13</td><td>Auftritt, Pop</td><td>Text-Reveal, Icons, Buttons, Karten</td></tr>
-      <tr><td><b>L</b></td><td class="n">0,8–1,2 s</td><td class="n">19–29</td><td>Flow</td><td>Panels, große Flächen, Bildwechsel</td></tr>
-      <tr><td><b>XL</b></td><td class="n">1,4–1,9 s</td><td class="n">34–46</td><td>Flow</td><td>Kamerafahrten, Zoom in einen neuen Raum</td></tr>
-     </tbody>
-    </table></div>
-    <div class="tbl"><table>
-     <thead><tr><th>Abstand (Stagger)</th><th>Wert</th><th>Frames</th><th>Einsatz</th></tr></thead>
-     <tbody>
-      <tr><td>Buchstaben</td><td class="n">0,03 s</td><td class="n">≈ 1</td><td>Buchstabe-für-Buchstabe-Reveal, Abgang von Wörtern</td></tr>
-      <tr><td>Logo-Punkte, Logos in Reihe</td><td class="n">0,083 s</td><td class="n">2</td><td>Punkte landen nacheinander</td></tr>
-      <tr><td>Wörter</td><td class="n">0,14 s</td><td class="n">3–4</td><td>Standard für Headlines</td></tr>
-      <tr><td>Karten</td><td class="n">0,21 s</td><td class="n">5</td><td>Kartenstapel, Listen</td></tr>
-      <tr><td>Zeilen</td><td class="n">0,28 s</td><td class="n">7</td><td>Zeile-für-Zeile-Reveal</td></tr>
-     </tbody>
-    </table></div>
-   </details>
-  </section>
+ <section id="kachel">
+  <h2>Die Kachel</h2>
+  <p class="lede">Der Kreis ist Geschichte. Unsere Form ist die Kachel: ein abgerundetes Rechteck wie das App-Icon und die Karten. Sie öffnet Bilder, maskiert Fotos und trägt Übergänge. Kleine Kacheln haben die Rundung des App-Icons, große Flächen eine feste, ruhige Rundung.</p>
+  <h3 class="sub">Übergänge</h3>
+  <div class="grid" data-group="trans"></div>
+ </section>
 
-  <!-- Typografie -->
-  <section id="typografie">
-   <div class="half"><div class="r">
-    <h2>Typografie</h2>
-    <p class="body">Schrift ist der häufigste Inhalt in Bewegung, vom einfachen Untertitel bis zur Headline. Der Standard ist Wort für Wort aus der Kante. Die anderen Varianten setzen wir bewusst ein.</p>
-   </div></div>
-   <div class="tiles t2">
-    <div class="tile"><div class="media"><video data-src="clips/text_wort.mp4" poster="posters/text_wort.jpg" muted loop playsinline></video></div><div class="cap"><b>Wort für Wort <span class="badge std">Standard</span></b><span>Wörter steigen nacheinander aus der Kante.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/text_zeile.mp4" poster="posters/text_zeile.jpg" muted loop playsinline></video></div><div class="cap"><b>Zeile für Zeile</b><span>Ganze Zeilen kommen nacheinander, für längere Sätze.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/text_buchstabe.mp4" poster="posters/text_buchstabe.jpg" muted loop playsinline></video></div><div class="cap"><b>Buchstabe für Buchstabe</b><span>Buchstaben erscheinen einzeln, für kurze, wichtige Wörter.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/text_zeile_links.mp4" poster="posters/text_zeile_links.jpg" muted loop playsinline></video></div><div class="cap"><b>Von links</b><span>Zeilen schieben sich von links ins Bild, wie beim Wischen.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/text_wort_feder.mp4" poster="posters/text_wort_feder.jpg" muted loop playsinline></video></div><div class="cap"><b>Mit Feder <span class="badge acc">Akzent</span></b><span>Wörter springen mit der jö-Feder auf, für Claims und Endtafeln.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/text_zeile_feder.mp4" poster="posters/text_zeile_feder.jpg" muted loop playsinline></video></div><div class="cap"><b>Zeilen mit Feder <span class="badge acc">Akzent</span></b><span>Ganze Zeilen federn auf, zentriert gesetzt.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/text_wort_zoom.mp4" poster="posters/text_wort_zoom.jpg" muted loop playsinline></video></div><div class="cap"><b>Zoom</b><span>Wörter wachsen aus der Tiefe ins Bild.</span></div></div>
-   </div>
-   <div class="sub">
-    <div class="sub-h"><h3>Live ausprobieren</h3><p>Gerendert mit den Werten unten. Variante und Ausrichtung umschalten.</p></div>
-    <div class="stage tstage" id="tStage"><div class="ttext" id="tText" aria-label="Einfach mehr für mich."></div></div>
-    <div class="ctrl">
-     <button class="btn" id="tPlay" type="button">▶ Abspielen</button>
-     <button class="btn" data-tmode="word" aria-pressed="true" type="button">Wort für Wort</button>
-     <button class="btn" data-tmode="line" aria-pressed="false" type="button">Zeile für Zeile</button>
-     <button class="btn" data-tmode="letter" aria-pressed="false" type="button">Buchstabe</button>
-     <button class="btn" data-tmode="bounce" aria-pressed="false" type="button">Mit Feder</button>
-     <button class="btn" data-talign="left" aria-pressed="true" type="button">Links</button>
-     <button class="btn" data-talign="center" aria-pressed="false" type="button">Zentriert</button>
-    </div>
-    <div class="facts">
-     <div><b>110 %</b><span>Weg von unten durch die Kante</span></div>
-     <div><b>0,45 s</b><span>Auftritt, Wortabstand 0,14 s</span></div>
-     <div><b>0,22 s</b><span>Abgang zurück in die Kante</span></div>
-     <div><b>+2,5 %</b><span>Text wächst beim Halten weiter</span></div>
-    </div>
-   </div>
-  </section>
+ <section id="layout">
+  <h2>Layout-Morphs</h2>
+  <p class="lede">Layouts verwandeln sich, statt zu springen. Eine Kachel wird zur Karte, eine Karte zum Vollbild, eine Fläche teilt sich in ein Raster. So bleibt sichtbar, woher etwas kommt.</p>
+  <div class="grid" data-group="morph"></div>
+ </section>
 
-  <!-- Logo -->
-  <section id="logo">
-   <div class="half"><div class="r">
-    <h2>Logo &amp; Endcard</h2>
-    <p class="body">Das Logo bewegt sich immer gleich: Die Linien von j und ö zeichnen sich in einem Zug, dann springen die drei Punkte nacheinander herein, landen mit einem kleinen Squash und federn dreimal nach.</p>
-    <p class="body">So wird die Animation zum Erkennungszeichen, am Anfang, am Ende oder als kurzer Akzent.</p>
-   </div></div>
-   <div class="stage" id="logoStage" aria-label="Live-Animation des jö-Logos"><svg class="logo-svg" viewBox="-10 -60 291 253" aria-hidden="true"></svg></div>
-   <div class="ctrl"><button class="btn" data-logo="logoStage" type="button">▶ Abspielen</button><button class="btn" id="slowBtn" type="button" aria-pressed="false">¼ Tempo</button><span>Live aus den Original-Logopfaden. Die Punkte landen 1,33 s nach Start.</span></div>
+ <section id="elemente">
+  <h2>Elemente</h2>
+  <p class="lede">Pills, Tags, Ös und Karten haben eigene kleine Bewegungen. Sie sind kurz, damit sie den Inhalt nicht überholen, und bekommen die jö-Feder nur, wenn sie der wichtigste Moment sind.</p>
+  <div class="grid" data-group="elem"></div>
+ </section>
 
-   <div class="sub">
-    <div class="sub-h"><h3>Aufbau</h3><p>Das Logo baut sich auf, zum Start eines Films oder als Abbinder.</p></div>
-    <div class="tiles t4">
-     <div class="tile"><div class="media"><video data-src="clips/logo_script_v1.mp4" poster="posters/logo_script_v1.jpg" muted loop playsinline></video></div><div class="cap"><b>Script <span class="badge std">Standard</span></b><span>Linien zeichnen sich, Punkte springen.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/logo_script_v2.mp4" poster="posters/logo_script_v2.jpg" muted loop playsinline></video></div><div class="cap"><b>Script, Version 2</b><span>Gleicher Aufbau, andere Reihenfolge.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/logo_3d_bounce.mp4" poster="posters/logo_3d_bounce.jpg" muted loop playsinline></video></div><div class="cap"><b>3D-Bounce</b><span>Das Logo springt aus der Tiefe.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/coin_bounce_reveal.mp4" poster="posters/coin_bounce_reveal.jpg" muted loop playsinline></video></div><div class="cap"><b>Coin-Bounce</b><span>Der Coin springt ins Bild.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/coin_3d_bounce.mp4" poster="posters/coin_3d_bounce.jpg" muted loop playsinline></video></div><div class="cap"><b>Coin, 3D</b><span>Der Coin dreht sich ins Bild.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/coin_script_stempel.mp4" poster="posters/coin_script_stempel.jpg" muted loop playsinline></video></div><div class="cap"><b>Script und Stempel</b><span>Das Logo zeichnet sich und wird zum Coin.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/coin_rainbow_reveal.mp4" poster="posters/coin_rainbow_reveal.jpg" muted loop playsinline></video></div><div class="cap"><b>Coin, Rainbow</b><span>Ringe in Hellorange und Orange, Coin in Burgund.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/rainbow_vollbild.mp4" poster="posters/rainbow_vollbild.jpg" muted loop playsinline></video></div><div class="cap"><b>Rainbow, Vollbild</b><span>Die Ringe füllen das Bild, Ende auf Burgund.</span></div></div>
-    </div>
-   </div>
-   <div class="sub">
-    <div class="sub-h"><h3>Akzent &amp; Loop</h3><p>Das Logo steht schon und bewegt sich kurz, für Ladezustände oder längere Momente.</p></div>
-    <div class="tiles t4">
-     <div class="tile"><div class="media"><video data-src="clips/coin_attention.mp4" poster="posters/coin_attention.jpg" muted loop playsinline></video></div><div class="cap"><b>Attention-Bounce</b><span>Der Coin federt einmal, um Blicke zu holen.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/loading_punkte.mp4" poster="posters/loading_punkte.jpg" muted loop playsinline></video></div><div class="cap"><b>Loading</b><span>Die Punkte springen nacheinander im Loop.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/coin_punkte_skalieren.mp4" poster="posters/coin_punkte_skalieren.jpg" muted loop playsinline></video></div><div class="cap"><b>Punkte skalieren</b><span>Die Punkte wachsen kurz und kommen zurück.</span></div></div>
-     <div class="tile"><div class="media"><video data-src="clips/coin_fisheye.mp4" poster="posters/coin_fisheye.jpg" muted loop playsinline></video></div><div class="cap"><b>Fisheye</b><span>Das Logo rollt durch den Coin.</span></div></div>
-    </div>
-   </div>
-   <div class="sub">
-    <div class="sub-h"><h3>Endcard</h3><p>Wie ein Film mit dem Logo endet.</p></div>
-    <div class="tiles t4">
-     <div class="tile"><div class="media empty">Clip folgt</div><div class="cap"><b>Endcard</b><span>Vorlage aus dem Markenfilm: Das Logo wird zum Kreis und dann zum App-Icon.</span></div></div>
-    </div>
-   </div>
-   <details><summary>Spezifikation: Logo-Aufbau</summary>
-    <div class="tbl"><table>
-     <thead><tr><th>Moment</th><th>Zeit</th><th>Frame (24 fps)</th></tr></thead>
-     <tbody>
-      <tr><td>Vorlauf, leere Fläche</td><td class="n">0,00 s</td><td class="n">0</td></tr>
-      <tr><td>j und Ring beginnen zu zeichnen (Flow)</td><td class="n">0,40 s</td><td class="n">10</td></tr>
-      <tr><td>Punkte erscheinen (Pop, 0,14 s), Abstand 2 F</td><td class="n">0,87 s</td><td class="n">21</td></tr>
-      <tr><td>Schwung des ö fertig</td><td class="n">1,26 s</td><td class="n">30</td></tr>
-      <tr><td><b>Punkte landen</b>, Sprunghöhe 12,4 % der Logohöhe, Squash 16 %</td><td class="n"><b>1,33 s</b></td><td class="n"><b>32</b></td></tr>
-      <tr><td>3 Nachsprünge, je 42 % der vorigen Höhe</td><td class="n">bis 2,0 s</td><td class="n">48</td></tr>
-     </tbody>
-    </table></div>
-   </details>
-  </section>
-
-  <!-- Übergänge -->
-  <section id="uebergaenge">
-   <div class="half"><div class="r">
-    <h2>Übergänge</h2>
-    <p class="body">Der Standard ist der harte Schnitt. Der Coin, die runde Form aus dem Logo, öffnet neue Kapitel. Er wächst schräg liegend aus einem Punkt, bis er das Bild füllt oder als Maske stehen bleibt.</p>
-   </div></div>
-   <div class="tiles t2">
-    <div class="tile"><div class="media"><video data-src="clips/trans_coin_mitte.mp4" poster="posters/trans_coin_mitte.jpg" muted loop playsinline></video></div><div class="cap"><b>Coin, Mitte <span class="badge std">Standard</span></b><span>Der Coin füllt das ganze Bild, in rund 9 Frames.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/trans_coin_mitte_links.mp4" poster="posters/trans_coin_mitte_links.jpg" muted loop playsinline></video></div><div class="cap"><b>Coin, Mitte links</b><span>Der Coin bleibt als Maske stehen, rechts ist Platz für Inhalt.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/trans_coin_unten_links.mp4" poster="posters/trans_coin_unten_links.jpg" muted loop playsinline></video></div><div class="cap"><b>Coin, unten links</b><span>Der Coin wächst aus der Ecke und bleibt als Maske.</span></div></div>
-    <div class="tile"><div class="media"><video data-src="clips/trans_coin_rainbow.mp4" poster="posters/trans_coin_rainbow.jpg" muted loop playsinline></video></div><div class="cap"><b>Coin, Rainbow <span class="badge acc">Akzent</span></b><span>Hellorange, Orange und Burgund folgen dicht aufeinander.</span></div></div>
-   </div>
-   <details><summary>Spezifikation: weitere Übergänge</summary>
-    <div class="tbl"><table>
-     <thead><tr><th>Übergang</th><th>Dauer</th><th>Kurve</th><th>Wann</th></tr></thead>
-     <tbody>
-      <tr><td><b>Harter Schnitt</b></td><td class="n">0 F</td><td>–</td><td>Standard zwischen Szenen. Läuft Musik, liegt der Schnitt auf einem Akzent.</td></tr>
-      <tr><td><b>Coin</b></td><td class="n">0,4–0,8 s</td><td>Morph</td><td>Neues Kapitel, Farbwechsel, Logo-Auftritt</td></tr>
-      <tr><td><b>Panel schiebt herein</b></td><td class="n">0,8–1,2 s</td><td>Flow</td><td>Fläche über Bild, Karten, Formate</td></tr>
-      <tr><td><b>3D-Flip</b></td><td class="n">0,83 s</td><td>Flip</td><td>Personen, Seiten oder Karten wechseln</td></tr>
-      <tr><td><b>Morph</b></td><td class="n">0,6–0,7 s</td><td>Morph</td><td>Icon wird Karte, Logo wird App-Icon</td></tr>
-      <tr><td><b>Zoom durch einen Kreis</b></td><td class="n">1,4–1,6 s</td><td>Flow</td><td>Von einem Detail in einen neuen Raum</td></tr>
-     </tbody>
-    </table></div>
-   </details>
-  </section>
-
-  <!-- Ressourcen -->
-  <section id="ressourcen">
-   <div class="half"><div class="r">
-    <h2>Ressourcen</h2>
-    <p class="body">Alle Werte zum Kopieren. Die Bézier-Werte passen direkt in CSS <code>cubic-bezier()</code> und in After-Effects-Plugins wie Flow.</p>
-    <p class="body">Die Clips dieser Seite liegen im Repository unter <code>joe-motion-guideline/clips</code>. After-Effects-Vorlagen folgen.</p>
-   </div></div>
+ <section id="timing">
+  <h2>Timing</h2>
+  <p class="lede">Vier Kurven decken fast alles ab. Kleine Dinge sind schnell, große Flächen brauchen Zeit, und Abgänge sind kürzer als Auftritte.</p>
+  <div class="grid" data-group="ease"></div>
+  <details><summary>Für Motion Designer <small>alle Werte, Dauern und Abstände</small></summary>
    <div class="tbl"><table>
-    <thead><tr><th>Name</th><th>Wert</th><th>Einsatz</th></tr></thead>
-    <tbody id="refRows"></tbody>
+    <thead><tr><th>Kurve</th><th>Wert</th><th>Einsatz</th></tr></thead>
+    <tbody id="curveRows"></tbody>
    </table></div>
-  </section>
+   <div class="tbl"><table>
+    <thead><tr><th>Dauer</th><th>Sekunden</th><th>Frames (24 fps)</th><th>Beispiele</th></tr></thead>
+    <tbody>
+     <tr><td><b>XS</b></td><td class="n">0,14 s</td><td class="n">3–4</td><td>Punkte, Tags, kleine Statuswechsel</td></tr>
+     <tr><td><b>S</b></td><td class="n">0,22–0,3 s</td><td class="n">5–7</td><td>Abgänge</td></tr>
+     <tr><td><b>M</b></td><td class="n">0,4–0,55 s</td><td class="n">10–13</td><td>Text, Pills, Icons, Karten</td></tr>
+     <tr><td><b>L</b></td><td class="n">0,7–1,2 s</td><td class="n">17–29</td><td>Kachel-Übergänge, Layout-Morphs</td></tr>
+     <tr><td><b>XL</b></td><td class="n">1,4–1,9 s</td><td class="n">34–46</td><td>Kamerafahrten, Zoom in einen neuen Raum</td></tr>
+    </tbody>
+   </table></div>
+   <div class="tbl"><table>
+    <thead><tr><th>Abstand</th><th>Sekunden</th><th>Einsatz</th></tr></thead>
+    <tbody>
+     <tr><td>Buchstaben, Abgang von Wörtern</td><td class="n">0,03 s</td><td>Buchstabe für Buchstabe</td></tr>
+     <tr><td>Logo-Punkte</td><td class="n">0,08 s</td><td>Punkte landen nacheinander</td></tr>
+     <tr><td>Wörter</td><td class="n">0,14 s</td><td>Standard für Headlines</td></tr>
+     <tr><td>Karten, Tags</td><td class="n">0,12–0,21 s</td><td>Raster, Stapel</td></tr>
+     <tr><td>Zeilen</td><td class="n">0,28 s</td><td>Zeile für Zeile</td></tr>
+    </tbody>
+   </table></div>
+   <div class="tbl"><table>
+    <thead><tr><th>Logo</th><th>Wert</th></tr></thead>
+    <tbody>
+     <tr><td>Linien zeichnen</td><td class="n">0,4–1,26 s (Flow)</td></tr>
+     <tr><td>Punkte erscheinen</td><td class="n">ab 0,87 s, Pop 0,14 s</td></tr>
+     <tr><td>Punkte landen</td><td class="n">1,33 s · Sprung 12,4 % der Logohöhe · Squash 16 %</td></tr>
+     <tr><td>Nachsprünge</td><td class="n">3 × je 42 % der vorigen Höhe, steht bei 2,0 s</td></tr>
+     <tr><td>Kachel-Rundung</td><td class="n">22,5 % der Kantenlänge (App-Icon), Karten ca. 2,8 % der Bildbreite</td></tr>
+    </tbody>
+   </table></div>
+  </details>
+ </section>
 
-  <!-- Offen -->
-  <section id="offen">
-   <div class="half"><div class="r">
-    <h2>Offene Punkte</h2>
-    <p class="body">Was wir vor der ersten Freigabe entscheiden müssen.</p>
-   </div></div>
-   <ol class="open">
-    <li><b>Verhalten bestätigen.</b> Ankommen, Springen und Verbinden sind ein Vorschlag, ebenso die Zuordnung der Clips.</li>
-    <li><b>Varianten festlegen.</b> Die Markierungen Standard und Akzent sind ein Vorschlag. Welche Varianten fallen weg?</li>
-    <li><b>Endcard.</b> Es fehlt noch ein Clip für das Ende eines Films.</li>
-    <li><b>Ein Burgund, ein Beige.</b> Bisher im Einsatz: #821419, #670003, #6B0505, #AA3836 und #F4F1EA, #F6F1EA, #F4EFE8.</li>
-    <li><b>Bildrate.</b> Exportieren wir in 24 oder 25 fps? Die Frame-Angaben gelten für 24 fps.</li>
-    <li><b>App darstellen.</b> Ein Kapitel, wie App-Screens in Filmen gezeigt werden (Screenwechsel, Scrollen, Tippen), fehlt noch.</li>
+ <section id="fehlgebrauch">
+  <h2>Fehlgebrauch</h2>
+  <p class="lede">Diese Fehler passieren am häufigsten. Sie machen Bewegung unruhig oder lassen sie nicht mehr nach jö aussehen.</p>
+  <div class="grid" data-group="miss"></div>
+  <details><summary>Offene Punkte <small>vor der Freigabe zu klären</small></summary>
+   <ol class="open" style="margin-top:12px">
+    <li><b>Varianten festlegen.</b> Die Markierungen Standard und Akzent sind ein Vorschlag.</li>
+    <li><b>Kachel-Rundung.</b> 22,5 % für Icons und ca. 2,8 % der Breite für Flächen sind aus dem Markenfilm übernommen und sollten mit dem Design-Team abgestimmt werden.</li>
+    <li><b>Endcard.</b> Wie endet ein Film? Vorschlag: Logo zeichnet sich, die Fläche schrumpft zum App-Icon.</li>
+    <li><b>Bildrate.</b> 24 oder 25 fps für Exporte.</li>
    </ol>
-  </section>
+  </details>
+ </section>
 
- </div>
-</div>
+</div></main>
 
 <script>
 const LP=__LOGO__;
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ---------- Kurven ---------- */
 const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
 const seg=(t,a,b)=>clamp((t-a)/(b-a));
+const lerp=(a,b,p)=>a+(b-a)*p;
 function bez(x1,y1,x2,y2){const A=(a,b)=>1-3*b+3*a,B=(a,b)=>3*b-6*a,C=a=>3*a,cv=(t,a,b)=>((A(a,b)*t+B(a,b))*t+C(a))*t,sl=(t,a,b)=>3*A(a,b)*t*t+2*B(a,b)*t+C(a);
  return x=>{if(x<=0)return 0;if(x>=1)return 1;let t=x;for(let i=0;i<8;i++){const s=sl(t,x1,x2);if(Math.abs(s)<1e-6)break;t-=(cv(t,x1,x2)-x)/s}
   let lo=0,hi=1;for(let i=0;i<20&&Math.abs(cv(t,x1,x2)-x)>1e-5;i++){if(cv(t,x1,x2)<x)lo=t;else hi=t;t=(lo+hi)/2}return cv(t,y1,y2)}}
-const eIO=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
-const eExpo=p=>p>=1?1:1-Math.pow(2,-10*p);
-const eInCub=p=>p*p*p;
-const eOut=p=>1-Math.pow(1-p,3);
-const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
-/* jö-Feder (gemessen an den Boards): ein Ausschlag alle 4 F, jeder Ausschlag rund 40 % des vorigen */
-const SPR_HALF=4/24,SPR_TAU=SPR_HALF/Math.log(1/.4);
-const springAt=s=>s<=0?0:1-Math.exp(-s/SPR_TAU)*Math.cos(Math.PI*s/SPR_HALF);
+const eFlow=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;          /* Flow   cubic-bezier(.65,0,.35,1) */
+const eIn=p=>p>=1?1:1-Math.pow(2,-10*p);                        /* Auftritt expo-out */
+const eOut=p=>p*p*p;                                            /* Abgang cubic-in */
+const eSoft=p=>1-Math.pow(1-p,3);
+const ePop=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
+const eMorph=bez(.65,0,.25,1),eFlip=bez(.25,.6,.3,1);
+/* jö-Feder: ein Ausschlag alle 4 F (1/6 s), jeder Ausschlag rund 40 % des vorigen */
+const SH=4/24,ST=SH/Math.log(1/.4);
+const spring=s=>s<=0?0:1-Math.exp(-s/ST)*Math.cos(Math.PI*s/SH);
+const linear=p=>p;
 
-/* ---------- Videos: laden und abspielen, wenn sichtbar ---------- */
-function loadVid(v){if(v.dataset.src&&!v.src){v.src=v.dataset.src}}
-const vids=[...document.querySelectorAll('video[data-src]')];
-if(RM){vids.forEach(v=>{v.preload='none';v.controls=true;loadVid(v)})}
-else if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){loadVid(v);const p=v.play();p&&p.catch(()=>{v.controls=true})}else if(!v.paused)v.pause()}),{rootMargin:'200px 0px',threshold:.15});vids.forEach(v=>io.observe(v))}
-else vids.forEach(v=>{loadVid(v);v.autoplay=true});
+/* ---------- DOM-Helfer (Maße in cqw: 100 = Bühnenbreite, Höhe = 56,25) ---------- */
+const H=56.25;
+function mk(p,cls,html,css){const e=document.createElement('div');e.className=cls||'';if(html)e.innerHTML=html;if(css)e.style.cssText=css;p.appendChild(e);return e}
+function tf(e,o){const{x=0,y=0,s=1,sx=1,sy=1,rx=0,ry=0,rz=0}=o;e.style.transform=`translate(${x.toFixed(3)}cqw,${y.toFixed(3)}cqw)`+(rx?` rotateX(${rx.toFixed(2)}deg)`:'')+(ry?` rotateY(${ry.toFixed(2)}deg)`:'')+(rz?` rotate(${rz.toFixed(2)}deg)`:'')+` scale(${(s*sx).toFixed(4)},${(s*sy).toFixed(4)})`;if(o.o!==undefined)e.style.opacity=clamp(o.o)}
+/* Rechteck um einen Mittelpunkt (cx, cy, w, h, Rundung) */
+function rect(e,cx,cy,w,h,r){const s=e.style;s.left=(cx-w/2).toFixed(3)+'cqw';s.top=(cy-h/2).toFixed(3)+'cqw';s.width=Math.max(0,w).toFixed(3)+'cqw';s.height=Math.max(0,h).toFixed(3)+'cqw';if(r!==undefined)s.borderRadius=Math.max(0,r).toFixed(3)+'cqw'}
+function box(e,l,t,w,h,r){rect(e,l+w/2,t+h/2,w,h,r)}
+const vis=(e,on)=>{e.style.visibility=on?'visible':'hidden'};
 
-/* ---------- Karussells (Verhalten) ---------- */
-document.querySelectorAll('.behav').forEach(box=>{
- const items=JSON.parse(box.dataset.car),v=box.querySelector('video'),dots=box.querySelector('.dots'),cap=box.querySelector('.ccap');let i=0,seen=false;
- items.forEach((it,k)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',it[1]);b.addEventListener('click',()=>show(k,true));dots.appendChild(b)});
- function show(k,play){i=k;v.poster='posters/'+items[k][0]+'.jpg';v.src='clips/'+items[k][0]+'.mp4';cap.textContent=items[k][1];
-  [...dots.children].forEach((d,j)=>d.setAttribute('aria-current',j===k));if(play&&!RM){const p=v.play();p&&p.catch(()=>{})}}
- v.addEventListener('ended',()=>show((i+1)%items.length,true));
- v.poster='posters/'+items[0][0]+'.jpg';cap.textContent=items[0][1];[...dots.children].forEach((d,j)=>d.setAttribute('aria-current',j===0));
- if(RM){v.controls=true;v.preload='none';v.src='clips/'+items[0][0]+'.mp4';return}
- if('IntersectionObserver' in window)new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!seen){seen=true;show(0,true)}else v.play().catch(()=>{})}else v.pause()},{threshold:.3}).observe(v);
-});
-
-/* ---------- Easing-Karten ---------- */
-const EASES=[
- {n:'Flow',tag:'Standard',f:eIO,v:'cubic-bezier(.65, 0, .35, 1)',c:'.65,0,.35,1',d:.8,use:'Alles, was sich von A nach B bewegt: Panels, Karten, Kamera.',demo:'move'},
- {n:'Auftritt',tag:'Enter',f:eExpo,v:'cubic-bezier(.16, 1, .3, 1)',c:'.16,1,.3,1',d:.45,use:'Text und Elemente, die ins Bild kommen.',demo:'move'},
- {n:'Abgang',tag:'Exit',f:eInCub,v:'cubic-bezier(.32, 0, .67, 0)',c:'.32,0,.67,0',d:.3,use:'Elemente, die das Bild verlassen. Kürzer als der Auftritt.',demo:'move'},
- {n:'Pop',tag:'Akzent',f:eBack,v:'cubic-bezier(.34, 1.45, .64, 1)',c:'.34,1.45,.64,1',d:.42,use:'Icons, Buttons, Logos, die aufpoppen. Rund 8 % Überschwinger.',demo:'scale'},
- {n:'Morph',tag:'Form',f:bez(.65,0,.25,1),v:'cubic-bezier(.65, 0, .25, 1)',c:'.65,0,.25,1',d:.65,use:'Formwechsel: Icon wird Karte, Coin wird Fläche.',demo:'morph'},
- {n:'Flip',tag:'3D',f:bez(.25,.6,.3,1),v:'cubic-bezier(.25, .6, .3, 1)',c:'.25,.6,.3,1',d:20/24,use:'3D-Drehungen. Schnell weg, ruhig ankommen.',demo:'flip'},
- {n:'jö-Feder',tag:'Signatur',f:x=>springAt(x),v:'Ausschlag alle 4 F · je 40 % des vorigen · steht nach ≈ 0,9 s',c:'',d:.9,use:'Die Feder aus den Logo-Punkten. Für Logo, Text mit Feder und Coin. Einmal pro Moment.',demo:'drop'},
-];
-const easeBox=document.getElementById('eases');
-function curvePath(f,w=200,h=90,pad=14){let d='';for(let i=0;i<=60;i++){const x=i/60,y=f(x);d+=(i?'L':'M')+(pad+x*(w-2*pad)).toFixed(1)+','+(h-pad-y*(h-2*pad)*.78-(h-2*pad)*.06).toFixed(1)}return d}
-EASES.forEach(e=>{
- const b=document.createElement('button');b.type='button';b.className='ease'+(e.demo==='drop'?' wide':'');b.setAttribute('aria-label',e.n+' abspielen');
- b.innerHTML=`<div class="hd"><b>${e.n}</b><small>${e.tag} · ${e.d.toFixed(2).replace('.',',')} s</small></div>
- <svg viewBox="0 0 200 90" aria-hidden="true"><line x1="14" y1="76" x2="186" y2="76" stroke="var(--line)"/><line x1="14" y1="14" x2="186" y2="14" stroke="var(--line)" stroke-dasharray="3 4"/><path d="${curvePath(e.f)}" fill="none" stroke="var(--burg)" stroke-width="2.5" stroke-linecap="round"/><circle r="4.5" fill="var(--accent)" cx="14" cy="76"/></svg>
- <div class="demo"><i class="${e.demo==='move'||e.demo==='drop'?'':'sq'}"></i></div><p>${e.use}</p><span class="v">${e.v}</span>`;
- easeBox.appendChild(b);e.el=b;e.dot=b.querySelector('.demo i');e.pt=b.querySelector('svg circle');
- b.addEventListener('click',()=>playEase(e));setEase(e,1)});
-function setEase(e,p){const y=e.f(p),box=e.el.querySelector('.demo'),W=box.clientWidth||240,s=e.dot.style;
- e.pt.setAttribute('cx',(14+p*172).toFixed(1));e.pt.setAttribute('cy',(76-y*62*.78-62*.06).toFixed(1));s.transform='';s.borderRadius='';s.width='';
- if(e.demo==='move')s.left=(12+y*(W-46))+'px';
- else if(e.demo==='drop'){s.left=(W/2-11)+'px';s.transform=`translateY(${((1-y)*-18).toFixed(1)}px)`}
- else if(e.demo==='scale'){s.left=(W/2-11)+'px';s.transform=`scale(${(.2+y*.9).toFixed(3)})`}
- else if(e.demo==='morph'){s.left=(W/2-11-y*26)+'px';s.width=(22+y*52)+'px';s.borderRadius=(11-y*6)+'px'}
- else if(e.demo==='flip'){s.left=(W/2-11)+'px';s.transform=`perspective(200px) rotateY(${(180*(1-y)).toFixed(1)}deg)`}}
-function playEase(e){if(RM){setEase(e,1);return}const t0=performance.now(),D=e.demo==='drop'?1100:Math.max(e.d*1000,350);
- const go=n=>{const p=clamp((n-t0)/D);setEase(e,p);if(p<1)requestAnimationFrame(go)};if(e.demo!=='move')setEase(e,0);requestAnimationFrame(go)}
-document.getElementById('easeAll').addEventListener('click',()=>EASES.forEach(playEase));
-addEventListener('resize',()=>EASES.forEach(e=>setEase(e,1)));
-
-/* ---------- Ressourcen ---------- */
-const REF=[...EASES.map(e=>[e.n,e.v,e.use,e.c?`cubic-bezier(${e.c})`:'']),
- ['Text-Auftritt','Weg 110 % · 0,45 s · Auftritt · Wortabstand 0,14 s','Standard für Headlines',''],
- ['Text-Abgang','0,22 s · Abgang · Abstand 0,03 s','Zurück in die Kante',''],
- ['Logo','Punkte landen bei 1,33 s · Sprung 12,4 % · 3 Nachsprünge à 42 % · Squash 16 %','Logo-Aufbau',''],
- ['Push-in','2–5 % über die Szene · Flow','Fotos und Haltephasen, damit nichts stillsteht','']];
-document.getElementById('refRows').innerHTML=REF.map(r=>`<tr><td><b>${r[0]}</b></td><td><span class="mono">${r[1]}</span>${r[3]?`<button class="copy" type="button" data-copy="${r[3]}">Kopieren</button>`:''}</td><td>${r[2]}</td></tr>`).join('');
-document.getElementById('refRows').addEventListener('click',ev=>{const b=ev.target.closest('[data-copy]');if(!b)return;
- const done=()=>{b.textContent='Kopiert';setTimeout(()=>b.textContent='Kopieren',1400)};
- const fb=()=>{const r=document.createRange();r.selectNodeContents(b.previousElementSibling);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Markiert'};
- try{navigator.clipboard.writeText(b.dataset.copy).then(done,fb)}catch(e){fb()}});
-
-/* ---------- Text-Reveal ---------- */
-const WORD_GAP=.14,LINE_GAP=.28,LINES=[['Einfach','mehr'],['für','mich.']];
-const tText=document.getElementById('tText'),tStage=document.getElementById('tStage');
-let tMode='word',tRun=0;
-function buildText(){tText.innerHTML='';const units=[];
- LINES.forEach((ws,li)=>{const L=document.createElement('span');L.className='tline';
-  ws.forEach((w,wi)=>{if(tMode==='letter'){[...w].forEach(c=>{const s=document.createElement('span');s.textContent=c;L.appendChild(s);units.push({el:s,li,wi})})}
-   else{const s=document.createElement('span');s.textContent=w;L.appendChild(s);units.push({el:s,li,wi})}
-   if(wi<ws.length-1)L.appendChild(document.createTextNode(' '))});tText.appendChild(L)});
- let k=0;units.forEach(u=>{u.d=tMode==='line'?u.li*LINE_GAP:tMode==='letter'?(k++)*.03:(u.li*2+u.wi)*WORD_GAP});return units}
-let UNITS=buildText();
-function renderText(t){const OUT=2.7,IN2=3.3,tt=t>=IN2?t-IN2:t;
- UNITS.forEach((u,i)=>{let y=0,o=1,sc=1;
-  if(t>=OUT&&t<IN2){y=110*eInCub(seg(t-OUT,i*.03,i*.03+.22))}
-  else{const q=tt-u.d;
-   if(tMode==='bounce'){o=seg(q,0,.12);sc=q<0?.6:.6+.4*springAt(q)}
-   else if(tMode==='letter'){y=60*(1-eExpo(seg(q,0,.6)));o=seg(q,0,.25)}
-   else y=110*(1-eExpo(seg(q,0,.45)))}
-  u.el.style.transform=`translateY(${y.toFixed(2)}%) scale(${sc.toFixed(4)})`;u.el.style.opacity=o});
- const g=(t<OUT||t>=IN2)?.025*eOut(seg(tt,.6,t>=IN2?3:2.7)):.025;tText.style.transform=`scale(${(1+g).toFixed(4)})`}
-function playText(){if(RM){renderText(99);return}const id=++tRun,t0=performance.now();const go=n=>{if(id!==tRun)return;const t=(n-t0)/1000;renderText(t);if(t<6.4)requestAnimationFrame(go)};requestAnimationFrame(go)}
-document.getElementById('tPlay').addEventListener('click',playText);
-document.querySelectorAll('[data-tmode]').forEach(b=>b.addEventListener('click',()=>{tMode=b.dataset.tmode;document.querySelectorAll('[data-tmode]').forEach(x=>x.setAttribute('aria-pressed',x===b));UNITS=buildText();playText()}));
-document.querySelectorAll('[data-talign]').forEach(b=>b.addEventListener('click',()=>{tStage.classList.toggle('center',b.dataset.talign==='center');document.querySelectorAll('[data-talign]').forEach(x=>x.setAttribute('aria-pressed',x===b));playText()}));
-renderText(99);
-
-/* ---------- Logo (Originalpfade und Werte aus dem Markenfilm) ---------- */
-const LOGO_H=182.86,L_PRE=.4,P={hop:.124,n:3,el:.42,st:.083,sq:.16};
-const M=(()=>{const J=[0,.45],R=[.03,.58],B=[.56,.86],POP=.47,H=P.hop*LOGO_H,RISE=.30,FALL=.16,bounces=[];let t=RISE+FALL;
- for(let i=1;i<=P.n;i++){const r=Math.pow(P.el,i),T=2*FALL*Math.sqrt(r);bounces.push({t0:t,T,h:H*r});t+=T}return {J,R,B,POP,H,RISE,FALL,bounces,end:L_PRE+POP+2*P.st+t+.12}})();
-function dotState(tt){if(tt<0)return {y:0,s:0,sx:1,sy:1};const s=eBack(seg(tt,0,.14));let y=0;
- if(tt<M.RISE){const p=tt/M.RISE;y=-M.H*(1-(1-p)*(1-p))}else if(tt<M.RISE+M.FALL){const p=(tt-M.RISE)/M.FALL;y=-M.H*(1-p*p)}
- else{const b=M.bounces.find(b=>tt<b.t0+b.T);if(b){const q=(tt-b.t0)/b.T;y=-b.h*4*q*(1-q)}}
- let k=0;[{t:M.RISE+M.FALL,h:M.H},...M.bounces.map(b=>({t:b.t0+b.T,h:b.h}))].forEach(l=>{const d=tt-l.t;if(d>=0&&d<.16)k=Math.max(k,Math.sqrt(l.h/M.H)*Math.exp(-d/.045))});
- return {y,s,sx:1+P.sq*.75*k,sy:1-P.sq*k}}
-let uid=0;
-function makeLogo(svg){const id='l'+(uid++);
+/* ---------- Logo (Originalpfade aus dem Markenfilm) ---------- */
+const LOGO_H=182.86;let uid=0;
+function logoSVG(svg){const id='l'+(uid++);
+ svg.setAttribute('viewBox','0 0 271.15 182.86');
  svg.innerHTML=`<defs>
 <mask id="${id}J" maskUnits="userSpaceOnUse" x="-20" y="-80" width="320" height="290"><path class="sJ" d="${LP.JC}" fill="none" stroke="#fff" stroke-width="30"/></mask>
 <mask id="${id}B" maskUnits="userSpaceOnUse" x="-20" y="-80" width="320" height="290"><path class="sB" d="${LP.BC}" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round"/></mask>
-<mask id="${id}C" maskUnits="userSpaceOnUse" x="-20" y="-80" width="320" height="290"><rect x="-20" y="-80" width="320" height="290" fill="#fff"/><path class="cut" d="${LP.CUT}" fill="#000" fill-opacity="0"/><path d="${LP.E}" fill="#fff"/></mask></defs>
+<mask id="${id}C" maskUnits="userSpaceOnUse" x="-20" y="-80" width="320" height="290"><rect x="-20" y="-80" width="320" height="290" fill="#fff"/><path class="cut" d="${LP.CUT}" fill="#000" fill-opacity="1"/><path d="${LP.E}" fill="#fff"/></mask></defs>
 <path d="${LP.J}" fill="currentColor" mask="url(#${id}J)"/>
 <path class="sR" d="${LP.RC2}" fill="none" stroke="currentColor" stroke-width="22.79" mask="url(#${id}C)"/>
 <path d="${LP.E}" fill="currentColor" mask="url(#${id}B)"/>
 <circle cx="87.99" cy="16.8" r="16.8" fill="currentColor"/><circle cx="152.94" cy="16.8" r="16.8" fill="currentColor"/><circle cx="207.17" cy="16.8" r="16.8" fill="currentColor"/>`;
  const s={J:svg.querySelector('.sJ'),R:svg.querySelector('.sR'),B:svg.querySelector('.sB')};
  for(const k in s){const L=LP.LEN[k==='R'?'RC2':k+'C']+2;s[k].setAttribute('stroke-dasharray',L+' '+L);s[k]._L=L}
- return {s,dots:[...svg.querySelectorAll('circle')],cut:svg.querySelector('.cut'),run:0}}
-function renderLogo(L,t){const u=t-L_PRE;
+ return {s,dots:[...svg.querySelectorAll('circle')],cut:svg.querySelector('.cut')}}
+const NS='http://www.w3.org/2000/svg';
+/* Logo in der Bühne: Breite w (cqw), Mittelpunkt cx/cy */
+const LR=182.86/271.15;
+function logo(p,w,cx,cy,color){const d=mk(p,'c');d.style.position='absolute';rect(d,cx,cy,w,w*LR);d.style.color=color;const svg=document.createElementNS(NS,'svg');svg.setAttribute('class','lg');svg.style.cssText='width:100%;height:100%;display:block';d.appendChild(svg);const L=logoSVG(svg);L.el=d;return L}
+/* Bounce: fällt aus Höhe h0 in der Zeit fall, springt n-mal nach, jeder Sprung el der vorigen Höhe */
+function bounceY(tt,h0,fall=.16,el=.42,n=3){if(tt<0)return{y:-h0,k:0};let y=0,k=0;
+ if(tt<fall){const p=tt/fall;y=-h0*(1-p*p)}else{let t=fall;for(let i=1;i<=n;i++){const r=Math.pow(el,i),T=2*fall*Math.sqrt(r);if(tt<t+T){const q=(tt-t)/T;y=-h0*r*4*q*(1-q);break}t+=T}}
+ let t=fall,h=h0;const lands=[[fall,h0]];for(let i=1;i<=n;i++){const r=Math.pow(el,i);t+=2*fall*Math.sqrt(r);lands.push([t,h0*r])}
+ lands.forEach(([lt,lh])=>{const d=tt-lt;if(d>=0&&d<.16)k=Math.max(k,Math.sqrt(lh/h0)*Math.exp(-d/.045))});return{y,k}}
+function setDot(c,y,s=1,k=0){const cx=+c.getAttribute('cx');c.setAttribute('transform',`translate(${cx} ${(33.6+y).toFixed(2)}) scale(${(s*(1+.12*k)).toFixed(4)} ${(s*(1-.16*k)).toFixed(4)}) translate(${-cx} -33.6)`)}
+/* Standard-Aufbau: Linien zeichnen ab pre, Punkte poppen und springen; opts.dots = eigene Punkt-Funktion */
+function drawLogo(L,t,o={}){const pre=o.pre??.4,sp=o.speed??1,u=(t-pre)*sp;
  const st=(k,p)=>{p=clamp(p);L.s[k].setAttribute('stroke-dashoffset',(L.s[k]._L*(1-p)).toFixed(2));L.s[k].style.visibility=p<=0?'hidden':'visible'};
- st('J',eIO(seg(u,...M.J)));st('R',eIO(seg(u,...M.R)));const bp=eIO(seg(u,...M.B));st('B',bp);L.cut.setAttribute('fill-opacity',seg(bp,.64,.70).toFixed(3));
- L.dots.forEach((c,i)=>{const d=dotState(u-M.POP-i*P.st),cx=+c.getAttribute('cx');c.setAttribute('transform',`translate(${cx} ${(33.6+d.y).toFixed(2)}) scale(${(d.s*d.sx).toFixed(4)} ${(d.s*d.sy).toFixed(4)}) translate(${-cx} -33.6)`)})}
-let slow=1;
-const logo=makeLogo(document.querySelector('#logoStage svg')),mini=makeLogo(document.querySelector('[data-mini]'));
-function playLogo(L){if(RM){renderLogo(L,9);return}const id=++L.run,t0=performance.now();
- const go=n=>{if(id!==L.run)return;const t=(n-t0)/1000*(L===logo?slow:1);renderLogo(L,t);if(t<M.end+.2)requestAnimationFrame(go)};requestAnimationFrame(go)}
-renderLogo(logo,9);renderLogo(mini,9);
-document.querySelector('[data-logo]').addEventListener('click',()=>playLogo(logo));
-const slowBtn=document.getElementById('slowBtn');slowBtn.addEventListener('click',()=>{slow=slow===1?.25:1;slowBtn.setAttribute('aria-pressed',slow!==1);playLogo(logo)});
-document.querySelector('.mark').addEventListener('mouseenter',()=>playLogo(mini));
+ st('J',eFlow(seg(u,0,.45)));st('R',eFlow(seg(u,.03,.58)));const bp=eFlow(seg(u,.56,.86));st('B',bp);L.cut.setAttribute('fill-opacity',seg(bp,.64,.70).toFixed(3));
+ L.dots.forEach((c,i)=>{if(o.dots){o.dots(c,i,u);return}const tt=u-.47-i*.083;if(tt<0){setDot(c,0,0);return}
+  const s=ePop(seg(tt,0,.14)),Hh=.124*LOGO_H;let y;if(tt<.30){const p=tt/.30;y=-Hh*(1-(1-p)*(1-p));setDot(c,y,s,0)}else{const b=bounceY(tt-.30,Hh,.16);setDot(c,b.y,s,b.k)}})}
+const logoDone=L=>drawLogo(L,9);
+function staticLogo(svg){const L=logoSVG(svg);logoDone(L);return L}
+function jbadge(p,size){const b=mk(p,'jb');b.style.width=b.style.height=size+'cqw';const svg=document.createElementNS(NS,'svg');b.appendChild(svg);staticLogo(svg);return b}
+function pill(p,text,{size=4.2,badge='jb',badgeFirst=true}={}){const e=mk(p,'pill');e.style.fontSize=size+'cqw';e.style.height=(size*2.15)+'cqw';e.style.padding=`0 ${size*.9}cqw 0 ${size*.28}cqw`;
+ const bs=size*1.75;let b;if(badge==='jb')b=jbadge(e,bs);else if(badge==='os'){b=mk(e,'os','Ös');b.style.cssText=`width:${bs}cqw;height:${bs}cqw;font-size:${size*.82}cqw`}
+ const t=mk(e,'','');t.textContent=text;t.style.position='static';if(!badgeFirst&&b){e.appendChild(b);e.style.padding=`0 ${size*.28}cqw 0 ${size*.9}cqw`}return e}
+function tag(p,kind,text){const e=mk(p,'tag '+kind,'<i></i>');e.append(text);return e}
+function photo(p,src,pos){const e=mk(p,'photo');e.style.backgroundImage=`url(${src})`;if(pos)e.style.backgroundPosition=pos;return e}
 
-/* ---------- Navigation: aktives Kapitel ---------- */
-const navLinks=[...document.querySelectorAll('.lvl2,.mnav a')];
-if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const id=e.target.id;navLinks.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+id))}}),{rootMargin:'-45% 0px -50% 0px'});document.querySelectorAll('section[id]').forEach(s=>io.observe(s))}
+/* Textblock mit Kante (Maske je Zeile) */
+function textBlock(p,lines,o={}){const{mode='word',size=7.4,color='#fff',align='left',x=8,weight=800}=o;
+ const w=mk(p,'tx'+(align==='center'?' center':''));w.style.fontSize=size+'cqw';w.style.color=color;w.style.left=x+'cqw';w.style.right=(o.right??x)+'cqw';w.style.zIndex=3;w.style.fontWeight=weight;if(o.top!==undefined){w.style.top=o.top+'cqw';w.style.transform='none'}
+ const units=[];let k=0;
+ lines.forEach((ln,li)=>{const L=mk(w,'tl');L.style.position='relative';
+  const perLine=mode==='line'||mode==='left'||mode==='lineSpring';
+  if(perLine){const s=document.createElement('span');s.innerHTML=ln.replace(/\*(.+?)\*/g,'<em style="font-style:normal;color:var(--hl)">$1</em>');L.appendChild(s);units.push({el:s,d:li*.28,li})}
+  else ln.split(' ').forEach((wd,wi,arr)=>{const hl=/^\*.*\*[,.]?$/.test(wd);wd=wd.replace(/\*/g,'');
+   if(mode==='letter'){[...wd].forEach(ch=>{const s=document.createElement('span');s.textContent=ch;if(hl)s.style.color='var(--hl)';L.appendChild(s);units.push({el:s,d:(k++)*.03,li})})}
+   else{const s=document.createElement('span');s.textContent=wd;if(hl)s.style.color='var(--hl)';L.appendChild(s);units.push({el:s,d:(k++)*.14,li})}
+   if(wi<arr.length-1)L.appendChild(document.createTextNode(' '))})});
+ if(o.hl)w.style.setProperty('--hl',o.hl);
+ return (t,out=99)=>units.forEach((u,i)=>{let y=0,xx=0,sc=1,op=1;const q=t-u.d;
+  if(t>=out){y=110*eOut(seg(t-out,i*.03,i*.03+.22))}
+  else if(mode==='word'||mode==='line')y=110*(1-eIn(seg(q,0,.45)));
+  else if(mode==='letter'){y=60*(1-eIn(seg(q,0,.6)));op=seg(q,0,.25)}
+  else if(mode==='left'){xx=-(1-eIn(seg(q,0,.7)))*120}
+  else if(mode==='spring'||mode==='lineSpring'){op=seg(q,0,.1);sc=q<0?.55:.55+.45*spring(q)}
+  else if(mode==='zoom'){sc=lerp(2.2,1,eIn(seg(q,0,.55)));op=seg(q,0,.18)}
+  u.el.style.transform=`translate(${xx.toFixed(2)}cqw,${y.toFixed(2)}%) scale(${sc.toFixed(4)})`;u.el.style.opacity=op})}
 
-/* Einmal, wenn sichtbar: Logo, Text-Demo, Kurven */
-if(!RM&&'IntersectionObserver' in window){const once=(el,fn)=>{const o=new IntersectionObserver(es=>{if(es[0].isIntersecting){o.disconnect();fn()}},{threshold:.4});o.observe(el)};
- once(document.getElementById('logoStage'),()=>playLogo(logo));once(tStage,playText);once(easeBox,()=>EASES.forEach(playEase));setTimeout(()=>playLogo(mini),500)}
+/* ---------- Szenen ---------- */
+const SC=[];const def=(g,id,name,desc,o)=>SC.push({g,id,name,desc,...o});
+
+/* Prinzipien */
+def('prinzip','p-klar','Klar','Pro Moment ein Fokus. Elemente kommen nacheinander, nie alle auf einmal.',{dur:4,bg:'bg-lilac',build(st){
+ const tg=tag(st,'neu','Neu');box(tg,8,10,0,0);tg.style.width=tg.style.height='auto';
+ const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:7,top:19});
+ const pl=pill(st,'Jetzt entdecken',{size:3.6});pl.style.left='8cqw';pl.style.top='40cqw';
+ return t=>{const a=ePop(seg(t,.2,.62));tf(tg,{s:a,o:seg(t,.2,.3)});tx(t-.55,3.3);
+  const b=eIn(seg(t,1.25,1.75));tf(pl,{y:(1-b)*4,o:seg(t,1.25,1.4)*(1-seg(t,3.3,3.5))});tf(tg,{s:a*(1-eOut(seg(t,3.3,3.5)))})}}});
+def('prinzip','p-freundlich','Freundlich','Weich beschleunigen, ruhig ankommen. Auch beim Halten bleibt das Bild leicht in Bewegung.',{dur:4.2,bg:'bg-sand',build(st){
+ const c=mk(st,'card photo');c.style.backgroundImage='url(img/kian.webp)';const tx=textBlock(st,['Mehr für','dich.'],{color:'var(--wine)',size:6.4,x:62,right:4});
+ return t=>{const p=eFlow(seg(t,.2,1.2)),q=eFlow(seg(t,3.4,4.1));const w=lerp(0,52,p)*(1-q);box(c,4,4,w,H-8,2.8);c.style.backgroundSize=`${lerp(118,104,seg(t,.2,3.4))}% auto`;tx(t-.9,3.3)}}});
+def('prinzip','p-federnd','Federnd','Ein kleiner Sprung mit echter Physik, gezielt als Akzent eingesetzt.',{dur:3.6,bg:'bg-orange',build(st){
+ const L=logo(st,34,50,H/2,'var(--wine)');return t=>drawLogo(L,t,{pre:.15})}});
+
+/* Logo: Aufbau */
+def('logo','lg-script','Script',"Linien zeichnen sich in einem Zug, die Punkte springen herein. Für Start und Abbinder.",{badge:'std',dur:3.6,bg:'bg-white',build(st){
+ const L=logo(st,30,50,H/2,'var(--wine)');return t=>drawLogo(L,t,{pre:.3})}});
+def('logo','lg-drop','Script, Punkte fallen','Die Linien zeichnen sich schneller, die Punkte fallen von oben und federn aus.',{dur:3.6,bg:'bg-sand',build(st){
+ const L=logo(st,30,50,H/2,'var(--ink)');
+ return t=>drawLogo(L,t,{pre:.3,speed:1.25,dots:(c,i,u)=>{const tt=u-.62-i*.09;const b=bounceY(tt,.124*LOGO_H*3.2,.28);setDot(c,b.y,tt<0?0:1,b.k)}})}});
+def('logo','lg-tile','Kachel',"Das App-Icon springt mit der jö-Feder auf, das Logo poppt hinein.",{badge:'std',dur:3.4,bg:'bg-white',build(st){
+ const T=mk(st,'tile bg-jg c');rect(T,50,H/2,24,24);const L=logo(T,15,12,12,'#fff');
+ return t=>{const s=t<.2?0:spring((t-.2)*.9);tf(T,{s});tf(L.el,{s:ePop(seg(t,.42,.82))});drawLogo(L,9)}}});
+def('logo','lg-flip','Kachel, 3D','Die Kachel dreht sich ins Bild und zeigt auf der Vorderseite das Logo.',{dur:3.4,bg:'bg-lilac',build(st){
+ st.style.perspective='120cqw';const T=mk(st,'tile bg-jg c');rect(T,50,H/2,24,24);const L=logo(T,15,12,12,'#fff');logoDone(L);
+ return t=>{const p=eFlip(seg(t,.25,1.08)),a=lerp(-180,0,p);tf(T,{ry:a,s:lerp(.6,1,eIn(seg(t,.25,.8))),o:seg(t,.25,.35)});vis(L.el,Math.abs(a)<90);T.style.background=Math.abs(a)<90?'':'var(--wine)'}}});
+def('logo','lg-stamp','Script und Stempel','Das Logo zeichnet sich, dann landet die Kachel dahinter wie ein Stempel.',{dur:3.8,bg:'bg-sand',build(st){
+ const T=mk(st,'tile bg-jg c');rect(T,50,H/2,30,30);const L=logo(st,24,50,H/2,'var(--wine)');
+ return t=>{drawLogo(L,t,{pre:.2,speed:1.3});const p=seg(t,1.75,1.95),k=Math.exp(-Math.max(0,t-1.95)/.06)*(t>1.95?1:0);
+  tf(T,{s:lerp(1.45,1,eOut(p))*(1+.05*k),o:p>0?1:0});L.el.style.color=p>=1?'#fff':'var(--wine)'}}});
+def('logo','lg-rainbow','Rainbow','Kacheln in Hellorange, Orange und Burgund wachsen nacheinander und ziehen sich zum Icon zusammen.',{badge:'acc',dur:3.6,bg:'bg-white',build(st){
+ const cs=['var(--lorange)','var(--orange)','var(--wine)'].map(c=>{const e=mk(st,'tile c');e.style.background=c;rect(e,50,H/2,26,26);return e});const L=logo(st,17,50,H/2,'#fff');
+ return t=>{cs.forEach((e,i)=>{const a=eMorph(seg(t,.2+i*.12,.8+i*.12)),b=eFlow(seg(t,1.25,1.8));const sz=lerp(0,[1.9,1.45,1][i],a);tf(e,{s:i<2?lerp(sz,1,b)*(1-b*0)+0:sz})
+  ;if(i<2)e.style.opacity=1-seg(t,1.7,1.8)});tf(L.el,{s:ePop(seg(t,.95,1.35))});logoDone(L)}}});
+def('logo','lg-rainbowfull','Rainbow, Vollbild','Die Kacheln wachsen über das Bild hinaus, am Ende steht das Logo auf Burgund.',{dur:3.6,bg:'bg-white',build(st){
+ const cs=['var(--lorange)','var(--orange)','var(--wine)'].map(c=>{const e=mk(st,'c');e.style.background=c;return e});const L=logo(st,22,50,H/2,'#fff');
+ return t=>{cs.forEach((e,i)=>{const a=eMorph(seg(t,.2+i*.16,1.0+i*.16));const w=lerp(0,130,a),h=lerp(0,96,a);rect(e,50,H/2,w,h,lerp(.225*Math.min(w,h),3,a))});tf(L.el,{s:ePop(seg(t,1.25,1.65))});logoDone(L)}}});
+def('logo','lg-3d','3D-Bounce','Das Logo kippt aus der Tiefe nach vorn und federt aus.',{dur:3.2,bg:'bg-sand',build(st){
+ st.style.perspective='90cqw';const L=logo(st,32,50,H/2,'var(--wine)');logoDone(L);
+ return t=>{const q=t-.25;tf(L.el,{rx:q<0?70:70*(1-spring(q)),s:q<0?.3:lerp(.3,1,spring(q)),o:seg(q,0,.12)})}}});
+
+/* Logo: Akzent & Loop */
+def('logoloop','ll-load','Loading','Die Punkte springen nacheinander im Loop, für Ladezustände.',{dur:1.4,bg:'bg-white',loop:true,build(st){
+ const L=logo(st,30,50,H/2,'var(--wine)');logoDone(L);
+ return t=>L.dots.forEach((c,i)=>{const ph=t-i*.12;const y=(ph>0&&ph<.42)?-Math.sin(Math.PI*ph/.42)*24:0;const land=ph-.42;const k=(land>=0&&land<.16)?Math.exp(-land/.045):0;setDot(c,y,1,k)})}});
+def('logoloop','ll-attention','Kachel, Attention','Das Icon steht schon und federt einmal, um den Blick zu holen.',{dur:2.4,bg:'bg-lilac',build(st){
+ const T=mk(st,'tile bg-jg c');rect(T,50,H/2,24,24);T.style.transformOrigin='50% 100%';const L=logo(T,15,12,12,'#fff');logoDone(L);
+ return t=>{const q=t-.5;const sq=q<0?0:Math.exp(-q/.22)*Math.sin(Math.PI*q/.17);tf(T,{sx:1+.1*sq,sy:1-.12*sq});L.dots.forEach((c,i)=>{const b=bounceY(q-.12-i*.06,22,.13);setDot(c,q-.12-i*.06<0?0:b.y,1,b.k)})}}});
+def('logoloop','ll-scale','Punkte pulsieren','Die Punkte wachsen nacheinander kurz an und kommen zurück.',{dur:1.8,bg:'bg-orange',loop:true,build(st){
+ const L=logo(st,30,50,H/2,'#fff');logoDone(L);
+ return t=>L.dots.forEach((c,i)=>{const q=t-.2-i*.12;setDot(c,0,1+.55*Math.max(0,q<0?0:Math.exp(-q/.16)*Math.sin(Math.PI*clamp(q/.32,0,1))),0)})}});
+def('logoloop','ll-icon','Logo wird Icon','Das Logo schrumpft, die Kachel wächst um es herum. Vorschlag für die Endcard.',{badge:'acc',dur:4,bg:'bg-white',build(st){
+ const T=mk(st,'tile bg-jg c');rect(T,50,H/2,24,24);const L=logo(st,34,50,H/2,'var(--wine)');
+ return t=>{drawLogo(L,t,{pre:.15});const p=eMorph(seg(t,2.1,2.75)),b=t<2.25?0:spring(t-2.25);rect(L.el,50,H/2,lerp(34,15,p),lerp(34,15,p)*LR);tf(T,{s:b});L.el.style.color=p>.5?'#fff':'var(--wine)'}}});
+
+/* Typografie */
+const TXT=(g,id,name,desc,o)=>def(g,id,name,desc,{dur:4.2,...o,build(st){const d=textBlock(st,o.lines,o.t);return t=>d(t-.25,3.2)}});
+TXT('text','tx-word','Wort für Wort','Wörter steigen nacheinander aus einer unsichtbaren Kante. Der Standard für Headlines.',{badge:'std',bg:'bg-orange',lines:['Aktiv sein','lohnt sich.'],t:{color:'var(--wine)'}});
+TXT('text','tx-line','Zeile für Zeile','Ganze Zeilen kommen nacheinander, für längere Sätze.',{bg:'bg-jg',lines:['Deine','Sportwoche.']});
+TXT('text','tx-letter','Buchstabe für Buchstabe','Buchstaben erscheinen einzeln. Für kurze Wörter, die zählen.',{bg:'bg-wine',lines:['Mehr Ös.']});
+TXT('text','tx-left','Von links','Zeilen schieben sich von links ins Bild, wie beim Wischen.',{bg:'bg-lilac',lines:['Neuer Deal','bei Hirter.'],t:{mode:'left',color:'var(--wine)'}});
+TXT('text','tx-spring','Mit Feder','Wörter springen mit der jö-Feder auf. Für Claims und Endtafeln.',{badge:'acc',bg:'bg-jg',lines:['Mehr Bewegung,','mehr *Ös.*'],t:{mode:'spring',align:'center',hl:'var(--wine)'}});
+TXT('text','tx-linespring','Zeilen mit Feder','Ganze Zeilen federn auf, zentriert gesetzt.',{bg:'bg-wine',lines:['Einfach mehr','für *mich.*'],t:{mode:'lineSpring',align:'center',hl:'var(--lorange)'}});
+TXT('text','tx-zoom','Zoom','Wörter kommen aus der Nähe und setzen sich. Sparsam einsetzen.',{bg:'bg-orange',lines:['Jetzt','entdecken.'],t:{mode:'zoom',align:'center',color:'#fff'}});
+TXT('text','tx-hl','Mit Hervorhebung','Ein Wort in Rot trägt die Aussage. Die Bewegung bleibt Wort für Wort.',{bg:'bg-sand',lines:['Sammeln,','*sparen*, teilen.'],t:{color:'var(--ink)',hl:'var(--red)'}});
+
+/* Kachel: Übergänge (A = Ausgangsbild, B = neues Bild in der Kachel) */
+function sceneA(st){const a=mk(st,'fill bg-lilac');const tx=textBlock(a,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:6.4});tx(9);return a}
+def('trans','tr-full','Kachel, Vollbild','Die Kachel wächst aus der Mitte und füllt das ganze Bild. Der Standard für neue Kapitel.',{badge:'std',dur:3.6,bg:'bg-lilac',build(st){
+ sceneA(st);const K=mk(st,'bg-jg c');const tx=textBlock(K,['Deine','Sportwoche.'],{size:6.6});K.style.overflow='hidden';
+ return t=>{const p=eMorph(seg(t,.5,1.25)),w=lerp(0,112,p),h=lerp(0,72,eMorph(seg(t,.55,1.25)));const sq=Math.min(w,h);rect(K,50,H/2,w,h,lerp(sq*.225,3.2,p));
+  const inner=K.querySelector('.tx');inner.style.left=(8-(50-w/2))+'cqw';inner.style.right=(8-(50-w/2))+'cqw';tx(t-1.05,9)}}});
+def('trans','tr-panel','Kachel als Panel','Die Kachel öffnet links ein Foto und bleibt als Panel stehen. Rechts bleibt Platz für Text.',{dur:3.8,bg:'bg-sand',build(st){
+ const tx=textBlock(st,['Mehr','Bewegung.'],{color:'var(--wine)',size:6,x:58,right:4});const K=mk(st,'photo c');K.style.backgroundImage='url(img/see.webp)';
+ return t=>{const p=eMorph(seg(t,.3,1.15));box(K,lerp(25,4,p),lerp(H/2,4,p),lerp(0,48,p),lerp(0,H-8,p),lerp(0,2.8,p)+(1-p)*4);K.style.backgroundSize=`auto ${lerp(150,118,seg(t,.3,3.6))}%`;tx(t-.9,3.1)}}});
+def('trans','tr-corner','Aus der Ecke','Die Kachel wächst aus der Ecke unten links und lässt oben rechts das alte Bild stehen.',{dur:3.6,bg:'bg-lilac',build(st){
+ const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);const K=mk(st,'bg-wine c');const tg=tag(K,'deal','Deals');tg.style.cssText+='position:absolute;left:7cqw;top:6cqw';const tx=textBlock(K,['-25 %','bei Hirter.'],{size:6.4,top:15,x:7});
+ return t=>{const p=eMorph(seg(t,.4,1.2));const w=lerp(0,74,p),h=lerp(0,48,p);box(K,-3,H+3-h,w+3,h,lerp(.225*Math.min(w,h),3.4,p));tf(tg,{s:ePop(seg(t,1.05,1.45))});tx(t-1.2,9)}}});
+def('trans','tr-rainbow','Rainbow','Drei Kacheln in Hellorange, Orange und Burgund folgen dicht aufeinander. Für große Momente.',{badge:'acc',dur:3.6,bg:'bg-sand',build(st){
+ sceneA(st);const cs=['var(--lorange)','var(--orange)','var(--wine)'].map(c=>{const e=mk(st,'c');e.style.background=c;return e});const tx=textBlock(st,['Mehr','für dich.'],{size:6.6,align:'center'});
+ return t=>{cs.forEach((e,i)=>{const a=eMorph(seg(t,.4+i*.14,1.15+i*.14));const w=lerp(0,120,a),h=lerp(0,80,a);rect(e,50,H/2,w,h,lerp(.225*Math.min(w,h),3,a))});tx(t-1.45,9)}}});
+def('trans','tr-shrink','Bild wird Kachel','Das ganze Bild schrumpft zur Karte und gibt das nächste frei. Umkehrung des Standards.',{dur:3.6,bg:'bg-jg',build(st){
+ const tx=textBlock(st,['Alles in','einer App.'],{size:6.4,x:8});const K=photo(st,'img/tamara.webp');
+ return t=>{const p=eMorph(seg(t,.6,1.4));box(K,lerp(0,58,p),lerp(0,8,p),lerp(100,36,p),lerp(H,H-16,p),lerp(0,2.8,p));tx(t-1.15,9)}}});
+def('trans','tr-swipe','Wischen','Eine Karte schiebt sich von rechts über das Bild, wie ein Wisch in der App.',{dur:3.4,bg:'bg-lilac',build(st){
+ sceneA(st);const K=mk(st,'bg-orange c');const tx=textBlock(K,['Neu','in der App.'],{color:'var(--wine)',size:6.4});
+ return t=>{const p=eFlow(seg(t,.4,1.2));box(K,lerp(104,-2,p),-2,104,H+4,lerp(3,3,p));tx(t-1.0,9)}}});
+
+/* Layout-Morphs */
+def('morph','mo-icon','Icon wird Karte','Das App-Icon streckt sich zur Angebotskarte. Das Logo weicht dem Inhalt.',{badge:'std',dur:4,bg:'bg-sand',build(st){
+ const K=mk(st,'bg-jg c');K.style.overflow='hidden';const L=logo(K,14,0,0,'#fff');logoDone(L);
+ const n=mk(K,'','-20%','position:absolute;left:0;right:0;top:4cqw;text-align:center;color:#fff;font-weight:800;font-size:9cqw;letter-spacing:-.03em');const pl=pill(K,'500',{size:3.6,badge:'os',badgeFirst:false});pl.style.position='absolute';
+ return t=>{const p=eMorph(seg(t,.6,1.3));const w=lerp(20,40,p),h=lerp(20,36,p);rect(K,50,H/2,w,h,lerp(4.5,3,p));rect(L.el,w/2,h/2,lerp(14,6,p),lerp(14,6,p)*LR);tf(L.el,{o:1-seg(t,.7,.95)});
+  K.style.background=p>.45?'var(--wine)':'';tf(n,{y:(1-eIn(seg(t,1.15,1.6)))*5,o:seg(t,1.15,1.3)});pl.style.left=(w/2-9)+'cqw';pl.style.top=(h-12)+'cqw';tf(pl,{s:ePop(seg(t,1.4,1.82))})}}});
+def('morph','mo-full','Karte wird Vollbild','Die Karte öffnet sich zum ganzen Bild, die Rundung verschwindet erst am Rand.',{dur:3.8,bg:'bg-white',build(st){
+ const cards=[[6,8],[36,8],[66,8]].map(([x,y],i)=>{const c=photo(st,['img/kian.webp','img/see.webp','img/tamara.webp'][i]);box(c,x,y,28,40,2.8);return c});const tx=textBlock(st,['Mehr Bewegung,','mehr Ös.'],{size:6.4});
+ return t=>{const p=eMorph(seg(t,.5,1.3));cards.forEach((c,i)=>{if(i===1){box(c,lerp(36,0,p),lerp(8,0,p),lerp(28,100,p),lerp(40,H,p),lerp(2.8,0,seg(p,.7,1)));c.style.zIndex=2}else tf(c,{o:1-seg(t,.5,.9),s:1-.06*eOut(seg(t,.5,.9))})});tx(t-1.25,9)}}});
+def('morph','mo-split','Fläche teilt sich','Aus einer Fläche wird ein Banner: Ein Foto-Panel schiebt sich hinein, Text und Pill rücken nach links.',{dur:4,bg:'bg-orange',build(st){
+ const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:6.2,x:8});const P=photo(st,'img/kian.webp');const pl=pill(st,'Jetzt entdecken',{size:3.2});pl.style.left='8cqw';pl.style.top='40cqw';
+ const txEl=st.querySelector('.tx');
+ return t=>{tx(t-.2,9);const p=eMorph(seg(t,1.0,1.8));box(P,lerp(102,52,p),0,50,H,0);P.style.borderRadius=`${lerp(0,3.4,p)}cqw 0 0 ${lerp(0,3.4,p)}cqw`;tf(pl,{s:ePop(seg(t,1.7,2.1))})}}});
+def('morph','mo-bento','Fläche wird Raster','Eine Fläche zerfällt in ein Raster aus Karten. Jede Karte startet an ihrem Platz in der großen Fläche.',{badge:'acc',dur:4.4,bg:'bg-white',build(st){
+ const K=[[3,4,44,25,'bg-orange'],[50,4,24,48,'bg-jg'],[77,4,20,48,'bg-lilac'],[3,32,19,20,'photo'],[25,32,22,20,'bg-wine']];
+ const els=K.map(([x,y,w,h,c],i)=>{const e=mk(st,c+' c');if(c==='photo')e.style.backgroundImage='url(img/kian.webp)';return e});
+ const t1=textBlock(els[0],['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:3.4,x:3});const pc=mk(els[1],'','-20%','position:absolute;left:3cqw;top:4cqw;color:#fff;font-weight:800;font-size:5cqw');
+ const fr=mk(els[2],'photo');fr.style.cssText+='position:absolute;inset:0;background-image:url(img/frau.webp);background-size:auto 92%;background-position:center bottom;background-repeat:no-repeat';
+ const pl=pill(els[4],'-25%',{size:2.4,badgeFirst:false});pl.style.position='absolute';pl.style.right='1.6cqw';pl.style.bottom='2cqw';
+ return t=>{els.forEach((e,i)=>{const[x,y,w,h]=K[i];const p=eMorph(seg(t,.5+i*.08,1.3+i*.08));box(e,lerp(0,x,p),lerp(0,y,p),lerp(100,w,p),lerp(H,h,p),lerp(0,2.4,p));e.style.zIndex=i===0?1:2;e.style.opacity=i===0?1:seg(t,.5+i*.08,.6+i*.08)});t1(t-1.2,9);tf(pc,{s:ePop(seg(t,1.5,1.9))});tf(pl,{s:ePop(seg(t,1.7,2.1))})}}});
+def('morph','mo-stack','Karten stapeln','Karten schieben sich nacheinander von unten in den Stapel, 0,21 s versetzt.',{dur:3.6,bg:'bg-lilac',build(st){
+ const C=[['bg-orange','Neu bei BILLA'],['bg-wine','500 Ös gesammelt'],['bg-jg','Deine Sportwoche']].map(([c,txt],i)=>{const e=mk(st,'card c '+c,`<div style="position:absolute;left:3cqw;top:2.8cqw;color:#fff;font-weight:700;font-size:3.2cqw">${txt}</div>`);return e});
+ return t=>C.forEach((e,i)=>{const p=eIn(seg(t,.4+i*.21,1.0+i*.21));const y0=6+i*5.5;box(e,22-i*2,y0+(1-p)*50,56+i*4,40,2.8);e.style.zIndex=i;e.style.opacity=seg(t,.4+i*.21,.5+i*.21)})}});
+def('morph','mo-flip','Karte dreht sich','Vorderseite Angebot, Rückseite Ös: Die Karte dreht sich mit der Flip-Kurve um.',{dur:3.6,bg:'bg-sand',build(st){
+ st.style.perspective='120cqw';const K=mk(st,'card c');rect(K,50,H/2,40,32);const f=mk(K,'fill bg-orange','<div style="position:absolute;left:3cqw;top:3cqw;color:var(--wine);font-weight:800;font-size:5cqw;line-height:1">Hirter<br>Privat Pils</div>');
+ const b=mk(K,'fill bg-wine');const pl=pill(b,'500',{size:3.6,badge:'os',badgeFirst:false});pl.style.position='absolute';pl.style.left='10cqw';pl.style.top='11cqw';
+ return t=>{const p=eFlip(seg(t,1.0,1.83)),a=180*p;tf(K,{ry:a});vis(f,a<90);vis(b,a>=90);tf(b,{sx:-1})}}});
+
+/* Elemente */
+def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich nach rechts auf, dann kommt der Text.',{badge:'std',dur:3.6,bg:'bg-orange',build(st){
+ const P=pill(st,'Jetzt entdecken',{size:4.4});P.style.left='22cqw';P.style.top=(H/2-4.73)+'cqw';const txt=P.lastChild;txt.style.display='inline-block';const W=P.offsetWidth;
+ return t=>{const b=P.querySelector('.jb');tf(b,{s:ePop(seg(t,.3,.72))});const p=eFlow(seg(t,.65,1.25));P.style.width=lerp(9.46,56,p)+'cqw';P.style.background=t<.65?'transparent':'#fff';tf(txt,{y:(1-eIn(seg(t,1.0,1.45)))*3,o:seg(t,1.0,1.15)})}}});
+def('elem','el-tags','Tags','Tags poppen nacheinander auf, klein und schnell.',{dur:3,bg:'bg-lilac',build(st){
+ const T=[['neu','Neu'],['akt','Aktion'],['deal','Deals']].map(([k,x],i)=>{const e=tag(st,k,x);e.style.left=(14+i*25)+'cqw';e.style.top=(H/2-3)+'cqw';e.style.transformOrigin='0 50%';return e});
+ return t=>T.forEach((e,i)=>tf(e,{s:ePop(seg(t,.3+i*.12,.72+i*.12)),o:seg(t,.3+i*.12,.36+i*.12)}))}});
+def('elem','el-count','Ös zählen','Die Zahl zählt mit Flow hoch und federt am Ende einmal nach.',{dur:3.6,bg:'bg-white',build(st){
+ const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);const P=pill(st,'0',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='0 50%';const n=P.firstChild;n.style.minWidth='10cqw';
+ return t=>{n.textContent=Math.round(500*eFlow(seg(t,.5,1.5)));tf(P,{s:t<1.5?ePop(seg(t,.2,.55)):1+.08*(1-spring(t-1.5))})}}});
+def('elem','el-discount','Rabatt-Kachel','Die Kachel poppt auf, die Zahl rollt auf den Rabatt, die Ös-Pill folgt.',{badge:'acc',dur:3.6,bg:'bg-jg',build(st){
+ const K=mk(st,'bg-wine c');rect(K,50,H/2,32,36,3.2);const n=mk(K,'','-0%','position:absolute;left:0;right:0;top:5cqw;text-align:center;color:#fff;font-weight:800;font-size:9cqw;letter-spacing:-.03em');
+ const P=pill(K,'500',{size:3.8,badge:'os',badgeFirst:false});P.style.position='absolute';P.style.left='6cqw';P.style.top='22cqw';
+ return t=>{tf(K,{s:ePop(seg(t,.25,.7))});n.textContent='-'+Math.round(20*eFlow(seg(t,.6,1.3)))+'%';tf(P,{y:(1-eIn(seg(t,1.2,1.65)))*5,o:seg(t,1.2,1.3)})}}});
+def('elem','el-push','Push-Nachricht','Die Nachricht kommt von oben, steht kurz und geht schneller wieder, als sie kam.',{dur:3.8,bg:'bg-lilac',build(st){
+ const P=mk(st,'push c','<div class="ic"><svg></svg></div><div><small>jö · jetzt</small><b>Neuer Deal bei Hirter</b><span>-25 % mit deinen Ös.</span></div>');staticLogo(P.querySelector('svg'));P.style.left='14cqw';P.style.right='14cqw';P.style.top='18cqw';
+ return t=>{const a=eIn(seg(t,.4,.85)),b=eOut(seg(t,2.9,3.2));tf(P,{y:(1-a)*-30+b*-30,o:seg(t,.4,.5)})}}});
+def('elem','el-cutout','Freisteller','Die Person tritt aus der Kachel, die Pill springt dazu. Wie im Banner.',{dur:3.8,bg:'bg-white',build(st){
+ const top=mk(st,'bg-lilac');box(top,30,4,40,H/2,0);top.style.borderRadius='2.8cqw 2.8cqw 0 0';const bot=mk(st,'bg-jg');box(bot,30,4+H/2-4,40,H/2-4,0);bot.style.borderRadius='0 0 2.8cqw 2.8cqw';
+ const fr=mk(st,'photo c');fr.style.cssText+='background-image:url(img/frau.webp);background-size:contain;background-repeat:no-repeat;background-position:center bottom';box(fr,32,6,36,H-14);
+ const P=pill(st,'Sportdeals',{size:3.2,badgeFirst:false});P.style.left='34cqw';P.style.top='34cqw';
+ return t=>{const p=eFlow(seg(t,.2,1.0));tf(top,{sy:p,o:1});top.style.transformOrigin='50% 100%';tf(bot,{sy:p});bot.style.transformOrigin='50% 0';tf(fr,{y:(1-eIn(seg(t,.8,1.4)))*10,o:seg(t,.8,.95)});tf(P,{s:ePop(seg(t,1.35,1.75))})}}});
+
+/* Timing: Kurven */
+function curveScene(f,dur,col,lbl){return {dur:3,bg:'bg-white',build(st){
+ const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 160 90');svg.setAttribute('class','curve');st.appendChild(svg);
+ let d='';for(let i=0;i<=80;i++){const x=i/80,y=f(x);d+=(i?'L':'M')+(14+x*70).toFixed(2)+','+(74-y*50).toFixed(2)}
+ svg.innerHTML=`<line x1="14" y1="74" x2="84" y2="74" stroke="#efebe8"/><line x1="14" y1="24" x2="84" y2="24" stroke="#efebe8" stroke-dasharray="2 3"/><path d="${d}" fill="none" stroke="var(--wine)" stroke-width="1.6" stroke-linecap="round"/><circle r="2.4" fill="var(--orange)"/><text x="14" y="86" font-size="5" fill="#7b706c" font-family="Satoshi,sans-serif">${lbl}</text>`;
+ const dot=svg.querySelector('circle');const K=mk(st,'tile c '+col);
+ return t=>{const p=seg(t,.4,.4+dur),y=f(p);dot.setAttribute('cx',(14+p*70).toFixed(2));dot.setAttribute('cy',(74-y*50).toFixed(2));rect(K,lerp(62,86,y),H/2,9,9,2)}}}}
+def('ease','ez-flow','Flow','Für alles, was von A nach B geht: Kacheln, Karten, Kamera.',{badge:'std',...curveScene(eFlow,.8,'bg-jg','cubic-bezier(.65, 0, .35, 1) · 0,7–1,2 s')});
+def('ease','ez-in','Auftritt','Schnell los, ruhig angekommen. Für Text und Elemente, die ins Bild kommen.',curveScene(eIn,.45,'bg-orange','expo-out · 0,45 s'));
+def('ease','ez-out','Abgang','Langsam los, schnell weg. Abgänge sind kürzer als Auftritte.',curveScene(eOut,.3,'bg-wine','cubic-in · 0,22–0,3 s'));
+def('ease','ez-spring','jö-Feder','Die Feder aus den Logo-Punkten. Einmal pro Moment, auf dem wichtigsten Element.',{badge:'acc',...curveScene(x=>spring(x*.9),.9,'bg-lor','alle 4 Frames ein Ausschlag · je 40 % kleiner')});
+
+/* Fehlgebrauch */
+def('miss','mi-coin','Kein Kreis','Der Coin ist abgelöst. Übergänge und Masken nutzen immer die Kachel.',{dur:3,bg:'bg-lilac',x:true,rest:.85,build(st){
+ const K=mk(st,'bg-orange');return t=>{const p=eMorph(seg(t,.4,1.2));rect(K,50,H/2,p*130,p*130,p*65)}}});
+def('miss','mi-bounce','Nicht alles federn','Wenn alles springt, springt nichts mehr. Die Feder gehört nur dem wichtigsten Element.',{dur:3,bg:'bg-sand',x:true,build(st){
+ const T=[tag(st,'neu','Neu'),tag(st,'akt','Aktion'),tag(st,'deal','Deals')];T.forEach((e,i)=>{e.style.left=(14+i*25)+'cqw';e.style.top='14cqw'});const P=pill(st,'Jetzt entdecken',{size:3.6});P.style.left='30cqw';P.style.top='32cqw';
+ return t=>{[...T,P].forEach((e,i)=>tf(e,{s:.4+.6*spring(t-.4),rz:8*(1-spring(t-.4))*(i%2?1:-1)}))}}});
+def('miss','mi-linear','Nicht linear','Lineare Bewegung wirkt mechanisch: hartes Anfahren, hartes Stoppen.',{dur:2.6,bg:'bg-white',x:true,build(st){
+ const K=mk(st,'tile bg-jg c');return t=>rect(K,lerp(20,80,seg(t,.4,1.2)),H/2,14,14)}});
+def('miss','mi-all','Nicht alles auf einmal','Wenn alles gleichzeitig kommt, weiß das Auge nicht, wohin.',{dur:3,bg:'bg-orange',x:true,build(st){
+ const tg=tag(st,'neu','Neu');tg.style.left='8cqw';tg.style.top='10cqw';const tx=mk(st,'tx','Aktiv sein<br>lohnt sich.','font-size:7cqw;color:var(--wine);top:19cqw;transform:none');const pl=pill(st,'Jetzt entdecken',{size:3.6});pl.style.left='8cqw';pl.style.top='40cqw';
+ const ph=photo(st,'img/kian.webp');box(ph,56,4,40,H-8,2.8);
+ return t=>{const p=eIn(seg(t,.4,.85));[tg,tx,pl,ph].forEach(e=>{tf(e,{s:lerp(.7,1,p),o:p})})}}});
+
+/* Hero: Logo zeichnet sich, die Fläche wird zur Kachel, dann entsteht das Raster */
+def('hero','hero','','',{dur:7.5,bg:'bg-white',build(st){
+ const F=mk(st,'bg-jg');const L=logo(st,26,50,H/2,'#fff');
+ const K=[[3,4,44,25,'bg-orange'],[50,4,24,48,'bg-wine'],[77,4,20,48,'bg-lilac'],[3,32,19,20,'photo'],[25,32,22,20,'bg-jg']];
+ const els=K.map(([x,y,w,h,c])=>{const e=mk(st,c+' c');if(c==='photo')e.style.backgroundImage='url(img/kian.webp)';return e});
+ const t1=textBlock(els[0],['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:3.4,x:3});const pc=mk(els[1],'','-20%','position:absolute;left:0;right:0;top:9cqw;text-align:center;color:#fff;font-weight:800;font-size:5.6cqw');
+ const pl1=pill(els[1],'500',{size:2.4,badge:'os',badgeFirst:false});pl1.style.position='absolute';pl1.style.left='4.6cqw';pl1.style.top='22cqw';
+ const fr=mk(els[2],'');fr.style.cssText='position:absolute;inset:0;background:url(img/frau.webp) center bottom/auto 92% no-repeat';
+ const pl2=pill(els[3],'500',{size:2,badge:'os',badgeFirst:false});pl2.style.position='absolute';pl2.style.left='2cqw';pl2.style.bottom='2cqw';
+ const icon=mk(els[4],'tile','');icon.style.cssText+=';position:absolute;left:7cqw;top:4.5cqw;width:8cqw;height:8cqw;background:#fff;display:grid;place-items:center';const isv=document.createElementNS(NS,'svg');isv.style.cssText='width:66%;color:var(--red);overflow:visible';icon.appendChild(isv);staticLogo(isv);
+ return t=>{drawLogo(L,t,{pre:.2});
+  const s=eMorph(seg(t,2.6,3.3));rect(F,50,H/2,lerp(100,24,s),lerp(H,24,s),lerp(0,5.4,s));tf(L.el,{s:lerp(1,.62,s),o:1-seg(t,3.35,3.5)});F.style.opacity=1-seg(t,3.35,3.5);
+  els.forEach((e,i)=>{const[x,y,w,h]=K[i];const p=eMorph(seg(t,3.3+i*.08,4.1+i*.08));box(e,lerp(38,x,p),lerp(H/2-12,y,p),lerp(24,w,p),lerp(24,h,p),lerp(5.4,2.4,p));e.style.opacity=seg(t,3.3,3.36)});
+  t1(t-4.0,7.0);tf(pc,{s:ePop(seg(t,4.2,4.6))});tf(pl1,{s:ePop(seg(t,4.4,4.8))});tf(pl2,{s:ePop(seg(t,4.5,4.9))});tf(icon,{s:t<4.3?0:spring(t-4.3)});tf(fr,{y:(1-eIn(seg(t,4.1,4.7)))*8,o:seg(t,4.1,4.25)})}}});
+
+/* ---------- Kacheln aufbauen ---------- */
+const stages=[];
+function mount(stEl,sc){stEl.classList.add(sc.bg||'bg-white');const draw=sc.build(stEl);if(sc.x)mk(stEl,'x','✕');
+ const o={el:stEl,sc,draw,t0:performance.now(),on:false};stages.push(o);const rest=sc.rest??(sc.loop?0:sc.dur*.72);draw(rest);o.rest=rest;
+ stEl.tabIndex=0;stEl.setAttribute('role','button');stEl.setAttribute('aria-label',(sc.name||'Beispiel')+' neu abspielen');
+ const restart=()=>{o.t0=performance.now();if(RM)playOnce(o)};stEl.addEventListener('click',restart);stEl.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();restart()}});return o}
+document.querySelectorAll('[data-group]').forEach(g=>{SC.filter(s=>s.g===g.dataset.group).forEach(sc=>{
+ const f=document.createElement('figure');f.className='ex';const st=document.createElement('div');st.className='stage';f.appendChild(st);
+ const cap=document.createElement('figcaption');cap.innerHTML=`<b>${sc.name}${sc.badge==='std'?' <span class="badge std">Standard</span>':sc.badge==='acc'?' <span class="badge acc">Akzent</span>':''}${sc.x?' <span class="badge no">Nicht so</span>':''}</b><span>${sc.desc}</span>`;f.appendChild(cap);g.appendChild(f);mount(st,sc)})});
+mount(document.querySelector('[data-scene="hero"]'),SC.find(s=>s.id==='hero'));
+staticLogo(document.querySelector('[data-static]'));
+
+/* Nur sichtbare Bühnen laufen; bei reduzierter Bewegung erst nach Klick, einmal */
+function playOnce(o){const t0=performance.now();const go=n=>{const t=(n-t0)/1000;o.draw(Math.min(t,o.sc.dur));if(t<o.sc.dur)requestAnimationFrame(go);else o.draw(o.rest)};requestAnimationFrame(go)}
+if(!RM){
+ const io=new IntersectionObserver(es=>es.forEach(e=>{const o=stages.find(s=>s.el===e.target);if(!o)return;if(e.isIntersecting&&!o.on){o.on=true;o.t0=performance.now()}else if(!e.isIntersecting)o.on=false}),{threshold:.2});
+ stages.forEach(o=>io.observe(o.el));
+ const tick=n=>{stages.forEach(o=>{if(o.on){const t=((n-o.t0)/1000)%o.sc.dur;o.draw(t)}});requestAnimationFrame(tick)};requestAnimationFrame(tick)}
+
+/* Werte-Tabelle */
+const CUR=[['Flow','cubic-bezier(.65, 0, .35, 1)','.65,0,.35,1','Kacheln, Karten, Panels, Kamera'],['Auftritt','cubic-bezier(.16, 1, .3, 1)','.16,1,.3,1','Text und Elemente kommen ins Bild'],['Abgang','cubic-bezier(.32, 0, .67, 0)','.32,0,.67,0','Elemente verlassen das Bild'],['Pop','cubic-bezier(.34, 1.45, .64, 1)','.34,1.45,.64,1','Tags, Pills, Icons poppen auf'],['Morph','cubic-bezier(.65, 0, .25, 1)','.65,0,.25,1','Kachel-Übergänge, Layout-Morphs'],['Flip','cubic-bezier(.25, .6, .3, 1)','.25,.6,.3,1','3D-Drehungen'],['jö-Feder','Ausschlag alle 4 F, je 40 % kleiner, steht nach ≈ 0,9 s','','Logo-Punkte, Text mit Feder, Icons']];
+document.getElementById('curveRows').innerHTML=CUR.map(r=>`<tr><td><b>${r[0]}</b></td><td><span class="mono">${r[1]}</span>${r[2]?`<button class="copy" type="button" data-copy="cubic-bezier(${r[2]})">Kopieren</button>`:''}</td><td>${r[3]}</td></tr>`).join('');
+document.getElementById('curveRows').addEventListener('click',ev=>{const b=ev.target.closest('[data-copy]');if(!b)return;
+ const fb=()=>{const r=document.createRange();r.selectNodeContents(b.previousElementSibling);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Markiert'};
+ try{navigator.clipboard.writeText(b.dataset.copy).then(()=>{b.textContent='Kopiert';setTimeout(()=>b.textContent='Kopieren',1400)},fb)}catch(e){fb()}});
+
+/* Navigation: aktives Kapitel */
+const links=[...document.querySelectorAll('.nav a.it,.mnav a')];
+const nio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>nio.observe(s));
 </script>
