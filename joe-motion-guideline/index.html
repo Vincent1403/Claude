@@ -55,8 +55,8 @@ h2{font-size:clamp(2.6rem,6vw,5.2rem);font-weight:900;letter-spacing:-.045em;lin
 .badge.no{background:var(--red);color:#fff}
 
 /* Bühne: alles darin in cqw, damit die Beispiele mit der Kachel skalieren */
-.stage{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;container-type:inline-size;cursor:pointer;isolation:isolate}
-.stage.hero{border-radius:22px}
+.stage{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;clip-path:inset(0 round 18px);/* clip-path: Safari schneidet transformierte Kinder sonst nicht ab */container-type:inline-size;cursor:pointer;isolation:isolate}
+.stage.hero{border-radius:22px;clip-path:inset(0 round 22px)}
 .stage > *{position:absolute}
 .stage .x{right:2.4cqw;top:2.4cqw;width:6cqw;height:6cqw;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:900;font-size:3.4cqw;z-index:9}
 .c{will-change:transform}
@@ -136,7 +136,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  .grid.g3.keep{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 10px}
  .grid.g3.keep figcaption span{display:none}
  .rules{grid-template-columns:minmax(0,1fr)}
- .stage{border-radius:14px}
+ .stage{border-radius:14px;clip-path:inset(0 round 14px)}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
