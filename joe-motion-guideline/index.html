@@ -502,11 +502,11 @@ def('morph','mo-flip','Karte dreht sich','Vorderseite Produkt, Rückseite Rabatt
   const r=t-2.9;tf(bp,{s:r<0?0:ePop(seg(r,0,.42))});bp.style.left=lerp(BW-1.6-bHc,1.6,eFlow(seg(r,.35,.95)))+'cqw';bp.style.right='1.6cqw';tf(bn,{y:(1-eIn(seg(r,.7,1.15)))*2,o:seg(r,.7,.85)})}}});
 
 /* Elemente */
-def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich nach rechts genau auf die Länge des Texts auf, dann kommt der Text.',{badge:'std',dur:3.6,bg:'bg-orange',build(st){
+def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich nach rechts genau auf die Länge des Texts auf, dann kommt der Text.',{dur:3.6,bg:'bg-orange',build(st){
  const d=pillBuild(st,'Jetzt entdecken',{size:4.4,y:H/2-4.73,center:true});return t=>d(t-.3)}});
 def('elem','el-tags','Tag','Erst poppt nur das Icon auf, dann schiebt sich der Tag nach rechts auf und gibt das Wort frei.',{dur:3,bg:'bg-lilac',build(st){
  const d=tagBuild(st,'neu','Neu',{size:4.4,center:true});return t=>d(t-.3)}});
-def('elem','el-count','Ös zählen','Die Ziffern rollen in 2 s bis 500: langsam los, in der Mitte schnell, zum Ende wieder langsam. Mit jeder neuen Stelle wächst die Pill mit, so steht die Zahl immer mittig in ihrem Feld.',{badge:'std',dur:4.8,bg:'bg-white',build(st){
+def('elem','el-count','Ös zählen','Die Ziffern rollen in 2 s bis 500: langsam los, in der Mitte schnell, zum Ende wieder langsam. Mit jeder neuen Stelle wächst die Pill mit, so steht die Zahl immer mittig in ihrem Feld.',{dur:4.8,bg:'bg-white',build(st){
  const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);ph.style.backgroundSize='cover';const P=pill(st,'',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='0 50%';P.style.gap='0';
  const n=P.firstChild;n.style.cssText+=';display:inline-flex;font-variant-numeric:tabular-nums;line-height:1.2em;height:1.2em;overflow:hidden;margin-right:.45em';
  /* Ziffern-Rollen: Hunderter, Zehner, Einer; jede Rolle zeigt 0–9 und noch einmal 0 */
@@ -520,7 +520,7 @@ def('elem','el-count','Ös zählen','Die Ziffern rollen in 2 s bis 500: langsam 
   /* leichte Bewegungsunschärfe auf den Einern, solange sie schnell rollen */const sp=(val(t+.01)-v)*100;
   cols.forEach((c,k)=>{c.style.width=(.62*g[k])+'em';c.style.display=g[k]<.01?'none':'inline-block';c.r.style.transform=`translateY(${(-pos[k]*1.2).toFixed(4)}em)`;c.r.style.filter=k===2&&sp>30?`blur(${Math.min(.05,sp/6000).toFixed(3)}em)`:''});
   tf(ph,{s:pushIn(t,0,4.8,.06)});tf(P,{s:t<.6?ePop(seg(t,.1,.45)):(t>2.9?1+.05*(1-spring(t-2.9)):1)})}}});
-def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkante herein und hängt an ihr. Die Ös-Pill baut sich auf wie der Pill-Button.',{badge:'acc',dur:3.8,bg:'bg-lilac',build(st){
+def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkante herein und hängt an ihr. Die Ös-Pill baut sich auf wie der Pill-Button.',{dur:3.8,bg:'bg-lilac',build(st){
  const L=mk(st,'');box(L,8.8,7,82.4,42.6,5);L.style.border='.12cqw solid var(--ink)';L.style.overflow='hidden';
  const T=mk(L,'bg-wine c','<div style="position:absolute;left:0;right:0;top:1.8cqw;text-align:center;color:#fff;font-weight:700;font-size:1.8cqw">Rabatt</div><div style="position:absolute;left:0;right:0;top:3.6cqw;text-align:center;color:#fff;font-weight:800;font-size:5.2cqw;letter-spacing:-.02em">5 €</div>');
  T.style.cssText+=';position:absolute;left:57cqw;top:-.2cqw;width:17.8cqw;height:20.4cqw;border-radius:0 0 3.4cqw 3.4cqw';
