@@ -572,8 +572,6 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
  for(let x=50;x<1000;x+=50)gl(x,0,x,562.5);for(let y=50;y<562.5;y+=50)gl(0,y,1000,y);
  const cx1=gl(500,0,500,562.5,'rgba(232,55,26,.5)'),cy1=gl(0,281.25,1000,281.25,'rgba(232,55,26,.5)');
  const labels=[];const gt=(x,y,txt,c=W,anchor='start')=>{const t=svgEl(gs,'text',{x,y,'font-size':11,'font-family':MONO,fill:c,'text-anchor':anchor},txt);labels.push(t);return t};
- gt(24,34,'jö / Logo-Konstruktion');gt(976,34,'24 fps','rgba(91,15,12,.55)','end');const fc=gt(976,52,'F 000',W,'end');
- gt(24,548,'0,0');gt(976,548,'1000 × 562',W,'end');
  /* Zeitleiste unten */
  const tl=svgEl(gs,'g',{});for(let i=0;i<=48;i++){svgEl(tl,'line',{x1:250+i*10,y1:520,x2:250+i*10,y2:i%6?526:532,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'})}
  const ph=svgEl(tl,'line',{x1:250,y1:512,x2:250,y2:536,stroke:G,'stroke-width':2,'vector-effect':'non-scaling-stroke'});
@@ -597,7 +595,7 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
  const pt=mk(P,'','Motion Guide','color:#fff;font-weight:700;font-size:4cqw;white-space:nowrap;display:inline-block');
  const PH=10.5,PW=33,LW=28,LH=LW*LR;
  return t=>{
-  const fr=Math.floor(t*24);fc.textContent='F '+String(fr).padStart(3,'0');const pp=(t%4)/4;ph.setAttribute('x1',250+pp*480);ph.setAttribute('x2',250+pp*480);
+  const pp=(t%4)/4;ph.setAttribute('x1',250+pp*480);ph.setAttribute('x2',250+pp*480);
   const out=1-seg(t,8.3,8.9);
   glines.forEach((l,i)=>{l.style.strokeDashoffset=1-eFlow(seg(t,.05+i*.025,.75+i*.025));l.style.opacity=out*(t>5.4?lerp(1,.55,seg(t,5.4,6.4)):1)});
   labels.forEach(l=>l.style.opacity=seg(t,.4,.8)*out);tl.style.opacity=seg(t,.5,.9)*out;
