@@ -8,7 +8,7 @@ const WL_CARDS={ // je Foto eine Karte: Partner(logo), Name, Pill, Icon, Text, B
  bonusbox:{l:'bipa',n:'BIPA',p:'250',k:'oes',t:'Die BIPA Bonusbox für 250 Ös',b:'Einlösen',img:'__WL:bipa_bonusbox__',tag:'<div style="font-size:34px;font-weight:700;line-height:1.15">Bonusbox</div>'},
  supermarkt:{l:'billa',n:'BILLA',p:'500',k:'oes',t:'-10 % und 500 Ös auf den Einkauf',b:'Aktivieren',img:'__WL:supermarkt__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-10%</div>'},
  gemuese:{l:'penny',n:'PENNY',p:'250',k:'oes',t:'5 € Rabatt auf Obst und Gemüse',b:'Scan erforderlich',img:'__WL:gemuese__',tag:'<div style="font-size:17px;font-weight:700;margin-bottom:2px">Rabatt</div><div style="font-size:66px;font-weight:800;line-height:1">5&#8239;€</div>'},
- hirter:{l:'adeg',n:'ADEG',p:'250',k:'oes',t:'-25 % auf Hirter Privat Pils',b:'Aktivieren',img:'__WL:hirter__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-25%</div>'},
+ hirter:{l:'billa',n:'BILLA',p:'250',k:'oes',t:'-25 % auf Hirter Privat Pils',b:'Aktivieren',img:'__WL:hirter__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-25%</div>'},
  see:{l:'raiffeisen',n:'RAIFFEISEN',p:'+3000',k:'oes',t:'3000 Ös bei Abschluss',b:'Mehr erfahren',img:'__WL:see__'},
  brille:{l:'pearle',n:'PEARLE',p:'150&#8239;€',k:'jo',t:'150 € Zuschuss für deine neue Brille',b:'Mehr erfahren',img:'__WL:brille__'},
  schreibwaren:{l:'pagro',n:'PAGRO',p:'100',k:'oes',t:'-15 % und 100 Ös auf Schulartikel',b:'Aktivieren',img:'__WL:schreibwaren__',tag:'<div style="font-size:74px;font-weight:800;line-height:1;letter-spacing:-.02em">-15%</div>'},
