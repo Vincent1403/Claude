@@ -257,6 +257,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
      <tr><td>Punkte landen</td><td class="n">1,33 s · Sprung 12,4 % der Logohöhe · Squash 16 %</td></tr>
      <tr><td>Nachsprünge</td><td class="n">3 × je 42 % der vorigen Höhe, steht bei 2,0 s</td></tr>
      <tr><td>Kachel</td><td class="n">Stufen 25 / 50 / 75 % · Rundung 14 % der kurzen Bildseite, nur innen · Einschieben 0,8 s (Flow)</td></tr>
+     <tr><td>Push-in</td><td class="n">Bilder und Freisteller zoomen nach dem Reveal bis zum Ende der Szene sanft weiter, ca. +6–7 % (Flow)</td></tr>
      <tr><td>App-Icon</td><td class="n">Rundung 22,5 % der Kantenlänge</td></tr>
     </tbody>
    </table></div>
@@ -348,6 +349,9 @@ function pill(p,text,{size=4.2,badge='jb',badgeFirst=true}={}){const e=mk(p,'pil
 function osBadge(p,size){const b=mk(p,'os');b.style.width=b.style.height=size+'cqw';const svg=document.createElementNS(NS,'svg');svg.style.cssText='width:76%;color:#fff;overflow:visible';b.appendChild(svg);staticLogo(svg);
  svg.querySelector('path').remove();svg.querySelector('circle').remove();svg.setAttribute('viewBox','84 -14 262 210');
  const s=document.createElementNS(NS,'text');s.setAttribute('x','262');s.setAttribute('y','182');s.setAttribute('font-size','118');s.setAttribute('font-weight','800');s.setAttribute('font-family','Satoshi,sans-serif');s.setAttribute('fill','currentColor');s.textContent='s';svg.appendChild(s);return b}
+/* Push-in: Nach dem Reveal zoomen Bilder und Freisteller kontinuierlich sanft weiter (bis +7 %), damit nichts stillsteht */
+const pushIn=(t,a,b,amt=.07)=>1+amt*eFlow(seg(t,a,b));
+function innerPhoto(p,src,pos='center'){const e=mk(p,'');e.style.cssText=`position:absolute;inset:0;background:url(${src}) ${pos}/cover no-repeat;will-change:transform`;p.style.overflow='hidden';return e}
 function tag(p,kind,text){const e=mk(p,'tag '+kind,'<i></i>');e.append(text);return e}
 function photo(p,src,pos){const e=mk(p,'photo');e.style.backgroundImage=`url(${src})`;if(pos)e.style.backgroundPosition=pos;return e}
 
@@ -393,10 +397,10 @@ const SC=[];const def=(g,id,name,desc,o)=>SC.push({g,id,name,desc,...o});
 def('prinzip','p-klar','Klar','Pro Moment ein Fokus. Tag, Headline und Pill kommen nacheinander, jedes mit seinem eigenen Aufbau.',{dur:4.6,bg:'bg-lilac',build(st){
  const tg=tagBuild(st,'neu','Neu',{size:1.9,x:8,y:10});const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:7,top:17});const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:8,y:39});
  return t=>{tg(t-.2,3.9);tx(t-1.0,3.8);pl(t-1.9,3.9)}}});
-def('prinzip','p-freundlich','Freundlich','Weich beschleunigen, ruhig ankommen. Auch beim Halten bleibt das Bild leicht in Bewegung.',{dur:4.2,bg:'bg-sand',build(st,h){
+def('prinzip','p-freundlich','Freundlich','Weich beschleunigen, ruhig ankommen. Nach dem Reveal zoomt das Bild sanft weiter, so bleibt es auch beim Halten in Bewegung.',{dur:4.2,bg:'bg-sand',build(st,h){
  const K=kachel(st,'r',h,'');K.style.overflow='hidden';const ph=photo(K,'img/kian.webp');ph.style.cssText+=';position:absolute;inset:0;background-size:cover;background-position:40% 50%';
  const hl=headline(st,'r',h,.5,['Mehr','für dich.']);
- return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(ph,{s:lerp(1.14,1,eSoft(seg(t,.2,4.2)))});hl(t-.8,3.4)}}});
+ return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(ph,{s:pushIn(t,.6,4.2)});hl(t-.8,3.4)}}});
 def('prinzip','p-federnd','Federnd','Ein kleiner Sprung mit echter Physik, gezielt als Akzent eingesetzt.',{dur:3.6,bg:'bg-orange',build(st){
  const L=logo(st,34,50,H/2,'var(--wine)');return t=>drawLogo(L,t,{pre:.15})}});
 
@@ -449,9 +453,9 @@ def('trans','tr-full','Kachel wird Vollbild','Erst geht der Text ab, dann wächs
 def('trans','tr-rainbow','Rainbow','Hellorange, Orange und Burgund schieben sich dicht nacheinander von der Seite über das Bild.',{badge:'acc',dur:3.8,bg:'bg-lilac',build(st,h){
  const a=headline(st,'r',h,0,['Aktiv sein','lohnt sich.']);const ks=['bg-lor','bg-orange','bg-wine'].map(c=>kachel(st,'r',h,c));const b=textBlock(st,['Mehr','für dich.'],{size:6.6,align:'center'});
  return t=>{a(t-.1,1.0);ks.forEach((k,i)=>k.set(lerp(0,1+KR(h)/100+.03,eMorph(seg(t,1.0+i*.14,1.8+i*.14)))));b(t-2.15,9)}}});
-def('trans','tr-photo','Kachel mit Bild','Die Kachel maskiert ein Foto. Das Bild zoomt langsam weiter, damit nichts stillsteht.',{dur:4,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h,'photo');K.style.backgroundImage='url(img/tamara.webp)';const hl=headline(st,'r',h,.5,['Alles in','einer App.']);
- return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));K.style.backgroundSize=`auto ${lerp(112,100,seg(t,.3,3.8))*1.0}%`;K.style.backgroundPosition='40% 50%';hl(t-.9,3.3)}}});
+def('trans','tr-photo','Kachel mit Bild','Die Kachel maskiert ein Foto. Nach dem Reveal zoomt das Bild kontinuierlich sanft hinein, damit nichts stillsteht.',{dur:4,bg:'bg-lilac',build(st,h){
+ const K=kachel(st,'r',h,'');const ph=innerPhoto(K,'img/tamara.webp','40% 50%');const hl=headline(st,'r',h,.5,['Alles in','einer App.']);
+ return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));tf(ph,{s:pushIn(t,.8,4)});hl(t-.9,3.3)}}});
 def('trans','tr-out','Vollbild wird Kachel','Die volle Fläche zieht sich auf eine Stufe zurück und gibt den Hintergrund frei. Umkehrung von Vollbild.',{dur:3.8,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const a=textBlock(st,['Deine','Sportwoche.'],{size:6.6});const b=headline(st,'r',h,.5,['Mehr','Ös.']);
  return t=>{K.set(lerp(1+KR(h)/100+.03,.5,eMorph(seg(t,1.3,2.0))));a(t-.1,1.05);b(t-2.0,9)}}});
@@ -465,19 +469,19 @@ def('morph','mo-format','Formatwechsel','Aus der Story wird das Querformat. Die 
   const kl=lerp(0,w/2,p),kt=lerp(hh/2,0,p),kw=lerp(w,w/2,p),kh=lerp(hh/2,hh,p);box(K,kl,kt,kw+.2,kh+.2);
   K.style.borderRadius=`${r}cqw ${lerp(r,0,p)}cqw 0 ${lerp(0,r,p)}cqw`;
   T.style.left=lerp(2.4,4,p)+'cqw';T.style.top=lerp(3,hh/2-4.6,p)+'cqw';T.style.fontSize=lerp(4.6,4.8,p)+'cqw'}}});
-def('morph','mo-swap','Bildwechsel in der Kachel','Die Kachel bleibt stehen, die Bilder darin wechseln. Das neue schiebt sich mit Flow hinein, das alte weicht etwas langsamer.',{dur:6,bg:'bg-lilac',build(st,h){
+def('morph','mo-swap','Bildwechsel in der Kachel','Die Kachel bleibt stehen, die Bilder darin wechseln. Das neue schiebt sich mit Flow hinein, das alte weicht etwas langsamer. Jedes Bild zoomt sanft, solange es steht.',{dur:6,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h,'');K.style.overflow='hidden';K.set(.5);const hl=headline(st,'r',h,.5,['Mehr','für dich.']);
  const imgs=['img/kian.webp','img/tamara.webp','img/see.webp'].map(src=>{const e=photo(K,src);e.style.cssText+=';position:absolute;inset:0;background-size:cover;background-position:45% 50%';return e});
  return t=>{hl(t-.2,9);const a=eFlow(seg(t,1.6,2.4)),b=eFlow(seg(t,3.6,4.4)),c=eFlow(seg(t,5.4,5.95));
-  tf(imgs[0],{x:-a*25});tf(imgs[1],{x:(1-a)*52-b*25});tf(imgs[2],{x:(1-b)*52});imgs[1].style.zIndex=1;imgs[2].style.zIndex=2;
+  tf(imgs[0],{x:-a*25,s:pushIn(t,0,2.4)});tf(imgs[1],{x:(1-a)*52-b*25,s:pushIn(t,2.0,4.4)});tf(imgs[2],{x:(1-b)*52,s:pushIn(t,4.0,6)});imgs[1].style.zIndex=1;imgs[2].style.zIndex=2;
   K.style.opacity=1-c*0}}});
-def('morph','mo-full','Karte wird Vollbild','Die Karte öffnet sich zum ganzen Bild, die Rundung verschwindet erst am Rand.',{dur:3.8,bg:'bg-white',build(st){
- const cards=[[6,8],[36,8],[66,8]].map(([x,y],i)=>{const c=photo(st,['img/kian.webp','img/see.webp','img/tamara.webp'][i]);box(c,x,y,28,40,2.8);return c});const tx=textBlock(st,['Mehr Bewegung,','mehr Ös.'],{size:6.4});
- return t=>{const p=eMorph(seg(t,.5,1.3));cards.forEach((c,i)=>{if(i===1){box(c,lerp(36,0,p),lerp(8,0,p),lerp(28,100,p),lerp(40,H,p),lerp(2.8,0,seg(p,.7,1)));c.style.zIndex=2}else tf(c,{o:1-seg(t,.5,.9),s:1-.06*eOut(seg(t,.5,.9))})});tx(t-1.25,9)}}});
-def('morph','mo-split','Fläche teilt sich','Aus einer Fläche wird ein Banner: Ein Foto-Panel schiebt sich hinein, Text und Pill rücken nach links.',{dur:4,bg:'bg-orange',build(st){
- const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:6.2,x:8});const P=photo(st,'img/kian.webp');const pl=pill(st,'Jetzt entdecken',{size:3.2});pl.style.left='8cqw';pl.style.top='40cqw';
+def('morph','mo-full','Karte wird Vollbild','Die Karte öffnet sich zum ganzen Bild, die Rundung verschwindet erst am Rand. Danach zoomt das Bild sanft weiter.',{dur:3.8,bg:'bg-white',build(st){
+ const cards=[[6,8],[36,8],[66,8]].map(([x,y],i)=>{const c=mk(st,'c');c.inner=innerPhoto(c,['img/kian.webp','img/see.webp','img/tamara.webp'][i]);box(c,x,y,28,40,2.8);return c});const tx=textBlock(st,['Mehr Bewegung,','mehr Ös.'],{size:6.4});
+ return t=>{const p=eMorph(seg(t,.5,1.3));cards.forEach((c,i)=>{if(i===1){box(c,lerp(36,0,p),lerp(8,0,p),lerp(28,100,p),lerp(40,H,p),lerp(2.8,0,seg(p,.7,1)));c.style.zIndex=2;tf(c.inner,{s:pushIn(t,1.3,3.8)})}else tf(c,{o:1-seg(t,.5,.9),s:1-.06*eOut(seg(t,.5,.9))})});tx(t-1.25,9)}}});
+def('morph','mo-split','Fläche teilt sich','Aus einer Fläche wird ein Banner: Ein Foto-Panel schiebt sich hinein und zoomt danach sanft weiter.',{dur:4,bg:'bg-orange',build(st){
+ const tx=textBlock(st,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:6.2,x:8});const P=mk(st,'c');const Pi=innerPhoto(P,'img/kian.webp');const pl=pill(st,'Jetzt entdecken',{size:3.2});pl.style.left='8cqw';pl.style.top='40cqw';
  const txEl=st.querySelector('.tx');
- return t=>{tx(t-.2,9);const p=eMorph(seg(t,1.0,1.8));box(P,lerp(102,52,p),0,50,H,0);P.style.borderRadius=`${lerp(0,3.4,p)}cqw 0 0 ${lerp(0,3.4,p)}cqw`;tf(pl,{s:ePop(seg(t,1.7,2.1))})}}});
+ return t=>{tx(t-.2,9);const p=eMorph(seg(t,1.0,1.8));box(P,lerp(102,52,p),0,50,H,0);P.style.borderRadius=`${lerp(0,3.4,p)}cqw 0 0 ${lerp(0,3.4,p)}cqw`;tf(Pi,{s:pushIn(t,1.8,4)});tf(pl,{s:ePop(seg(t,1.7,2.1))})}}});
 def('morph','mo-stack','Karten stapeln','Karten schieben sich nacheinander von unten in den Stapel, 0,21 s versetzt.',{dur:3.6,bg:'bg-lilac',build(st){
  const C=[['bg-orange','Neu bei BILLA'],['bg-wine','500 Ös gesammelt'],['bg-jg','Deine Sportwoche']].map(([c,txt],i)=>{const e=mk(st,'card c '+c,`<div style="position:absolute;left:3cqw;top:2.8cqw;color:#fff;font-weight:700;font-size:3.2cqw">${txt}</div>`);return e});
  return t=>C.forEach((e,i)=>{const p=eIn(seg(t,.4+i*.21,1.0+i*.21));const y0=6+i*5.5;box(e,22-i*2,y0+(1-p)*50,56+i*4,40,2.8);e.style.zIndex=i;e.style.opacity=seg(t,.4+i*.21,.5+i*.21)})}});
@@ -492,7 +496,7 @@ def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich
 def('elem','el-tags','Tag','Erst poppt nur das Icon auf, dann schiebt sich der Tag nach rechts auf und gibt das Wort frei.',{dur:3,bg:'bg-lilac',build(st){
  const d=tagBuild(st,'neu','Neu',{size:4.4,center:true});return t=>d(t-.3)}});
 def('elem','el-count','Ös zählen','Die Ziffern rollen weich bis 500 und werden zum Ende langsamer. Mit jeder neuen Stelle wächst die Pill mit, so steht die Zahl immer mittig in ihrem Feld.',{badge:'std',dur:6,bg:'bg-white',build(st){
- const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);const P=pill(st,'',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='0 50%';P.style.gap='0';
+ const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);ph.style.backgroundSize='cover';const P=pill(st,'',{size:5,badge:'os',badgeFirst:false});P.style.left='8cqw';P.style.top='36cqw';P.style.transformOrigin='0 50%';P.style.gap='0';
  const n=P.firstChild;n.style.cssText+=';display:inline-flex;font-variant-numeric:tabular-nums;line-height:1.2em;height:1.2em;overflow:hidden;margin-right:.45em';
  /* Ziffern-Rollen: Hunderter, Zehner, Einer; jede Rolle zeigt 0–9 und noch einmal 0 */
  const cols=[0,1,2].map(()=>{const c=document.createElement('span');c.style.cssText='display:inline-block;height:1.2em;overflow:hidden;position:relative';
@@ -504,7 +508,7 @@ def('elem','el-count','Ös zählen','Die Ziffern rollen weich bis 500 und werden
   const g=[eFlow(seg(t,cross[1]-.2,cross[1]+.1)),eFlow(seg(t,cross[0]-.2,cross[0]+.1)),1];
   /* leichte Bewegungsunschärfe auf den Einern, solange sie schnell rollen */const sp=(val(t+.01)-v)*100;
   cols.forEach((c,k)=>{c.style.width=(.62*g[k])+'em';c.style.display=g[k]<.01?'none':'inline-block';c.r.style.transform=`translateY(${(-pos[k]*1.2).toFixed(4)}em)`;c.r.style.filter=k===2&&sp>30?`blur(${Math.min(.05,sp/6000).toFixed(3)}em)`:''});
-  tf(P,{s:t<.6?ePop(seg(t,.1,.45)):(t>4.3?1+.05*(1-spring(t-4.3)):1)})}}});
+  tf(ph,{s:pushIn(t,0,6,.06)});tf(P,{s:t<.6?ePop(seg(t,.1,.45)):(t>4.3?1+.05*(1-spring(t-4.3)):1)})}}});
 def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkante herein und hängt an ihr. Die Ös-Pill baut sich auf wie der Pill-Button.',{badge:'acc',dur:3.8,bg:'bg-lilac',build(st){
  const L=mk(st,'');box(L,8.8,7,82.4,42.6,5);L.style.border='.12cqw solid var(--ink)';L.style.overflow='hidden';
  const T=mk(L,'bg-wine c','<div style="position:absolute;left:0;right:0;top:1.8cqw;text-align:center;color:#fff;font-weight:700;font-size:1.8cqw">Rabatt</div><div style="position:absolute;left:0;right:0;top:3.6cqw;text-align:center;color:#fff;font-weight:800;font-size:5.2cqw;letter-spacing:-.02em">5 €</div>');
@@ -518,11 +522,12 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
 def('elem','el-push','Push-Nachricht','Die Nachricht kommt von oben, steht kurz und geht schneller wieder, als sie kam.',{dur:3.8,bg:'bg-lilac',build(st){
  const P=mk(st,'push c','<div class="ic"><svg></svg></div><div><small>jö · jetzt</small><b>Neuer Deal bei Hirter</b><span>-25 % mit deinen Ös.</span></div>');staticLogo(P.querySelector('svg'));P.style.left='14cqw';P.style.right='14cqw';P.style.top='18cqw';
  return t=>{const a=eIn(seg(t,.4,.85)),b=eOut(seg(t,2.9,3.2));tf(P,{y:(1-a)*-30+b*-30,o:seg(t,.4,.5)})}}});
-def('elem','el-cutout','Freisteller','Die Kachel schiebt sich von der Seite herein, die Person tritt groß in ihre Mitte, die Pill baut sich auf wie der Pill-Button.',{dur:4.2,bg:'bg-lilac',build(st,h){
+def('elem','el-cutout','Freisteller','Die Kachel schiebt sich von der Seite herein, die Person tritt groß in ihre Mitte und zoomt danach kontinuierlich sanft heran. Die Pill baut sich auf wie der Pill-Button.',{dur:4.2,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr Bewegung,','mehr Ös.'],{size:4.4});
- const fr=mk(st,'c');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,75-30,-1,60,h*1.16);
+ const fr=mk(st,'c');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,75-29,4,58,h*1.08);
  const pl=pillBuild(st,'Sportdeals',{size:3.2,right:95,y:h-12});
- return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(fr,{y:(1-eIn(seg(t,.75,1.35)))*12,o:seg(t,.75,.9)});hl(t-1.0,3.7);pl(t-1.5,3.8)}}});
+ fr.style.transformOrigin='50% 100%';
+ return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(fr,{y:(1-eIn(seg(t,.75,1.35)))*12,o:seg(t,.75,.9),s:pushIn(t,1.35,4.2)});hl(t-1.0,3.7);pl(t-1.5,3.8)}}});
 
 /* Timing: Kurven */
 function curveScene(f,dur,col,lbl){return {dur:3,bg:'bg-white',build(st){
