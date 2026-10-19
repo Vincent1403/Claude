@@ -547,12 +547,6 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
 def('elem','el-push','Push-Nachricht','Die Nachricht fällt mit der jö-Feder von oben ins Bild und federt aus, steht kurz und geht schneller wieder, als sie kam.',{dur:3.8,bg:'bg-lilac',build(st){
  const P=mk(st,'push c','<div class="ic"><svg></svg></div><div><small>jö · jetzt</small><b>Neuer Deal bei Hirter</b><span>-25 % mit deinen Ös.</span></div>');staticLogo(P.querySelector('svg'));P.style.left='14cqw';P.style.right='14cqw';P.style.top='18cqw';
  return t=>{const q=t-.4,a=q<0?0:1-Math.exp(-q/.11)*Math.cos(Math.PI*q/.22),/* Feder mit ca. 13 % Überschwinger, damit die Karte nicht zu weit nach unten schießt */b=eOut(seg(t,2.9,3.2));tf(P,{y:(1-a)*-48+b*-48,/* Einflug mit jö-Feder */o:seg(t,.4,.5)})/* ganz aus dem Bild, inklusive Schatten */}}});
-def('elem','el-cutout','Freisteller','Die Kachel schiebt sich von der Seite herein, die Person tritt groß in ihre Mitte und zoomt danach kontinuierlich sanft heran. Die Pill baut sich auf wie der Pill-Button.',{dur:4.2,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr Bewegung,','mehr Ös.'],{size:4.4});
- const fr=mk(st,'c');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,75-29,4,58,h*1.08);
- const pl=pillBuild(st,'Sportdeals',{size:3.2,right:95,y:h-12});
- fr.style.transformOrigin='50% 100%';
- return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(fr,{y:(1-eIn(seg(t,.75,1.35)))*12,o:seg(t,.75,.9),s:pushIn(t,1.35,4.2)});hl(t-1.0,3.7);pl(t-1.5,3.8)}}});
 
 /* Timing: Kurven */
 function curveScene(f,dur,col,lbl){return {dur:3,bg:'bg-white',build(st){
