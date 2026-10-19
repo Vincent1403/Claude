@@ -3455,7 +3455,7 @@ const BBL=document.createElement('div');BBL.id='billL';BBL.style.cssText='positi
 BBL.innerHTML=`<div id="bbCam" style="position:absolute;inset:0;transform-origin:50% 52%"><img src="${BB_MOCK}" alt="" style="position:absolute;left:0;top:0;width:1920px;height:1080px;max-width:none">
 <div style="position:absolute;left:${BB_AX}px;top:${BB_AY}px;width:${BB_AW}px;height:${BB_AH}px;overflow:hidden">
 <div id="bbAll" style="position:absolute;left:0;top:0;width:3300px;height:1000px;transform-origin:0 0;transform:scale(${BB_K});background:#f4f1ea;overflow:hidden">
- <div id="bbBig" style="position:absolute;left:0;top:0;width:2300px;height:1000px;border-radius:0 200px 200px 0;background:${JG_CSS}"></div>
+ <div style="position:absolute;inset:0;background:${JG_CSS}"></div><div id="bbBig" style="position:absolute;right:-2px;top:-2px;width:0;height:1004px;border-radius:200px 0 0 200px;background:#f4f1ea"></div>
  <div id="bbLogo" style="position:absolute;left:150px;top:205px;width:880px;height:${(880*182.86/271.15).toFixed(0)}px">${BB_LB.html}</div>
  <div style="position:absolute;left:1180px;top:230px;color:#fff;font-size:160px;font-weight:800;letter-spacing:-.015em;line-height:1">${['Einfach mehr','für mich.'].map(l=>`<div style="height:${160*1.08}px;overflow:hidden"><div class="bbLine">${l}</div></div>`).join('')}</div>
  <div id="bbStore" style="position:absolute;left:1180px;top:640px;display:flex;gap:22px">
@@ -3490,7 +3490,7 @@ const BILL={key:'bill',name:'Billboard',lane:'laneV4',cls:'bento',
   show(on){BBL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=BBE,f=eStFlow;
     E.cam.style.transform=`scale(${(1+P.push*eIO(seg(t,0,M.total))).toFixed(4)})`;{const a=P.phoneAt+P.phoneDur*.8,u=seg(t,a,M.total),z=u*u*.5+u*.5;$('bbPhoneWrap').style.transform=`scale(${(1+P.zoom*z).toFixed(4)})`} /* Handy erscheint ganz, dann zoomt es bis zum Ende der Comp (sanfter Start, läuft durch) */ /* leichter Push-in auf das ganze Mockup */
-    const b=f(seg(t,P.bigAt,P.bigAt+P.bigIn));E.big.style.width=(3300-1000*b).toFixed(1)+'px';E.big.style.borderRadius=`0 ${(200*b).toFixed(1)}px ${(200*b).toFixed(1)}px 0`; /* Verlaufsfläche zieht sich auf 80 % zusammen, rechts wird Beige frei fürs Handy */
+    const b=f(seg(t,P.bigAt,P.bigAt+P.bigIn));E.big.style.width=(1002*b).toFixed(1)+'px';E.big.style.borderRadius=`${(200*b).toFixed(1)}px 0 0 ${(200*b).toFixed(1)}px`; /* Verlaufsfläche zieht sich auf 80 % zusammen, rechts wird Beige frei fürs Handy */
     E.lb(t-P.logoAt); // Logo baut sich auf wie in der Logo-Animation am Anfang
     E.lines.forEach((l,i)=>{const p=f(seg(t,P.lineAt+i*.12,P.lineAt+i*.12+.6));l.style.transform=`translateY(${((1-p)*110).toFixed(1)}%)`});
     const ph=f(seg(t,P.phoneAt,P.phoneAt+P.phoneDur)),fl=Math.sin((t-P.phoneAt-P.phoneDur)*1.6)*seg(t,P.phoneAt+P.phoneDur*.6,P.phoneAt+P.phoneDur+.6);
