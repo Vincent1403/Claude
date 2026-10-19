@@ -753,6 +753,12 @@ CLIPS["wall"]["start"] = round(CLIPS["wall"]["start"] - BARL, 4); CLIPS["wall"][
 CLIPS["logo4"]["start"] = 9000.0
 PARAMS["endtxt"] = {**PARAMS["endtxt"], "hold": 5.25, "bOut": 16.0, "aOut": 16.0}
 PARAMS["logo2"] = {**PARAMS["logo2"], "circ": 1}
+# Schluss-Logo mit vollem Aufbau: Clip ab Bildanfang (in 0), Kreis-Morph bleibt auf dem Hit; Markenbühne kommt früher und geht vor dem Logo
+_mo2 = CLIPS["logo2"]["start"] - CLIPS["logo2"]["in"] + PARAMS["logo2"]["outAt"]
+_lend = CLIPS["logo2"]["start"] + CLIPS["logo2"]["len"]
+CLIPS["logo2"] = C(round(_mo2 - PARAMS["logo2"]["outAt"], 4), 0); CLIPS["logo2"]["len"] = round(_lend - CLIPS["logo2"]["start"], 4)
+_cOut = round((CLIPS["logo2"]["start"] - .1 - CLIPS["endtxt"]["start"]) / BEAT, 2)
+PARAMS["endtxt"] = {**PARAMS["endtxt"], "hold": 4.5, "bOut": 14.0, "aOut": 14.0, "cIn": 14.5, "cOut": _cOut}
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
