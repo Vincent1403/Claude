@@ -3292,8 +3292,12 @@ const SYSTEM=makeSeq('system','Ein neues Design System. Unzählige Möglichkeite
 // „Konsistent über alle Kanäle.“ als Tafel wie die anderen Headlines: Wort für Wort aus der Zeilenmaske
 const KANAL=makeHL('kanal','Konsistent über alle Kanäle.','laneV2',['Konsistent über','alle *Kanäle.'],
   {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach dem Tag-System.'});
-const POS=makeHL('pos','Placeholder POS-System','laneV2',['Placeholder','POS-System'],
-  {size:150,top:354,color:'#fff',bg:'#000',step:.25,inAt:.25,outAt:7.2,len:7.4,cls:'logo',note:'Platzhalter für das POS-System, vor dem Schluss-Text.'});
+const POS=makeHL('pos','Placeholder POS-System 1','laneV2',['Placeholder','POS-System 1'],
+  {size:150,top:354,color:'#fff',bg:'#000',step:.25,inAt:.25,outAt:7.2,len:7.4,cls:'logo',note:'Platzhalter POS-System 1, vor dem Schluss-Text.'});
+const POS2=makeHL('pos2','Placeholder POS-System 2','laneV2',['Placeholder','POS-System 2'],
+  {size:150,top:354,color:'#fff',bg:'#000',step:.25,inAt:.25,outAt:7.2,len:7.4,cls:'logo',note:'Platzhalter POS-System 2, vor dem Schluss-Text.'});
+const POS3=makeHL('pos3','Placeholder POS-System 3','laneV2',['Placeholder','POS-System 3'],
+  {size:150,top:354,color:'#fff',bg:'#000',step:.25,inAt:.25,outAt:7.2,len:7.4,cls:'logo',note:'Platzhalter POS-System 3, vor dem Schluss-Text.'});
 const WELT=makeHL('welt','Eine Welt voller Marken.','laneV2',['Eine Welt voller Marken.'],
   {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel nach den Menschen, vor den Prämien.'});
 const FLEX=makeHL('flex','Flexibel im Zusammenspiel.','laneV2',['Flexibel im','*Zusammenspiel.'],
@@ -4100,7 +4104,7 @@ const ENDTXT={
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -4176,13 +4180,15 @@ S.clips.flex={start:117.7727,len:2.2858,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};
-S.clips.endtxt={start:145.9466,len:15.2472,in:0};
+S.clips.endtxt={start:149.3753,len:11.8185,in:0};
 S.clips.endc={start:161.1938,len:10.5208,in:0};
 S.clips.logo3={start:11.7953,len:2.4833,in:0.475};
 S.clips.ubahn={start:132.5917,len:4.5788,in:0};
 S.clips.welt={start:9000.0,len:2.2859,in:0};
 S.clips.logo4={start:9000.0,len:3.1453,in:0};
-S.clips.pos={start:141.7493,len:4.1973,in:0};
+S.clips.pos={start:141.7493,len:2.542,in:0};
+S.clips.pos2={start:144.2913,len:2.542,in:0};
+S.clips.pos3={start:146.8333,len:2.542,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 3.7572, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 3.086, "lOut": 4.473, "sent": 1000, "sent2": 4.583, "popGap": 99, "end": 15, "spread": 1.15, "swap": 2.0});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
@@ -4198,7 +4204,7 @@ Object.assign(S.comps.system.params,{"len": 4, "step": 1.75, "outAt": 3.6});FM.s
 Object.assign(S.comps.fuer.params,{"len": 20, "hold": 4, "nStep": 1.0, "nMove": 0.45, "cloudAt": 12, "zoomAt": 15.9, "outAt": 20});FM.fuer=COMPS.fuer.model(S.comps.fuer.params);
 Object.assign(S.comps.c7.params,{"len": 7, "outAt": 6.15});FM.c7=COMPS.c7.model(S.comps.c7.params);
 Object.assign(S.comps.ubahn.params,{"len": 4.5788});FM.ubahn=COMPS.ubahn.model(S.comps.ubahn.params);
-Object.assign(S.comps.endtxt.params,{"len": 29.24, "aIn": 0.25, "aOut": 14.0, "bIn": 1.25, "hold": 4.5, "bOut": 14.0, "cOut": 20.0, "cIn": 14.5});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
+Object.assign(S.comps.endtxt.params,{"len": 21.17, "aIn": 0.25, "aOut": 8.75, "bIn": 1.25, "hold": 2.5, "bOut": 8.75, "cOut": 14.01, "cIn": 9.25});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
 Object.assign(S.comps.endc.params,{"flyAt": 0.35, "txAt": 0.95, "wmAt": 1.0, "outAt": 2.881, "linkAt": 3.08, "pillAt": 3.381});FM.endc=COMPS.endc.model(S.comps.endc.params);
 Object.assign(S.comps.kanal.params,{"len": 4.672, "inAt": 0, "outAt": 3.833});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
 Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.3835, "banner": 0, "sc": 0.85, "y": 300, "cx": 470});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);
@@ -4208,7 +4214,9 @@ Object.assign(S.comps.logo2.params,{"outAt": 2.4467, "circ": 1});FM.logo2=COMPS.
 Object.assign(S.comps.cloud.params,{"banner": 0});FM.cloud=COMPS.cloud.model(S.comps.cloud.params);
 Object.assign(S.comps.welt.params,{"len": 4.0, "outAt": 3.15});FM.welt=COMPS.welt.model(S.comps.welt.params);
 Object.assign(S.comps.city.params,{"start": 0, "speed": 1.8});FM.city=COMPS.city.model(S.comps.city.params);
-Object.assign(S.comps.pos.params,{"len": 7.34, "outAt": 8.34});FM.pos=COMPS.pos.model(S.comps.pos.params);
+Object.assign(S.comps.pos.params,{"len": 4.445, "outAt": 5.445});FM.pos=COMPS.pos.model(S.comps.pos.params);
+Object.assign(S.comps.pos2.params,{"len": 4.445, "outAt": 5.445});FM.pos2=COMPS.pos2.model(S.comps.pos2.params);
+Object.assign(S.comps.pos3.params,{"len": 4.445, "outAt": 5.445});FM.pos3=COMPS.pos3.model(S.comps.pos3.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}

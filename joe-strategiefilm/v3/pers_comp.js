@@ -34,8 +34,12 @@ const SYSTEM=makeSeq('system','Ein neues Design System. Unzählige Möglichkeite
 // „Konsistent über alle Kanäle.“ als Tafel wie die anderen Headlines: Wort für Wort aus der Zeilenmaske
 const KANAL=makeHL('kanal','Konsistent über alle Kanäle.','laneV2',['Konsistent über','alle *Kanäle.'],
   {size:150,top:354,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel des Partnerfilms, ein Takt nach dem Tag-System.'});
-const POS=makeHL('pos','Placeholder POS-System','laneV2',['Placeholder','POS-System'],
-  {size:150,top:354,color:'#fff',bg:'#000',step:.25,inAt:.25,outAt:7.2,len:7.4,cls:'logo',note:'Platzhalter für das POS-System, vor dem Schluss-Text.'});
+const POS=makeHL('pos','Placeholder POS-System 1','laneV2',['Placeholder','POS-System 1'],
+  {size:150,top:354,color:'#fff',bg:'#000',step:.25,inAt:.25,outAt:7.2,len:7.4,cls:'logo',note:'Platzhalter POS-System 1, vor dem Schluss-Text.'});
+const POS2=makeHL('pos2','Placeholder POS-System 2','laneV2',['Placeholder','POS-System 2'],
+  {size:150,top:354,color:'#fff',bg:'#000',step:.25,inAt:.25,outAt:7.2,len:7.4,cls:'logo',note:'Platzhalter POS-System 2, vor dem Schluss-Text.'});
+const POS3=makeHL('pos3','Placeholder POS-System 3','laneV2',['Placeholder','POS-System 3'],
+  {size:150,top:354,color:'#fff',bg:'#000',step:.25,inAt:.25,outAt:7.2,len:7.4,cls:'logo',note:'Platzhalter POS-System 3, vor dem Schluss-Text.'});
 const WELT=makeHL('welt','Eine Welt voller Marken.','laneV2',['Eine Welt voller Marken.'],
   {size:150,top:447,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.25,inAt:.25,outAt:3.15,len:4,cls:'logo',note:'Tafel nach den Menschen, vor den Prämien.'});
 const FLEX=makeHL('flex','Flexibel im Zusammenspiel.','laneV2',['Flexibel im','*Zusammenspiel.'],

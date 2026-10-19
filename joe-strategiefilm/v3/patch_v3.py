@@ -285,7 +285,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -760,6 +760,13 @@ _lend = CLIPS["logo2"]["start"] + CLIPS["logo2"]["len"]
 CLIPS["logo2"] = C(round(_mo2 - PARAMS["logo2"]["outAt"], 4), 0); CLIPS["logo2"]["len"] = round(_lend - CLIPS["logo2"]["start"], 4)
 _cOut = round((CLIPS["logo2"]["start"] - .1 - CLIPS["endtxt"]["start"]) / BEAT, 2)
 PARAMS["endtxt"] = {**PARAMS["endtxt"], "hold": 4.5, "bOut": 14.0, "aOut": 14.0, "cIn": 14.5, "cOut": _cOut}
+# Kunde: drei POS-Platzhalter; Zeit kommt vom Schluss-Text (1,5 Takte), der schneller läuft. Schluss-Logo/Endcard bleiben auf den Hits
+_X = round(1.5 * BARL, 4); _p0 = CLIPS["pos"]["start"]; _e1 = round(CLIPS["endtxt"]["start"] + _X, 4)
+_pl = round((_e1 - _p0) / 3, 4)
+for _i, _k in enumerate(("pos", "pos2", "pos3")):
+    CLIPS[_k] = C(round(_p0 + _i * _pl, 4), _pl); PARAMS[_k] = {"len": round(_pl / BEAT, 3), "outAt": round(_pl / BEAT + 1, 3)}
+CLIPS["endtxt"]["start"] = _e1; CLIPS["endtxt"]["len"] = round(CLIPS["endtxt"]["len"] - _X, 4)
+PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(CLIPS["endtxt"]["len"] / BEAT + .5, 2), "hold": 2.5, "bOut": 8.75, "aOut": 8.75, "cIn": 9.25, "cOut": round((CLIPS["logo2"]["start"] - .1 - _e1) / BEAT, 2)}
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
