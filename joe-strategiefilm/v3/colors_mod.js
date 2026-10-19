@@ -14,7 +14,7 @@
   // Farbspalten: zusammengedrückt in den Bereich unter dem Verlauf, Name und Hex mittig im sichtbaren Teil
   const top=Math.max(0,Bh-FC_R-10),H=1080-top,mid=(Math.max(Bh,0)+1080)/2;
   E.cards.forEach((c,i)=>{c.style.transform='none';c.style.top=top.toFixed(1)+'px';c.style.height=H.toFixed(1)+'px';
-   const k=H/FC_H;['.fdark','.flight'].forEach(s=>{const el=c.querySelector(s);el.style.height=(FC_H*P.tones*k).toFixed(1)+'px'});
+   const V=1080-Math.max(Bh,0),th=V*P.tones; /* dunkle und helle Stufe im selben Verhältnis wie vorher, bezogen auf den sichtbaren Streifen */c.querySelector('.fdark').style.height=(Math.max(Bh,0)-top+th).toFixed(1)+'px';c.querySelector('.flight').style.height=th.toFixed(1)+'px';
    const pl=c.querySelector('.fpill'),hx=c.querySelector('.fhex');pl.style.top=(mid-top-40).toFixed(1)+'px';hx.style.top=(mid-top+12).toFixed(1)+'px'});
   // Hex-Pills: ploppen in der oberen Hälfte auf, ziehen sich zur Pill auf, verschwinden bevor der Verlauf Vollbild wird
   E.ps.forEach((d,k)=>{const a=P.slideDur*.55+k*P.stag*1.3,p=eBack(seg(lt3,a,a+.3)),x=f(seg(lt3,a+.15,a+.45));
