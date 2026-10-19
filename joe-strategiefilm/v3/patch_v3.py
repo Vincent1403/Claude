@@ -539,6 +539,18 @@ rep("const pts=[...row.querySelectorAll('.bbPt')],r0=BILL.render;", "{const h=do
 # Kunde: Julian-UI – nur die beigen Karten haben runde Ecken, die Verlaufsflächen sind eckig (von der Karte beschnitten)
 for _r in ("border-radius:28px 0 0 28px;background:${UIG}", "border-radius:40px 40px 0 0;background:${UIG}", "border-radius:22px 22px 0 0;background:${UIG}", "border-radius:0 0 30px 30px;background:${UIG}"):
     rep(_r, "border-radius:0;background:${UIG}")
+# Verlauf liegt hinten, darüber die beige Fläche mit runden Ecken an der Kante zum Verlauf
+_bz = "position:absolute;background:${CR};"
+rep('<div style="position:absolute;left:324px;top:0;right:0;bottom:0;border-radius:0;background:${UIG}"></div>',
+    '<div style="position:absolute;left:300px;top:0;right:0;bottom:0;background:${UIG}"></div><div style="' + _bz + 'left:-1px;top:-1px;bottom:-1px;width:353px;border-radius:0 28px 28px 0"></div>')
+rep('<div style="position:absolute;left:0;right:0;top:86px;bottom:0;border-radius:0;background:${UIG}"></div>',
+    '<div style="position:absolute;left:0;right:0;top:50px;bottom:0;background:${UIG}"></div><div style="' + _bz + 'left:-1px;right:-1px;top:-1px;height:87px;border-radius:0 0 28px 28px"></div>')
+rep('<div style="position:absolute;left:0;right:0;top:0;height:122px;border-radius:0;background:${UIG}"></div>',
+    '<div style="position:absolute;left:0;right:0;top:0;height:150px;background:${UIG}"></div><div style="' + _bz + 'left:-1px;right:-1px;top:122px;bottom:-1px;border-radius:28px 28px 0 0"></div>')
+rep("$('ui_ring').innerHTML=`<div style=\"position:absolute;inset:0;border-radius:24px;overflow:hidden;background:${CR}\">",
+    "$('ui_ring').innerHTML=`<div style=\"position:absolute;inset:0;border-radius:24px;overflow:hidden;background:${CR}\"><div style=\"position:absolute;left:0;right:0;top:283px;bottom:0;background:${UIG}\"></div><div style=\"" + _bz + "left:-1px;right:-1px;top:-1px;height:312px;border-radius:0 0 28px 28px\"></div>")
+rep("position:absolute;right:38px;top:28px;font-size:29px", "position:absolute;z-index:1;right:38px;top:28px;font-size:29px")
+rep("top:311px;bottom:0;border-radius:0;background:${UIG};display:flex", "top:311px;bottom:0;border-radius:0;background:none;display:flex")
 # Kunde: Julian-UI-Elemente rund um die Headline „Dein persönlicher digitaler Begleiter.“, die mit derselben Parallaxe mitläuft
 rep(" {id:'jump',name:'Sprung-Kachel',wx:1960,y:70,w:560,h:368,s:1,z:2},\n {id:'save',name:'Ersparnis',wx:2643,y:96,w:537,h:248,s:1,z:2},\n {id:'ring',name:'Ring',wx:3545,y:560,w:312,h:405,s:1.25,z:3},\n {id:'plus',name:'3x Ös (ganz vorne)',wx:2604,y:756,w:330,h:165,s:1.55,z:4},\n {id:'fav',name:'Favoriten (vorne)',wx:2819,y:600,w:542,h:355,s:1.3,z:4}];",
     " {id:'jump',name:'Sprung-Kachel',wx:1960,y:28,w:560,h:368,s:1,z:2},\n {id:'save',name:'Ersparnis',wx:2643,y:60,w:537,h:248,s:1,z:2},\n {id:'hl',name:'Headline',wx:2130,y:418,w:1240,h:250,s:1.12,z:5},\n {id:'ring',name:'Ring',wx:3545,y:650,w:312,h:405,s:1.25,z:3},\n {id:'plus',name:'3x Ös (ganz vorne)',wx:2604,y:860,w:330,h:165,s:1.55,z:4},\n {id:'fav',name:'Favoriten (vorne)',wx:2819,y:700,w:542,h:355,s:1.3,z:4}];")
