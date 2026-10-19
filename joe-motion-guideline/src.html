@@ -167,7 +167,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  <section id="start" style="padding-top:20px">
   <h1>Motion</h1>
   <p class="lede">Bewegung bei jö ist freundlich, klar und hat einen kleinen Sprung. Sie kommt aus dem Logo: Linien, die sich in einem Zug zeichnen, und drei Punkte, die landen und nachfedern. Ihre Form ist die Kachel: eine Fläche im jö-Verlauf, die von unten oder von der Seite ins Bild ragt.</p>
-  <div class="stage hero" data-scene="hero" aria-label="Überblick: Logo zeichnet sich, Kachel mit Bild und Pill-Button, Kachel wird Vollbild, Logo wird Icon"></div>
+  <div class="stage hero" data-scene="hero" aria-label="Logo-Konstruktion: Raster und Hilfslinien, das jö-Logo zeichnet sich, schiebt zur Seite und die Pill Motion Guide baut sich auf"></div>
  </section>
 
  <section id="prinzipien">
@@ -561,23 +561,54 @@ def('miss','mi-all','Nicht alles auf einmal','Wenn alles gleichzeitig kommt, wei
  const ph=photo(st,'img/kian.webp');box(ph,56,4,40,H-8,2.8);
  return t=>{const p=eIn(seg(t,.4,.85));[tg,tx,pl,ph].forEach(e=>{tf(e,{s:lerp(.7,1,p),o:p})})}}});
 
-/* Hero: Logo zeichnet sich, die Fläche wird zur Kachel, dann entsteht das Raster */
-/* Hero: ein Durchlauf durch die Bausteine, verbunden mit harten Schnitten.
-   1 Logo zeichnet sich · 2 Kachel mit Bild, Headline, Pill-Button · 3 Kachel wird Vollbild, Tag, Headline · 4 Logo wird Icon */
-def('hero','hero','','',{dur:13.4,bg:'bg-white',build(st){
- const A=mk(st,'fill bg-white'),B=mk(st,'fill bg-lilac'),C=mk(st,'fill bg-lilac'),D=mk(st,'fill bg-white');
- const L1=logo(A,30,50,H/2,'var(--wine)');
- const KB=kachel(B,'r',H,'');const phB=innerPhoto(KB,'img/tamara.webp','40% 50%');const hB=headline(B,'r',H,.5,['Alles in','einer App.']);
- const pB=pillBuild(st,'Jetzt entdecken',{size:3.2,x:7,y:38});
- const KC=kachel(C,'r',H);const hC=headline(C,'r',H,.5,['Deine','Sportwoche.']);const hC2=textBlock(C,['Mehr Bewegung,','mehr Ös.'],{size:6.6});
- const tC=tagBuild(st,'neu','Neu',{size:2.4,x:7,y:9});
- const TD=mk(D,'tile bg-jg c');TD.style.position='absolute';rect(TD,50,H/2,24,24);const L2=logo(D,34,50,H/2,'var(--wine)');
+/* Hero: Logo-Konstruktion. Raster und Hilfslinien zeichnen sich, das Logo baut sich darin auf,
+   schiebt nach links und gibt Platz für die Pill „Motion Guide“ (Aufbau wie der Pill-Button). */
+function svgEl(p,tag,a,txt){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!==undefined)e.textContent=txt;p.appendChild(e);return e}
+def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
+ const G='#e8371a',O='#f9781e',W='rgba(91,15,12,.55)',F='rgba(91,15,12,.12)',GR='#2f9e6e',MONO='ui-monospace,SF Mono,Menlo,monospace';
+ /* globales Raster und Rahmen (1000 × 562,5) */
+ const gs=svgEl(st,'svg',{viewBox:'0 0 1000 562.5',preserveAspectRatio:'none'});gs.style.cssText='position:absolute;inset:0;width:100%;height:100%;overflow:visible';
+ const glines=[];const gl=(x1,y1,x2,y2,c=F,d)=>{const l=svgEl(gs,'line',{x1,y1,x2,y2,stroke:c,'stroke-width':1,'vector-effect':'non-scaling-stroke',pathLength:1,'stroke-dasharray':d||'1 1'});glines.push(l);return l};
+ for(let x=50;x<1000;x+=50)gl(x,0,x,562.5);for(let y=50;y<562.5;y+=50)gl(0,y,1000,y);
+ const cx1=gl(500,0,500,562.5,'rgba(232,55,26,.5)'),cy1=gl(0,281.25,1000,281.25,'rgba(232,55,26,.5)');
+ const labels=[];const gt=(x,y,txt,c=W,anchor='start')=>{const t=svgEl(gs,'text',{x,y,'font-size':11,'font-family':MONO,fill:c,'text-anchor':anchor},txt);labels.push(t);return t};
+ gt(24,34,'jö / Logo-Konstruktion');gt(976,34,'24 fps','rgba(91,15,12,.55)','end');const fc=gt(976,52,'F 000',W,'end');
+ gt(24,548,'0,0');gt(976,548,'1000 × 562',W,'end');
+ /* Zeitleiste unten */
+ const tl=svgEl(gs,'g',{});for(let i=0;i<=48;i++){svgEl(tl,'line',{x1:250+i*10,y1:520,x2:250+i*10,y2:i%6?526:532,stroke:W,'stroke-width':1,'vector-effect':'non-scaling-stroke'})}
+ const ph=svgEl(tl,'line',{x1:250,y1:512,x2:250,y2:536,stroke:G,'stroke-width':2,'vector-effect':'non-scaling-stroke'});
+ /* Logo mit eigenen Konstruktionslinien (Logo-Koordinaten 271,15 × 182,86) */
+ const L=logo(st,28,50,H/2,'var(--wine)');const cg=svgEl(L.el,'svg',{viewBox:'0 0 271.15 182.86'});cg.style.cssText='position:absolute;inset:0;width:100%;height:100%;overflow:visible';
+ const guides=[];const g=(tag,a,col=GR,dash)=>{const e=svgEl(cg,tag,{fill:'none',stroke:col,'stroke-width':1,'vector-effect':'non-scaling-stroke',pathLength:1,'stroke-dasharray':dash||'1 1',...a});guides.push(e);return e};
+ const tx=[];const t2=(x,y,txt,col=GR,size=7)=>{const e=svgEl(cg,'text',{x,y,'font-size':size,'font-family':MONO,fill:col},txt);tx.push(e);return e};
+ g('rect',{x:0,y:0,width:271.15,height:182.86},G);
+ [0,33.6,58.4,171.4].forEach(y=>g('line',{x1:-40,y1:y,x2:311,y2:y},'rgba(232,55,26,.6)'));
+ [58,88,123.6,236.6].forEach(x=>g('line',{x1:x,y1:-30,x2:x,y2:213},'rgba(47,158,110,.7)'));
+ g('circle',{cx:49.7,cy:133.16,r:38.3});g('circle',{cx:49.7,cy:133.16,r:3},G);
+ g('circle',{cx:180.11,cy:114.91,r:56.5});g('circle',{cx:180.11,cy:114.91,r:67.9},GR,'1 1');g('circle',{cx:180.11,cy:114.91,r:45.1});g('circle',{cx:180.11,cy:114.91,r:3},G);
+ [87.99,152.94,207.17].forEach(x=>{g('circle',{cx:x,cy:16.8,r:16.8});g('circle',{cx:x,cy:16.8,r:33.6},'rgba(47,158,110,.45)')});
+ g('line',{x1:60,y1:16.8,x2:235,y2:16.8},O);
+ g('line',{x1:150,y1:150,x2:300,y2:-10},'rgba(232,55,26,.8)');
+ g('polygon',{points:'180.11,25 270,114.91 180.11,204.8 90.2,114.91'},'rgba(232,55,26,.8)');
+ g('line',{x1:49.7,y1:133.16,x2:180.11,y2:114.91},O);
+ t2(14,130,'r 38,3');t2(196,112,'r 56,5');t2(92,-22,'Ø 33,6');t2(240,62,'45°',G);t2(-36,-4,'0',G);t2(277,180,'182,9',G);t2(108,168,'22,8');t2(214,10,'×3',O);
+ /* Pill „Motion Guide“: Verlaufs-Punkt poppt, zieht sich auf, Text steigt */
+ const P=mk(st,'c');P.style.cssText+=';position:absolute;border-radius:999px;background:var(--jg);overflow:hidden;display:flex;align-items:center;justify-content:center;transform-origin:5.25cqw 50%';
+ const pt=mk(P,'','Motion Guide','color:#fff;font-weight:700;font-size:4cqw;white-space:nowrap;display:inline-block');
+ const PH=10.5,PW=33,LW=28,LH=LW*LR;
  return t=>{
-  const show=(el,a,b)=>{el.style.visibility=t>=a&&t<b?'visible':'hidden'};show(A,0,2.6);show(B,2.6,6.2);show(C,6.2,10.2);show(D,10.2,99);
-  drawLogo(L1,t,{pre:.2});
-  const u=t-2.6;KB.set(.5*eFlow(seg(u,.1,.9)));tf(phB,{s:pushIn(u,.5,3.6)});hB(u-.7,99);pB(u-1.3,u<0?-1:2.25);
-  const v=t-6.2;KC.set(v<.9?.5:lerp(.5,1+KR(H)/100+.02,eMorph(seg(v,.9,1.6))));hC(v,.55);hC2(v-1.55,99);tC(v-2.1,v<0?-1:1.8);
-  const w=t-10.2,p=eMorph(seg(w,2.0,2.65));drawLogo(L2,w,{pre:.1});rect(L2.el,50,H/2,lerp(34,18.5,p),lerp(34,18.5,p)*LR);tf(TD,{s:w<2.15?0:spring(w-2.15)});L2.el.style.color=p>.5?'#fff':'var(--wine)'}}});
+  const fr=Math.floor(t*24);fc.textContent='F '+String(fr).padStart(3,'0');const pp=(t%4)/4;ph.setAttribute('x1',250+pp*480);ph.setAttribute('x2',250+pp*480);
+  const out=1-seg(t,8.3,8.9);
+  glines.forEach((l,i)=>{l.style.strokeDashoffset=1-eFlow(seg(t,.05+i*.025,.75+i*.025));l.style.opacity=out*(t>5.4?lerp(1,.55,seg(t,5.4,6.4)):1)});
+  labels.forEach(l=>l.style.opacity=seg(t,.4,.8)*out);tl.style.opacity=seg(t,.5,.9)*out;
+  guides.forEach((e,i)=>{e.style.strokeDashoffset=1-eFlow(seg(t,.5+i*.06,1.4+i*.06));e.style.opacity=lerp(1,.35,seg(t,4.6,5.6))*out});
+  tx.forEach((e,i)=>e.style.opacity=seg(t,1.2+i*.08,1.5+i*.08)*lerp(1,.35,seg(t,4.6,5.6))*out);
+  drawLogo(L,t,{pre:1.3});
+  /* Logo schiebt nach links, Pill erscheint rechts */
+  const s=eFlow(seg(t,4.2,5.0)),gap=4,total=LW+gap+PW,lx=lerp(50,50-total/2+LW/2,s);rect(L.el,lx,H/2,LW,LH);
+  const px=50-total/2+LW+gap,py=H/2-PH/2+.6,q=t-4.75;
+  P.style.left=px+'cqw';P.style.top=py+'cqw';P.style.height=PH+'cqw';P.style.width=lerp(PH,PW,eFlow(seg(q,.35,.95)))+'cqw';
+  tf(P,{s:q<0?0:ePop(seg(q,0,.42))});tf(pt,{y:(1-eIn(seg(q,.7,1.15)))*3,o:seg(q,.7,.85)})}}});
 
 /* ---------- Kacheln aufbauen ---------- */
 const stages=[];
