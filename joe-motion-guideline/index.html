@@ -485,10 +485,25 @@ def('morph','mo-split','Fläche teilt sich','Aus einer Fläche wird ein Banner: 
 def('morph','mo-stack','Karten stapeln','Karten schieben sich nacheinander von unten in den Stapel, 0,21 s versetzt.',{dur:3.6,bg:'bg-lilac',build(st){
  const C=[['bg-orange','Neu bei BILLA'],['bg-wine','500 Ös gesammelt'],['bg-jg','Deine Sportwoche']].map(([c,txt],i)=>{const e=mk(st,'card c '+c,`<div style="position:absolute;left:3cqw;top:2.8cqw;color:#fff;font-weight:700;font-size:3.2cqw">${txt}</div>`);return e});
  return t=>C.forEach((e,i)=>{const p=eIn(seg(t,.4+i*.21,1.0+i*.21));const y0=6+i*5.5;box(e,22-i*2,y0+(1-p)*50,56+i*4,40,2.8);e.style.zIndex=i;e.style.opacity=seg(t,.4+i*.21,.5+i*.21)})}});
-def('morph','mo-flip','Karte dreht sich','Vorderseite Angebot, Rückseite Ös: Die Karte dreht sich mit der Flip-Kurve um.',{dur:3.6,bg:'bg-sand',build(st){
- st.style.perspective='120cqw';const K=mk(st,'card c');rect(K,50,H/2,40,32);const f=mk(K,'fill bg-orange','<div style="position:absolute;left:3cqw;top:3cqw;color:var(--wine);font-weight:800;font-size:5cqw;line-height:1">Hirter<br>Privat Pils</div>');
- const b=mk(K,'fill bg-wine');const pl=pill(b,'500',{size:3.6,badge:'os',badgeFirst:false});pl.style.position='absolute';pl.style.left='10cqw';pl.style.top='11cqw';
- return t=>{const p=eFlip(seg(t,1.0,1.83)),a=180*p;tf(K,{ry:a});vis(f,a<90);vis(b,a>=90);tf(b,{sx:-1})}}});
+def('morph','mo-flip','Karte dreht sich','Vorderseite Produkt, Rückseite Rabatt: Die Karte dreht sich mit der Flip-Kurve und wird dabei schmaler. Auf jeder Seite baut sich die Pill auf wie der Pill-Button.',{dur:5.4,bg:'bg-lilac',build(st){
+ st.style.perspective='120cqw';const K=mk(st,'c');K.style.transformStyle='preserve-3d';const CH=31,R=5.4;
+ const f=mk(K,'fill bg-orange');f.style.borderRadius=R+'cqw';f.style.overflow='hidden';
+ mk(f,'','Hirter<br>Privat<br>Pils','position:absolute;left:3.6cqw;top:3.4cqw;color:var(--wine);font-weight:700;font-size:4.6cqw;line-height:1.02;letter-spacing:-.02em');
+ const bt=mk(f,'');bt.style.cssText='position:absolute;right:2.4cqw;top:2.6cqw;width:17cqw;height:26cqw;background:url(img/hirter.webp) center/contain no-repeat';
+ const fp=pill(f,'Jetzt entdecken',{size:2.0});fp.style.cssText+=';position:absolute;left:3cqw;top:22.6cqw';const ft=fp.lastChild;ft.style.display='inline-block';let fW=0;
+ const b=mk(K,'fill bg-wine');b.style.borderRadius=R+'cqw';b.style.overflow='hidden';
+ mk(b,'','Rabatt','position:absolute;left:0;right:0;top:3.4cqw;text-align:center;color:#fff;font-weight:700;font-size:2.6cqw');
+ mk(b,'','5 €','position:absolute;left:0;right:0;top:6.4cqw;text-align:center;color:#fff;font-weight:800;font-size:8cqw;letter-spacing:-.02em');
+ const bp=pill(b,'250',{size:3.6,badge:'os',badgeFirst:false});bp.style.cssText+=';position:absolute;top:20.6cqw;justify-content:flex-end;font-weight:800;transform-origin:100% 50%;padding-left:0';const bn=bp.firstChild;bn.style.cssText+=';position:absolute;left:3cqw;display:inline-block';
+ const BW=27,bHc=3.6*2.15;
+ return t=>{
+  if(!fW&&st.clientWidth){fp.style.width='auto';fW=fp.offsetWidth/st.clientWidth*100}
+  /* Vorderseite: Pill baut sich auf */
+  const q=t-.3,fHc=2.0*2.15;tf(fp.querySelector('.jb'),{s:ePop(seg(q,0,.42))});fp.style.width=(fW?lerp(fHc,fW,eFlow(seg(q,.35,.95))):fHc)+'cqw';fp.style.background=q<.35?'transparent':'#fff';tf(ft,{y:(1-eIn(seg(q,.7,1.15)))*2,o:seg(q,.7,.85)});
+  /* Drehung: 20 F Flip, Breite 50 → 27 */
+  const p=eFlip(seg(t,2.0,2.83)),a=180*p,w=lerp(50,BW,p);rect(K,50,H/2,w,CH);tf(K,{ry:a});vis(f,a<90);vis(b,a>=90);tf(b,{sx:-1});
+  /* Rückseite: Ös-Pill baut sich auf, Badge rechts */
+  const r=t-2.9;tf(bp,{s:r<0?0:ePop(seg(r,0,.42))});bp.style.left=lerp(BW-1.6-bHc,1.6,eFlow(seg(r,.35,.95)))+'cqw';bp.style.right='1.6cqw';tf(bn,{y:(1-eIn(seg(r,.7,1.15)))*2,o:seg(r,.7,.85)})}}});
 
 /* Elemente */
 def('elem','el-pill','Pill-Button','Der jö-Punkt poppt auf, die Pill zieht sich nach rechts genau auf die Länge des Texts auf, dann kommt der Text.',{badge:'std',dur:3.6,bg:'bg-orange',build(st){
