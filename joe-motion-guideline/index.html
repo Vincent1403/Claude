@@ -74,7 +74,7 @@ h2{font-size:clamp(2.6rem,6vw,5.2rem);font-weight:900;letter-spacing:-.045em;lin
 /* Text in der Bühne */
 .tx{position:absolute;left:8cqw;right:8cqw;top:50%;transform:translateY(-50%);font-weight:800;letter-spacing:-.03em;line-height:1.02}
 .tx.center{text-align:center}
-.tl{display:block;overflow-y:clip;overflow-x:visible;padding:.04em 0 .14em;margin-bottom:-.14em}
+.tl{display:block;overflow:visible;clip-path:inset(0 -60% 0 -60%);padding:.04em 0 .14em;margin-bottom:-.14em}/* Kante per clip-path: schneidet auch in Safari sauber, ohne Reste unter der Zeile */
 .tl > span{display:inline-block;transform-origin:50% 80%}
 .tl > span.grad{background:linear-gradient(100deg,#b93040 0%,#ef2700 45%,#fb6321 80%,#ff7024 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em .22em 0;margin-bottom:-.22em}
 
