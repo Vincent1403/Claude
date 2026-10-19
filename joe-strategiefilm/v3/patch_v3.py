@@ -754,6 +754,27 @@ rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL=
 
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
 (here / "index.html").write_text(s, encoding="utf-8")
+# Player-Version zum Teilen: nur das Video, ohne Timeline, Header und Infos
+_pc = """<style id="playerOnly">
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
+.wrap{position:fixed!important;inset:0!important;width:auto!important;max-width:none!important;padding:0!important;margin:0!important;display:flex;align-items:center;justify-content:center}
+.wrap>header,#viewMain>.tl,#info,#viewMain .controls>*:not(#mPlay){display:none!important}
+#vp{position:relative;margin:0!important;border-radius:0!important;cursor:pointer}
+#viewMain{position:fixed;left:0;right:0;bottom:0;padding:0!important;margin:0!important;background:none!important}
+#viewMain .controls{justify-content:center;padding:0 0 18px!important;background:none!important;opacity:0;transition:opacity .25s}
+body:hover #viewMain .controls,body.paused #viewMain .controls{opacity:1}
+#mPlay{width:64px!important;height:64px!important}
+</style>"""
+_ps = """<script>
+(function(){const vp=document.getElementById('vp');
+ function sz(){const w=Math.min(innerWidth,innerHeight*16/9);vp.style.width=w+'px';vp.style.height=(w*9/16)+'px';try{fit()}catch(e){}}
+ addEventListener('resize',sz);sz();setTimeout(sz,300);
+ vp.addEventListener('click',()=>document.getElementById('mPlay').click());
+ const upd=()=>document.body.classList.toggle('paused',document.getElementById('mPlay').getAttribute('aria-label')!=='Pausieren');setInterval(upd,250);
+ document.title='jö Partnerfilm';})();
+</script>"""
+_p = s.replace("</head>", _pc + "</head>", 1).replace("</body>", _ps + "</body>", 1)
+(here / "player.html").write_text(_p, encoding="utf-8")
 
 tl = json.loads((here / "timeline_markenfilm.json").read_text())
 for k in DROP:
