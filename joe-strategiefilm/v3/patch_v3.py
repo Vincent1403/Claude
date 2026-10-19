@@ -776,6 +776,25 @@ _ps = """<script>
 _p = s.replace("</head>", _pc + "</head>", 1).replace("</body>", _ps + "</body>", 1)
 _p = _p.replace("db=window.claude&&window.claude.use?await window.claude.use('db'):null", "db=null /* Player: keine Datenbank, Timing ist eingebaut */", 1)
 _p = _p.replace("<title>jö Strategiefilm</title>", "<title>jö Partnerfilm</title>", 1)
+# Player: Zeitleiste zum Scrubben
+_p = _p.replace("window.__t={BEATS,", "window.__t={get mT(){return mT},BEATS,", 1)
+_p = _p.replace("</style></head>", """#pBar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:16px;padding:14px 22px 18px;background:linear-gradient(transparent,rgba(0,0,0,.55));opacity:0;transition:opacity .25s;z-index:50}
+body:hover #pBar,body.paused #pBar,body.drag #pBar{opacity:1}
+#pBar input{flex:1;accent-color:#ee2a06;height:6px;cursor:pointer}
+#pBar span{color:#fff;font:600 14px/1 var(--font),system-ui,sans-serif;font-variant-numeric:tabular-nums;min-width:92px;text-align:right}
+#viewMain .controls{display:none!important}
+#pBar #mPlay{flex:none}
+</style>
+</head>""", 1)
+_p = _p.replace("vp.addEventListener('click',()=>document.getElementById('mPlay').click());", """vp.addEventListener('click',()=>document.getElementById('mPlay').click());
+ const bar=document.createElement('div');bar.id='pBar';bar.innerHTML='<input type="range" min="0" max="1000" step="1" value="0" aria-label="Zeitleiste"><span>0:00 / 0:00</span>';document.body.appendChild(bar);
+ bar.prepend(document.getElementById('mPlay'));
+ const rg=bar.querySelector('input'),lb=bar.querySelector('span');let drag=false;
+ const END=()=>{try{const c=window.__t.S.clips.endc;return c.start+c.len}catch(e){return 171.7}};
+ const fm=x=>Math.floor(x/60)+':'+String(Math.floor(x%60)).padStart(2,'0');
+ rg.addEventListener('input',()=>{drag=true;document.body.classList.add('drag');window.__t.mSeek(rg.value/1000*END())});
+ rg.addEventListener('change',()=>{drag=false;document.body.classList.remove('drag')});
+ setInterval(()=>{const t=window.__t?window.__t.mT:0,e=END();if(!drag)rg.value=Math.round(Math.min(1,t/e)*1000);lb.textContent=fm(t)+' / '+fm(e)},100);""", 1)
 (here / "player.html").write_text(_p, encoding="utf-8")
 
 tl = json.loads((here / "timeline_markenfilm.json").read_text())

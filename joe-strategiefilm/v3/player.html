@@ -171,7 +171,14 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden}
 #viewMain .controls{justify-content:center;padding:0 0 18px!important;background:none!important;opacity:0;transition:opacity .25s}
 body:hover #viewMain .controls,body.paused #viewMain .controls{opacity:1}
 #mPlay{width:64px!important;height:64px!important}
-</style></head>
+#pBar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:16px;padding:14px 22px 18px;background:linear-gradient(transparent,rgba(0,0,0,.55));opacity:0;transition:opacity .25s;z-index:50}
+body:hover #pBar,body.paused #pBar,body.drag #pBar{opacity:1}
+#pBar input{flex:1;accent-color:#ee2a06;height:6px;cursor:pointer}
+#pBar span{color:#fff;font:600 14px/1 var(--font),system-ui,sans-serif;font-variant-numeric:tabular-nums;min-width:92px;text-align:right}
+#viewMain .controls{display:none!important}
+#pBar #mPlay{flex:none}
+</style>
+</head>
 <body>
 <div class="wrap">
  <header>
@@ -4445,7 +4452,7 @@ try{for(const k in COMPS){const a=localStorage.getItem(docComp(k));if(a)applyCom
 })();
 fontP.then(()=>{typoBuilt='';mRender()});
 mSeek(12.0);refresh();
-window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,openComp,openMain,cSeek,S,FM,oesSvg,COMPS,FS_SCENES};window.__au=()=>[abuf0&&abuf0.duration,abuf&&abuf.duration,abufAt,auTarget()];
+window.__t={get mT(){return mT},BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,openComp,openMain,cSeek,S,FM,oesSvg,COMPS,FS_SCENES};window.__au=()=>[abuf0&&abuf0.duration,abuf&&abuf.duration,abufAt,auTarget()];
 })();
 
 </script>
@@ -4454,6 +4461,14 @@ window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,open
  function sz(){const w=Math.min(innerWidth,innerHeight*16/9);vp.style.width=w+'px';vp.style.height=(w*9/16)+'px';try{fit()}catch(e){}}
  addEventListener('resize',sz);sz();setTimeout(sz,300);
  vp.addEventListener('click',()=>document.getElementById('mPlay').click());
+ const bar=document.createElement('div');bar.id='pBar';bar.innerHTML='<input type="range" min="0" max="1000" step="1" value="0" aria-label="Zeitleiste"><span>0:00 / 0:00</span>';document.body.appendChild(bar);
+ bar.prepend(document.getElementById('mPlay'));
+ const rg=bar.querySelector('input'),lb=bar.querySelector('span');let drag=false;
+ const END=()=>{try{const c=window.__t.S.clips.endc;return c.start+c.len}catch(e){return 171.7}};
+ const fm=x=>Math.floor(x/60)+':'+String(Math.floor(x%60)).padStart(2,'0');
+ rg.addEventListener('input',()=>{drag=true;document.body.classList.add('drag');window.__t.mSeek(rg.value/1000*END())});
+ rg.addEventListener('change',()=>{drag=false;document.body.classList.remove('drag')});
+ setInterval(()=>{const t=window.__t?window.__t.mT:0,e=END();if(!drag)rg.value=Math.round(Math.min(1,t/e)*1000);lb.textContent=fm(t)+' / '+fm(e)},100);
  const upd=()=>document.body.classList.toggle('paused',document.getElementById('mPlay').getAttribute('aria-label')!=='Pausieren');setInterval(upd,250);
  document.title='jö Partnerfilm';})();
 </script></body>
