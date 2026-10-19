@@ -435,10 +435,10 @@ function headline(st,side,h,f,lines,o={}){const size=side==='b'?11:6.6;
 const STEP=[[.25,'25 / 75','Die Kachel ragt ein Viertel ins Bild. Viel Raum für Headline und Bild.'],[.5,'50 / 50','Halb Kachel, halb Hintergrund. Die ausgewogene Standardstufe.',1],[.75,'75 / 25','Die Kachel trägt den Inhalt, oben oder links bleibt ein schmaler Rand.']];
 STEP.forEach(([f,name,desc,std])=>{
  def('kb','kb-'+f*100,name,desc,{ratio:'9/16',badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
-  const K=kachel(st,'b',h);const hl=f<.75?headline(st,'b',h,f,['Mehr','Ös.']):textBlock(st,['Mehr','Ös.'],{size:11,x:7,top:h*(1-f)+10});
+  const K=kachel(st,'b',h);const hl=f<.75?headline(st,'b',h,f,['Mehr','für dich.']):textBlock(st,['Mehr','für dich.'],{size:11,x:7,top:h*(1-f)+10});
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}});
  def('kr','kr-'+f*100,name,desc,{badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
-  const K=kachel(st,'r',h);const hl=f<.75?headline(st,'r',h,f,['Aktiv sein','lohnt sich.']):textBlock(st,['Aktiv sein','lohnt sich.'],{size:6.6,x:100*(1-f)+6,right:4});
+  const K=kachel(st,'r',h);const hl=f<.75?headline(st,'r',h,f,['Mehr','für dich.']):textBlock(st,['Mehr','für dich.'],{size:6.6,x:100*(1-f)+6,right:4});
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}})});
 
 def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stufe ins Bild, dann kommt die Headline.',{badge:'std',dur:3.6,bg:'bg-lilac',build(st,h){
