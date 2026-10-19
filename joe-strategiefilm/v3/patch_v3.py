@@ -560,6 +560,7 @@ rep('<div class="jui" id="ui_fav"></div>', '<div class="jui" id="ui_hl" style="f
 rep("xb=1920*(1-eStFlow(seg(mT,tEnd-1.45,tEnd)))}", "xb=1920*(1-eStFlow(seg(mT,S.clips.colors.start-.55,S.clips.colors.start+.25)))}")
 rep("M.items.forEach(it=>{const e=$('ui_'+it.id),x=it.wx-d*it.s;Object.assign(e.style,{left:'0px',top:it.y+'px',width:it.w+'px',height:it.h+'px',zIndex:it.z,transform:`translateX(${x.toFixed(1)}px)`});",
     "M.items.forEach(it=>{const e=$('ui_'+it.id),x=it.wx-d*it.s,zm=it.zm||1;Object.assign(e.style,{left:'0px',top:(it.y/zm)+'px',width:it.w+'px',height:it.h+'px',zIndex:it.z,zoom:zm,transform:`translateX(${(x/zm).toFixed(1)}px)`});")  # Kunde: UI-Elemente etwas kleiner, Abstand zum Bildrand
+rep("u=mT-c.start+c.in-J.P.sStart;x=M.P.edge", "u=clipHold('julian',c.in+(mT-c.start)*(c.rate||1))-J.P.sStart;x=M.P.edge")  # Fliedergrau-Kante läuft synchron zum Julian-Scroll (Tempo + Zeitlupe), erscheint erst mit dem Slider
 rep("      c.style.opacity=1;", "      c.style.opacity=i?1:seg(t,.66,.85).toFixed(3); // Beige-Fläche blendet erst auf, solange darunter noch Julian läuft")
 # „Konsistent über alle Kanäle.“ setzt auf dem Drop bei F2852 ein: Start 2 Schläge früher (aus dem Halte-Ende des Tag-Systems), Ende bleibt
 _kd = round(2 * BEAT, 4)
