@@ -432,9 +432,9 @@ def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stuf
 def('trans','tr-step','Stufe wechseln','Die Kachel wandert von Stufe zu Stufe, 25, 50, 75 %. Der Text weicht mit.',{dur:5,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const tx=mk(st,'tx','Mehr<br>Ös.','font-size:6.6cqw;color:var(--wine);left:7cqw');
  return t=>{const f=lerp(.25,.5,eMorph(seg(t,1.2,1.9)))+.25*eMorph(seg(t,2.7,3.4))-.5*eMorph(seg(t,4.4,4.95));K.set(t<.3?0:(t<1.1?.25*eFlow(seg(t,.3,1.1)):f));tx.style.right=(100*Math.max(f,.25)+5)+'cqw';tx.style.opacity=t<1.1?seg(t,.8,1):1}}});
-def('trans','tr-full','Kachel wird Vollbild','Aus der Stufe wächst die Kachel über das ganze Bild, die Rundung verlässt es über den Rand. Für neue Kapitel.',{dur:3.8,bg:'bg-lilac',build(st,h){
+def('trans','tr-full','Kachel wird Vollbild','Erst geht der Text ab, dann wächst die Kachel aus der Stufe über das ganze Bild. Die Rundung verlässt es über den Rand. Für neue Kapitel.',{dur:5.4,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const a=headline(st,'r',h,.5,['Aktiv sein','lohnt sich.']);const b=textBlock(st,['Deine','Sportwoche.'],{size:6.6});
- return t=>{K.set(t<1.4?.5*eFlow(seg(t,.2,.9)):lerp(.5,1+KR(h)/100+.02,eMorph(seg(t,1.4,2.1))));a(t-.6,1.25);b(t-2.0,9)}}});
+ return t=>{K.set(t<2.8?.5*eFlow(seg(t,.2,.9)):lerp(.5,1+KR(h)/100+.02,eMorph(seg(t,2.8,3.5))));a(t-.8,1.6);b(t-3.35,9)}}});
 def('trans','tr-rainbow','Rainbow','Hellorange, Orange und Burgund schieben sich dicht nacheinander von der Seite über das Bild.',{badge:'acc',dur:3.8,bg:'bg-lilac',build(st,h){
  const a=headline(st,'r',h,0,['Aktiv sein','lohnt sich.']);const ks=['bg-lor','bg-orange','bg-wine'].map(c=>kachel(st,'r',h,c));const b=textBlock(st,['Mehr','für dich.'],{size:6.6,align:'center'});
  return t=>{a(t-.1,1.0);ks.forEach((k,i)=>k.set(lerp(0,1+KR(h)/100+.03,eMorph(seg(t,1.0+i*.14,1.8+i*.14)))));b(t-2.15,9)}}});
