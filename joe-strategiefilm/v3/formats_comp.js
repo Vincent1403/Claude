@@ -11,7 +11,7 @@ const fmTag=(sh,txt,bg,fg,h)=>`<div class="fmBd" style="display:inline-flex;alig
 const FM_PILL=(inner,h)=>`<div class="fmBd fmPl" data-side="l" style="display:inline-flex;align-items:center;gap:${h*.18}px;height:${h}px;padding:0 ${h*.34}px 0 ${h*.09}px;border-radius:${h}px;background:#fff;color:${FM_DK};font-size:${h*.46}px;font-weight:800;box-shadow:0 10px 24px rgba(40,10,0,.18);white-space:nowrap">${inner}</div>`;
 const FM_S1=[ // x, y, w, h, Hintergrund, Inhalt
  [90,136.0,454,808,ST_RED,`
-  <img data-z="1" class="fmIm" src="__WL:supermarkt__" alt="" style="position:absolute;left:0;top:0;width:454px;height:454px;object-fit:cover;object-position:62% 50%;border-radius:0 0 48px 48px">
+  <img data-z="1" class="fmIm" src="__WL:mann_handy__" alt="" style="position:absolute;left:0;top:0;width:454px;height:454px;object-fit:cover;background:#e4e1ea;border-radius:0 0 48px 48px">
   <div style="position:absolute;left:236px;top:376px">${fmOesPill('250',66)}</div>
   <div style="position:absolute;left:38px;top:494px">${fmTag('sq','Neu',ST_OR,'#fff',46)}</div>
   <div style="position:absolute;left:38px;top:566px;color:#fff;font-size:48px;font-weight:800;line-height:1.05;letter-spacing:-.01em"><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">Mehr Frische,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">doppelte Ös,</div></div><div style="overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em"><div class="fmLn">besserer Preis!</div></div></div>`],
