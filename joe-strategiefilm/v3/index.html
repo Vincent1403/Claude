@@ -3307,7 +3307,7 @@ const WHITE={
   show(on){WHL.style.display=on?'':'none'},
   render(M,t){let x;if(view==='main'&&WH_J&&S.clips.julian&&FM.julian){const J=FM.julian,c=S.clips.julian,u=clipHold('julian',c.in+(mT-c.start)*(c.rate||1))-J.P.sStart;x=M.P.edge-M.P.tempo*J.dist(Math.max(0,u))}else x=1920*(1-eStFlow(seg(t,0,M.P.dur)));
     const O=$('whO'),B=$('whB');O.style.clipPath=x<=0?'none':`inset(0 0 0 ${Math.min(1920,x).toFixed(1)}px)`; // Flieder #E4E0EB hinter den UI-Kacheln
-    let xb=WH_J?1920:0;if(view==='main'&&WH_J&&S.clips.julian&&FM.julian){const jc=S.clips.julian,jm=FM.julian,tEnd=jc.start-jc.in+jm.P.sStart+jm.P.sDur+jm.P.pause;xb=1920*(1-eStFlow(seg(mT,S.clips.colors.start+.05,S.clips.colors.start+.75)))}B.style.clipPath=xb<=0?'none':`inset(0 0 0 ${Math.min(1920,xb).toFixed(1)}px)`}, // Beige hinter den Stories, fährt mit den Stories rein // Hauptebene: Kante läuft als Parallax-Ebene mit dem Julian-Scroll (Tempo 1), zwischen Julian-Karte und erster UI-Kachel
+    let xb=WH_J?1920:0;if(view==='main'&&WH_J&&S.clips.julian&&FM.julian){const jc=S.clips.julian,jm=FM.julian,tEnd=jc.start-jc.in+jm.P.sStart+jm.P.sDur+jm.P.pause;xb=1920*(1-eStFlow(seg(mT,S.clips.colors.start-.45,S.clips.colors.start+.75)))}B.style.clipPath=xb<=0?'none':`inset(0 0 0 ${Math.min(1920,xb).toFixed(1)}px)`}, // Beige hinter den Stories, fährt mit den Stories rein // Hauptebene: Kante läuft als Parallax-Ebene mit dem Julian-Scroll (Tempo 1), zwischen Julian-Karte und erster UI-Kachel
   marks(M){return [[0,'rein'],[M.P.dur,'steht']]},
   table(M){const F=s=>Math.round(s*FPS);return [['Weiße Fläche',`0–${F(M.P.dur)}`,'fährt von rechts über den Verlauf, danach vollflächig weiß']]},
   note:'Liegt direkt über dem Verlauf und unter allen anderen Ebenen.'
@@ -4147,7 +4147,7 @@ S.clips.partner={start:50.3396,len:11.4291,in:0,rate:0.75};
 S.clips.brand={start:61.7687,len:9.1433,in:0.0625,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:23.0756,len:6.6916,in:0.2,rate:0.65332};
+S.clips.colors={start:23.5756,len:6.1916,in:0.2,rate:0.70608};
 S.clips.deal={start:120.0585,len:7.9544,in:0,rate:0.7126};
 S.clips.prod={start:9000.0,len:4.5717,in:0.634,rate:0.4972};
 S.clips.c7={start:9000.0,len:5.1431,in:0};
