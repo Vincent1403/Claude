@@ -774,6 +774,8 @@ _ps = """<script>
  document.title='jö Partnerfilm';})();
 </script>"""
 _p = s.replace("</head>", _pc + "</head>", 1).replace("</body>", _ps + "</body>", 1)
+_p = _p.replace("db=window.claude&&window.claude.use?await window.claude.use('db'):null", "db=null /* Player: keine Datenbank, Timing ist eingebaut */", 1)
+_p = _p.replace("<title>jö Strategiefilm</title>", "<title>jö Partnerfilm</title>", 1)
 (here / "player.html").write_text(_p, encoding="utf-8")
 
 tl = json.loads((here / "timeline_markenfilm.json").read_text())

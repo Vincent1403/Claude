@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>jö Strategiefilm</title>
+<title>jö Partnerfilm</title>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
  --page:#efeae2;--panel:#e5dfd5;--panel2:#dcd5c9;--line:#cfc7ba;--text:#2a211d;--muted:#6f655c;--accent:#e2550f;--track:#d6cfc4;--chip:#f7f3ed;
@@ -4438,7 +4438,7 @@ document.addEventListener('keydown',e=>{const tg=e.target.tagName;if(tg==='INPUT
 
 buildTimeline();
 try{for(const k in COMPS){const a=localStorage.getItem(docComp(k));if(a)applyComp(k,JSON.parse(a))}const b=localStorage.getItem(DOC_TL);if(b)applyTl(JSON.parse(b))}catch(e){}
-(async()=>{try{db=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){db=null}
+(async()=>{try{db=null /* Player: keine Datenbank, Timing ist eingebaut */}catch(e){db=null}
   if(!db)return;
   for(const k in COMPS)db.doc(docComp(k)).onSnapshot(s=>{if(s.exists)applyComp(k,s.data())},()=>{});
   db.doc(DOC_TL).onSnapshot(s=>{if(s.exists&&!dragging)applyTl(s.data())},()=>{});
