@@ -17,7 +17,9 @@ const WL_CARDS={ // je Foto eine Karte: Partner(logo), Name, Pill, Icon, Text, B
  thule:{l:'forstinger',n:'FORSTINGER',p:'400&#8239;€',k:'jo',t:'400 € Rabatt auf Fahrradträger',b:'Einlösen',img:'__WL:thule__'}};
 // Im Bild sind nur Spalte 1 Zeile 0–3, Mitte Zeile 1–5, Spalte 3 Zeile 0–3 (gemessen über die ganze Clip-Länge).
 // 13 sichtbare Plätze, 11 Fotos: die zwei Wiederholungen (wasch, stifte) sind nie gleichzeitig im Bild. Die übrigen Plätze sieht man nie.
-const WL_COLS=[['wasch','supermarkt','brille','wasch','hirter','thule','see'],['gemuese','stifte','bipa','hirter','see','stifte','hirter'],['thule','bonusbox','schreibwaren','gemuese','supermarkt','brille','wasch']];
+// Kunde: fertige Angebotskarten als Bilder (wall_img/cards); die Mitte bleibt die Badge-Karte und blendet beim Aufziehen in die BIPA-Bonusbox-Karte über
+const WL_PNG={sutterluety:'__WLC:sutterluety__',forstinger:'__WLC:forstinger__',pearle:'__WLC:pearle__',biogena:'__WLC:biogena__',zgonc:'__WLC:zgonc__',billa:'__WLC:billa__',universal:'__WLC:universal__',omv:'__WLC:omv__',adeg:'__WLC:adeg__',penny:'__WLC:penny__',bipa_bonusbox:'__WLC:bipa_bonusbox__'};
+const WL_COLS=[['sutterluety','forstinger','pearle','biogena','penny','adeg','omv'],['universal','zgonc','bipa','billa','omv','adeg','penny'],['adeg','penny','universal','sutterluety','billa','zgonc','pearle']];
 // Etiketten auf dem Foto: immer in der Markenfarbe des Partners (Hintergrund, Schrift)
 const WL_BRAND={billa:['#ffe600','#1a1a1a'],penny:['#cd1719','#fff'],pagro:['#e2001a','#fff'],adeg:['#00843d','#fff'],omv:['#0c4b8e','#fff'],allianz:['#003781','#fff'],pearle:['#0a6b6a','#fff'],raiffeisen:['#fee600','#1a1a1a'],forstinger:['#ffe100','#1a1a1a'],universal:['#1a1a1a','#fff'],bipa:['#e5097f','#fff']};
 const WL_CENTER=2,WL_GX=64,WL_GY=64; // BIPA-Karte = Zeile 2 der mittleren Spalte
@@ -39,10 +41,11 @@ const wlCard=(c,x,y)=>`<div class="wlCard" style="position:absolute;left:${x}px;
   <div style="position:absolute;left:${bdc(458)}px;top:${bdc(822)}px;width:${bdc(517)}px;height:${bdc(124)}px;border-radius:999px;background:#6a1006;color:#fff;display:grid;place-items:center;font-size:${bdc(42)}px;font-weight:700">${c.b}</div>
  </div>`;
 const WLL=document.createElement('div');WLL.id='wallL';WLL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);background:#f4f1ea';
-WLL.innerHTML=`<div id="wlG" style="position:absolute;left:960px;top:540px;width:0;height:0">${WL_COLS.map((col,ci)=>`<div class="wlCol" style="position:absolute;left:0;top:0">${col.map((k,ri)=>wlCard(WL_CARDS[k],(ci-1)*(BD_CW+WL_GX)-BD_CW/2,(ri-WL_CENTER)*(BD_CH+WL_GY)-BD_CH/2)).join('')}</div>`).join('')}</div>`;
+const wlPng=(n,x,y,id)=>`<div class="wlCard"${id?` id="${id}"`:''} style="position:absolute;left:${x}px;top:${y}px;width:${BD_CW}px;height:${BD_CH}px;background:#fff;border-radius:24px;box-shadow:0 30px 70px rgba(94,23,8,.12);overflow:hidden"><img src="${WL_PNG[n]}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></div>`;
+WLL.innerHTML=`<div id="wlG" style="position:absolute;left:960px;top:540px;width:0;height:0">${WL_COLS.map((col,ci)=>`<div class="wlCol" style="position:absolute;left:0;top:0">${col.map((k,ri)=>{const x=(ci-1)*(BD_CW+WL_GX)-BD_CW/2,y=(ri-WL_CENTER)*(BD_CH+WL_GY)-BD_CH/2;return k==='bipa'?wlCard(WL_CARDS.bipa,x,y)+wlPng('bipa_bonusbox',x,y,'wlCtr'):wlPng(k,x,y)}).join('')}</div>`).join('')}</div>`;
 $('stage').appendChild(WLL);
 const WLE={g:$('wlG'),cols:[...WLL.querySelectorAll('.wlCol')]};
-WLE.others=[...WLL.querySelectorAll('.wlCard')].filter((el,i)=>!(i===WL_COLS[0].length+WL_CENTER)); // alle außer der BIPA-Karte in der Mitte
+WLE.ctr=$('wlCtr');WLE.others=[...WLL.querySelectorAll('.wlCard')].filter((el,i)=>!(i===WL_COLS[0].length+WL_CENTER)&&el.id!=='wlCtr'); // alle außer der Karte in der Mitte
 const WALL={
   key:'wall',name:'Angebots-Wand',lane:'laneV5',cls:'bento',
   DEF:{zoomDur:1.1,wallScale:.66,speed:150,side:.5,ramp:.8},
@@ -55,7 +58,7 @@ const WALL={
   model(P){return {P,key:P.zoomDur,keyName:'Wand steht',total:12}},
   show(on){WLL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=WLE,s0=(typeof S!=='undefined'&&S.comps.badges)?S.comps.badges.params.cardScale:1.08;
-    const z=eIO(seg(t,0,P.zoomDur)),sc=s0+(P.wallScale-s0)*z;E.g.style.transform=`scale(${sc.toFixed(5)})`;
+    const z=eIO(seg(t,0,P.zoomDur)),sc=s0+(P.wallScale-s0)*z;E.g.style.transform=`scale(${sc.toFixed(5)})`;E.ctr.style.opacity=eIO(seg(t,P.zoomDur*.15,P.zoomDur*.75)).toFixed(3);
     // weich anlaufen, dann gleichmäßig: Weg in Bildschirm-Pixeln → in Wandeinheiten umrechnen
     const tau=Math.max(0,t-P.zoomDur*.35),run=P.ramp>0?tau-P.ramp*(1-Math.exp(-tau/P.ramp)):tau,d=P.speed*run/sc;
     const off=P.side*(BD_CH+WL_GY)*z,fo=eOut(seg(t,.05,P.zoomDur*.7)).toFixed(3); // Nachbarkarten blenden beim Aufziehen ein

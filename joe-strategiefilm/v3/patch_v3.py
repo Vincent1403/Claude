@@ -220,6 +220,7 @@ rep(anchor, cards + anchor)
 
 # ---------- 5b. Neue Szene „Menschen“ (people_comp.js) nach „Partner Vollbild“ ----------
 def wl_imgs(txt):  # Fotos der Angebots-Wand: __WL:name__ -> wall_img/web/name.webp
+    txt = re.sub(r"__WLC:(\w+)__", lambda m: "data:image/webp;base64," + base64.b64encode((here / "wall_img" / "cards" / (m.group(1) + ".webp")).read_bytes()).decode(), txt)
     return re.sub(r"__WL:(\w+)__", lambda m: "data:image/webp;base64," + base64.b64encode((here / "wall_img" / "web" / (m.group(1) + ".webp")).read_bytes()).decode(), txt)
 rep("/* =====================================================================\n   COMP: APP-VIDEO", (here / "people_comp.js").read_text(encoding="utf-8") + "\n" + (here / "slot_comp.js").read_text(encoding="utf-8") + "\n" + ((here / "badge_comp.js").read_text(encoding="utf-8") + "\n" + wl_imgs((here / "wall_comp.js").read_text(encoding="utf-8"))).replace("__BD_IMG__", "data:image/webp;base64," + base64.b64encode((here / "angebot_bild.webp").read_bytes()).decode()) + "\n/* =====================================================================\n   COMP: APP-VIDEO")
 
