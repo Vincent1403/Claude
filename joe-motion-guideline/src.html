@@ -417,7 +417,7 @@ def('logo','ll-circle','Logo wird Kreis','Das Logo zeichnet sich, schrumpft und 
 /* Typografie */
 const TXT=(g,id,name,desc,o)=>def(g,id,name,desc,{dur:4.2,...o,build(st){const d=textBlock(st,o.lines,o.t);return t=>d(t-.25,3.2)}});
 TXT('text','tx-word','Wort für Wort','Wörter steigen nacheinander aus einer unsichtbaren Kante. Der Standard für Headlines.',{badge:'std',bg:'bg-orange',lines:['Aktiv sein','lohnt sich.'],t:{color:'var(--wine)'}});
-TXT('text','tx-zoom','Zoom','Wörter kommen aus der Nähe und setzen sich. Sparsam einsetzen.',{bg:'bg-orange',lines:['Jetzt','entdecken.'],t:{mode:'zoom',align:'center',color:'#fff'}});
+TXT('text','tx-zoom','Zoom','Wörter kommen aus der Nähe und setzen sich. Sparsam einsetzen.',{badge:'acc',bg:'bg-orange',lines:['Jetzt','entdecken.'],t:{mode:'zoom',align:'center',color:'#fff'}});
 TXT('text','tx-hl','Wort für Wort mit Verlauf','Ein Wort im jö-Verlauf trägt die Aussage. Die Bewegung bleibt Wort für Wort.',{bg:'bg-sand',lines:['Mehr *Bewegung*,','mehr Ös.'],t:{color:'var(--wine)',hl:'grad'}});
 
 /* Kachel: Übergänge (A = Ausgangsbild, B = neues Bild in der Kachel) */
