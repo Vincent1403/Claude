@@ -112,6 +112,12 @@ th{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mut
 td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 .copy{border:1px solid var(--line);background:#fff;border-radius:6px;padding:1px 8px;font-size:.72rem;cursor:pointer;margin-left:8px}
 .mono{font-family:var(--mono);font-size:.82rem}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:6px}
+.rules div{display:grid;gap:4px;border-top:2px solid var(--ink);padding-top:12px}
+.rules b{font-size:1.05rem}
+.rules span{font-size:.92rem;color:var(--muted)}
+.kg-b{background:linear-gradient(to bottom right,#b2333a 0%,#dc4220 42%,#e45a28 66%,#ec7b39 100%)}
+.kg-r{background:linear-gradient(to top right,#b2333a 0%,#dc4220 42%,#e45a28 66%,#ec7b39 100%)}
 .open{margin:0;padding-left:20px;display:grid;gap:8px;max-width:64ch}
 
 @media (max-width:980px){
@@ -123,9 +129,13 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
  section{scroll-margin-top:60px}
  .grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .grid.g3.keep{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-width:640px){
  .grid,.grid.g3{grid-template-columns:minmax(0,1fr);gap:30px}
+ .grid.g3.keep{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 10px}
+ .grid.g3.keep figcaption span{display:none}
+ .rules{grid-template-columns:minmax(0,1fr)}
  .stage{border-radius:14px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
@@ -156,7 +166,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 
  <section id="start" style="padding-top:20px">
   <h1>Motion</h1>
-  <p class="lede">Bewegung bei jö ist freundlich, klar und hat einen kleinen Sprung. Sie kommt aus dem Logo: Linien, die sich in einem Zug zeichnen, und drei Punkte, die landen und nachfedern. Ihre Form ist die Kachel, das abgerundete Rechteck aus App-Icon und Karten.</p>
+  <p class="lede">Bewegung bei jö ist freundlich, klar und hat einen kleinen Sprung. Sie kommt aus dem Logo: Linien, die sich in einem Zug zeichnen, und drei Punkte, die landen und nachfedern. Ihre Form ist die Kachel: eine Fläche im jö-Verlauf, die von unten oder von der Seite ins Bild ragt.</p>
   <div class="stage hero" data-scene="hero" aria-label="Überblick: Logo zeichnet sich, die Fläche wird zur Kachel und teilt sich in Karten"></div>
  </section>
 
@@ -184,14 +194,23 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 
  <section id="kachel">
   <h2>Die Kachel</h2>
-  <p class="lede">Der Kreis ist Geschichte. Unsere Form ist die Kachel: ein abgerundetes Rechteck wie das App-Icon und die Karten. Sie öffnet Bilder, maskiert Fotos und trägt Übergänge. Kleine Kacheln haben die Rundung des App-Icons, große Flächen eine feste, ruhige Rundung.</p>
+  <p class="lede">Der Kreis ist Geschichte. Unsere Form ist die Kachel: eine Fläche im jö-Verlauf, die immer angeschnitten ist. Sie ragt von unten oder von der Seite ins Bild, nie frei schwebend. Wie weit, legen drei Stufen fest.</p>
+  <div class="rules">
+   <div><b>Immer im Anschnitt</b><span>Die Kachel berührt drei Bildkanten. Im Hochformat kommt sie von unten, im Querformat von der Seite.</span></div>
+   <div><b>Drei Stufen</b><span>Sie ragt 25, 50 oder 75 % ins Bild. Den Rest behält der Hintergrund, zum Beispiel für die Headline.</span></div>
+   <div><b>Rundung nur innen</b><span>Nur die zwei Ecken im Bild sind gerundet, mit 14 % der kurzen Bildseite.</span></div>
+  </div>
+  <h3 class="sub">Stufen im Hochformat</h3>
+  <div class="grid g3 keep" data-group="kb"></div>
+  <h3 class="sub">Stufen im Querformat</h3>
+  <div class="grid g3" data-group="kr"></div>
   <h3 class="sub">Übergänge</h3>
   <div class="grid" data-group="trans"></div>
  </section>
 
  <section id="layout">
   <h2>Layout-Morphs</h2>
-  <p class="lede">Layouts verwandeln sich, statt zu springen. Eine Kachel wird zur Karte, eine Karte zum Vollbild, eine Fläche teilt sich in ein Raster. So bleibt sichtbar, woher etwas kommt.</p>
+  <p class="lede">Layouts verwandeln sich, statt zu springen. Ein Icon wird zur Karte, eine Karte zum Vollbild, eine Fläche teilt sich in ein Raster. So bleibt sichtbar, woher etwas kommt.</p>
   <div class="grid" data-group="morph"></div>
  </section>
 
@@ -237,7 +256,8 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
      <tr><td>Punkte erscheinen</td><td class="n">ab 0,87 s, Pop 0,14 s</td></tr>
      <tr><td>Punkte landen</td><td class="n">1,33 s · Sprung 12,4 % der Logohöhe · Squash 16 %</td></tr>
      <tr><td>Nachsprünge</td><td class="n">3 × je 42 % der vorigen Höhe, steht bei 2,0 s</td></tr>
-     <tr><td>Kachel-Rundung</td><td class="n">22,5 % der Kantenlänge (App-Icon), Karten ca. 2,8 % der Bildbreite</td></tr>
+     <tr><td>Kachel</td><td class="n">Stufen 25 / 50 / 75 % · Rundung 14 % der kurzen Bildseite, nur innen · Einschieben 0,8 s (Flow)</td></tr>
+     <tr><td>App-Icon</td><td class="n">Rundung 22,5 % der Kantenlänge</td></tr>
     </tbody>
    </table></div>
   </details>
@@ -250,7 +270,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
   <details><summary>Offene Punkte <small>vor der Freigabe zu klären</small></summary>
    <ol class="open" style="margin-top:12px">
     <li><b>Varianten festlegen.</b> Die Markierungen Standard und Akzent sind ein Vorschlag.</li>
-    <li><b>Kachel-Rundung.</b> 22,5 % für Icons und ca. 2,8 % der Breite für Flächen sind aus dem Markenfilm übernommen und sollten mit dem Design-Team abgestimmt werden.</li>
+    <li><b>Kachel.</b> Die Stufen 25 / 50 / 75 % und die Rundung von 14 % der kurzen Bildseite sind aus den Story-Vorlagen abgeleitet und sollten mit dem Design-Team bestätigt werden.</li>
         <li><b>Bildrate.</b> 24 oder 25 fps für Exporte.</li>
    </ol>
   </details>
@@ -385,25 +405,41 @@ TXT('text','tx-hl','Wort für Wort mit Verlauf','Ein Wort im jö-Verlauf trägt 
 
 /* Kachel: Übergänge (A = Ausgangsbild, B = neues Bild in der Kachel) */
 function sceneA(st){const a=mk(st,'fill bg-lilac');const tx=textBlock(a,['Aktiv sein','lohnt sich.'],{color:'var(--wine)',size:6.4});tx(9);return a}
-def('trans','tr-full','Kachel, Vollbild','Die Kachel wächst aus der Mitte und füllt das ganze Bild. Der Standard für neue Kapitel.',{badge:'std',dur:3.6,bg:'bg-lilac',build(st){
- sceneA(st);const K=mk(st,'bg-jg c');const tx=textBlock(K,['Deine','Sportwoche.'],{size:6.6});K.style.overflow='hidden';
- return t=>{const p=eMorph(seg(t,.5,1.25)),w=lerp(0,112,p),h=lerp(0,72,eMorph(seg(t,.55,1.25)));const sq=Math.min(w,h);rect(K,50,H/2,w,h,lerp(sq*.225,3.2,p));
-  const inner=K.querySelector('.tx');inner.style.left=(8-(50-w/2))+'cqw';inner.style.right=(8-(50-w/2))+'cqw';tx(t-1.05,9)}}});
-def('trans','tr-panel','Kachel als Panel','Die Kachel öffnet links ein Foto und bleibt als Panel stehen. Rechts bleibt Platz für Text.',{dur:3.8,bg:'bg-sand',build(st){
- const tx=textBlock(st,['Mehr','Bewegung.'],{color:'var(--wine)',size:6,x:58,right:4});const K=mk(st,'photo c');K.style.backgroundImage='url(img/see.webp)';
- return t=>{const p=eMorph(seg(t,.3,1.15));box(K,lerp(25,4,p),lerp(H/2,4,p),lerp(0,48,p),lerp(0,H-8,p),lerp(0,2.8,p)+(1-p)*4);K.style.backgroundSize=`auto ${lerp(150,118,seg(t,.3,3.6))}%`;tx(t-.9,3.1)}}});
-def('trans','tr-corner','Aus der Ecke','Die Kachel wächst aus der Ecke unten links und lässt oben rechts das alte Bild stehen.',{dur:3.6,bg:'bg-lilac',build(st){
- const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);const K=mk(st,'bg-wine c');const tg=tag(K,'deal','Deals');tg.style.cssText+='position:absolute;left:7cqw;top:6cqw';const tx=textBlock(K,['-25 %','bei Hirter.'],{size:6.4,top:15,x:7});
- return t=>{const p=eMorph(seg(t,.4,1.2));const w=lerp(0,74,p),h=lerp(0,48,p);box(K,-3,H+3-h,w+3,h,lerp(.225*Math.min(w,h),3.4,p));tf(tg,{s:ePop(seg(t,1.05,1.45))});tx(t-1.2,9)}}});
-def('trans','tr-rainbow','Rainbow','Drei Kacheln in Hellorange, Orange und Burgund folgen dicht aufeinander. Für große Momente.',{badge:'acc',dur:3.6,bg:'bg-sand',build(st){
- sceneA(st);const cs=['var(--lorange)','var(--orange)','var(--wine)'].map(c=>{const e=mk(st,'c');e.style.background=c;return e});const tx=textBlock(st,['Mehr','für dich.'],{size:6.6,align:'center'});
- return t=>{cs.forEach((e,i)=>{const a=eMorph(seg(t,.4+i*.14,1.15+i*.14));const w=lerp(0,120,a),h=lerp(0,80,a);rect(e,50,H/2,w,h,lerp(.225*Math.min(w,h),3,a))});tx(t-1.45,9)}}});
-def('trans','tr-shrink','Bild wird Kachel','Das ganze Bild schrumpft zur Karte und gibt das nächste frei. Umkehrung des Standards.',{dur:3.6,bg:'bg-jg',build(st){
- const tx=textBlock(st,['Alles in','einer App.'],{size:6.4,x:8});const K=photo(st,'img/tamara.webp');
- return t=>{const p=eMorph(seg(t,.6,1.4));box(K,lerp(0,58,p),lerp(0,8,p),lerp(100,36,p),lerp(H,H-16,p),lerp(0,2.8,p));tx(t-1.15,9)}}});
-def('trans','tr-swipe','Wischen','Eine Karte schiebt sich von rechts über das Bild, wie ein Wisch in der App.',{dur:3.4,bg:'bg-lilac',build(st){
- sceneA(st);const K=mk(st,'bg-orange c');const tx=textBlock(K,['Neu','in der App.'],{color:'var(--wine)',size:6.4});
- return t=>{const p=eFlow(seg(t,.4,1.2));box(K,lerp(104,-2,p),-2,104,H+4,lerp(3,3,p));tx(t-1.0,9)}}});
+/* Die Kachel: immer im Anschnitt (unten oder Seite), Stufen 25/50/75 %, Rundung 14 % der kurzen Bildseite nur innen */
+const KR=h=>.14*Math.min(100,h);
+function kachel(p,side,h,cls){const e=mk(p,'c '+(cls||'kg-'+side));const r=KR(h);
+ e.style.borderRadius=side==='b'?`${r}cqw ${r}cqw 0 0`:`${r}cqw 0 0 ${r}cqw`;
+ e.set=f=>{f=Math.max(0,f);if(side==='b')box(e,-.5,h*(1-f),101,h*f+1);else box(e,100*(1-f),-.5,100*f+1,h+1)};e.set(0);return e}
+/* Text oberhalb (Hochformat) oder links (Querformat) der Kachel */
+function headline(st,side,h,f,lines,o={}){const size=side==='b'?11:6.6;
+ return textBlock(st,lines,{color:'var(--wine)',size,x:7,right:side==='r'?100*f+5:7,top:side==='b'?10:undefined,...o})}
+const STEP=[[.25,'25 / 75','Die Kachel ragt ein Viertel ins Bild. Viel Raum für Headline und Bild.'],[.5,'50 / 50','Halb Kachel, halb Hintergrund. Die ausgewogene Standardstufe.',1],[.75,'75 / 25','Die Kachel trägt den Inhalt, oben oder links bleibt ein schmaler Rand.']];
+STEP.forEach(([f,name,desc,std])=>{
+ def('kb','kb-'+f*100,name,desc,{ratio:'9/16',badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
+  const K=kachel(st,'b',h);const hl=f<.75?headline(st,'b',h,f,['Mehr','Ös.']):textBlock(st,['Mehr','Ös.'],{size:11,x:7,top:h*(1-f)+10});
+  return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}});
+ def('kr','kr-'+f*100,name,desc,{badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
+  const K=kachel(st,'r',h);const hl=f<.75?headline(st,'r',h,f,['Aktiv sein','lohnt sich.']):textBlock(st,['Aktiv sein','lohnt sich.'],{size:5.6,x:100*(1-f)+6,right:6});
+  return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}})});
+
+def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stufe ins Bild, dann kommt die Headline.',{badge:'std',dur:3.6,bg:'bg-lilac',build(st,h){
+ const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Deine','Sportwoche.']);const P=pill(st,'Jetzt entdecken',{size:3.4});P.style.left='57cqw';P.style.top=(h-13)+'cqw';
+ return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));hl(t-.9,3.2);tf(P,{s:ePop(seg(t,1.4,1.8))*(1-eOut(seg(t,3.2,3.4)))})}}});
+def('trans','tr-step','Stufe wechseln','Die Kachel wandert von Stufe zu Stufe, 25, 50, 75 %. Der Text weicht mit.',{dur:5,bg:'bg-lilac',build(st,h){
+ const K=kachel(st,'r',h);const tx=mk(st,'tx','Mehr<br>Ös.','font-size:6.6cqw;color:var(--wine);left:7cqw');
+ return t=>{const f=lerp(.25,.5,eMorph(seg(t,1.2,1.9)))+.25*eMorph(seg(t,2.7,3.4))-.5*eMorph(seg(t,4.4,4.95));K.set(t<.3?0:(t<1.1?.25*eFlow(seg(t,.3,1.1)):f));tx.style.right=(100*Math.max(f,.25)+5)+'cqw';tx.style.opacity=t<1.1?seg(t,.8,1):1}}});
+def('trans','tr-full','Kachel wird Vollbild','Aus der Stufe wächst die Kachel über das ganze Bild, die Rundung verlässt es über den Rand. Für neue Kapitel.',{dur:3.8,bg:'bg-lilac',build(st,h){
+ const K=kachel(st,'r',h);const a=headline(st,'r',h,.5,['Aktiv sein','lohnt sich.']);const b=textBlock(st,['Deine','Sportwoche.'],{size:6.6});
+ return t=>{K.set(t<1.4?.5*eFlow(seg(t,.2,.9)):lerp(.5,1+KR(h)/100+.02,eMorph(seg(t,1.4,2.1))));a(t-.6,1.25);b(t-2.0,9)}}});
+def('trans','tr-rainbow','Rainbow','Hellorange, Orange und Burgund schieben sich dicht nacheinander von der Seite über das Bild.',{badge:'acc',dur:3.8,bg:'bg-lilac',build(st,h){
+ const a=headline(st,'r',h,0,['Aktiv sein','lohnt sich.']);const ks=['bg-lor','bg-orange','bg-wine'].map(c=>kachel(st,'r',h,c));const b=textBlock(st,['Mehr','für dich.'],{size:6.6,align:'center'});
+ return t=>{a(t-.1,1.0);ks.forEach((k,i)=>k.set(lerp(0,1+KR(h)/100+.03,eMorph(seg(t,1.0+i*.14,1.8+i*.14)))));b(t-2.15,9)}}});
+def('trans','tr-photo','Kachel mit Bild','Die Kachel maskiert ein Foto. Das Bild zoomt langsam weiter, damit nichts stillsteht.',{dur:4,bg:'bg-lilac',build(st,h){
+ const K=kachel(st,'r',h,'photo');K.style.backgroundImage='url(img/tamara.webp)';const hl=headline(st,'r',h,.5,['Alles in','einer App.']);
+ return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));K.style.backgroundSize=`auto ${lerp(112,100,seg(t,.3,3.8))*1.0}%`;K.style.backgroundPosition='40% 50%';hl(t-.9,3.3)}}});
+def('trans','tr-out','Vollbild wird Kachel','Die volle Fläche zieht sich auf eine Stufe zurück und gibt den Hintergrund frei. Umkehrung von Vollbild.',{dur:3.8,bg:'bg-lilac',build(st,h){
+ const K=kachel(st,'r',h);const a=textBlock(st,['Deine','Sportwoche.'],{size:6.6});const b=headline(st,'r',h,.5,['Mehr','Ös.']);
+ return t=>{K.set(lerp(1+KR(h)/100+.03,.5,eMorph(seg(t,1.3,2.0))));a(t-.1,1.05);b(t-2.0,9)}}});
 
 /* Layout-Morphs */
 def('morph','mo-icon','Icon wird Karte','Das App-Icon streckt sich zur Angebotskarte. Das Logo weicht dem Inhalt.',{badge:'std',dur:4,bg:'bg-sand',build(st){
@@ -471,6 +507,10 @@ def('ease','ez-spring','jö-Feder','Die Feder aus den Logo-Punkten. Einmal pro M
 /* Fehlgebrauch */
 def('miss','mi-coin','Kein Kreis','Der Coin ist abgelöst. Übergänge und Masken nutzen immer die Kachel.',{dur:3,bg:'bg-lilac',x:true,rest:.85,build(st){
  const K=mk(st,'bg-orange');return t=>{const p=eMorph(seg(t,.4,1.2));rect(K,50,H/2,p*130,p*130,p*65)}}});
+def('miss','mi-float','Keine freie Kachel','Die Kachel schwebt nie frei im Bild. Sie hängt immer an der Kante.',{dur:3,bg:'bg-lilac',x:true,build(st,h){
+ const K=mk(st,'c kg-r');return t=>{const p=eFlow(seg(t,.3,1.1));rect(K,lerp(130,62,p),h/2,36,30,KR(h))}}});
+def('miss','mi-top','Nicht von oben','Die Kachel kommt nur von unten oder von der Seite, nie von oben.',{dur:3,bg:'bg-lilac',x:true,build(st,h){
+ const K=mk(st,'c kg-b');K.style.borderRadius=`0 0 ${KR(h)}cqw ${KR(h)}cqw`;return t=>{const f=.5*eFlow(seg(t,.3,1.1));box(K,-.5,-.5,101,h*f+.5)}}});
 def('miss','mi-bounce','Nicht alles federn','Wenn alles springt, springt nichts mehr. Die Feder gehört nur dem wichtigsten Element.',{dur:3,bg:'bg-sand',x:true,build(st){
  const T=[tag(st,'neu','Neu'),tag(st,'akt','Aktion'),tag(st,'deal','Deals')];T.forEach((e,i)=>{e.style.left=(14+i*25)+'cqw';e.style.top='14cqw'});const P=pill(st,'Jetzt entdecken',{size:3.6});P.style.left='30cqw';P.style.top='32cqw';
  return t=>{[...T,P].forEach((e,i)=>tf(e,{s:.4+.6*spring(t-.4),rz:8*(1-spring(t-.4))*(i%2?1:-1)}))}}});
@@ -498,7 +538,7 @@ def('hero','hero','','',{dur:7.5,bg:'bg-white',build(st){
 
 /* ---------- Kacheln aufbauen ---------- */
 const stages=[];
-function mount(stEl,sc){stEl.classList.add(sc.bg||'bg-white');const draw=sc.build(stEl);if(sc.x)mk(stEl,'x','✕');
+function mount(stEl,sc){stEl.classList.add(sc.bg||'bg-white');if(sc.ratio)stEl.style.aspectRatio=sc.ratio;const draw=sc.build(stEl,sc.ratio?100/eval(sc.ratio.replace(' ','')):H);if(sc.x)mk(stEl,'x','✕');
  const o={el:stEl,sc,draw,t0:performance.now(),on:false};stages.push(o);const rest=sc.rest??(sc.loop?0:sc.dur*.72);draw(rest);o.rest=rest;
  stEl.tabIndex=0;stEl.setAttribute('role','button');stEl.setAttribute('aria-label',(sc.name||'Beispiel')+' neu abspielen');
  const restart=()=>{o.t0=performance.now();if(RM)playOnce(o)};stEl.addEventListener('click',restart);stEl.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();restart()}});return o}
