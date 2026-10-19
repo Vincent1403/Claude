@@ -352,9 +352,11 @@ function tag(p,kind,text){const e=mk(p,'tag '+kind,'<i></i>');e.append(text);ret
 function photo(p,src,pos){const e=mk(p,'photo');e.style.backgroundImage=`url(${src})`;if(pos)e.style.backgroundPosition=pos;return e}
 
 /* Pill-Button-Aufbau: jö-Punkt poppt (0–0,42 s), Pill zieht sich auf Textlänge auf (0,35–0,95 s), Text steigt (0,7–1,15 s). x/y = linke obere Ecke, center = waagrecht mittig */
-function pillBuild(st,text,{size=4.4,x=8,y=20,center=false}={}){const P=pill(st,text,{size});P.style.top=y+'cqw';const txt=P.lastChild;txt.style.display='inline-block';const Hc=size*2.15;let Wn=0;
- return (t,out=99)=>{if(!Wn&&st.clientWidth){P.style.width='auto';Wn=P.offsetWidth/st.clientWidth*100;P.style.left=(center?50-Wn/2:x)+'cqw'}if(!Wn)return;
-  const o=1-eOut(seg(t-out,0,.25));tf(P.querySelector('.jb'),{s:ePop(seg(t,0,.42))});const p=eFlow(seg(t,.35,.95));P.style.width=lerp(Hc,Wn,p)+'cqw';P.style.background=t<.35?'transparent':'#fff';
+/* right = rechte Kante (cqw): Badge sitzt rechts, die Pill zieht sich nach links auf */
+function pillBuild(st,text,{size=4.4,x=8,y=20,center=false,right}={}){const br=right!==undefined;const P=pill(st,text,{size,badgeFirst:!br});P.style.top=y+'cqw';const txt=br?P.firstChild:P.lastChild;txt.style.display='inline-block';const Hc=size*2.15;let Wn=0;
+ if(br){P.style.justifyContent='flex-end';txt.style.cssText+=`;position:absolute;left:${size*.9}cqw`}
+ return (t,out=99)=>{if(!Wn&&st.clientWidth){P.style.width='auto';if(br)txt.style.position='static';Wn=P.offsetWidth/st.clientWidth*100;if(br)txt.style.position='absolute';P.style.left=(center?50-Wn/2:x)+'cqw'}if(!Wn)return;
+  const o=1-eOut(seg(t-out,0,.25));tf(P.querySelector('.jb'),{s:ePop(seg(t,0,.42))});const p=eFlow(seg(t,.35,.95)),w=lerp(Hc,Wn,p);P.style.width=w+'cqw';if(br)P.style.left=(right-w)+'cqw';P.style.background=t<.35?'transparent':'#fff';
   tf(txt,{y:(1-eIn(seg(t,.7,1.15)))*3,o:seg(t,.7,.85)});P.style.opacity=o}}
 /* Tag-Aufbau: erst nur das Icon als Quadrat (Pop 0–0,38 s), dann schiebt sich der Tag auf (0,45–0,9 s) und gibt das Wort frei (0,65–1,05 s) */
 function tagBuild(st,kind,text,{size=4.4,x=8,y=20,center=false}={}){const T=mk(st,'tag '+kind+' c','<i></i><span>'+text+'</span>');
@@ -508,11 +510,11 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
 def('elem','el-push','Push-Nachricht','Die Nachricht kommt von oben, steht kurz und geht schneller wieder, als sie kam.',{dur:3.8,bg:'bg-lilac',build(st){
  const P=mk(st,'push c','<div class="ic"><svg></svg></div><div><small>jö · jetzt</small><b>Neuer Deal bei Hirter</b><span>-25 % mit deinen Ös.</span></div>');staticLogo(P.querySelector('svg'));P.style.left='14cqw';P.style.right='14cqw';P.style.top='18cqw';
  return t=>{const a=eIn(seg(t,.4,.85)),b=eOut(seg(t,2.9,3.2));tf(P,{y:(1-a)*-30+b*-30,o:seg(t,.4,.5)})}}});
-def('elem','el-cutout','Freisteller','Die Kachel schiebt sich von der Seite herein, die Person tritt vor ihre Kante, die Pill springt dazu. Wie im Banner.',{dur:4,bg:'bg-lilac',build(st,h){
+def('elem','el-cutout','Freisteller','Die Kachel schiebt sich von der Seite herein, die Person tritt groß in ihre Mitte, die Pill baut sich auf wie der Pill-Button.',{dur:4.2,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr Bewegung,','mehr Ös.'],{size:4.4});
- const fr=mk(st,'c');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,47,3,40,h-3);
- const P=pill(st,'Sportdeals',{size:3.2,badgeFirst:false});P.style.left='66cqw';P.style.top=(h-14)+'cqw';P.style.zIndex=4;
- return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(fr,{y:(1-eIn(seg(t,.75,1.35)))*12,o:seg(t,.75,.9)});hl(t-1.0,3.5);tf(P,{s:ePop(seg(t,1.4,1.8))})}}});
+ const fr=mk(st,'c');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,75-30,-1,60,h*1.16);
+ const pl=pillBuild(st,'Sportdeals',{size:3.2,right:95,y:h-12});
+ return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(fr,{y:(1-eIn(seg(t,.75,1.35)))*12,o:seg(t,.75,.9)});hl(t-1.0,3.7);pl(t-1.5,3.8)}}});
 
 /* Timing: Kurven */
 function curveScene(f,dur,col,lbl){return {dur:3,bg:'bg-white',build(st){
