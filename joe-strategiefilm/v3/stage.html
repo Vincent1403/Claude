@@ -4019,11 +4019,11 @@ const FORMATS={
 /* Partnerfilm: Citylight und Billboard mit Partnerbezug.
    Citylight: Headline „Profitiere jetzt bei BIPA.“, unten jö × BIPA (wie die Marken-Lockups).
    Billboard: unter dem Claim alle Partner-Logos (zwei Reihen), die nacheinander aufploppen; Store-Buttons rücken nach unten. */
-{const hl=CTE.hl;if(hl[0])hl[0].textContent='Profitiere jetzt';if(hl[1])hl[1].textContent='mit jö.'; // Kunde: nichts mehr zu BIPA
+{const hl=CTE.hl;if(hl[0])hl[0].textContent='Werde';if(hl[1])hl[1].textContent='Mitglied.'; // Kunde: nur „Werde Mitglied“ und App-Download
  const L=CTE.logo,x=document.createElement('div');x.style.cssText='position:absolute;left:258px;top:1790px;color:#fff;font-size:64px;font-weight:700;line-height:1';x.textContent='';x.style.display='none'; // kein „ד: die zwei Logos stehen direkt nebeneinander
  const b=document.createElement('img');b.src=PTA.bipa;b.alt='';b.style.cssText='position:absolute;left:258px;top:1750px;width:152px;height:152px;border-radius:50%;box-shadow:0 10px 26px rgba(60,10,0,.25)';
  b.style.display='none';L.after(x,b);const r0=CITY.render;
- CITY.render=function(M,t){r0.call(this,M,t);{const z=1+.05*eIO(seg(t,0,M.total)),s0=1080/887;CTE.cam.style.transform=`translate(${(960+z*(-120-960)).toFixed(1)}px,${(540+z*(0-540)).toFixed(1)}px) scale(${(z*s0).toFixed(5)})`} /* leichter Push-in wie U-Bahn und Billboard */const cs=getComputedStyle(L);[x,b].forEach(e=>{e.style.opacity=cs.opacity;e.style.transform=L.style.transform;e.style.transformOrigin='50% 50%'})};}
+ CITY.render=function(M,t){r0.call(this,M,t);[CTE.disc,CTE.pts,CTE.oes].forEach(e=>e.style.visibility='hidden'); /* Kunde: kein -25 %, kein Punktestand, keine Ös */{const z=1+.05*eIO(seg(t,0,M.total)),s0=1080/887;CTE.cam.style.transform=`translate(${(960+z*(-120-960)).toFixed(1)}px,${(540+z*(0-540)).toFixed(1)}px) scale(${(z*s0).toFixed(5)})`} /* leichter Push-in wie U-Bahn und Billboard */const cs=getComputedStyle(L);[x,b].forEach(e=>{e.style.opacity=cs.opacity;e.style.transform=L.style.transform;e.style.transformOrigin='50% 50%'})};}
 {const PN=PT_N2,D=86,G=12; // alle 15 Partner, in zwei Reihen
  const row=document.createElement('div');row.style.cssText=`position:absolute;left:1180px;top:521px;width:${8*D+7*G}px;display:flex;flex-wrap:wrap;gap:${G}px`;
  row.innerHTML=PN.map(n=>`<img class="bbPt" src="${PTA[n]}" alt="" style="width:${D}px;height:${D}px;border-radius:50%;box-shadow:0 8px 20px rgba(60,10,0,.22)">`).join('');
