@@ -551,9 +551,9 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
  return t=>{const a=eIn(seg(t,.4,1.0)),b=eOut(seg(t,3.2,3.5));tf(T,{y:-21*(1-a)-21*b});
   tf(P,{s:ePop(seg(t,1.0,1.42))});const e=eFlow(seg(t,1.35,1.95));P.style.left=lerp(10.36,1.2,e)+'cqw';
   tf(num,{y:(1-eIn(seg(t,1.7,2.15)))*2.4,o:seg(t,1.7,1.85)})}}});
-def('elem','el-push','Push-Nachricht','Die Nachricht kommt von oben, steht kurz und geht schneller wieder, als sie kam.',{dur:3.8,bg:'bg-lilac',build(st){
+def('elem','el-push','Push-Nachricht','Die Nachricht fällt mit der jö-Feder von oben ins Bild und federt aus, steht kurz und geht schneller wieder, als sie kam.',{dur:3.8,bg:'bg-lilac',build(st){
  const P=mk(st,'push c','<div class="ic"><svg></svg></div><div><small>jö · jetzt</small><b>Neuer Deal bei Hirter</b><span>-25 % mit deinen Ös.</span></div>');staticLogo(P.querySelector('svg'));P.style.left='14cqw';P.style.right='14cqw';P.style.top='18cqw';
- return t=>{const a=eIn(seg(t,.4,.85)),b=eOut(seg(t,2.9,3.2));tf(P,{y:(1-a)*-48+b*-48,o:seg(t,.4,.5)})/* ganz aus dem Bild, inklusive Schatten */}}});
+ return t=>{const q=t-.4,a=q<0?0:1-Math.exp(-q/.11)*Math.cos(Math.PI*q/.22),/* Feder mit ca. 13 % Überschwinger, damit die Karte nicht zu weit nach unten schießt */b=eOut(seg(t,2.9,3.2));tf(P,{y:(1-a)*-48+b*-48,/* Einflug mit jö-Feder */o:seg(t,.4,.5)})/* ganz aus dem Bild, inklusive Schatten */}}});
 def('elem','el-cutout','Freisteller','Die Kachel schiebt sich von der Seite herein, die Person tritt groß in ihre Mitte und zoomt danach kontinuierlich sanft heran. Die Pill baut sich auf wie der Pill-Button.',{dur:4.2,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr Bewegung,','mehr Ös.'],{size:4.4});
  const fr=mk(st,'c');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,75-29,4,58,h*1.08);
