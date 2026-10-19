@@ -714,6 +714,11 @@ CLIPS["cloud"]["len"] = round(CLIPS["cloud"]["len"] - BARL, 4)
 CLIPS["partner"]["start"] = round(CLIPS["partner"]["start"] - BARL, 4); CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] + BARL, 4)
 _pd2 = round(BARL * .75, 3)
 PARAMS["partner"] = {**PARAMS["partner"], "swap": round(PARAMS["partner"].get("swap", 2) + _pd2, 3), **{k: round(PARAMS["partner"][k] + _pd2, 3) for k in ("hit", "lOut", "sent2")}}
+# Kunde: Citylight kürzer (1 Takt) – startet 1 Takt später, die Anzeigen davor laufen entsprechend langsamer; U-Bahn bleibt auf dem Hit F3182
+_dn = CLIPS["deal"]["len"] * CLIPS["deal"].get("rate", 1)
+CLIPS["deal"]["len"] = round(CLIPS["deal"]["len"] + BARL, 4); CLIPS["deal"]["rate"] = round(_dn / CLIPS["deal"]["len"], 4)
+_cn2 = CLIPS["city"]["len"] * CLIPS["city"]["rate"]
+CLIPS["city"]["start"] = round(CLIPS["city"]["start"] + BARL, 4); CLIPS["city"]["len"] = round(CLIPS["city"]["len"] - BARL, 4); CLIPS["city"]["rate"] = round(_cn2 / CLIPS["city"]["len"], 4)
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
