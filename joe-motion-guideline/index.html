@@ -490,7 +490,7 @@ def('morph','mo-flip','Karte dreht sich','Vorderseite Produkt, Rückseite Rabatt
  const b=mk(K,'fill bg-wine');b.style.borderRadius=R+'cqw';b.style.overflow='hidden';
  mk(b,'','Rabatt','position:absolute;left:0;right:0;top:3.4cqw;text-align:center;color:#fff;font-weight:700;font-size:2.6cqw');
  mk(b,'','5 €','position:absolute;left:0;right:0;top:6.4cqw;text-align:center;color:#fff;font-weight:800;font-size:8cqw;letter-spacing:-.02em');
- const bp=pill(b,'250',{size:3.6,badge:'os',badgeFirst:false});bp.style.cssText+=';position:absolute;top:20.6cqw;justify-content:flex-end;font-weight:800;transform-origin:calc(100% - 3.87cqw) 50%;padding-left:0';const bn=bp.firstChild;bn.style.cssText+=';position:absolute;left:3cqw;display:inline-block';
+ const bp=pill(b,'250',{size:3.6,badge:'os',badgeFirst:false});bp.style.cssText+=';position:absolute;top:20.6cqw;justify-content:flex-end;font-weight:800;transform-origin:calc(100% - 3.87cqw) 50%;padding-left:0';const bn=bp.firstChild;bn.style.cssText+=';position:absolute;left:0;width:16.8cqw;text-align:center;display:inline-block';/* mittig im weißen Feld links vom Badge */
  const BW=27,bHc=3.6*2.15;
  return t=>{
   if(!fW&&st.clientWidth){fp.style.width='auto';fW=fp.offsetWidth/st.clientWidth*100}
@@ -525,7 +525,7 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
  const T=mk(L,'bg-wine c','<div style="position:absolute;left:0;right:0;top:1.8cqw;text-align:center;color:#fff;font-weight:700;font-size:1.8cqw">Rabatt</div><div style="position:absolute;left:0;right:0;top:3.6cqw;text-align:center;color:#fff;font-weight:800;font-size:5.2cqw;letter-spacing:-.02em">5 €</div>');
  T.style.cssText+=';position:absolute;left:57cqw;top:-.2cqw;width:17.8cqw;height:20.4cqw;border-radius:0 0 3.4cqw 3.4cqw';
  const P=pill(T,'250',{size:2.9,badge:'os',badgeFirst:false});P.style.position='absolute';P.style.left='1.2cqw';P.style.right='1.2cqw';P.style.top='12.2cqw';P.style.justifyContent='space-between';P.style.paddingLeft='2.4cqw';P.style.fontWeight='800';
- const num=P.firstChild,ob=P.lastChild;num.style.cssText+=';position:absolute;left:2.4cqw;display:inline-block';P.style.justifyContent='flex-end';P.style.transformOrigin='calc(100% - 3.12cqw) 50%';P.style.paddingLeft='0';
+ const num=P.firstChild,ob=P.lastChild;num.style.cssText+=';position:absolute;left:0;width:9.75cqw;text-align:center;display:inline-block';/* mittig im weißen Feld links vom Badge */P.style.justifyContent='flex-end';P.style.transformOrigin='calc(100% - 3.12cqw) 50%';P.style.paddingLeft='0';
  /* Ring um das Badge ist überall gleich breit (0,2 × Größe), damit die Kreise zentriert ineinander sitzen. Wie der Pill-Button: Ös-Punkt poppt, die Pill zieht sich nach links auf, dann steigt die Zahl */
  return t=>{const a=eIn(seg(t,.4,1.0)),b=eOut(seg(t,3.2,3.5));tf(T,{y:-21*(1-a)-21*b});
   tf(P,{s:ePop(seg(t,1.0,1.42))});const e=eFlow(seg(t,1.35,1.95));P.style.left=lerp(10.36,1.2,e)+'cqw';
