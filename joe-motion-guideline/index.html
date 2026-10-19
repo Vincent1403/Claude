@@ -588,17 +588,12 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
  const L=logo(st,28,50,H/2,'var(--wine)');const cg=svgEl(L.el,'svg',{viewBox:'0 0 271.15 182.86'});cg.style.cssText='position:absolute;inset:0;width:100%;height:100%;overflow:visible';
  const guides=[];const g=(tag,a,col=GR,dash)=>{const e=svgEl(cg,tag,{fill:'none',stroke:col,'stroke-width':1,'vector-effect':'non-scaling-stroke',pathLength:1,'stroke-dasharray':dash||'1 1',...a});guides.push(e);return e};
  const tx=[];const t2=(x,y,txt,col=GR,size=7)=>{const e=svgEl(cg,'text',{x,y,'font-size':size,'font-family':MONO,fill:col},txt);tx.push(e);return e};
- g('rect',{x:0,y:0,width:271.15,height:182.86},G);
- [0,33.6,58.4,171.4].forEach(y=>g('line',{x1:-40,y1:y,x2:311,y2:y},'rgba(232,55,26,.6)'));
- [58,88,123.6,236.6].forEach(x=>g('line',{x1:x,y1:-30,x2:x,y2:213},'rgba(47,158,110,.7)'));
- g('circle',{cx:49.7,cy:133.16,r:38.3});g('circle',{cx:49.7,cy:133.16,r:3},G);
- g('circle',{cx:180.11,cy:114.91,r:56.5});g('circle',{cx:180.11,cy:114.91,r:67.9},GR,'1 1');g('circle',{cx:180.11,cy:114.91,r:45.1});g('circle',{cx:180.11,cy:114.91,r:3},G);
- [87.99,152.94,207.17].forEach(x=>{g('circle',{cx:x,cy:16.8,r:16.8});g('circle',{cx:x,cy:16.8,r:33.6},'rgba(47,158,110,.45)')});
- g('line',{x1:60,y1:16.8,x2:235,y2:16.8},O);
- g('line',{x1:150,y1:150,x2:300,y2:-10},'rgba(232,55,26,.8)');
- g('polygon',{points:'180.11,25 270,114.91 180.11,204.8 90.2,114.91'},'rgba(232,55,26,.8)');
- g('line',{x1:49.7,y1:133.16,x2:180.11,y2:114.91},O);
- t2(14,130,'r 38,3');t2(196,112,'r 56,5');t2(92,-22,'Ø 33,6');t2(240,62,'45°',G);t2(-36,-4,'0',G);t2(277,180,'182,9',G);t2(108,168,'22,8');t2(214,10,'×3',O);
+ /* bewusst reduziert: Rahmen, die zwei Grundkreise, die drei Punkte und ihre Achse */
+ g('rect',{x:0,y:0,width:271.15,height:182.86},'rgba(232,55,26,.7)');
+ g('circle',{cx:49.7,cy:133.16,r:38.3});g('circle',{cx:180.11,cy:114.91,r:56.5});
+ [87.99,152.94,207.17].forEach(x=>g('circle',{cx:x,cy:16.8,r:16.8}));
+ g('line',{x1:-30,y1:16.8,x2:301,y2:16.8},O);
+ t2(14,130,'r 38,3');t2(196,112,'r 56,5');
  /* Pill „Motion Guide“: Verlaufs-Punkt poppt, zieht sich auf, Text steigt */
  const P=mk(st,'c');P.style.cssText+=';position:absolute;border-radius:999px;background:var(--jg);overflow:hidden;display:flex;align-items:center;justify-content:center;transform-origin:5.25cqw 50%';
  const pt=mk(P,'','Motion Guide','color:#fff;font-weight:700;font-size:4cqw;white-space:nowrap;display:inline-block');
