@@ -382,9 +382,10 @@ def('prinzip','p-klar','Klar','Pro Moment ein Fokus. Elemente kommen nacheinande
  const pl=pill(st,'Jetzt entdecken',{size:3.6});pl.style.left='8cqw';pl.style.top='40cqw';
  return t=>{const a=ePop(seg(t,.2,.62));tf(tg,{s:a,o:seg(t,.2,.3)});tx(t-.55,3.3);
   const b=eIn(seg(t,1.25,1.75));tf(pl,{y:(1-b)*4,o:seg(t,1.25,1.4)*(1-seg(t,3.3,3.5))});tf(tg,{s:a*(1-eOut(seg(t,3.3,3.5)))})}}});
-def('prinzip','p-freundlich','Freundlich','Weich beschleunigen, ruhig ankommen. Auch beim Halten bleibt das Bild leicht in Bewegung.',{dur:4.2,bg:'bg-sand',build(st){
- const c=mk(st,'card photo');c.style.backgroundImage='url(img/kian.webp)';const tx=textBlock(st,['Mehr für','dich.'],{color:'var(--wine)',size:6.4,x:62,right:4});
- return t=>{const p=eFlow(seg(t,.2,1.2)),q=eFlow(seg(t,3.4,4.1));const w=lerp(0,52,p)*(1-q);box(c,4,4,w,H-8,2.8);c.style.backgroundSize=`${lerp(118,104,seg(t,.2,3.4))}% auto`;tx(t-.9,3.3)}}});
+def('prinzip','p-freundlich','Freundlich','Weich beschleunigen, ruhig ankommen. Auch beim Halten bleibt das Bild leicht in Bewegung.',{dur:4.2,bg:'bg-sand',build(st,h){
+ const K=kachel(st,'r',h,'');K.style.overflow='hidden';const ph=photo(K,'img/kian.webp');ph.style.cssText+=';position:absolute;inset:0;background-size:cover;background-position:40% 50%';
+ const hl=headline(st,'r',h,.5,['Mehr','für dich.']);
+ return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(ph,{s:lerp(1.14,1,eSoft(seg(t,.2,4.2)))});hl(t-.8,3.4)}}});
 def('prinzip','p-federnd','Federnd','Ein kleiner Sprung mit echter Physik, gezielt als Akzent eingesetzt.',{dur:3.6,bg:'bg-orange',build(st){
  const L=logo(st,34,50,H/2,'var(--wine)');return t=>drawLogo(L,t,{pre:.15})}});
 
