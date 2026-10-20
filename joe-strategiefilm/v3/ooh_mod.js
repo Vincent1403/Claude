@@ -1,7 +1,23 @@
 /* Partnerfilm: Citylight und Billboard mit Partnerbezug.
    Citylight: Headline „Profitiere jetzt bei BIPA.“, unten jö × BIPA (wie die Marken-Lockups).
    Billboard: unter dem Claim alle Partner-Logos (zwei Reihen), die nacheinander aufploppen; Store-Buttons rücken nach unten. */
-{const hl=CTE.hl;if(hl[0])hl[0].textContent='Werde';if(hl[1])hl[1].textContent='Mitglied.'; // Kunde: nur „Werde Mitglied“ und App-Download
+{const hl=CTE.hl;if(hl[0])hl[0].textContent='Werde jetzt';if(hl[1])hl[1].textContent='jö Mitglied.'; // Kunde: „Werde jetzt jö Mitglied“, Layout mit Handy und App-Download
+ {// Bildfläche: jö Beige mit gekipptem Handy (wie Billboard), darin der App-Screen; jö-Logo nach rechts oben; Store-Buttons + CTA in weißer Pille
+  const card=$('ctCard');card.style.background='#f4f1ea';$('ctImg').style.display='none';
+  const k=600/420,ph=document.createElement('div');ph.style.cssText=`position:absolute;left:${(CT_W-600)/2}px;top:120px;width:600px;height:${866*k}px;perspective:3000px`;
+  ph.innerHTML=`<div id="ctPhone" style="position:absolute;inset:0;transform-origin:50% 55%;transform-style:preserve-3d;transform:rotateY(-16deg) rotateX(6deg) rotateZ(-7deg)">
+   ${[30,25,20,14,9,4].map(z=>`<div style="position:absolute;inset:0;border-radius:${70*k}px;transform:translateZ(-${z}px);background:linear-gradient(135deg,#9aa0a7,#5b6168 45%,#a9aeb4 60%,#4d5359)"></div>`).join('')}
+   <div style="position:absolute;inset:0;border-radius:${70*k}px;background:linear-gradient(135deg,#d9dde2,#8a9098 40%,#cfd3d8 60%,#6d737b);box-shadow:0 50px 90px rgba(60,10,20,.32)"></div>
+   <div style="position:absolute;inset:${6*k}px;border-radius:${64*k}px;background:#111"></div>
+   <div style="position:absolute;inset:${18*k}px;border-radius:${54*k}px;overflow:hidden;background:#f4f1ea"><img src="__CTSCREEN__" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;max-width:none"></div>
+   <div style="position:absolute;left:50%;top:${30*k}px;width:${108*k}px;height:${30*k}px;margin-left:-${54*k}px;border-radius:${15*k}px;background:#111"></div></div>`;
+  card.appendChild(ph);
+  const lg=$('ctLogo');lg.style.left=(CT_W-84-152)+'px';lg.style.top='100px';
+  const pill=document.createElement('div');pill.id='ctPill';pill.style.cssText='position:absolute;left:50%;top:1730px;height:170px;padding:0 64px 0 25px;border-radius:85px;background:#fff;display:flex;align-items:center;gap:22px;box-shadow:0 30px 70px rgba(60,10,0,.28);white-space:nowrap;transform-origin:50% 50%';
+  const st=$('ctStore'),ct=$('ctCta');Object.assign(st.style,{position:'static',display:'flex',gap:'18px'});Object.assign(ct.style,{position:'static',color:'#670003',textShadow:'none',fontSize:'50px',marginLeft:'14px'});
+  st.querySelectorAll('.ctBtn').forEach(b=>{b.style.background='#f4f1ea';b.style.boxShadow='none'});pill.append(st,ct);CTE.ad.appendChild(pill);
+  const rp=CITY.render;CITY.render=function(M,t){rp.call(this,M,t);const A=M.at,q=eBack(seg(t,A(1.6),A(2.05)));pill.style.transform=`translateX(-50%) scale(${q.toFixed(4)})`;
+   const u=seg(t,0,M.total);$('ctPhone').style.transform=`rotateY(${(-16+6*u).toFixed(2)}deg) rotateX(6deg) rotateZ(${(-7+2*u).toFixed(2)}deg)`}}
  const L=CTE.logo,x=document.createElement('div');x.style.cssText='position:absolute;left:258px;top:1790px;color:#fff;font-size:64px;font-weight:700;line-height:1';x.textContent='';x.style.display='none'; // kein „ד: die zwei Logos stehen direkt nebeneinander
  const b=document.createElement('img');b.src=PTA.bipa;b.alt='';b.style.cssText='position:absolute;left:258px;top:1750px;width:152px;height:152px;border-radius:50%;box-shadow:0 10px 26px rgba(60,10,0,.25)';
  b.style.display='none';L.after(x,b);const r0=CITY.render;
