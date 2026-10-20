@@ -275,6 +275,7 @@ rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:(
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO4=Object.assign(Object.create(LOGO),{key:'logo4',name:'Logo (Schluss, vor „Markenbühne“)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf und bleibt stehen, kein App-Icon\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "endpartner_mod.js").read_text(encoding="utf-8") + "\n"
+           + wl_imgs((here / "gutschein_comp.js").read_text(encoding="utf-8")) + "\n"
            + (here / "colors_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + wl_imgs((here / "formats_comp.js").read_text(encoding="utf-8")) + "\n"
@@ -287,7 +288,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,gutsch:GUTSCH,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -785,6 +786,10 @@ rep("BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(
     f"PEAKS.splice(Math.round({AU_CB}/per),Math.round({AU_CBD}/per));const nb2=BEATS.filter(v=>v<{AU_CB}-.02).concat(BEATS.filter(v=>v>={round(AU_CB + AU_CBD, 4)}-.02).map(v=>+(v-{AU_CBD}).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);"
     "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n")
 rep("function spliceAudio(){", f"const AU_CB={AU_CB},AU_CBD={AU_CBD};function spliceAudio(){{")
+# Kunde: Zwischenschritt vor der Angebotswand – Gutscheine in der App (1 Takt); die Wand startet später, endet gleich (etwas schneller)
+_ws, _we = CLIPS["wall"]["start"], CLIPS["wall"]["start"] + CLIPS["wall"]["len"]; _wc = CLIPS["wall"]["len"] * CLIPS["wall"].get("rate", 1)
+CLIPS["gutsch"] = C(_ws, round(BARL, 4)); PARAMS["gutsch"] = {"len": round(BARL, 4)}
+CLIPS["wall"] = {**C(round(_ws + BARL, 4), round(_we - _ws - BARL, 4)), "rate": round(_wc / (_we - _ws - BARL), 4)}
 # Kunde: Ende ab den POS-Platzhaltern lag neben dem Takt → alle Schnitte auf Taktanfänge (Taktstriche nach dem zweiten Musikschnitt)
 _bars = [134.898, 137.173, 139.472]                      # Taktanfänge laut Beat-Analyse
 _p0 = CLIPS["pos"]["start"]
