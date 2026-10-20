@@ -774,11 +774,13 @@ PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(CLIPS["endtxt"]["len"] / BE
 # Kunde: U-Bahn- und Billboard-Screen raus → Film genau so viel kürzer; die Musik bekommt an derselben Stelle einen zweiten Schnitt,
 # alles danach rückt um dieselbe Länge vor und bleibt dadurch auf den Hits
 AU_CB = CLIPS["ubahn"]["start"]; AU_CBD = round(CLIPS["bill"]["start"] + CLIPS["bill"]["len"] - AU_CB, 4)
+_LTL = round(2 * BARL, 4); AU_CBD = round(AU_CBD - _LTL, 4)   # Kunde: Laptop (2 Takte) direkt nach dem Citylight → Musik verliert dort nur noch 2 Takte
 for k in ("ubahn", "bill"):
     CLIPS[k]["start"] = 9000.0
 for k, v in CLIPS.items():
-    if AU_CB + AU_CBD - 1e-3 <= v["start"] < 1000:
+    if AU_CB + AU_CBD + _LTL - 1e-3 <= v["start"] < 1000:
         v["start"] = round(v["start"] - AU_CBD, 4)
+CLIPS["laptop"] = C(AU_CB, _LTL)
 rep("const T_MAIN=173.71, FPS=24, TRACK_LEN=169.19;", f"const T_MAIN={round(173.71 - AU_CBD, 2)}, FPS=24, TRACK_LEN={round(169.19 - AU_CBD, 2)};")
 rep("    return o2}}", "    {const cb=Math.round(AU_CB*sr),cbd=Math.round(AU_CBD*sr),o3=actx.createBuffer(o2.numberOfChannels,o2.length-cbd,sr); // zweiter Schnitt (Kunde): U-Bahn + Billboard raus\n"
     "    for(let ch=0;ch<o2.numberOfChannels;ch++){const d=o2.getChannelData(ch),e=o3.getChannelData(ch);e.set(d.subarray(0,cb));e.set(d.subarray(cb+cbd),cb);for(let i=0;i<xf;i++){const w=i/xf;e[cb+i]=d[cb+cbd+i]*w+d[cb+i]*(1-w)}}\n"
@@ -797,7 +799,7 @@ CLIPS["gutsch"]["len"] = round(2 * BARL, 4); PARAMS["gutsch"] = {"len": round(2 
 _wi = 1.3; _wa = round(CLIPS["gutsch"]["start"] + CLIPS["gutsch"]["len"], 4); _wl = round(_we - _wa, 4)
 CLIPS["wall"] = {**C(_wa, _wl, _wi), "rate": round((_wc - _wi) / _wl, 4)}
 # Kunde: Ende ab den POS-Platzhaltern lag neben dem Takt → alle Schnitte auf Taktanfänge (Taktstriche nach dem zweiten Musikschnitt)
-_bars = [134.898, 137.173, 139.472]                      # Taktanfänge laut Beat-Analyse
+_bars = [round(b + _LTL, 4) for b in (134.898, 137.173, 139.472)]   # Taktanfänge laut Beat-Analyse (nach dem Laptop um 2 Takte später)
 _p0 = CLIPS["pos"]["start"]
 for _k, _a, _b in (("pos", _p0, _bars[0]), ("pos2", _bars[0], _bars[1]), ("pos3", _bars[1], _bars[2])):
     CLIPS[_k] = C(_a, round(_b - _a, 4)); PARAMS[_k] = {"len": round((_b - _a) / BEAT, 3), "outAt": round((_b - _a) / BEAT + 1, 3)}
@@ -805,9 +807,6 @@ _es = _bars[2]; _el = round(CLIPS["endc"]["start"] - _es, 4)   # Verlauf liegt w
 CLIPS["endtxt"] = C(_es, _el)
 PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(_el / BEAT, 3), "aIn": 0, "bIn": 2, "hold": 2, "aOut": 8, "bOut": 8, "cIn": 8.5,
                     "cOut": round((CLIPS["logo2"]["start"] - .1 - _es) / BEAT, 2)}   # Gemeinsam mehr auf der Eins, Satzenden auf 2/4/6, Markenbühne nach dem Taktwechsel
-# Kunde: Laptop-Mockup (Platzhalter) erst einmal hinter das Filmende; Editor-Timeline reicht dafür etwas länger
-CLIPS["laptop"] = C(162.7, round(2 * BARL, 4))
-rep("const T_MAIN=164.55, FPS=24,", "const T_MAIN=168.5, FPS=24,")
 # Markenfarben: 16 Marken à 1 Schlag brauchen einen Schlag mehr – den gibt das Ende der Partner-Szene ab, alles danach bleibt
 CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BEAT, 4)
 CLIPS["brand"]["start"] = round(CLIPS["brand"]["start"] - BEAT, 4); CLIPS["brand"]["len"] = round(CLIPS["brand"]["len"] + BEAT, 4)
