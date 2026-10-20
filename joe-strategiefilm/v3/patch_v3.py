@@ -276,6 +276,7 @@ aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Log
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "endpartner_mod.js").read_text(encoding="utf-8") + "\n"
            + wl_imgs((here / "gutschein_comp.js").read_text(encoding="utf-8")) + "\n"
+           + (here / "laptop_comp.js").read_text(encoding="utf-8") + "\n"
            + (here / "colors_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + wl_imgs((here / "formats_comp.js").read_text(encoding="utf-8")) + "\n"
@@ -288,7 +289,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,gutsch:GUTSCH,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,gutsch:GUTSCH,laptop:LAPTOP,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -804,6 +805,9 @@ _es = _bars[2]; _el = round(CLIPS["endc"]["start"] - _es, 4)   # Verlauf liegt w
 CLIPS["endtxt"] = C(_es, _el)
 PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(_el / BEAT, 3), "aIn": 0, "bIn": 2, "hold": 2, "aOut": 8, "bOut": 8, "cIn": 8.5,
                     "cOut": round((CLIPS["logo2"]["start"] - .1 - _es) / BEAT, 2)}   # Gemeinsam mehr auf der Eins, Satzenden auf 2/4/6, Markenbühne nach dem Taktwechsel
+# Kunde: Laptop-Mockup (Platzhalter) erst einmal hinter das Filmende; Editor-Timeline reicht dafür etwas länger
+CLIPS["laptop"] = C(162.7, round(2 * BARL, 4))
+rep("const T_MAIN=164.55, FPS=24,", "const T_MAIN=168.5, FPS=24,")
 # Markenfarben: 16 Marken à 1 Schlag brauchen einen Schlag mehr – den gibt das Ende der Partner-Szene ab, alles danach bleibt
 CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BEAT, 4)
 CLIPS["brand"]["start"] = round(CLIPS["brand"]["start"] - BEAT, 4); CLIPS["brand"]["len"] = round(CLIPS["brand"]["len"] + BEAT, 4)
