@@ -27,6 +27,6 @@ function makeIV(key,name,src,dur,def={}){
     table(M){const F=s=>Math.round(s*FPS),P=M.P;return [['Video',`0–${F(M.total)}`,`${name}, ${Math.round(P.dim*100)} % abgedunkelt, Push-in ${num(P.zoom*100,1)} %`]]},
     note:'Hintergrundvideo der Intro-Headlines. Länge des Videos: '+num(dur,2)+' s.'};
 }
-const IV_KOCHEN=makeIV('ivKochen','Bild Einkauf','__IVEINKAUF__',5.042,{fade:0,zoom:.06}); // Film beginnt direkt mit dem Bild (Kunde: Mutter mit Kind im Supermarkt statt Tankstelle)
+const IV_KOCHEN=makeIV('ivKochen','Video Mutter mit Kind','iv_mutter.webm',3,{fade:0}); // Film beginnt direkt mit dem Video (Kunde: Mutter mit Kind im Supermarkt, Ende wird abgeschnitten)
 const IV_TANKEN=makeIV('ivTanken','Video Tanken','iv_kochen.webm',5.042,{fade:0}); // harter Schnitt vom ersten Video
 const IV_BRILLE=makeIV('ivBrille','Video Brille','iv_brille.webm',5.042,{fade:0});
