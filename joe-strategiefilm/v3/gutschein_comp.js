@@ -5,8 +5,8 @@
    ===================================================================== */
 const GS_K=960/866,GS_W=420*GS_K,GS_H=960,GS_L=(1920-GS_W)/2,GS_T=60,GS_IN=18*GS_K,GS_SW=GS_W-2*GS_IN,GS_PAD=18,GS_CW=GS_SW-2*GS_PAD,GS_GAP=16,GS_Y0=175;
 const GS_WA=854/814; // Seitenverhältnis der Karten in der Angebotswand (Bild füllt die Karte)
-const GS_LIST=[['__WLC:penny__',GS_WA],['__WLC:adeg__',GS_WA],['__WLC:bipa_bubble__',922/879],['__WLC:bipa_bonusbox__',GS_WA],['__WLC:billa__',GS_WA],['__WLC:omv__',GS_WA],['__WLC:pearle__',GS_WA]];
-const GS_BI=2,GS_TGT=[499,100,922],GS_MI=3,GS_MT=[678,216,564]; // Start: BIPA-Karte groß; Match-Cut: Bonusbox-Karte liegt exakt auf der Bonusbox in der Wand (x, y, Breite)
+const GS_LIST=[['__WLC:penny__',GS_WA],['__WLC:adeg__',GS_WA],['__WLC:bipa_bubble__',922/879],['__WLC:omv__',GS_WA],['__WLC:pearle__',GS_WA],['__WLC:universal__',GS_WA],['__WLC:bipa_bonusbox__',GS_WA],['__WLC:billa__',GS_WA],['__WLC:sutterluety__',GS_WA]]; // Bonusbox (Match-Cut) weiter unten, damit länger gescrollt wird; BILLA darunter wie in der Wand
+const GS_BI=2,GS_TGT=[499,100,922],GS_MI=6,GS_MT=[678,216,564]; // Start: BIPA-Karte groß; Match-Cut: Bonusbox-Karte liegt exakt auf der Bonusbox in der Wand (x, y, Breite)
 const GSL=document.createElement('div');GSL.id='gutschL';GSL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;background:#f4f1ea;font-family:var(--font)';
 {let y=GS_Y0;const items=GS_LIST.map(([src,ar],i)=>{const h=GS_CW/ar,s=`<img class="gsItem" data-i="${i}" src="${src}" alt="" style="position:absolute;left:${GS_PAD}px;top:${y.toFixed(1)}px;width:${GS_CW.toFixed(1)}px;height:${h.toFixed(1)}px;border-radius:${i===GS_BI?22:11}px;object-fit:cover;box-shadow:0 8px 22px rgba(60,20,30,.10)">`;y+=h+GS_GAP;return s});
  GSL.innerHTML=`<div id="gsPhone" style="position:absolute;left:${GS_L.toFixed(1)}px;top:${GS_T}px;width:${GS_W.toFixed(1)}px;height:${GS_H}px;transform-origin:0 0">
@@ -23,7 +23,7 @@ const GSL=document.createElement('div');GSL.id='gutschL';GSL.style.cssText='posi
 $('stage').appendChild(GSL);
 const GSE={phone:$('gsPhone'),list:$('gsList'),items:[...GSL.querySelectorAll('.gsItem')],frame:[...GSL.querySelectorAll('.gsFrame')],ui:[...GSL.querySelectorAll('.gsUi')]};
 const GUTSCH={key:'gutsch',name:'Gutscheine in der App',lane:'laneV4',cls:'bento',
-  DEF:{len:4.5717,hold:.25,zoomDur:1,scrollAt:1.5,scrollDur:1.7,matchAt:3.4},
+  DEF:{len:4.5717,hold:.25,zoomDur:1,scrollAt:1.3,scrollDur:2.0,matchAt:3.4},
   params:[
     {k:'hold',label:'BIPA-Karte steht',min:0,max:1,step:1/24,fmt:v=>Math.round(v*24)+' F'},
     {k:'zoomDur',label:'Zoom raus ins Handy über',min:.4,max:1.6,step:1/24,fmt:v=>Math.round(v*24)+' F'},
