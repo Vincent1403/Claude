@@ -2411,7 +2411,7 @@ function makeHL(key,name,lane,lines,o){
   const L=document.createElement('div');L.id='hl_'+key;L.style.cssText='position:absolute;inset:0;display:none;font-family:var(--font);pointer-events:none';
   let wi=0;const lh=Math.round(o.size*1.12);
   L.innerHTML=(o.bg?`<div style="position:absolute;inset:0;background:${o.bg}"></div>`:'')+(o.scrim?`<div class="hlScrim" style="position:absolute;inset:0;background:${o.scrim};opacity:0"></div>`:'')+
-   `<div class="hlBox" style="position:absolute;left:0;right:0;top:${o.top}px;text-align:center;color:${o.color};font-size:${o.size}px;font-weight:900;letter-spacing:-.02em;line-height:${lh}px;${o.shadow?'text-shadow:0 4px 30px rgba(0,0,0,.18);':''}">`+
+   `<div class="hlBox" style="position:absolute;left:0;right:0;top:${o.top}px;text-align:center;color:${o.color};font-size:${o.size}px;font-weight:900;letter-spacing:-.02em;line-height:${lh}px;${o.shadow===2?'text-shadow:0 2px 14px rgba(0,0,0,.28),0 8px 60px rgba(0,0,0,.32);':o.shadow?'text-shadow:0 4px 30px rgba(0,0,0,.18);':''}">`+
    lines.map(l=>`<div style="height:${lh+Math.round(o.size*.12)}px;overflow:hidden">${l.split(' ').map(w=>{const hi=w.startsWith('*');w=w.replace(/^\*/,'');return `<span class="hlw" data-i="${wi++}" style="display:inline-block;margin:0 ${(o.size*.13).toFixed(0)}px;transform:translateY(110%);${hi?`background:${o.hi};-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.22em;margin-bottom:-.22em;`:''}">${w}</span>`}).join('')}</div>`).join('')+`</div>`;
   if(o.kicker)L.insertAdjacentHTML('beforeend',`<div class="hlKick" style="position:absolute;left:0;right:0;top:${o.top-86}px;text-align:center;color:${o.kc||o.color};font-size:42px;font-weight:700;letter-spacing:-.005em;opacity:0">${o.kicker}</div>`);
   $('stage').appendChild(L);const W=[...L.querySelectorAll('.hlw')],box=L.querySelector('.hlBox'),scr=L.querySelector('.hlScrim'),kk=L.querySelector('.hlKick');
@@ -2439,9 +2439,9 @@ function makeHL(key,name,lane,lines,o){
 }
 const JG_TXT=`${JG_CSS}`;
 const HL1=makeHL('hl1','Headline 1a','laneV3',['Das Leben ist','voller Vielfalt.'],
-  {size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,shadow:1,note:'Läuft über dem Verlauf vor dem Logo-Aufbau (Intro ohne Beat). Muss vor dem ersten Strich des Logos raus sein.'});
+  {size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,shadow:2,note:'Läuft über dem Verlauf vor dem Logo-Aufbau (Intro ohne Beat). Muss vor dem ersten Strich des Logos raus sein.'});
 const HL1B=makeHL('hl1b','Headline 1b','laneV2',['Das Leben ist vielfältig.'],{size:150,top:447,color:'#fff',step:.3,inAt:.25,outAt:3.2,len:3.8,shadow:1,note:'Intro, zweite Zeile.'});
-const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und voller','Möglichkeiten.'],{size:150,top:354,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,note:'Intro, dritte Zeile.'});
+const HL1C=makeHL('hl1c','Headline 1c','laneV3',['Und voller','Möglichkeiten.'],{size:150,top:354,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:2,note:'Intro, dritte Zeile.'});
 const HL1D=makeHL('hl1d','Headline 1d','laneV2',['Zeit für eine Marke,','die all das verbindet.'],{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:4.0,len:4.6,shadow:1,note:'Intro, vierte Zeile; danach baut sich das Logo auf.'});
 const HL2=makeHL('hl2','Headline 2','laneV2',['Und für sie *Entscheidungen','und *Vorteile sinnvoll','miteinander verbindet.'],
   {size:118,top:345,color:'#670003',bg:'#f4f1ea',hi:JG_TXT,step:.5,inAt:.5,outAt:7,len:8,cls:'logo',note:'Eigene Texttafel, genau 2 Takte zwischen „Deal“ und „Partner“; beginnt und endet auf einer Takt-Eins. „Entscheidungen“ und „Vorteile“ im jö-Verlauf.'});
@@ -3153,7 +3153,7 @@ function makeIV(key,name,src,dur,def={}){
   L.innerHTML=`<${still?'img':'video'} src="${src}" ${still?'alt=""':'muted playsinline preload="auto"'} style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 50%">${still?'':'</video>'}<div class="ivDim" style="position:absolute;inset:0"></div>`;
   $('bg').after(L);const V=L.querySelector(still?'img':'video'),DM=L.querySelector('.ivDim');
   return {key,name,lane:'laneV1',cls:'bento',
-    DEF:{speed:1,zoom:.04,dim:.35,fade:.25,...def},
+    DEF:{speed:1,zoom:.04,dim:0,fade:.25,...def}, // Kunde: kein Farbschleier über den Videos
     params:[
       {k:'speed',label:'Tempo',min:.5,max:1.5,step:.05,fmt:fmtX},
       {k:'zoom',label:'Leichter Push-in',min:0,max:.1,step:.005,fmt:v=>num(v*100,1)+' %'},

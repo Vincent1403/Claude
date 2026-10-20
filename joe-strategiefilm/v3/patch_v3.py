@@ -797,6 +797,10 @@ PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(_el / BEAT, 3), "aIn": 0, "
 # Markenfarben: 16 Marken à 1 Schlag brauchen einen Schlag mehr – den gibt das Ende der Partner-Szene ab, alles danach bleibt
 CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BEAT, 4)
 CLIPS["brand"]["start"] = round(CLIPS["brand"]["start"] - BEAT, 4); CLIPS["brand"]["len"] = round(CLIPS["brand"]["len"] + BEAT, 4)
+# Kunde: kein Farbschleier mehr über den Intro-Videos – stattdessen ein weicher neutraler Schatten nur hinter der Schrift
+rep("${o.shadow?'text-shadow:0 4px 30px rgba(0,0,0,.18);':''}", "${o.shadow===2?'text-shadow:0 2px 14px rgba(0,0,0,.28),0 8px 60px rgba(0,0,0,.32);':o.shadow?'text-shadow:0 4px 30px rgba(0,0,0,.18);':''}")
+rep("{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,shadow:1,", "{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,shadow:2,")
+rep("['Und voller','Möglichkeiten.'],{size:150,top:354,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,", "['Und voller','Möglichkeiten.'],{size:150,top:354,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:2,")
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

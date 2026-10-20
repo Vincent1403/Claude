@@ -8,7 +8,7 @@ function makeIV(key,name,src,dur,def={}){
   L.innerHTML=`<${still?'img':'video'} src="${src}" ${still?'alt=""':'muted playsinline preload="auto"'} style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 50%">${still?'':'</video>'}<div class="ivDim" style="position:absolute;inset:0"></div>`;
   $('bg').after(L);const V=L.querySelector(still?'img':'video'),DM=L.querySelector('.ivDim');
   return {key,name,lane:'laneV1',cls:'bento',
-    DEF:{speed:1,zoom:.04,dim:.35,fade:.25,...def},
+    DEF:{speed:1,zoom:.04,dim:0,fade:.25,...def}, // Kunde: kein Farbschleier über den Videos
     params:[
       {k:'speed',label:'Tempo',min:.5,max:1.5,step:.05,fmt:fmtX},
       {k:'zoom',label:'Leichter Push-in',min:0,max:.1,step:.005,fmt:v=>num(v*100,1)+' %'},
