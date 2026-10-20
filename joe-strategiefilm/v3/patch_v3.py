@@ -791,11 +791,10 @@ _ws, _we = CLIPS["wall"]["start"], CLIPS["wall"]["start"] + CLIPS["wall"]["len"]
 CLIPS["gutsch"] = C(_ws, round(BARL, 4)); PARAMS["gutsch"] = {"len": round(BARL, 4)}
 _wi = round(1.6 * CLIPS["wall"].get("rate", 1), 4)   # Wand steigt nach dem Handy direkt in der Gesamtansicht ein (ohne eigenes Herauszoomen)
 CLIPS["wall"] = {**C(round(_ws + BARL, 4), round(_we - _ws - BARL, 4), _wi), "rate": round((_wc - _wi) / (_we - _ws - BARL), 4)}
-# Kunde: Handy steht zu kurz → Gutscheine-Schritt 2 Takte, die Wand gibt den Takt ab (endet gleich)
-CLIPS["gutsch"]["len"] = round(2 * BARL, 4); PARAMS["gutsch"] = {"len": round(2 * BARL, 4), "scrollAt": 1.6, "scrollDur": 2.2}
-_wl = CLIPS["wall"]["len"] - BARL; CLIPS["wall"] = {**C(round(CLIPS["wall"]["start"] + BARL, 4), round(_wl, 4), _wi), "rate": round((_wc - _wi) / _wl, 4)}
-_ov = .6                                              # weicher Übergang: Wand läuft die letzten 0,6 s schon unter dem Handy (zoomt dabei heraus)
-CLIPS["wall"] = {**C(round(CLIPS["wall"]["start"] - _ov, 4), round(CLIPS["wall"]["len"] + _ov, 4), round(_wi - _ov * CLIPS["wall"]["rate"], 4)), "rate": CLIPS["wall"]["rate"]}
+# Kunde: Handy steht zu kurz → Gutscheine-Schritt 2 Takte; Match-Cut: Wand steigt im Moment ein, in dem die Bonusbox-Karte mittig steht (Wand-Zeit 1,3)
+CLIPS["gutsch"]["len"] = round(2 * BARL, 4); PARAMS["gutsch"] = {"len": round(2 * BARL, 4)}
+_wi = 1.3; _wa = round(CLIPS["gutsch"]["start"] + CLIPS["gutsch"]["len"], 4); _wl = round(_we - _wa, 4)
+CLIPS["wall"] = {**C(_wa, _wl, _wi), "rate": round((_wc - _wi) / _wl, 4)}
 # Kunde: Ende ab den POS-Platzhaltern lag neben dem Takt → alle Schnitte auf Taktanfänge (Taktstriche nach dem zweiten Musikschnitt)
 _bars = [134.898, 137.173, 139.472]                      # Taktanfänge laut Beat-Analyse
 _p0 = CLIPS["pos"]["start"]
