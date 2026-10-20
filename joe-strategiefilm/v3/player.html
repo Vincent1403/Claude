@@ -4294,7 +4294,7 @@ S.clips.c8={start:9000.0,len:5.9952,in:0};
 S.clips.logo2={start:148.327,len:3.7092,in:0};
 S.clips.slot={start:9000.0,len:4.5717,in:0};
 S.clips.badges={start:80.0553,len:9.1433,in:0,rate:1.0937};
-S.clips.wall={start:90.8844,len:9.7437,in:0.764,rate:0.86};
+S.clips.wall={start:93.1702,len:7.4579,in:0.592,rate:1.1467};
 S.clips.tags={start:9000.0,len:5.9994,in:0,rate:0.8};
 S.clips.showcase={start:9000.0,len:8.47,in:0};
 S.clips.hl1b={start:9000.0,len:2.1731,in:0};
@@ -4319,7 +4319,7 @@ S.clips.logo4={start:9000.0,len:3.1453,in:0};
 S.clips.pos={start:132.5917,len:2.3063,in:0};
 S.clips.pos2={start:134.898,len:2.275,in:0};
 S.clips.pos3={start:137.173,len:2.299,in:0};
-S.clips.gutsch={start:89.1986,len:2.2858,in:0};
+S.clips.gutsch={start:89.1986,len:4.5717,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 3.7572, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 3.086, "lOut": 4.473, "sent": 1000, "sent2": 4.583, "popGap": 99, "end": 15, "spread": 1.15, "flyStep": 0.0686, "swap": 2.0});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
@@ -4348,7 +4348,7 @@ Object.assign(S.comps.city.params,{"start": 0, "speed": 1.8});FM.city=COMPS.city
 Object.assign(S.comps.pos.params,{"len": 4.033, "outAt": 5.033});FM.pos=COMPS.pos.model(S.comps.pos.params);
 Object.assign(S.comps.pos2.params,{"len": 3.978, "outAt": 4.978});FM.pos2=COMPS.pos2.model(S.comps.pos2.params);
 Object.assign(S.comps.pos3.params,{"len": 4.02, "outAt": 5.02});FM.pos3=COMPS.pos3.model(S.comps.pos3.params);
-Object.assign(S.comps.gutsch.params,{"len": 2.2858});FM.gutsch=COMPS.gutsch.model(S.comps.gutsch.params);
+Object.assign(S.comps.gutsch.params,{"len": 4.5717, "scrollAt": 1.6, "scrollDur": 2.2});FM.gutsch=COMPS.gutsch.model(S.comps.gutsch.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
