@@ -3904,7 +3904,7 @@ const LAPTOP={key:'laptop',name:'Tablet (Platzhalter)',lane:'laneV4',cls:'bento'
   model(P){return {P,key:P.scrollAt,keyName:'Scrollen',total:P.len}},
   show(on){LTL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=LTE,u=eStFlow(seg(t,0,P.inDur)),k=1-u,dr=seg(t,0,M.total); /* kommt gedreht und tiefer rein, setzt sich weich in leichte Schräglage, driftet danach minimal */
-    E.tab.style.transform=`translateY(${(k*620).toFixed(1)}px) rotateX(${(5+22*k).toFixed(2)}deg) rotateY(${(-9-20*k+3*dr).toFixed(2)}deg) rotateZ(${(-3-9*k+1*dr).toFixed(2)}deg) scale(${(.78+.08*u).toFixed(4)})`;
+    E.tab.style.transform=`translateY(${(k*620).toFixed(1)}px) rotateX(${(5+22*k).toFixed(2)}deg) rotateY(${(-9-20*k+3*dr).toFixed(2)}deg) rotateZ(${(-3-9*k+1*dr).toFixed(2)}deg) scale(${(.86+.08*u).toFixed(4)})`;
     E.site.style.transform=`translateY(${(-P.scroll*eIO(seg(t,P.scrollAt,P.scrollAt+P.scrollDur))).toFixed(1)}px)`},
   marks(M){const P=M.P;return [[0,'Tablet'],[P.scrollAt,'Scrollen']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P;return [
