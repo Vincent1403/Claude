@@ -786,10 +786,11 @@ rep("BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(
     f"PEAKS.splice(Math.round({AU_CB}/per),Math.round({AU_CBD}/per));const nb2=BEATS.filter(v=>v<{AU_CB}-.02).concat(BEATS.filter(v=>v>={round(AU_CB + AU_CBD, 4)}-.02).map(v=>+(v-{AU_CBD}).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);"
     "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n")
 rep("function spliceAudio(){", f"const AU_CB={AU_CB},AU_CBD={AU_CBD};function spliceAudio(){{")
-# Kunde: Zwischenschritt vor der Angebotswand – Gutscheine in der App (1 Takt); die Wand startet später, endet gleich (etwas schneller)
+# Kunde: Zwischenschritt vor der Angebotswand – von der BIPA-Karte raus ins Handy mit den Gutscheinen (1 Takt); die Wand startet später in der Gesamtansicht, endet gleich
 _ws, _we = CLIPS["wall"]["start"], CLIPS["wall"]["start"] + CLIPS["wall"]["len"]; _wc = CLIPS["wall"]["len"] * CLIPS["wall"].get("rate", 1)
 CLIPS["gutsch"] = C(_ws, round(BARL, 4)); PARAMS["gutsch"] = {"len": round(BARL, 4)}
-CLIPS["wall"] = {**C(round(_ws + BARL, 4), round(_we - _ws - BARL, 4)), "rate": round(_wc / (_we - _ws - BARL), 4)}
+_wi = round(1.6 * CLIPS["wall"].get("rate", 1), 4)   # Wand steigt nach dem Handy direkt in der Gesamtansicht ein (ohne eigenes Herauszoomen)
+CLIPS["wall"] = {**C(round(_ws + BARL, 4), round(_we - _ws - BARL, 4), _wi), "rate": round((_wc - _wi) / (_we - _ws - BARL), 4)}
 # Kunde: Ende ab den POS-Platzhaltern lag neben dem Takt → alle Schnitte auf Taktanfänge (Taktstriche nach dem zweiten Musikschnitt)
 _bars = [134.898, 137.173, 139.472]                      # Taktanfänge laut Beat-Analyse
 _p0 = CLIPS["pos"]["start"]
