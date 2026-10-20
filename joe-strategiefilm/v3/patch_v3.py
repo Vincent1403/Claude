@@ -801,6 +801,17 @@ CLIPS["brand"]["start"] = round(CLIPS["brand"]["start"] - BEAT, 4); CLIPS["brand
 rep("${o.shadow?'text-shadow:0 4px 30px rgba(0,0,0,.18);':''}", "${o.shadow===2?'text-shadow:0 2px 14px rgba(0,0,0,.28),0 8px 60px rgba(0,0,0,.32);':o.shadow?'text-shadow:0 4px 30px rgba(0,0,0,.18);':''}")
 rep("{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,shadow:1,", "{size:150,top:354,color:'#fff',step:.3,inAt:.25,outAt:3.6,len:4.2,shadow:2,")
 rep("['Und voller','Möglichkeiten.'],{size:150,top:354,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:1,", "['Und voller','Möglichkeiten.'],{size:150,top:354,color:'#fff',step:.35,inAt:.25,outAt:2.9,len:3.5,shadow:2,")
+# Kunde: Anzeigen – jede mit eigener Headline; Preis-Kreis „€ 49 pro Monat“ raus (gehört zum Sport-Abo)
+rep("const AD_ST=[{l:1297,r:1920,rl:AD_R,rr:0,img:'oma',hl:0},{l:994,r:1920,rl:AD_R,rr:0,img:'shop',hl:0},{l:0,r:1231,rl:0,rr:AD_R,img:'girls',hl:1,price:1},{l:0,r:1551,rl:0,rr:AD_R,img:'papa',hl:1}];",
+    "const AD_ST=[{l:1297,r:1920,rl:AD_R,rr:0,img:'oma',hl:0},{l:994,r:1920,rl:AD_R,rr:0,img:'shop',hl:1},{l:0,r:1231,rl:0,rr:AD_R,img:'girls',hl:2},{l:0,r:1551,rl:0,rr:AD_R,img:'papa',hl:3}];")
+rep("const AD_HL=[['Hier steht eine','Headline über','mehrere Zeilen.'],['Hier steht die','Headline zweizeilig.']];",
+    "const AD_HL=[['Mehr von dem,','was zählt.'],['Mehr aus','jedem Einkauf.'],['Mehr von dem,','was du liebst.'],['Mehr aus','dem Moment.']];")
+rep("""    E.hl.forEach((ls,h)=>{const on=h===B.hl,was=s>0&&h===A.hl&&A.hl!==B.hl,t0=(s>=2&&h===1)?T[2]+P.morph*.4:.25;
+      ls.forEach((ln,i)=>{let y=110;if(on){y=110*(1-f(seg(t,t0+i*.08,t0+i*.08+.5)))}else if(was){y=-110*eInCub(seg(t,T[2],T[2]+.3+i*.04))}else if(h===0&&s<2){y=110*(1-f(seg(t,.25+i*.08,.75+i*.08)))}
+        ln.style.transform=`translateY(${y.toFixed(1)}%)`})});""",
+    """    E.hl.forEach((ls,h)=>{const t0=h?T[h]+P.morph*.4:.25,te=h<3?T[h+1]:1e9; /* jede Anzeige eigener Satz: steigt aus der Maske, fällt beim nächsten Wechsel nach oben raus */
+      ls.forEach((ln,i)=>{const y=t<te?110*(1-f(seg(t,t0+i*.08,t0+i*.08+.5))):-110*eInCub(seg(t,te,te+.3+i*.04));ln.style.transform=`translateY(${y.toFixed(1)}%)`})});""")
+rep("E.price.style.display=pin>0&&pout<1?'flex':'none'", "E.price.style.display='none'")
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
