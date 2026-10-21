@@ -804,6 +804,7 @@ _bars = [round(b + _LTL, 4) for b in (134.898, 137.173, 139.472)]   # Taktanfän
 _p0 = CLIPS["pos"]["start"]
 for _k, _a, _b in (("pos", _p0, _bars[0]), ("pos2", _bars[0], _bars[1]), ("pos3", _bars[1], _bars[2])):
     CLIPS[_k] = C(_a, round(_b - _a, 4)); PARAMS[_k] = {"len": round((_b - _a) / BEAT, 3), "outAt": round((_b - _a) / BEAT + 1, 3)}
+CLIPS["pos"] = C(round(CLIPS["pos"]["start"] - .35, 4), round(CLIPS["pos"]["len"] + .35, 4))   # Kunde: Pearle-Karte gleitet schon rein, während das Tablet nach links rausgleitet
 _es = _bars[2]; _el = round(CLIPS["endc"]["start"] - _es, 4)   # Verlauf liegt weiter unter dem Schluss-Logo (Text endet vorher über cOut)
 CLIPS["endtxt"] = C(_es, _el)
 PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(_el / BEAT, 3), "aIn": 0, "bIn": 2, "hold": 2, "aOut": 8, "bOut": 8, "cIn": 8.5,
