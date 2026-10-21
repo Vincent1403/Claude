@@ -104,7 +104,8 @@ const FM_S3=[
   <div style="position:absolute;left:18px;top:230px;color:#6a1006;font-size:17px;font-weight:600">3fach Ös auf deinen Wocheneinkauf</div>
   <div style="position:absolute;left:18px;top:264px;width:42px;height:42px;border-radius:50%;border:2px solid #6a1006;box-sizing:border-box;display:grid;place-items:center"><svg viewBox="0 0 24 24" style="width:20px"><path d="M12 20s-7-4.4-7-9.6A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.4C19 15.6 12 20 12 20z" fill="none" stroke="#6a1006" stroke-width="2"/></svg></div>
   <div style="position:absolute;right:18px;top:264px;height:42px;padding:0 26px;border-radius:42px;background:#6a1006;color:#fff;font-size:16px;font-weight:700;display:grid;place-items:center">Aktivieren</div>`]];
-const FM_SC=[FM_S1,FM_S3]; // Kunde (Kürzung): mittlerer Bildschirm raus – drei Screens hatten dieselbe Botschaft
+const FM_BEST=[FM_S3[0],FM_S3[1],FM_S3[2],[1070,136,...FM_S1[1].slice(2)],[1070,619.5,...FM_S1[2].slice(2)],[1434.5,619.5,...FM_S1[3].slice(2)]]; // Kunde: Best-of aus beiden Übersichten, ohne den älteren Mann
+const FM_SC=[FM_BEST]; // nur noch ein Bildschirm
 const FML=document.createElement('div');FML.id='fmtL';FML.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);background:#f4f1ea';
 FML.innerHTML=`<div id="fmG" style="position:absolute;inset:0;transform-origin:50% 50%">${FM_SC.map((sc,si)=>sc.map(([x,y,w,h,bg,html])=>`
  <div class="fmFr" data-s="${si}" data-x="${x}" style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:24px;overflow:hidden;background:${bg};box-shadow:0 26px 60px rgba(60,20,0,.16);transform-origin:50% 60%">${html}</div>`).join('')).join('')}</div>`;

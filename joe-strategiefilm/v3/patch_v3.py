@@ -923,6 +923,17 @@ CLIPS["laptop"]["start"] = round(CLIPS["laptop"]["start"] - _gp, 4); CLIPS["lapt
 PARAMS["laptop"] = {**PARAMS.get("laptop", {}), "len": CLIPS["laptop"]["len"], "scrollDur": round(3.75 + _lx, 3)}
 _BS = [b for b in _BS if b < _P5 - .02] + [round(b - _D5, 4) for b in _BS if b >= _P5 + _D5 - .02]
 _ED = _ED + [(_P5, -_D5, 0)]
+# Kunde (Runde 6): Formate nur noch ein Best-of-Bildschirm (8 Schläge) → 1 Takt raus
+_fc = CLIPS["formats"]; _fcont = _fc["len"] * _fc.get("rate", 1) - 4 * BEAT
+_fi = min(range(0, len(_BS), 4), key=lambda i: abs(_BS[i] - (_fc["start"] + _fc["len"] * .5))); _P6 = _BS[_fi]; _D6 = round(_BS[_fi + 4] - _P6, 4)
+for _v in CLIPS.values():
+    if _v is _fc or _v["start"] >= 1000: continue
+    if _v["start"] >= _P6 - 1e-3: _v["start"] = round(_v["start"] - _D6, 4)
+    elif _v["start"] + _v["len"] > _P6: _v["len"] = round(_v["len"] - _D6, 4)
+_fc["len"] = round(_fc["len"] - _D6, 4); _fc["rate"] = round(_fcont / _fc["len"], 4)
+PARAMS["formats"] = {**PARAMS["formats"], "hold": 8, "len": round(_fcont, 4)}
+_BS = [b for b in _BS if b < _P6 - .02] + [round(b - _D6, 4) for b in _BS if b >= _P6 + _D6 - .02]
+_ED = _ED + [(_P6, -_D6, 0)]
 PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
 PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
 _NET = round(sum(d for _, d, _ in _ED), 4)
