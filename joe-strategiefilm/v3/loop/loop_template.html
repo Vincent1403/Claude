@@ -15,23 +15,20 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(-
 body:hover #ui,body.paused #ui{opacity:1}
 #ui button,#ui a{appearance:none;border:0;border-radius:999px;height:44px;padding:0 20px;background:#fff;color:#1d1d1b;font:700 15px/44px var(--font);text-decoration:none;cursor:pointer}
 #ui button:focus-visible,#ui a:focus-visible{outline:3px solid #ee2a06;outline-offset:2px}
-#hint{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none}
-#hint span{background:rgba(0,0,0,.6);color:#fff;font:700 18px/1 var(--font);padding:16px 24px;border-radius:999px}
-body.render #ui,body.render #hint{display:none}
+body.render #ui{display:none}
 </style>
 </head>
-<body class="paused">
+<body>
 <div id="vp"><div id="stage">
  <div id="wall" style="position:absolute;inset:0"><div id="wg" style="position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0"></div></div>
- <div id="phoneL" style="position:absolute;inset:0"><div id="phone" style="position:absolute;transform-origin:0 0"></div></div>
+ <div id="phoneL" style="position:absolute;inset:0;background:var(--bg)"><div id="phone" style="position:absolute;transform-origin:0 0"></div></div>
 </div></div>
-<div id="hint"><span>Klicken zum Abspielen mit Ton</span></div>
-<div id="ui"><button id="play" type="button">Abspielen</button></div>
+<div id="ui"><button id="play" type="button">Pausieren</button></div>
 <script>
 /* BILLA-Gutschein-Loop: 8 Takte = 32 Schläge. Handy mit großem BILLA-Gutschein → Zoom raus, Liste scrollt →
-   Match-Cut in die Angebotswand → Wand läuft, fährt auf die BILLA-Karte → Match-Cut zurück ins Handy → großer BILLA-Gutschein (= Bild 1). */
+   Match-Cut in die Angebotswand → Wand läuft, fährt auf die BILLA-Karte → Überblendung ins Handy → großer BILLA-Gutschein (= Bild 1). */
 const IMG=__IMGS__;
-const LEN=18.25,B=LEN/32,FPS=24;          // Musik: 8 Takte aus dem Synth-Teil, Loop-Naht vor dem Drop
+const LEN=18.25,B=LEN/32,FPS=24;          // 8 Takte im Tempo des Partnerfilms, ohne Musik
 const $=id=>document.getElementById(id);
 const clamp=v=>Math.max(0,Math.min(1,v)),seg=(t,a,b)=>clamp((t-a)/(b-a));
 const eIO=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2,eOut=p=>1-Math.pow(1-p,3);
@@ -57,45 +54,40 @@ const fit=(i,scr,T)=>{const S=T[2]/CW;return [T[0]-PL-S*(IN+PAD),T[1]-PT-S*(IN+I
 
 // --- Angebotswand (drei Spalten, außen nach unten, Mitte nach oben)
 const CWW=854,CHW=814,GX=64,GY=64,WS=.66,SIDE=.5,CTR=2;
-const COLS=[['sutterluety','forstinger','pearle','biogena','penny','adeg','omv','zgonc'],['zgonc','universal','bipa_bonusbox','billa','omv','adeg','penny','pearle'],['adeg','penny','universal','sutterluety','billa','zgonc','pearle','forstinger']];
+const COLS=[['sutterluety','forstinger','pearle','biogena','penny','adeg','omv','zgonc'],['zgonc','universal','bipa_bonusbox','omv','billa','adeg','penny','pearle'],['adeg','penny','universal','sutterluety','billa','zgonc','pearle','forstinger']];
 $('wg').innerHTML=COLS.map((c,ci)=>`<div class="wcol" style="position:absolute;left:0;top:0">${c.map((n,ri)=>`<div class="card" style="left:${(ci-1)*(CWW+GX)-CWW/2}px;top:${(ri-CTR)*(CHW+GY)-CHW/2}px;width:${CWW}px;height:${CHW}px;border-radius:24px;box-shadow:0 30px 70px rgba(94,23,8,.12)"><img src="${IMG[n]}" alt=""></div>`).join('')}</div>`).join('');
 const WC=[...document.querySelectorAll('.wcol')];
-const WSPD=150;                            // px/s auf dem Bildschirm bei 66 %
+const WSPD=2*(CHW+GY)*WS/(14*B);          // px/s bei 66 %: die Mitte läuft genau 2 Karten weit, BILLA steht danach in der Bildmitte
 // Laufweg der Spalten (Wandeinheiten): setzt nach dem Schnitt sofort ein, bremst vor dem Heranfahren weich ab
-const W0=8*B,WSTOP=23*B,WPUSH=24*B,WCUT=26*B;
+const W0=8*B,WSTOP=23*B,WPUSH=22.5*B,WCUT=27*B;
 const run=t=>{const a=t-W0,T=WSTOP-W0,r=2*B;return a<=0?0:a<T-r?a:(T-r)+r*.5-(r*.5)*Math.pow(1-clamp((a-(T-r))/r),2)};
 const wallD=t=>WSPD*run(t)/WS;
 // Rechteck (Bildschirm) einer Wandkarte bei Kamera scale s und Verschiebung (ox,oy)
 const wRect=(ci,ri,t,s,ox,oy)=>{const d=wallD(t),dir=ci===1?-1:1,off=ci===1?0:-SIDE*(CHW+GY),y=(ri-CTR)*(CHW+GY)-CHW/2+dir*d+off,x=(ci-1)*(CWW+GX)-CWW/2;return [960+ox+s*x,540+oy+s*y,s*CWW]};
 const MATCH_A=wRect(1,2,W0,WS,0,0);         // Bonusbox in der Mitte der Wand beim ersten Schnitt
-const BIG=[960-880/2,580-880/AR/2,880];    // Startbild: BILLA-Gutschein groß im Handy
-const TB=[1,3];                            // Wand: Mitte, Zeile 3 = BILLA
-const CUT_W=640;                           // so breit ist die BILLA-Karte beim zweiten Match-Cut
-const CUT_C=[960-CUT_W/2,580-CUT_W/AR/2,CUT_W];
-const xc=(TB[0]-1)*(CWW+GX),dir1=TB[0]===1?-1:1; // Kartenmitte in Wandeinheiten (x)
+const BIG=880,XF0=25*B,ZEND=30*B;       // Startbild: BILLA-Gutschein 880 px breit in der Bildmitte; Überblendung Wand → Handy ab XF0
+// BILLA (Mitte, Zeile 4) steht nach dem Abbremsen genau in der Bildmitte; ein durchgehender Zoom auf die Karte,
+// währenddessen blendet das Handy (BILLA-Karte deckungsgleich) über die Wand, danach weiter heran bis zum Startbild
+const zoomW=t=>CWW*WS+(BIG-CWW*WS)*eIO(seg(t,WPUSH,ZEND));
+const ctr=w=>[960-w/2,540-w/AR/2,w];
 function frame(t){
  t=((t%LEN)+LEN)%LEN;
- const inWall=t>=W0&&t<WCUT;
- $('wall').style.display=inWall?'':'none';$('phoneL').style.display=inWall?'none':'';
- const d=wallD(t);
- if(inWall){
-  // Heranfahren: die BILLA-Karte gleitet gerade zur Bildmitte und wächst auf die Größe, mit der sie im Handy weiterläuft
-  const p=eIO(seg(t,WPUSH,WCUT)),s=WS+(CUT_W/CWW-WS)*p;
-  const yc=(TB[1]-CTR)*(CHW+GY)+dir1*d+(TB[0]===1?0:-SIDE*(CHW+GY));
-  const c0x=960+WS*xc,c0y=540+WS*yc,cx=c0x+(CUT_C[0]+CUT_W/2-c0x)*p,cy=c0y+(CUT_C[1]+CUT_W/AR/2-c0y)*p; // Kartenmitte: von der Lage in der Wand gerade zur Mitte des Handy-Schnitts
-  $('wg').style.transform=`translate(${(cx-s*xc).toFixed(2)}px,${(cy-s*yc).toFixed(2)}px) scale(${s.toFixed(5)})`;
+ const wallOn=t>=W0&&t<WCUT,phoneOn=t<W0||t>=XF0;
+ $('wall').style.display=wallOn?'':'none';$('phoneL').style.display=phoneOn?'':'none';
+ $('phoneL').style.opacity=t>=XF0&&t<WCUT?eIO(seg(t,XF0,WCUT)).toFixed(3):'1';
+ if(wallOn){
+  const d=wallD(t),s=zoomW(t)/CWW;
+  $('wg').style.transform=`translate(960px,540px) scale(${s.toFixed(5)})`;
   WC.forEach((c,i)=>{const dr=i===1?-1:1;c.style.transform=`translateY(${(dr*d+(i===1?0:-SIDE*(CHW+GY))).toFixed(2)}px)`});
- }else{
-  let scr,A;
+ }
+ if(phoneOn){
+  let scr=0,A;
   if(t<W0){ // Startbild → Zoom raus ins Handy → Liste scrollt → Handy fährt heran, Bonusbox liegt auf der Bonusbox der Wand
    const sp=eIO(seg(t,2.5*B,5.75*B));scr=(IY[MI]-Y0)*sp;
    const z=1-eIO(seg(t,.75*B,2.75*B)),m=eIO(seg(t,6*B,W0-1/FPS));
-   const P0=fit(0,0,BIG),P2=fit(MI,scr,MATCH_A);
+   const P0=fit(0,0,ctr(BIG)),P2=fit(MI,scr,MATCH_A);
    A=[P0[0]*z+P2[0]*m,P0[1]*z+P2[1]*m,1+(P0[2]-1)*z+(P2[2]-1)*m];
-  }else{ // aus der BILLA-Karte der Wand zurück ins Handy, weiter heran bis zum Startbild
-   scr=0;const z=eOut(seg(t,WCUT,30*B)),P1=fit(0,0,CUT_C),P0=fit(0,0,BIG);
-   A=[0,1,2].map(k=>P1[k]+(P0[k]-P1[k])*z);
-  }
+  }else A=fit(0,0,ctr(zoomW(t)));
   $('list').style.transform=`translateY(${(-scr).toFixed(2)}px)`;
   $('phone').style.transform=`translate(${A[0].toFixed(2)}px,${A[1].toFixed(2)}px) scale(${A[2].toFixed(5)})`;
  }
@@ -106,16 +98,11 @@ if(RENDER)document.body.classList.add('render');
 function size(){const vp=$('vp');let w,h;if(RENDER){w=innerWidth;h=innerHeight}else{w=Math.min(innerWidth,innerHeight*16/9);h=w*9/16}
  vp.style.cssText=`left:${(innerWidth-w)/2}px;top:${(innerHeight-h)/2}px;width:${w}px;height:${h}px`;$('stage').style.transform=`scale(${w/1920})`}
 addEventListener('resize',size);size();
-// --- Wiedergabe: Bild folgt der Audiouhr, Musik läuft lückenlos im Loop
-let ac=null,src=null,buf=null,t0=0,playing=false,tPause=0;
-const now=()=>playing?(ac?ac.currentTime-t0:(performance.now()/1000-t0)):tPause;
-async function play(){
- if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();try{buf=await ac.decodeAudioData(await (await fetch('billa_loop_musik.wav')).arrayBuffer())}catch(e){buf=null}}
- await ac.resume();
- if(buf){src=ac.createBufferSource();src.buffer=buf;src.loop=true;src.loopStart=0;src.loopEnd=Math.min(LEN,buf.duration);src.connect(ac.destination);src.start(0,tPause%LEN)}
- t0=ac.currentTime-tPause;playing=true;document.body.classList.remove('paused');$('hint').style.display='none';$('play').textContent='Pausieren';
-}
-function pause(){tPause=now()%LEN;playing=false;if(src){src.stop();src=null}document.body.classList.add('paused');$('play').textContent='Abspielen'}
+// --- Wiedergabe: läuft sofort im Loop, Klick oder Leertaste pausiert
+let t0=performance.now()/1000,playing=true,tPause=0;
+const now=()=>playing?performance.now()/1000-t0:tPause;
+function play(){t0=performance.now()/1000-tPause;playing=true;document.body.classList.remove('paused');$('play').textContent='Pausieren'}
+function pause(){tPause=now()%LEN;playing=false;document.body.classList.add('paused');$('play').textContent='Abspielen'}
 const toggle=()=>playing?pause():play();
 $('play').onclick=e=>{e.stopPropagation();toggle()};$('vp').onclick=toggle;
 addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();toggle()}});
