@@ -902,7 +902,7 @@ for _k, _off in (("badges", .55), ("cloud", .35)):                     # Musiksc
     _c["len"] = round(_c["len"] - _D, 4); _c["rate"] = round(_cont / _c["len"], 4)
     _BS = [b for b in _BS if b < _P - .02] + [round(b - _D, 4) for b in _BS if b >= _P + _D - .02]
     _ED4.append((_P, -_D, 0))
-CLIPS["endc"]["len"] = round(min(_BS, key=lambda b: abs(b - (CLIPS["endc"]["start"] + 1.3))) - CLIPS["endc"]["start"], 4)   # Film endet bei der Linie (Logo mit Partnern)
+CLIPS["endc"]["len"] = 8.5955   # Kunde: Endcard wieder lang (mit HammerAlbrecht), Länge wie im Editor gesetzt
 _ED = _ED + _ED4
 PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
 PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
