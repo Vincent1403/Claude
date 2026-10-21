@@ -127,7 +127,7 @@ const FORMATS={
   render(M,t){const P=M.P,E=FME,T=M.T,D=P.dur,ef=u=>eStFlow(clamp(u));FML.style.background=t<(P.clearUntil||0)?'transparent':'#f4f1ea'; /* durchsichtig, solange die Headline darunter noch rausläuft */
     E.g.style.transform='none';
     E.fr.forEach((f,i)=>{const si=+f.dataset.s,x=+f.dataset.x,y=parseFloat(f.style.top),o=(x/1740+(y>500?.35:0)); // Reihenfolge: links → rechts, oben → unten
-      const inA=si===0?o*P.inLag:T[si]+o*P.lag+.06,outA=si<FM_SC.length-1?T[si+1]+o*P.lag:P.len?P.len-P.dur-.3+o*P.lag:1e9; /* Kunde: letzter Bildschirm gleitet am Ende mit Parallaxe nach oben raus */
+      const inA=si===0?o*P.inLag:T[si]+o*P.lag+.06,outA=si<FM_SC.length-1?T[si+1]+o*P.lag:P.len?P.len-P.dur*.8+o*P.lag:1e9; /* Kunde: letzter Bildschirm gleitet am Ende mit Parallaxe nach oben raus */
       const yi=P.travel*(1-ef((t-inA)/D)),yo=-P.travel*ef((t-outA)/D),dy=yi+yo;
       f.style.visibility=dy>-1150&&dy<1150?'visible':'hidden';f.style.opacity='1';
       f.style.transform=`translateY(${dy.toFixed(1)}px)`;

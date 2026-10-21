@@ -857,7 +857,8 @@ for _p, _d, _src in _ED2:
         elif _p - 1e-3 <= _v["start"] < _p - _d - 1e-3: _v["start"] = 9000.0       # liegt ganz im geschnittenen Stück (Koch-Video)
 CLIPS["wall"]["rate"] = round(_wc2 / CLIPS["wall"]["len"], 4)
 PARAMS["deal"] = {**PARAMS.get("deal", {}), "t1": 2.3, "t2": 4.6, "t3": 999, "end": round(CLIPS["deal"]["len"] * CLIPS["deal"].get("rate", 1) / BEAT, 3)}
-PARAMS["formats"] = {**PARAMS.get("formats", {}), "len": CLIPS["formats"]["len"]}   # letzter Bildschirm gleitet am Ende mit Parallaxe raus
+PARAMS["formats"] = {**PARAMS.get("formats", {}), "len": CLIPS["formats"]["len"]}
+PARAMS["flex"] = {**PARAMS.get("flex", {}), "inAt": 0}   # Kunde: keine Lücke nach den Formaten – Headline steigt sofort auf   # letzter Bildschirm gleitet am Ende mit Parallaxe raus
 _ED = _ED + _ED2
 PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
 PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
