@@ -865,7 +865,7 @@ _ED = _ED + _ED2
 # und verlieren je 2 Takte Musik (in der Mitte, auf einem Taktstrich); jeder Clip-Anfang/-Ende landet wieder auf einem Schlag.
 _BS = json.loads((here / "beats_snapshot.json").read_text())            # Beat-Raster vor diesem Schritt (aus dem Editor gelesen)
 _ED3 = []
-for _ka, _kb, _cut, _kc in ((0, 91, 8, 44), (100, 216, 8, 156)):        # Bereich [Schlag ka, kb), 8 Schläge raus, Musikschnitt bei Schlag kc
+for _ka, _kb, _cut, _kc in ((0, 91, 8, 44), (100, 216, 8, 132)):        # Bereich [Schlag ka, kb), 8 Schläge raus, Musikschnitt bei Schlag kc
     _f = (_kb - _ka - _cut) / (_kb - _ka); assert _f >= .9
     _P, _D = _BS[_kc], _BS[_kc + _cut] - _BS[_kc]
     _NB = [b for b in _BS if b < _P - .02] + [round(b - _D, 4) for b in _BS if b >= _P + _D - .02]
@@ -925,7 +925,7 @@ _BS = [b for b in _BS if b < _P5 - .02] + [round(b - _D5, 4) for b in _BS if b >
 _ED = _ED + [(_P5, -_D5, 0)]
 # Kunde (Runde 6): Formate nur noch ein Best-of-Bildschirm (8 Schläge) → 1 Takt raus
 _fc = CLIPS["formats"]; _fcont = _fc["len"] * _fc.get("rate", 1) - 4 * BEAT
-_fi = min(range(0, len(_BS), 4), key=lambda i: abs(_BS[i] - (_fc["start"] + _fc["len"] * .5))); _P6 = _BS[_fi]; _D6 = round(_BS[_fi + 4] - _P6, 4)
+_fi = min(range(0, len(_BS), 4), key=lambda i: abs(_BS[i] - (_fc["start"] + _fc["len"] * .27))); _P6 = _BS[_fi]; _D6 = round(_BS[_fi + 4] - _P6, 4)
 for _v in CLIPS.values():
     if _v is _fc or _v["start"] >= 1000: continue
     if _v["start"] >= _P6 - 1e-3: _v["start"] = round(_v["start"] - _D6, 4)
