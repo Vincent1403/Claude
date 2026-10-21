@@ -277,7 +277,7 @@ aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Log
            + (here / "endpartner_mod.js").read_text(encoding="utf-8") + "\n"
            + wl_imgs((here / "gutschein_comp.js").read_text(encoding="utf-8")) + "\n"
            + (here / "pos_mod.js").read_text(encoding="utf-8").replace("__POS1__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos1.webp").read_bytes()).decode()).replace("__POS2__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos2.webp").read_bytes()).decode()).replace("__POS3__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos3.webp").read_bytes()).decode()) + "\n"
-           + (here / "laptop_comp.js").read_text(encoding="utf-8") + "\n"
+           + (here / "laptop_comp.js").read_text(encoding="utf-8").replace("__TABWEB__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "tablet_web.webp").read_bytes()).decode()) + "\n"
            + (here / "colors_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + wl_imgs((here / "formats_comp.js").read_text(encoding="utf-8")) + "\n"
