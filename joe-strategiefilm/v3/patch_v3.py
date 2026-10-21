@@ -783,7 +783,7 @@ for k, v in CLIPS.items():
     if AU_CB + AU_CBD + _LTL + _NLL - 1e-3 <= v["start"] < 1000:
         v["start"] = round(v["start"] - AU_CBD, 4)
 CLIPS["laptop"] = C(AU_CB, _LTL)
-CLIPS["newsl"] = C(round(AU_CB + _LTL - .35, 4), round(_NLL + .35, 4)); PARAMS["newsl"] = {"len": round(_NLL + .35, 4)}   # startet überlappend, während das Tablet rausgleitet
+CLIPS["newsl"] = C(round(AU_CB + _LTL, 4), _NLL); PARAMS["newsl"] = {"len": _NLL}   # dasselbe Tablet läuft weiter (Kunde)
 rep("const T_MAIN=173.71, FPS=24, TRACK_LEN=169.19;", f"const T_MAIN={round(173.71 - AU_CBD, 2)}, FPS=24, TRACK_LEN={round(169.19 - AU_CBD, 2)};")
 rep("    return o2}}", "    {const cb=Math.round(AU_CB*sr),cbd=Math.round(AU_CBD*sr),o3=actx.createBuffer(o2.numberOfChannels,o2.length-cbd,sr); // zweiter Schnitt (Kunde): U-Bahn + Billboard raus\n"
     "    for(let ch=0;ch<o2.numberOfChannels;ch++){const d=o2.getChannelData(ch),e=o3.getChannelData(ch);e.set(d.subarray(0,cb));e.set(d.subarray(cb+cbd),cb);for(let i=0;i<xf;i++){const w=i/xf;e[cb+i]=d[cb+cbd+i]*w+d[cb+i]*(1-w)}}\n"
