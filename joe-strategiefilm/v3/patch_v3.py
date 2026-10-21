@@ -803,8 +803,10 @@ _wi = 1.3; _wa = round(CLIPS["gutsch"]["start"] + CLIPS["gutsch"]["len"], 4); _w
 CLIPS["wall"] = {**C(_wa, _wl, _wi), "rate": round((_wc - _wi) / _wl, 4)}
 # Kunde: Ende ab den POS-Platzhaltern lag neben dem Takt → alle Schnitte auf Taktanfänge (Taktstriche nach dem zweiten Musikschnitt)
 _bars = [round(b + _LTL + _NLL, 4) for b in (134.898, 137.173, 139.472)]   # Taktanfänge laut Beat-Analyse (nach dem Laptop um 2 Takte später)
-_p0 = CLIPS["pos"]["start"]
-for _k, _a, _b in (("pos", _p0, _bars[0]), ("pos2", _bars[0], _bars[1]), ("pos3", _bars[1], _bars[2])):
+# Kunde: ganzer Newsletter soll sichtbar sein → Newsletter 1 Takt länger; die drei POS-Karten teilen sich die übrigen 2 Takte (3 + 3 + 2 Schläge)
+CLIPS["newsl"]["len"] = round(_bars[0] - CLIPS["newsl"]["start"], 4); PARAMS["newsl"] = {"len": CLIPS["newsl"]["len"], "scroll": 99999}
+_bt = (_bars[2] - _bars[0]) / 8; _q1 = round(_bars[0] + 3 * _bt, 4); _q2 = round(_bars[0] + 6 * _bt, 4)
+for _k, _a, _b in (("pos", _bars[0], _q1), ("pos2", _q1, _q2), ("pos3", _q2, _bars[2])):
     CLIPS[_k] = C(_a, round(_b - _a, 4)); PARAMS[_k] = {"len": round((_b - _a) / BEAT, 3), "outAt": round((_b - _a) / BEAT + 1, 3)}
 CLIPS["pos"] = C(round(CLIPS["pos"]["start"] - .35, 4), round(CLIPS["pos"]["len"] + .35, 4))   # Kunde: Pearle-Karte gleitet schon rein, während das Tablet nach links rausgleitet
 _es = _bars[2]; _el = round(CLIPS["endc"]["start"] - _es, 4)   # Verlauf liegt weiter unter dem Schluss-Logo (Text endet vorher über cOut)
