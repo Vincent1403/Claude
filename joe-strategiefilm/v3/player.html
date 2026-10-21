@@ -3947,12 +3947,13 @@ NLL.innerHTML=`<div style="position:absolute;left:${(1920-NL_W)/2}px;top:${(1080
 $('stage').appendChild(NLL);
 const NLE={phone:$('nlPhone'),mail:$('nlMail'),img:$('nlImg'),pop:$('nlPop')};
 const NEWSL={key:'newsl',name:'Newsletter',lane:'laneV4',cls:'bento',
-  DEF:{len:4.5717,turn:1,popAt:.3,tapAt:1.15,openDur:.5,outDur:.6},
+  DEF:{len:4.5717,turn:1,popAt:.2,tapAt:.9,openDur:.45,outDur:.55,scroll:1950},
   params:[
     {k:'turn',label:'Tablet dreht sich (neuer Inhalt) über',min:.3,max:2,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'gleiches Tablet wie die Website, wechselt beim Pop-up weich den Winkel'},
     {k:'popAt',label:'Benachrichtigung fällt rein ab',min:0,max:2,step:1/24,fmt:v=>Math.round(v*24)+' F'},
     {k:'tapAt',label:'Benachrichtigung wird angetippt ab',min:.8,max:3,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'zieht sich ins Handy, der Newsletter öffnet sich'},
     {k:'openDur',label:'Öffnen über',min:.2,max:1.2,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+    {k:'scroll',label:'Scrollweite Newsletter',min:500,max:3700,step:10,fmt:v=>v+' px',sub:'ruhiger Scroll bis zum jö-Reisen-Block; höher = weiter, aber schneller'},
     {k:'outDur',label:'Tablet gleitet raus über',min:.3,max:1.2,step:1/24,fmt:v=>Math.round(v*24)+' F'}],
   model(P){return {P,key:P.tapAt,keyName:'Antippen',total:P.len}},
   show(on){NLL.style.display=on?'':'none'},
@@ -3969,7 +3970,7 @@ const NEWSL={key:'newsl',name:'Newsletter',lane:'laneV4',cls:'bento',
     // Newsletter: schiebt sich im Handy von unten auf, dann weich bis zum Ende scrollen
     const op=eIO(seg(t,P.tapAt+.2,P.tapAt+.2+P.openDur)),s0=P.tapAt+.2+P.openDur+.15;
     E.mail.style.transform=`translateY(${((1-op)*NL_SH).toFixed(1)}px)`;
-    E.img.style.transform=`translateY(${(-(NL_IH-NL_SH)*eIO(seg(t,s0,T-P.outDur-.1))).toFixed(1)}px)`},
+    E.img.style.transform=`translateY(${(-Math.min(P.scroll,NL_IH-NL_SH)*eIO(seg(t,s0-.3,T-P.outDur+.1))).toFixed(1)}px)`},
   marks(M){const P=M.P;return [[0,'Tablet'],[P.popAt,'Benachrichtigung'],[P.tapAt,'Antippen'],[P.tapAt+.2+P.openDur,'Newsletter scrollt']]},
   table(M){const F=s=>Math.round(s*FPS),P=M.P,T=M.total;return [
     ['Tablet dreht sich',`${F(P.popAt-.1)}–${F(P.popAt-.1+P.turn)}`,'dasselbe Tablet wie die Website wechselt weich den Winkel, während das Pop-up kommt'],
