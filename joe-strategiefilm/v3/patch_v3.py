@@ -282,6 +282,7 @@ aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Log
            + (here / "newsletter_comp.js").read_text(encoding="utf-8").replace("__NLIMG__", "ooh/newsletter.webp").replace("__NLPOP__", "ooh/popup.svg") + "\n"
            + (here / "colors_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
+           + (here / "cloud_swipe_mod.js").read_text(encoding="utf-8") + "\n"
            + wl_imgs((here / "formats_comp.js").read_text(encoding="utf-8")) + "\n"
            + (here / "box_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "ooh_mod.js").read_text(encoding="utf-8").replace("__CTSCREEN__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "ct_screen.webp").read_bytes()).decode()) + "\n"
@@ -886,6 +887,23 @@ for _ka, _kb, _cut, _kc in ((0, 91, 8, 44), (100, 216, 8, 156)):        # Bereic
 _ED3.sort(key=lambda e: -e[0])
 CLIPS["endc"]["rate"] = round(CLIPS["endc"].get("rate", 1) / .9, 4); CLIPS["endc"]["len"] = round(CLIPS["endc"]["len"] * .9, 4)   # Endcard ×0,9
 _ED = _ED + _ED3
+# Kunde (Kürzung, Runde 4): Kian → Tamara als Swipe (−1 Takt), Badges ohne 19,99 € / 3fach / Shira (−1 Takt), Film endet in der Endcard
+_ED4 = []
+_bar = lambda x: min((b for i, b in enumerate(_BS) if i % 4 == 0), key=lambda b: abs(b - x))
+for _k, _off in (("badges", .55), ("cloud", .35)):                     # Musikschnitt auf einem Taktstrich im Clip (spätere Stelle zuerst)
+    _c = CLIPS[_k]; _P = _bar(_c["start"] + _c["len"] * _off); _i = _BS.index(_P); _D = round(_BS[_i + 4] - _P, 4)
+    _cont = _c["len"] * _c.get("rate", 1)
+    for _v in CLIPS.values():
+        if _v is _c or _v["start"] >= 1000: continue
+        if _v["start"] >= _P - 1e-3: _v["start"] = round(_v["start"] - _D, 4)
+        elif _v["start"] + _v["len"] > _P: _v["len"] = round(_v["len"] - _D, 4)
+    if _k == "badges": _cont -= 4 * BEAT                                # 4 Schläge Inhalt weniger
+    else: CLOUD_J = round(_D * _c.get("rate", 1), 4)                     # übersprungene Clip-Zeit beim Swipe
+    _c["len"] = round(_c["len"] - _D, 4); _c["rate"] = round(_cont / _c["len"], 4)
+    _BS = [b for b in _BS if b < _P - .02] + [round(b - _D, 4) for b in _BS if b >= _P + _D - .02]
+    _ED4.append((_P, -_D, 0))
+CLIPS["endc"]["len"] = round(min(_BS, key=lambda b: abs(b - (CLIPS["endc"]["start"] + 1.3))) - CLIPS["endc"]["start"], 4)   # Film endet bei der Linie (Logo mit Partnern)
+_ED = _ED + _ED4
 PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
 PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
 _NET = round(sum(d for _, d, _ in _ED), 4)
@@ -900,6 +918,7 @@ rep("BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(
     "for(const [p,d,src] of " + _EDJ + "){let nb;if(d<0){const D=-d;PEAKS.splice(Math.round(p/per),Math.round(D/per));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=p+D-.02).map(v=>+(v-D).toFixed(3)))}"
     "else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(p/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<p-.02).map(v=>+(v+d).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}"
     "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n")
+s = s.replace("__CJ__", str(CLOUD_J))
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben

@@ -15,6 +15,7 @@ const BD_LIST=[
  {c:2,tag:1,k:'oes',p:'250',t:'<div style="font-size:34px;font-weight:700;line-height:1.15">Bonusbox</div>'},
  {c:2,tag:1,k:'oes',p:'100',hold:2,t:'<div style="font-size:34px;font-weight:700;line-height:1.15">1 Shira<br>Bonus<br>Produkt</div>'},
  {c:3,card:1,k:'oes',p:'250',hold:3}]; // hold: Anzahl Schläge × „Pro Element“
+BD_LIST.splice(0,BD_LIST.length,...BD_LIST.filter(x=>!/19,99|3fach|Shira/.test(x.p+(x.t||'')))); // Kunde (Kürzung): 19,99 €, 3fach und „1 Shira Bonus Produkt“ raus
 // Angebotskarte in Basiseinheiten (Vorlage 1068 × 1018 px × 0,8, Mitte = 0/0)
 const BD_CW=854,BD_CH=814,BD_CX=-BD_CW/2,BD_CY=-BD_CH/2,bdc=v=>v*.8;
 const BDL=document.createElement('div');BDL.id='badgeL';BDL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font)';
