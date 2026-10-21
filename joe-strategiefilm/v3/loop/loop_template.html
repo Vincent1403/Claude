@@ -25,8 +25,8 @@ body.render #ui{display:none}
 </div></div>
 <div id="ui"><button id="play" type="button">Pausieren</button></div>
 <script>
-/* BILLA-Gutschein-Loop: 8 Takte = 32 Schläge. Handy mit großem BILLA-Gutschein → Zoom raus, Liste scrollt →
-   Überblendung in die Angebotswand → Wand läuft, fährt auf die BILLA-Karte → Überblendung ins Handy → großer BILLA-Gutschein (= Bild 1). */
+/* BILLA-Gutschein-Loop: 8 Takte = 32 Schläge. Handy (BILLA oben) → Liste scrollt langsam →
+   Überblendung in die Angebotswand → Wand läuft, fährt auf die BILLA-Karte → Überblendung zurück ins Handy (= Bild 1). */
 const IMG=__IMGS__;
 const LEN=18.25,B=LEN/32,FPS=24;          // 8 Takte im Tempo des Partnerfilms, ohne Musik
 const $=id=>document.getElementById(id);
@@ -57,41 +57,38 @@ const CWW=854,CHW=814,GX=64,GY=64,WS=.66,SIDE=.5,CTR=2;
 const COLS=[['sutterluety','forstinger','pearle','biogena','penny','adeg','omv','zgonc'],['zgonc','universal','bipa_bonusbox','omv','billa','adeg','penny','pearle'],['adeg','penny','universal','sutterluety','billa','zgonc','pearle','forstinger']];
 $('wg').innerHTML=COLS.map((c,ci)=>`<div class="wcol" style="position:absolute;left:0;top:0">${c.map((n,ri)=>`<div class="card" style="left:${(ci-1)*(CWW+GX)-CWW/2}px;top:${(ri-CTR)*(CHW+GY)-CHW/2}px;width:${CWW}px;height:${CHW}px;border-radius:24px;box-shadow:0 30px 70px rgba(94,23,8,.12)"><img src="${IMG[n]}" alt=""></div>`).join('')}</div>`).join('');
 const WC=[...document.querySelectorAll('.wcol')];
-const WSPD=2*(CHW+GY)*WS/(14*B);          // px/s bei 66 %: die Mitte läuft genau 2 Karten weit, BILLA steht danach in der Bildmitte
 // Laufweg der Spalten (Wandeinheiten): setzt nach dem Schnitt sofort ein, bremst vor dem Heranfahren weich ab
-const W0=8*B,WSTOP=23*B,WPUSH=22.5*B,WCUT=27*B;
+const W0=8*B,WSTOP=25*B,WPUSH=25*B,WCUT=28.5*B;
+const WSPD=2*(CHW+GY)*WS/(WSTOP-W0-B);          // px/s bei 66 %: die Mitte läuft genau 2 Karten weit, BILLA steht danach in der Bildmitte
 const run=t=>{const a=t-W0,T=WSTOP-W0,r=2*B;return a<=0?0:a<T-r?a:(T-r)+r*.5-(r*.5)*Math.pow(1-clamp((a-(T-r))/r),2)};
 const wallD=t=>WSPD*run(t)/WS;
 // Rechteck (Bildschirm) einer Wandkarte bei Kamera scale s und Verschiebung (ox,oy)
 const wRect=(ci,ri,t,s,ox,oy)=>{const d=wallD(t),dir=ci===1?-1:1,off=ci===1?0:-SIDE*(CHW+GY),y=(ri-CTR)*(CHW+GY)-CHW/2+dir*d+off,x=(ci-1)*(CWW+GX)-CWW/2;return [960+ox+s*x,540+oy+s*y,s*CWW]};
 const MATCH_A=wRect(1,2,W0,WS,0,0);         // Bonusbox in der Mitte der Wand beim ersten Schnitt
-const BIG=700,XA0=6.25*B,XF0=25*B,ZEND=30*B; // Startbild: BILLA-Gutschein 700 px breit in der Bildmitte; Überblendungen Handy → Wand ab XA0, Wand → Handy ab XF0
-// BILLA (Mitte, Zeile 4) steht nach dem Abbremsen genau in der Bildmitte; ein durchgehender Zoom auf die Karte,
-// währenddessen blendet das Handy (BILLA-Karte deckungsgleich) über die Wand, danach weiter heran bis zum Startbild
-const zoomW=t=>CWW*WS+(BIG-CWW*WS)*eIO(seg(t,WPUSH,ZEND));
-const ctr=w=>[960-w/2,540-w/AR/2,w];
+const XA0=6.5*B,XF0=25.5*B,ZEND=29.5*B;    // Überblendungen Handy → Wand ab XA0, Wand → Handy ab XF0; Handy steht ab ZEND wieder in der Ausgangslage
+// Ausgangslage = ganzes Handy, BILLA oben in der Liste. Wand: BILLA (Mitte, Zeile 4) steht nach dem Abbremsen in der Bildmitte,
+// die Kamera zieht leicht auf, bis die Karte so groß ist wie im Handy, und das Handy blendet deckungsgleich darüber – kein Hin-und-her-Zoom
+const HOME=[PL+IN+PAD,PT+IN+Y0,CW];         // BILLA-Karte im Handy in der Ausgangslage
+const outW=t=>{const p=eIO(seg(t,WPUSH,ZEND)),w0=CWW*WS,h0=w0/AR;return [960-w0/2+(HOME[0]-960+w0/2)*p,540-h0/2+(HOME[1]-540+h0/2)*p,w0+(CW-w0)*p]};
 function frame(t){
- t=((t%LEN)+LEN)%LEN;
+ t=((t%LEN)+LEN)%LEN;const u=t/B;
  const wallOn=t>=XA0&&t<WCUT,phoneOn=t<W0||t>=XF0;
  $('wall').style.display=wallOn?'':'none';$('phoneL').style.display=phoneOn?'':'none';
  $('phoneL').style.opacity=t>=XA0&&t<W0?(1-eIO(seg(t,XA0,W0))).toFixed(3):t>=XF0&&t<WCUT?eIO(seg(t,XF0,WCUT)).toFixed(3):'1';
  let A=null,scr=0;
  if(phoneOn){
-  if(t<W0){ // Startbild → Zoom raus ins Handy → Liste scrollt → Handy fährt heran, Bonusbox landet auf der Bonusbox der Wand
-   const sp=eIO(seg(t,2.5*B,5.75*B));scr=(IY[MI]-Y0)*sp;
-   const z=1-eIO(seg(t,.75*B,2.75*B)),m=eIO(seg(t,6*B,W0-1/FPS));
-   const P0=fit(0,0,ctr(BIG)),P2=fit(MI,scr,MATCH_A);
-   A=[P0[0]*z+P2[0]*m,P0[1]*z+P2[1]*m,1+(P0[2]-1)*z+(P2[2]-1)*m];
-  }else A=fit(0,0,ctr(zoomW(t)));
+  if(u<8||u>=30.5){ // Liste scrollt langsam von BILLA bis zur Bonusbox, dann fährt das Handy heran (Bonusbox → Bonusbox der Wand)
+   const uu=u>=30.5?u-32:u;scr=(IY[MI]-Y0)*eIO(seg(uu,-1.5,6));
+   const m=eIO(seg(uu,5.5,8-1/FPS/B)),P2=fit(MI,scr,MATCH_A);A=[P2[0]*m,P2[1]*m,1+(P2[2]-1)*m];
+  }else A=fit(0,0,outW(t));
   $('list').style.transform=`translateY(${(-scr).toFixed(2)}px)`;
   $('phone').style.transform=`translate(${A[0].toFixed(2)}px,${A[1].toFixed(2)}px) scale(${A[2].toFixed(5)})`;
  }
  if(wallOn){
-  const d=wallD(t);
-  if(t<W0){ // Überblendung: die Wand liegt so, dass ihre Bonusbox deckungsgleich mit der Bonusbox im Handy mitfährt
-   const S=A[2],x=A[0]+PL+S*(IN+PAD),y=A[1]+PT+S*(IN+IY[MI]-scr),s=S*CW/CWW;
-   $('wg').style.transform=`translate(${(x+s*CWW/2).toFixed(2)}px,${(y+s*CHW/2).toFixed(2)}px) scale(${s.toFixed(5)})`;
-  }else $('wg').style.transform=`translate(960px,540px) scale(${(zoomW(t)/CWW).toFixed(5)})`;
+  const d=wallD(t);let x,y,s;
+  if(t<W0){const S=A[2];x=A[0]+PL+S*(IN+PAD);y=A[1]+PT+S*(IN+IY[MI]-scr);s=S*CW/CWW} // Bonusbox der Wand fährt deckungsgleich mit der im Handy
+  else{const R=outW(t);x=R[0];y=R[1];s=R[2]/CWW}                                  // BILLA der Wand: von der Bildmitte zur Lage im Handy
+  $('wg').style.transform=`translate(${(x+s*CWW/2).toFixed(2)}px,${(y+s*CHW/2).toFixed(2)}px) scale(${s.toFixed(5)})`;
   WC.forEach((c,i)=>{const dr=i===1?-1:1;c.style.transform=`translateY(${(dr*d+(i===1?0:-SIDE*(CHW+GY))).toFixed(2)}px)`});
  }
 }
