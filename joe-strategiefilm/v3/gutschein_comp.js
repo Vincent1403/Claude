@@ -40,6 +40,8 @@ const GUTSCH={key:'gutsch',name:'Gutscheine in der App',lane:'laneV4',cls:'bento
     const z=1-eIO(seg(t,P.hold,P.hold+P.zoomDur)),m=eIO(seg(t,P.matchAt,P.len-1/24)),A=fit(GS_BI,GS_TGT),B=fit(GS_MI,GS_MT);
     const tx=A[0]*z+B[0]*m,ty=A[1]*z+B[1]*m,S=1+(A[2]-1)*z+(B[2]-1)*m;
     E.phone.style.transform=`translate(${tx.toFixed(2)}px,${ty.toFixed(2)}px) scale(${S.toFixed(5)})`;
+    {let cv=$('gsCover');if(!cv){cv=document.createElement('div');cv.id='gsCover';cv.style.cssText='position:absolute;inset:0;pointer-events:none';GSL.appendChild(cv)}
+     const r=105+2300*eIO(seg(t,.02,.6));cv.style.display=t<.6?'':'none';cv.style.background=`radial-gradient(circle at ${BD_PILLT.x}px ${BD_PILLT.y}px, transparent ${r.toFixed(0)}px, #f4f1ea ${(r+1).toFixed(0)}px)`} /* Karte wächst kreisförmig aus der 250-Ö-Pill (Übergang von den Badges) */
     const fo=(1-seg(z,.25,.85)).toFixed(3);E.frame.forEach(e=>e.style.opacity=fo);E.ui.forEach(e=>e.style.opacity=fo);
     its.forEach((im,i)=>{if(i!==GS_BI)im.style.opacity=fo;else im.style.boxShadow=`0 8px 22px rgba(60,20,30,${(.10*(1-z)).toFixed(3)})`})},
   marks(M){const P=M.P;return [[0,'BIPA-Karte'],[P.hold,'Zoom raus'],[P.scrollAt,'Scrollen'],[P.matchAt,'Match-Cut']]},

@@ -16,6 +16,11 @@ const BD_LIST=[
  {c:2,tag:1,k:'oes',p:'100',hold:2,t:'<div style="font-size:34px;font-weight:700;line-height:1.15">1 Shira<br>Bonus<br>Produkt</div>'},
  {c:3,card:1,k:'oes',p:'250',hold:3}]; // hold: Anzahl Schläge × „Pro Element“
 BD_LIST.splice(0,BD_LIST.length,...BD_LIST.filter(x=>!/19,99|3fach|Shira/.test(x.p+(x.t||'')))); // Kunde (Kürzung): 19,99 €, 3fach und „1 Shira Bonus Produkt“ raus
+{// Kunde: große Etiketten in der Mitte, kleine Ö-Pills am Ende; die letzte 250-Ö-Pill wird zur Pill auf der BIPA-Karte (Gutscheine)
+ const ic=BD_LIST.filter(x=>x.icon),jo=BD_LIST.filter(x=>!x.icon&&x.c===1),tg=BD_LIST.filter(x=>x.tag),oe=BD_LIST.filter(x=>x.c===0);
+ const o500=oe.find(x=>x.p==='500'),o250=oe.find(x=>x.p==='250');
+ BD_LIST.splice(0,BD_LIST.length,...ic,...jo,...tg,o500,{...o250,hold:4,toCard:1});}
+const BD_PILLT={x:1252,y:364.5,h:86}; // Ziel: 250-Ö-Pill auf der BIPA-Karte zu Beginn von „Gutscheine“ (Bildschirm-px)
 // Angebotskarte in Basiseinheiten (Vorlage 1068 × 1018 px × 0,8, Mitte = 0/0)
 const BD_CW=854,BD_CH=814,BD_CX=-BD_CW/2,BD_CY=-BD_CH/2,bdc=v=>v*.8;
 const BDL=document.createElement('div');BDL.id='badgeL';BDL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font)';
@@ -85,7 +90,9 @@ const BADGES={
     else E.circ.style.display='none';
     // leichtes Federn bei jeder Ankunft
     const hit=t-M.st[a],bump=a>0&&hit>=0&&hit<.45?P.bounce*Math.sin(hit/.45*Math.PI*1.5)*Math.exp(-hit*6):0;
-    const pop=eBack(seg(t,0,.45));E.g.style.transform=`scale(${(L(LA.sc,LB.sc)*pop*(1+bump)).toFixed(4)})`;E.g.style.opacity=Math.min(1,seg(t,0,.15)).toFixed(3);
+    const pop=eBack(seg(t,0,.45)),tc=A.toCard?eIO(seg(t,M.total-.95,M.total-.04)):0,s0=L(LA.sc,LB.sc)*pop*(1+bump),s1=s0+(BD_PILLT.h/BD_PH-s0)*tc;
+    E.g.style.transform=`translate(${((BD_PILLT.x-960)*tc).toFixed(1)}px,${((BD_PILLT.y-540)*tc).toFixed(1)}px) scale(${s1.toFixed(4)})`;
+    if(tc>0){E.circ.style.display='';Object.assign(E.circ.style,{background:'#f4f1ea',transform:`translateY(${((1-tc)*100).toFixed(3)}%)`})} /* Hintergrund wird jö Beige wie bei „Gutscheine“ */E.g.style.opacity=Math.min(1,seg(t,0,.15)).toFixed(3);
     const cd=L(LA.card,LB.card),mix=(c1,c2,f)=>{const p1=[1,3,5].map(o=>parseInt(c1.substr(o,2),16)),p2=[1,3,5].map(o=>parseInt(c2.substr(o,2),16));return `rgb(${p1.map((v,q)=>Math.round(v+(p2[q]-v)*f)).join(',')})`};
     const tg={x:L(LA.tag.x,LB.tag.x),y:L(LA.tag.y,LB.tag.y),w:L(LA.tag.w,LB.tag.w),h:L(LA.tag.h,LB.tag.h),rt:L(LA.tag.rt,LB.tag.rt),rb:L(LA.tag.rb,LB.tag.rb),o:L(LA.tag.o,LB.tag.o)};
     Object.assign(E.tag.style,{left:tg.x+'px',top:tg.y+'px',width:tg.w+'px',height:tg.h+'px',borderRadius:`${tg.rt}px ${tg.rt}px ${tg.rb}px ${tg.rb}px`,opacity:tg.o.toFixed(3),

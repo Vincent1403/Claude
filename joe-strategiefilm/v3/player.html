@@ -2186,6 +2186,11 @@ const BD_LIST=[
  {c:2,tag:1,k:'oes',p:'100',hold:2,t:'<div style="font-size:34px;font-weight:700;line-height:1.15">1 Shira<br>Bonus<br>Produkt</div>'},
  {c:3,card:1,k:'oes',p:'250',hold:3}]; // hold: Anzahl Schläge × „Pro Element“
 BD_LIST.splice(0,BD_LIST.length,...BD_LIST.filter(x=>!/19,99|3fach|Shira/.test(x.p+(x.t||'')))); // Kunde (Kürzung): 19,99 €, 3fach und „1 Shira Bonus Produkt“ raus
+{// Kunde: große Etiketten in der Mitte, kleine Ö-Pills am Ende; die letzte 250-Ö-Pill wird zur Pill auf der BIPA-Karte (Gutscheine)
+ const ic=BD_LIST.filter(x=>x.icon),jo=BD_LIST.filter(x=>!x.icon&&x.c===1),tg=BD_LIST.filter(x=>x.tag),oe=BD_LIST.filter(x=>x.c===0);
+ const o500=oe.find(x=>x.p==='500'),o250=oe.find(x=>x.p==='250');
+ BD_LIST.splice(0,BD_LIST.length,...ic,...jo,...tg,o500,{...o250,hold:4,toCard:1});}
+const BD_PILLT={x:1252,y:364.5,h:86}; // Ziel: 250-Ö-Pill auf der BIPA-Karte zu Beginn von „Gutscheine“ (Bildschirm-px)
 // Angebotskarte in Basiseinheiten (Vorlage 1068 × 1018 px × 0,8, Mitte = 0/0)
 const BD_CW=854,BD_CH=814,BD_CX=-BD_CW/2,BD_CY=-BD_CH/2,bdc=v=>v*.8;
 const BDL=document.createElement('div');BDL.id='badgeL';BDL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font)';
@@ -2255,7 +2260,9 @@ const BADGES={
     else E.circ.style.display='none';
     // leichtes Federn bei jeder Ankunft
     const hit=t-M.st[a],bump=a>0&&hit>=0&&hit<.45?P.bounce*Math.sin(hit/.45*Math.PI*1.5)*Math.exp(-hit*6):0;
-    const pop=eBack(seg(t,0,.45));E.g.style.transform=`scale(${(L(LA.sc,LB.sc)*pop*(1+bump)).toFixed(4)})`;E.g.style.opacity=Math.min(1,seg(t,0,.15)).toFixed(3);
+    const pop=eBack(seg(t,0,.45)),tc=A.toCard?eIO(seg(t,M.total-.95,M.total-.04)):0,s0=L(LA.sc,LB.sc)*pop*(1+bump),s1=s0+(BD_PILLT.h/BD_PH-s0)*tc;
+    E.g.style.transform=`translate(${((BD_PILLT.x-960)*tc).toFixed(1)}px,${((BD_PILLT.y-540)*tc).toFixed(1)}px) scale(${s1.toFixed(4)})`;
+    if(tc>0){E.circ.style.display='';Object.assign(E.circ.style,{background:'#f4f1ea',transform:`translateY(${((1-tc)*100).toFixed(3)}%)`})} /* Hintergrund wird jö Beige wie bei „Gutscheine“ */E.g.style.opacity=Math.min(1,seg(t,0,.15)).toFixed(3);
     const cd=L(LA.card,LB.card),mix=(c1,c2,f)=>{const p1=[1,3,5].map(o=>parseInt(c1.substr(o,2),16)),p2=[1,3,5].map(o=>parseInt(c2.substr(o,2),16));return `rgb(${p1.map((v,q)=>Math.round(v+(p2[q]-v)*f)).join(',')})`};
     const tg={x:L(LA.tag.x,LB.tag.x),y:L(LA.tag.y,LB.tag.y),w:L(LA.tag.w,LB.tag.w),h:L(LA.tag.h,LB.tag.h),rt:L(LA.tag.rt,LB.tag.rt),rb:L(LA.tag.rb,LB.tag.rb),o:L(LA.tag.o,LB.tag.o)};
     Object.assign(E.tag.style,{left:tg.x+'px',top:tg.y+'px',width:tg.w+'px',height:tg.h+'px',borderRadius:`${tg.rt}px ${tg.rt}px ${tg.rb}px ${tg.rb}px`,opacity:tg.o.toFixed(3),
@@ -3872,6 +3879,8 @@ const GUTSCH={key:'gutsch',name:'Gutscheine in der App',lane:'laneV4',cls:'bento
     const z=1-eIO(seg(t,P.hold,P.hold+P.zoomDur)),m=eIO(seg(t,P.matchAt,P.len-1/24)),A=fit(GS_BI,GS_TGT),B=fit(GS_MI,GS_MT);
     const tx=A[0]*z+B[0]*m,ty=A[1]*z+B[1]*m,S=1+(A[2]-1)*z+(B[2]-1)*m;
     E.phone.style.transform=`translate(${tx.toFixed(2)}px,${ty.toFixed(2)}px) scale(${S.toFixed(5)})`;
+    {let cv=$('gsCover');if(!cv){cv=document.createElement('div');cv.id='gsCover';cv.style.cssText='position:absolute;inset:0;pointer-events:none';GSL.appendChild(cv)}
+     const r=105+2300*eIO(seg(t,.02,.6));cv.style.display=t<.6?'':'none';cv.style.background=`radial-gradient(circle at ${BD_PILLT.x}px ${BD_PILLT.y}px, transparent ${r.toFixed(0)}px, #f4f1ea ${(r+1).toFixed(0)}px)`} /* Karte wächst kreisförmig aus der 250-Ö-Pill (Übergang von den Badges) */
     const fo=(1-seg(z,.25,.85)).toFixed(3);E.frame.forEach(e=>e.style.opacity=fo);E.ui.forEach(e=>e.style.opacity=fo);
     its.forEach((im,i)=>{if(i!==GS_BI)im.style.opacity=fo;else im.style.boxShadow=`0 8px 22px rgba(60,20,30,${(.10*(1-z)).toFixed(3)})`})},
   marks(M){const P=M.P;return [[0,'BIPA-Karte'],[P.hold,'Zoom raus'],[P.scrollAt,'Scrollen'],[P.matchAt,'Match-Cut']]},
@@ -4042,12 +4051,14 @@ const NEWSL={key:'newsl',name:'Newsletter',lane:'laneV4',cls:'bento',
 /* Kunde (Kürzung): kein Zoom raus in die Wolke und wieder hinein – Kian bleibt Vollbild, Tamara schiebt ihn als Swipe nach links raus.
    Der übersprungene Teil (J Sekunden Clip-Zeit) entspricht genau einem Takt, der auch in der Musik fehlt. */
 {const J=2.5429,SW=.55,r0=CLOUD.render,m0=CLOUD.model;
+ // Standbild des Tamara-Videos an der Swipe-Stelle unter dem Video – falls das Video beim Abspielen noch nicht dekodiert ist, blitzt kein Verlauf durch
+ {const ct=$('clT'),im=document.createElement('img');im.src='ooh/tamara_f.webp';im.alt='';im.id='clT2';im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0';ct.insertBefore(im,ct.firstChild);CLV2.style.zIndex=1}
  CLOUD.model=function(P){const M=m0.call(this,P);M.total-=J;return M};
  CLOUD.render=function(M,t){const P=M.P,E=CLE,T2=P.z2At+P.z2Dur,S=T2-J-SW,ct=$('clT'),W=$('clFW');
   if(t<S){r0.call(this,M,0);
    const vt=Math.min(4.98,P.vStart+t),pl=(view==='main'?mPlaying:cPlaying);if(!pl||Math.abs(CLV.currentTime-vt)>.12){if(!CLV.paused&&!pl)CLV.pause();CLV.currentTime=vt}if(pl&&CLV.paused)CLV.play().catch(()=>{});
    const po=eStFlow(seg(t,P.hold,P.hold+P.pillOut));E.pill.style.opacity=(1-po).toFixed(3);
-   ct.style.display='none';return}
+   Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return} /* außerhalb des Bildes schon da (Bild/Video geladen) */
   r0.call(this,M,Math.max(t+J,T2));
   const e=eIO(seg(t,S,S+SW));if(e>=1){E.main.style.display='none';return}
   // Swipe: Kian (Vollbild) nach links raus, Tamara (Vollbild) schiebt von rechts nach
@@ -4568,7 +4579,7 @@ let actx=null,abuf=null,abuf0=null,abufAt=null,asrc=null,gain=null,muted=false;
 const AU_BASS=91.4537,AU_CUT=93.7395,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
 function auTarget(){return AU_CUT}
 const AU_CB=132.5917,AU_CBD=0.0142;function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track mit Schleife: [0,LB) + LN × [LA,LB) + [LB,Ende)
-  const sr=abuf0.sampleRate,a=Math.round(AU_LA*sr),b=Math.round(AU_LB*sr),L=b-a,n=abuf0.length+AU_LN*L,xf=Math.round(.006*sr);
+  const sr=abuf0.sampleRate,a=Math.round(AU_LA*sr),b=Math.round(AU_LB*sr),L=b-a,n=abuf0.length+AU_LN*L,xf=Math.round(.04*sr);
   const out=actx.createBuffer(abuf0.numberOfChannels,n,sr);
   for(let ch=0;ch<abuf0.numberOfChannels;ch++){const src=abuf0.getChannelData(ch),dst=out.getChannelData(ch);dst.set(src.subarray(0,b));
     for(let k=0;k<=AU_LN;k++){const o=b+k*L;if(k<AU_LN)dst.set(src.subarray(a,b),o);else dst.set(src.subarray(b),o);
@@ -4577,10 +4588,10 @@ const AU_CB=132.5917,AU_CBD=0.0142;function spliceAudio(){if(!abuf0)return null;
     for(let ch=0;ch<abuf0.numberOfChannels;ch++){const d=out.getChannelData(ch),e=o2.getChannelData(ch);e.set(d.subarray(0,ca));e.set(d.subarray(ca+cd),ca);for(let i=0;i<xf;i++){const w=i/xf;e[ca+i]=d[ca+cd+i]*w+d[ca+i]*(1-w)}}
     {const cb=Math.round(AU_CB*sr),cbd=Math.round(AU_CBD*sr),o3=actx.createBuffer(o2.numberOfChannels,o2.length-cbd,sr); // zweiter Schnitt (Kunde): U-Bahn + Billboard raus
     for(let ch=0;ch<o2.numberOfChannels;ch++){const d=o2.getChannelData(ch),e=o3.getChannelData(ch);e.set(d.subarray(0,cb));e.set(d.subarray(cb+cbd),cb);for(let i=0;i<xf;i++){const w=i/xf;e[cb+i]=d[cb+cbd+i]*w+d[cb+i]*(1-w)}}
-    {let o=o3;for(const [p,d,src] of [[107.491, -6.85, 0], [61.765, -4.574, 0], [13.769, 2.275, 11.494], [114.357, -2.276, 0], [93.779, -2.276, 0], [73.189, -2.276, 0], [2.4019, -2.1731, 0], [96.192, -4.567, 0], [32.169, -4.574, 0], [73.315, -2.275, 0], [43.593, -2.299, 0]]){const P=Math.round(p*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr); // Kunde: Kürzung / Logo-Takt
+    {let o=o3;for(const [p,d,src] of [[107.491, -6.85, 0], [61.765, -4.574, 0], [13.769, 2.275, 11.494], [114.357, -2.276, 0], [93.779, -2.276, 0], [73.189, -2.276, 0], [2.4019, -2.1731, 0], [96.192, -4.567, 0], [32.169, -4.574, 0], [73.315, -2.275, 0], [43.593, -2.299, 0]]){const P=Math.round((p-.05)*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr); // Kunde: Kürzung / Logo-Takt
       for(let ch=0;ch<o.numberOfChannels;ch++){const a=o.getChannelData(ch),e=q.getChannelData(ch);
         if(d<0){e.set(a.subarray(0,P));e.set(a.subarray(P+D),P);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[P+D+i]*w+a[P+i]*(1-w)}}
-        else{const S=Math.round(src*sr);e.set(a.subarray(0,P));e.set(a.subarray(S,S+D),P);e.set(a.subarray(P),P+D);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[S+i]*w+a[P+i]*(1-w);e[P+D+i]=a[P+i]*w+a[S+D+i]*(1-w)}}}
+        else{const S=Math.round((src-.05)*sr);e.set(a.subarray(0,P));e.set(a.subarray(S,S+D),P);e.set(a.subarray(P),P+D);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[S+i]*w+a[P+i]*(1-w);e[P+D+i]=a[P+i]*w+a[S+D+i]*(1-w)}}}
       o=q}return o}}}}
 async function ensureAudio(){if(actx)return;actx=new (window.AudioContext||window.webkitAudioContext)();gain=actx.createGain();gain.connect(actx.destination);try{abuf0=await actx.decodeAudioData(b64ToBuf(SND));abuf=spliceAudio()}catch(e){abuf=null}}
 function stopAudio(){if(asrc){try{asrc.stop()}catch(e){}asrc.disconnect();asrc=null}}
