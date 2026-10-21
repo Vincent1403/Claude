@@ -860,6 +860,32 @@ PARAMS["deal"] = {**PARAMS.get("deal", {}), "t1": 2.3, "t2": 4.6, "t3": 999, "en
 PARAMS["formats"] = {**PARAMS.get("formats", {}), "len": CLIPS["formats"]["len"]}
 PARAMS["flex"] = {**PARAMS.get("flex", {}), "inAt": 0}   # Kunde: keine Lücke nach den Formaten – Headline steigt sofort auf   # letzter Bildschirm gleitet am Ende mit Parallaxe raus
 _ED = _ED + _ED2
+# Kunde (Kürzung, Runde 3): alles außer Markenfarben bis ×0,9 schneller, auf dem Beat. Zwei Bereiche werden gleichmäßig gestaucht
+# und verlieren je 2 Takte Musik (in der Mitte, auf einem Taktstrich); jeder Clip-Anfang/-Ende landet wieder auf einem Schlag.
+_BS = json.loads((here / "beats_snapshot.json").read_text())            # Beat-Raster vor diesem Schritt (aus dem Editor gelesen)
+_ED3 = []
+for _ka, _kb, _cut, _kc in ((0, 91, 8, 44), (100, 216, 8, 156)):        # Bereich [Schlag ka, kb), 8 Schläge raus, Musikschnitt bei Schlag kc
+    _f = (_kb - _ka - _cut) / (_kb - _ka); assert _f >= .9
+    _P, _D = _BS[_kc], _BS[_kc + _cut] - _BS[_kc]
+    _NB = [b for b in _BS if b < _P - .02] + [round(b - _D, 4) for b in _BS if b >= _P + _D - .02]
+    _a, _b = _BS[_ka], _BS[_kb]
+    def _mp(x, _ka=_ka, _kb=_kb, _f=_f, _a=_a, _b=_b, _D=_D, _NB=_NB):
+        if x < _a - .3: return x
+        if x > _b + .3: return round(x - _D, 4)
+        k = min(range(len(_BS)), key=lambda i: abs(_BS[i] - x)); o = x - _BS[k]
+        j = _ka + round((k - _ka) * _f)
+        return round(_NB[j] + o * _f, 4)
+    for _k, _v in CLIPS.items():
+        if _v["start"] >= 1000: continue
+        _s0, _e0 = _v["start"], _v["start"] + _v["len"]
+        _s1, _e1 = _mp(_s0), _mp(_e0)
+        if _s0 >= _a - .3 and _e0 <= _b + .3 and abs((_e1 - _s1) - (_e0 - _s0)) > 1e-3:
+            _v["rate"] = round(_v.get("rate", 1) * (_e0 - _s0) / (_e1 - _s1), 4)
+        _v["start"], _v["len"] = _s1, round(_e1 - _s1, 4)
+    _ED3.append((_P, -round(_D, 4), 0)); _BS = _NB
+_ED3.sort(key=lambda e: -e[0])
+CLIPS["endc"]["rate"] = round(CLIPS["endc"].get("rate", 1) / .9, 4); CLIPS["endc"]["len"] = round(CLIPS["endc"]["len"] * .9, 4)   # Endcard ×0,9
+_ED = _ED + _ED3
 PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
 PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
 _NET = round(sum(d for _, d, _ in _ED), 4)
@@ -944,7 +970,7 @@ _p = _p.replace("vp.addEventListener('click',()=>document.getElementById('mPlay'
 (here / "player.html").write_text(_p, encoding="utf-8")
 
 # Stage-Version für den Video-Export: 3840×2160, 4118 Frames @ 24 fps, Bild kommt nur aus useTime()
-ST_W, ST_H, ST_FPS, ST_FRAMES = 3840, 2160, 24, 4118 - round((AU_CBD - _NET) * 24)
+ST_W, ST_H, ST_FPS, ST_FRAMES = 3840, 2160, 24, round((CLIPS["endc"]["start"] + CLIPS["endc"]["len"]) * 24)
 _sc = f"""<style id="stageOnly">
 html,body{{margin:0;background:#000;overflow:hidden}}
 .wrap{{display:none!important}}
