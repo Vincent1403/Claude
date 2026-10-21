@@ -251,11 +251,11 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=164.55, FPS=24, TRACK_LEN=160.03;
+const T_MAIN=155.55, FPS=24, TRACK_LEN=151.03;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
 const AU_LA=45.732,AU_LB=91.4456,AU_LN=2,AU_LL=AU_LB-AU_LA; // Musik-Schleife: ab dem Bass-Einsatz (Takt 37) springt der Track zurück auf den Break (Takt 17) – Break + zweite Hälfte laufen zweimal extra, ~187 s
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<AU_LB-.05)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const mid=BEATS.filter(v=>v>=AU_LA-.01&&v<AU_LB-.05);for(let k=1;k<=AU_LN;k++)BEATS.push(...mid.map(v=>+(v+k*AU_LL).toFixed(3)));BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));const per=96.0522/PEAKS.length,ia=Math.round(AU_LA/per),ib=Math.round(AU_LB/per),seg=PEAKS.slice(ia,ib),tail=PEAKS.splice(ib);for(let k=0;k<AU_LN;k++)PEAKS.push(...seg);PEAKS.push(...tail)}
-const AU_CA=100.545,AU_CD=18.28544;{const per=(96.0522+AU_LN*AU_LL)/PEAKS.length;PEAKS.splice(Math.round(AU_CA/per),Math.round(AU_CD/per));const nb=BEATS.filter(v=>v<AU_CA-.02).concat(BEATS.filter(v=>v>=AU_CA+AU_CD-.02).map(v=>+(v-AU_CD).toFixed(3)));BEATS.length=0;BEATS.push(...nb);PEAKS.splice(Math.round(132.5917/per),Math.round(0.0142/per));const nb2=BEATS.filter(v=>v<132.5917-.02).concat(BEATS.filter(v=>v>=132.6059-.02).map(v=>+(v-0.0142).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);for(const [p,d,src] of [[107.491, -6.85, 0], [61.765, -4.574, 0], [13.769, 2.275, 11.494]]){let nb;if(d<0){const D=-d;PEAKS.splice(Math.round(p/per),Math.round(D/per));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=p+D-.02).map(v=>+(v-D).toFixed(3)))}else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(p/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<p-.02).map(v=>+(v+d).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}
+const AU_CA=100.545,AU_CD=18.28544;{const per=(96.0522+AU_LN*AU_LL)/PEAKS.length;PEAKS.splice(Math.round(AU_CA/per),Math.round(AU_CD/per));const nb=BEATS.filter(v=>v<AU_CA-.02).concat(BEATS.filter(v=>v>=AU_CA+AU_CD-.02).map(v=>+(v-AU_CD).toFixed(3)));BEATS.length=0;BEATS.push(...nb);PEAKS.splice(Math.round(132.5917/per),Math.round(0.0142/per));const nb2=BEATS.filter(v=>v<132.5917-.02).concat(BEATS.filter(v=>v>=132.6059-.02).map(v=>+(v-0.0142).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);for(const [p,d,src] of [[107.491, -6.85, 0], [61.765, -4.574, 0], [13.769, 2.275, 11.494], [114.357, -2.276, 0], [93.779, -2.276, 0], [73.189, -2.276, 0], [2.4019, -2.1731, 0]]){let nb;if(d<0){const D=-d;PEAKS.splice(Math.round(p/per),Math.round(D/per));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=p+D-.02).map(v=>+(v-D).toFixed(3)))}else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(p/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<p-.02).map(v=>+(v+d).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}
 const AU_OFF=0; // Musik startet bei Frame 0; das Intro dauert genau 3 Takte länger, das Logo liegt auf dem Drop (alles danach bleibt im Takt)
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)
 const MUSIC_SNAPS=[0,...[2.35,5.32,8.64].map(v=>v+AU_OFF),...BEATS];
@@ -2014,6 +2014,7 @@ const PF_SCENES=[ // Person, Name, Partner, Markenfarbe, [HUD A], [HUD B]
    B:fsCard(1140,730,620,160,`<div style="display:flex;align-items:center;gap:24px;padding:0 28px;height:100%"><div style="flex:none;width:112px;height:112px;border-radius:50%;background:${FS_BG};color:#fff;display:grid;place-items:center;font-size:44px;font-weight:900">2×</div><div><div style="font-size:36px;font-weight:700;display:flex;align-items:center;gap:8px">Doppelte ${fsOes(34,24)}</div><div style="font-size:22px;font-weight:500;margin-top:4px">bei jedem Tankstopp</div></div></div>`)},
  {p:'student',name:'Jonas',n:'pagro',bg:'#e2001a',A:fsCard(1180,150,540,190,`<div style="padding:34px 36px 40px"><div style="display:flex;align-items:center;gap:16px">${fsCircle('pagro',64)}<div style="font-size:30px;font-weight:700">Schulstart bei PAGRO</div></div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:22px"><div style="font-size:60px;font-weight:900;letter-spacing:-.02em;line-height:1">−15 %</div>${fsBtn('Aktivieren')}</div></div>`),
    B:fsCard(230,680,620,160,`<div style="display:flex;align-items:center;gap:24px;padding:0 28px;height:100%"><div style="position:relative">${fsRing('pc',112,13,.86)}<div style="position:absolute;inset:0;display:grid;place-items:center;font-size:30px;font-weight:700"><span class="fsNum" data-to="594" data-dec="0">0</span></div></div><div><div style="font-size:36px;font-weight:700;display:flex;align-items:center;gap:8px">Jonas’ ${fsOes(34,24)}</div><div style="font-size:22px;font-weight:500;margin-top:4px">gesammelt bei PAGRO</div></div></div>`)}];
+PF_SCENES.splice(PF_SCENES.findIndex(s=>s.name==='Jonas'),1); // Kunde (Kürzung): Jonas raus
 const PFL=document.createElement('div');PFL.id='peopleL';PFL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);perspective:2400px;perspective-origin:50% 50%';
 PFL.innerHTML=`
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="pfRg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#c0233a"/><stop offset=".5" stop-color="#ee2a06"/><stop offset="1" stop-color="#ff7024"/></linearGradient></defs></svg>
@@ -4145,12 +4146,12 @@ const FORMATS={
     {k:'lag',label:'Versatz Rahmen (Wechsel)',min:0,max:.3,step:.01,fmt:v=>Math.round(v*1000)+' ms',sub:'Rahmen weiter rechts/unten folgen etwas später: Parallaxe'},
     {k:'inLag',label:'Versatz Rahmen (erster Aufbau)',min:0,max:.8,step:.01,fmt:v=>Math.round(v*1000)+' ms'},
     {k:'travel',label:'Weg nach oben',min:1100,max:1600,step:10,fmt:v=>v+' px'}],
-  model(P){const b=P.beat,T=FM_SC.map((_,i)=>i?i*P.hold*b+(P.sh||0):0); /* sh: Wechsel auf die Synth-Hits verschieben */return {P,b,T,key:T[1],keyName:'Wechsel 2',total:FM_SC.length*P.hold*b}},
+  model(P){const b=P.beat,T=FM_SC.map((_,i)=>i?i*P.hold*b+(P.sh||0):0); /* sh: Wechsel auf die Synth-Hits verschieben */return {P,b,T,key:T[1],keyName:'Wechsel 2',total:P.len||FM_SC.length*P.hold*b}},
   show(on){FML.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=FME,T=M.T,D=P.dur,ef=u=>eStFlow(clamp(u));FML.style.background=t<(P.clearUntil||0)?'transparent':'#f4f1ea'; /* durchsichtig, solange die Headline darunter noch rausläuft */
     E.g.style.transform='none';
     E.fr.forEach((f,i)=>{const si=+f.dataset.s,x=+f.dataset.x,y=parseFloat(f.style.top),o=(x/1740+(y>500?.35:0)); // Reihenfolge: links → rechts, oben → unten
-      const inA=si===0?o*P.inLag:T[si]+o*P.lag+.06,outA=si<FM_SC.length-1?T[si+1]+o*P.lag:1e9;
+      const inA=si===0?o*P.inLag:T[si]+o*P.lag+.06,outA=si<FM_SC.length-1?T[si+1]+o*P.lag:P.len?P.len-P.dur-.3+o*P.lag:1e9; /* Kunde: letzter Bildschirm gleitet am Ende mit Parallaxe nach oben raus */
       const yi=P.travel*(1-ef((t-inA)/D)),yo=-P.travel*ef((t-outA)/D),dy=yi+yo;
       f.style.visibility=dy>-1150&&dy<1150?'visible':'hidden';f.style.opacity='1';
       f.style.transform=`translateY(${dy.toFixed(1)}px)`;
@@ -4366,57 +4367,57 @@ S.clips.cloud={start:48.8057,len:8.3843,in:0}; // endet auf der Takt-Eins 57,19 
 S.warp={r0:9000.0};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9000.0,len:2.4833,in:0.475};
-S.clips.c2={start:9.2072,len:2.5881,in:0};
-S.clips.people={start:66.3272,len:9.1433,in:0};
+S.clips.c2={start:7.0341,len:2.5881,in:0};
+S.clips.people={start:64.1541,len:6.8673,in:0};
 S.clips.c3={start:9000.0,len:4.5717,in:0};
 S.clips.pers={start:9000.0,len:2.2858,in:0};
-S.clips.rabatt={start:42.5767,len:4.4943,in:0,rate:0.80095};
-S.clips.cloud={start:46.514,len:6.0985,in:0};
+S.clips.rabatt={start:40.4036,len:4.4943,in:0,rate:0.80095};
+S.clips.cloud={start:44.3409,len:6.0985,in:0};
 S.clips.c4={start:9000.0,len:2.2858,in:0};
 S.clips.box={start:9000.0,len:3.5,in:0};
 S.clips.c5={start:9000.0,len:2.2875,in:0};
-S.clips.partner={start:52.6146,len:8.5714,in:0,rate:0.75};
-S.clips.brand={start:61.186,len:5.1412,in:0.0625,rate:0.75};
+S.clips.partner={start:50.4415,len:8.5714,in:0,rate:0.75};
+S.clips.brand={start:59.0129,len:5.1412,in:0.0625,rate:0.75};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:25.8506,len:6.1916,in:0.2,rate:0.70608};
-S.clips.deal={start:110.9095,len:7.9544,in:0,rate:0.7126};
+S.clips.colors={start:23.6775,len:6.1916,in:0.2,rate:0.70608};
+S.clips.deal={start:104.1844,len:5.6784,in:0,rate:0.7126};
 S.clips.prod={start:9000.0,len:4.5717,in:0.634,rate:0.4972};
 S.clips.c7={start:9000.0,len:5.1431,in:0};
-S.clips.city={start:118.8639,len:4.5788,in:0,rate:0.9429};
+S.clips.city={start:109.8628,len:4.5788,in:0,rate:0.9429};
 S.clips.bill={start:9000.0,len:4.5788,in:0,rate:0.7598};
 S.clips.c8={start:9000.0,len:5.9952,in:0};
-S.clips.logo2={start:148.3214,len:3.7092,in:0};
+S.clips.logo2={start:139.3203,len:3.7092,in:0};
 S.clips.slot={start:9000.0,len:4.5717,in:0};
-S.clips.badges={start:77.7563,len:9.1433,in:0,rate:1.0937};
-S.clips.wall={start:91.4713,len:6.8578,in:1.3,rate:1.1437};
+S.clips.badges={start:73.3072,len:9.1433,in:0,rate:1.0937};
+S.clips.wall={start:87.0222,len:4.5818,in:1.3,rate:1.7118};
 S.clips.tags={start:9000.0,len:5.9994,in:0,rate:0.8};
 S.clips.showcase={start:9000.0,len:8.47,in:0};
 S.clips.hl1b={start:9000.0,len:2.1731,in:0};
-S.clips.hl1c={start:4.575,len:2.0016,in:0};
-S.clips.hl1d={start:6.5766,len:2.6306,in:0};
-S.clips.julian={start:16.5536,len:10.493,in:0,rate:0.76873};
-S.clips.white2={start:16.5536,len:10.493,in:0,rate:0.76873};
-S.clips.fuer={start:32.0422,len:10.5345,in:0};
-S.clips.system={start:75.4705,len:2.2858,in:0};
-S.clips.kanal={start:98.3291,len:2.6698,in:0};
-S.clips.formats={start:100.2489,len:8.3748,in:0};
-S.clips.flex={start:108.6237,len:2.2858,in:0};
+S.clips.hl1c={start:2.4019,len:2.0016,in:0};
+S.clips.hl1d={start:4.4035,len:2.6306,in:0};
+S.clips.julian={start:14.3805,len:10.493,in:0,rate:0.76873};
+S.clips.white2={start:14.3805,len:10.493,in:0,rate:0.76873};
+S.clips.fuer={start:29.8691,len:10.5345,in:0};
+S.clips.system={start:71.0214,len:2.2858,in:0};
+S.clips.kanal={start:91.604,len:2.6698,in:0};
+S.clips.formats={start:93.5238,len:8.3748,in:0};
+S.clips.flex={start:101.8986,len:2.2858,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
-S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
-S.clips.ivBrille={start:4.575,len:2.0016,in:0};
-S.clips.endtxt={start:139.4664,len:12.5642,in:0};
-S.clips.endc={start:152.0306,len:10.5208,in:0};
-S.clips.logo3={start:11.7953,len:4.7583,in:0.475};
+S.clips.ivTanken={start:9000.0,len:2.1731,in:0};
+S.clips.ivBrille={start:2.4019,len:2.0016,in:0};
+S.clips.endtxt={start:130.4653,len:12.5642,in:0};
+S.clips.endc={start:143.0295,len:10.5208,in:0};
+S.clips.logo3={start:9.6222,len:4.7583,in:0.475};
 S.clips.ubahn={start:9000.0,len:4.5788,in:0};
 S.clips.welt={start:9000.0,len:2.2859,in:0};
 S.clips.logo4={start:9000.0,len:3.1453,in:0};
-S.clips.pos={start:134.5424,len:2.0653,in:0};
-S.clips.pos2={start:136.6077,len:1.7152,in:0};
-S.clips.pos3={start:138.3229,len:1.1435,in:0};
-S.clips.laptop={start:123.4427,len:4.5717,in:0};
-S.clips.newsl={start:128.0144,len:6.878,in:0};
-S.clips.gutsch={start:86.8996,len:4.5717,in:0};
+S.clips.pos={start:124.9696,len:2.0652,in:0};
+S.clips.pos2={start:127.0348,len:1.7153,in:0};
+S.clips.pos3={start:128.7501,len:1.7152,in:0};
+S.clips.laptop={start:114.4416,len:4.5717,in:0};
+S.clips.newsl={start:119.0133,len:6.3063,in:0};
+S.clips.gutsch={start:82.4505,len:4.5717,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 3.7572, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 3.086, "lOut": 4.473, "sent": 1000, "sent2": 4.583, "popGap": 99, "end": 15, "spread": 1.15, "flyStep": 0.0686, "swap": 2.0});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
@@ -4436,7 +4437,7 @@ Object.assign(S.comps.endtxt.params,{"len": 21.97, "aIn": 0, "aOut": 8, "bIn": 2
 Object.assign(S.comps.endc.params,{"flyAt": 0.35, "txAt": 0.95, "wmAt": 1.0, "outAt": 2.881, "linkAt": 3.08, "pillAt": 3.381});FM.endc=COMPS.endc.model(S.comps.endc.params);
 Object.assign(S.comps.kanal.params,{"len": 4.672, "inAt": 0, "outAt": 3.833});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
 Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.3835, "banner": 0, "sc": 0.85, "y": 300, "cx": 470});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);
-Object.assign(S.comps.formats.params,{"sh": 0.314, "clearUntil": 0.75, "hold": 6});FM.formats=COMPS.formats.model(S.comps.formats.params);
+Object.assign(S.comps.formats.params,{"sh": 0.314, "clearUntil": 0.75, "len": 8.3748, "hold": 6});FM.formats=COMPS.formats.model(S.comps.formats.params);
 Object.assign(S.comps.prod.params,{"ppIn": 0.5, "ppStag": 0.1});FM.prod=COMPS.prod.model(S.comps.prod.params);
 Object.assign(S.comps.logo2.params,{"outAt": 2.4467, "circ": 1});FM.logo2=COMPS.logo2.model(S.comps.logo2.params);
 Object.assign(S.comps.cloud.params,{"banner": 0});FM.cloud=COMPS.cloud.model(S.comps.cloud.params);
@@ -4444,9 +4445,10 @@ Object.assign(S.comps.welt.params,{"len": 4.0, "outAt": 3.15});FM.welt=COMPS.wel
 Object.assign(S.comps.city.params,{"start": 0, "speed": 1.8});FM.city=COMPS.city.model(S.comps.city.params);
 Object.assign(S.comps.pos.params,{"len": 2.999, "outAt": 3.999});FM.pos=COMPS.pos.model(S.comps.pos.params);
 Object.assign(S.comps.pos2.params,{"len": 2.999, "outAt": 3.999});FM.pos2=COMPS.pos2.model(S.comps.pos2.params);
-Object.assign(S.comps.pos3.params,{"len": 2.0, "outAt": 3.0});FM.pos3=COMPS.pos3.model(S.comps.pos3.params);
-Object.assign(S.comps.newsl.params,{"len": 6.878, "scroll": 99999});FM.newsl=COMPS.newsl.model(S.comps.newsl.params);
+Object.assign(S.comps.pos3.params,{"len": 2.999, "outAt": 3.999});FM.pos3=COMPS.pos3.model(S.comps.pos3.params);
+Object.assign(S.comps.newsl.params,{"len": 6.3063, "scroll": 99999});FM.newsl=COMPS.newsl.model(S.comps.newsl.params);
 Object.assign(S.comps.gutsch.params,{"len": 4.5717});FM.gutsch=COMPS.gutsch.model(S.comps.gutsch.params);
+Object.assign(S.comps.deal.params,{"t1": 2.3, "t2": 4.6, "t3": 999, "end": 7.076});FM.deal=COMPS.deal.model(S.comps.deal.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
   if(db){try{await db.doc(docComp(k)).set(d);return}catch(e){}}try{localStorage.setItem(docComp(k),JSON.stringify(d))}catch(e){}}
@@ -4536,7 +4538,7 @@ const AU_CB=132.5917,AU_CBD=0.0142;function spliceAudio(){if(!abuf0)return null;
     for(let ch=0;ch<abuf0.numberOfChannels;ch++){const d=out.getChannelData(ch),e=o2.getChannelData(ch);e.set(d.subarray(0,ca));e.set(d.subarray(ca+cd),ca);for(let i=0;i<xf;i++){const w=i/xf;e[ca+i]=d[ca+cd+i]*w+d[ca+i]*(1-w)}}
     {const cb=Math.round(AU_CB*sr),cbd=Math.round(AU_CBD*sr),o3=actx.createBuffer(o2.numberOfChannels,o2.length-cbd,sr); // zweiter Schnitt (Kunde): U-Bahn + Billboard raus
     for(let ch=0;ch<o2.numberOfChannels;ch++){const d=o2.getChannelData(ch),e=o3.getChannelData(ch);e.set(d.subarray(0,cb));e.set(d.subarray(cb+cbd),cb);for(let i=0;i<xf;i++){const w=i/xf;e[cb+i]=d[cb+cbd+i]*w+d[cb+i]*(1-w)}}
-    {let o=o3;for(const [p,d,src] of [[107.491, -6.85, 0], [61.765, -4.574, 0], [13.769, 2.275, 11.494]]){const P=Math.round(p*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr); // Kunde: Kürzung / Logo-Takt
+    {let o=o3;for(const [p,d,src] of [[107.491, -6.85, 0], [61.765, -4.574, 0], [13.769, 2.275, 11.494], [114.357, -2.276, 0], [93.779, -2.276, 0], [73.189, -2.276, 0], [2.4019, -2.1731, 0]]){const P=Math.round(p*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr); // Kunde: Kürzung / Logo-Takt
       for(let ch=0;ch<o.numberOfChannels;ch++){const a=o.getChannelData(ch),e=q.getChannelData(ch);
         if(d<0){e.set(a.subarray(0,P));e.set(a.subarray(P+D),P);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[P+D+i]*w+a[P+i]*(1-w)}}
         else{const S=Math.round(src*sr);e.set(a.subarray(0,P));e.set(a.subarray(S,S+D),P);e.set(a.subarray(P),P+D);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[S+i]*w+a[P+i]*(1-w);e[P+D+i]=a[P+i]*w+a[S+D+i]*(1-w)}}}

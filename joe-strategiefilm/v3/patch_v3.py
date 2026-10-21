@@ -805,9 +805,10 @@ CLIPS["wall"] = {**C(_wa, _wl, _wi), "rate": round((_wc - _wi) / _wl, 4)}
 # Kunde: Ende ab den POS-Platzhaltern lag neben dem Takt → alle Schnitte auf Taktanfänge (Taktstriche nach dem zweiten Musikschnitt)
 _bars = [round(b + _LTL + _NLL, 4) for b in (134.898, 137.173, 139.472)]   # Taktanfänge laut Beat-Analyse (nach dem Laptop um 2 Takte später)
 # Kunde: ganzer Newsletter soll sichtbar sein → Newsletter 1 Takt länger; die drei POS-Karten teilen sich die übrigen 2 Takte (3 + 3 + 2 Schläge)
-CLIPS["newsl"]["len"] = round(_bars[0] - CLIPS["newsl"]["start"], 4); PARAMS["newsl"] = {"len": CLIPS["newsl"]["len"], "scroll": 99999}
-_bt = (_bars[2] - _bars[0]) / 8; _q1 = round(_bars[0] + 3 * _bt, 4); _q2 = round(_bars[0] + 6 * _bt, 4)
-for _k, _a, _b in (("pos", _bars[0], _q1), ("pos2", _q1, _q2), ("pos3", _q2, _bars[2])):
+_bt = (_bars[2] - _bars[0]) / 8; _b0 = round(_bars[0] - _bt, 4)   # Kunde: alle POS gleich lang (je 3 Schläge) – 1 Schlag vom Newsletter
+CLIPS["newsl"]["len"] = round(_b0 - CLIPS["newsl"]["start"], 4); PARAMS["newsl"] = {"len": CLIPS["newsl"]["len"], "scroll": 99999}
+_q1 = round(_b0 + 3 * _bt, 4); _q2 = round(_b0 + 6 * _bt, 4)
+for _k, _a, _b in (("pos", _b0, _q1), ("pos2", _q1, _q2), ("pos3", _q2, _bars[2])):
     CLIPS[_k] = C(_a, round(_b - _a, 4)); PARAMS[_k] = {"len": round((_b - _a) / BEAT, 3), "outAt": round((_b - _a) / BEAT + 1, 3)}
 CLIPS["pos"] = C(round(CLIPS["pos"]["start"] - .35, 4), round(CLIPS["pos"]["len"] + .35, 4))   # Kunde: Pearle-Karte gleitet schon rein, während das Tablet nach links rausgleitet
 _es = _bars[2]; _el = round(CLIPS["endc"]["start"] - _es, 4)   # Verlauf liegt weiter unter dem Schluss-Logo (Text endet vorher über cOut)
@@ -844,6 +845,20 @@ for _p, _d, _src in _ED:
         else:
             if _v["start"] >= _p - 1e-3: _v["start"] = round(_v["start"] + _d, 4)
             elif _e > _p: _v["len"] = round(_v["len"] + _d, 4)
+# Kunde (Kürzung, Runde 2): Koch-Video raus, Angebotswand −1 Takt (schneller), Anzeigen ohne letzten Zustand (−1 Takt), Menschen ohne Jonas (−1 Takt)
+_ED2 = [(114.357, -2.276, 0), (93.779, -2.276, 0), (73.189, -2.276, 0), (2.4019, -2.1731, 0)]
+_wc2 = CLIPS["wall"]["len"] * CLIPS["wall"].get("rate", 1)
+for _p, _d, _src in _ED2:
+    for _k, _v in CLIPS.items():
+        if _v["start"] >= 1000: continue
+        _e = _v["start"] + _v["len"]
+        if _v["start"] >= _p - 1e-3 - _d: _v["start"] = round(_v["start"] + _d, 4)
+        elif _v["start"] < _p and _e > _p: _v["len"] = round(_v["len"] + _d, 4)
+        elif _p - 1e-3 <= _v["start"] < _p - _d - 1e-3: _v["start"] = 9000.0       # liegt ganz im geschnittenen Stück (Koch-Video)
+CLIPS["wall"]["rate"] = round(_wc2 / CLIPS["wall"]["len"], 4)
+PARAMS["deal"] = {**PARAMS.get("deal", {}), "t1": 2.3, "t2": 4.6, "t3": 999, "end": round(CLIPS["deal"]["len"] * CLIPS["deal"].get("rate", 1) / BEAT, 3)}
+PARAMS["formats"] = {**PARAMS.get("formats", {}), "len": CLIPS["formats"]["len"]}   # letzter Bildschirm gleitet am Ende mit Parallaxe raus
+_ED = _ED + _ED2
 PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
 PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
 _NET = round(sum(d for _, d, _ in _ED), 4)
