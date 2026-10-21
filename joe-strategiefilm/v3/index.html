@@ -3815,7 +3815,8 @@ const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „D
  ENDC.render=function(M,t){const P=M.P,pre=P.pre||0;r0.call(this,M,Math.max(0,t-pre));
   const out=pre+P.flyAt-.05;
   cs.forEach((c,i)=>{const a=.05+PT_POP[i]*.035,o=out+PT_POP[i]*.012,k=eBack(seg(t,a,a+.4))*(1-eInCub(seg(t,o,o+.25)));
-   c.style.transform=`scale(${k.toFixed(4)})`;c.style.visibility=pre&&k>.001?'visible':'hidden'})};
+   const ox=9*Math.sin(t*(1+i*.11)+i*1.7),oy=7*Math.cos(t*(.9+i*.13)+i*1.1); // gleiches Schweben wie die Profilbilder bei „Für jeden.“
+   c.style.transform=`translate(${ox.toFixed(1)}px,${oy.toFixed(1)}px) scale(${k.toFixed(4)})`;c.style.visibility=pre&&k>.001?'visible':'hidden'})};
 }
 
 /* Kunde: das jö-Logo (nach „Das neue jö.“) steht einen Takt länger – Musik wiederholt dort einen Takt */
