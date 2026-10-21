@@ -865,7 +865,7 @@ _ED = _ED + _ED2
 # und verlieren je 2 Takte Musik (in der Mitte, auf einem Taktstrich); jeder Clip-Anfang/-Ende landet wieder auf einem Schlag.
 _BS = json.loads((here / "beats_snapshot.json").read_text())            # Beat-Raster vor diesem Schritt (aus dem Editor gelesen)
 _ED3 = []
-for _ka, _kb, _cut, _kc in ((0, 91, 8, 44), (100, 216, 8, 132)):        # Bereich [Schlag ka, kb), 8 Schläge raus, Musikschnitt bei Schlag kc
+for _ka, _kb, _cut, _kc in ((0, 91, 8, 44), (100, 216, 8, 116)):        # Bereich [Schlag ka, kb), 8 Schläge raus, Musikschnitt bei Schlag kc (116: Musik vor und nach dem Sprung gleich, nicht im Übergang bei 1:13)
     _f = (_kb - _ka - _cut) / (_kb - _ka); assert _f >= .9
     _P, _D = _BS[_kc], _BS[_kc + _cut] - _BS[_kc]
     _NB = [b for b in _BS if b < _P - .02] + [round(b - _D, 4) for b in _BS if b >= _P + _D - .02]
