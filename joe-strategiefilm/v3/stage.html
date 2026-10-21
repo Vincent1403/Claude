@@ -168,7 +168,7 @@ html,body{margin:0;background:#000;overflow:hidden}
 #c2v{position:fixed;left:0;top:0;width:3840px;height:2160px;transform-origin:0 0;background:#000}
 #c2v #vp{position:absolute!important;inset:0!important;width:3840px!important;height:2160px!important;margin:0!important;border-radius:0!important;max-width:none!important;aspect-ratio:auto!important}
 </style><script>
-window.__videoMeta={width:3840,height:2160,duration:167.0,fps:24};
+window.__videoMeta={width:3840,height:2160,duration:171.583333,fps:24};
 window.__render=new URLSearchParams(location.search).has('__render');
 window.__seek=async function(t){
   window.__seeking=true;
@@ -269,11 +269,11 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=169.12, FPS=24, TRACK_LEN=164.6;
+const T_MAIN=173.7, FPS=24, TRACK_LEN=169.18;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
 const AU_LA=45.732,AU_LB=91.4456,AU_LN=2,AU_LL=AU_LB-AU_LA; // Musik-Schleife: ab dem Bass-Einsatz (Takt 37) springt der Track zurück auf den Break (Takt 17) – Break + zweite Hälfte laufen zweimal extra, ~187 s
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<AU_LB-.05)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const mid=BEATS.filter(v=>v>=AU_LA-.01&&v<AU_LB-.05);for(let k=1;k<=AU_LN;k++)BEATS.push(...mid.map(v=>+(v+k*AU_LL).toFixed(3)));BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));const per=96.0522/PEAKS.length,ia=Math.round(AU_LA/per),ib=Math.round(AU_LB/per),seg=PEAKS.slice(ia,ib),tail=PEAKS.splice(ib);for(let k=0;k<AU_LN;k++)PEAKS.push(...seg);PEAKS.push(...tail)}
-const AU_CA=100.545,AU_CD=18.28544;{const per=(96.0522+AU_LN*AU_LL)/PEAKS.length;PEAKS.splice(Math.round(AU_CA/per),Math.round(AU_CD/per));const nb=BEATS.filter(v=>v<AU_CA-.02).concat(BEATS.filter(v=>v>=AU_CA+AU_CD-.02).map(v=>+(v-AU_CD).toFixed(3)));BEATS.length=0;BEATS.push(...nb);PEAKS.splice(Math.round(132.5917/per),Math.round(4.5859/per));const nb2=BEATS.filter(v=>v<132.5917-.02).concat(BEATS.filter(v=>v>=137.1776-.02).map(v=>+(v-4.5859).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}
+const AU_CA=100.545,AU_CD=18.28544;{const per=(96.0522+AU_LN*AU_LL)/PEAKS.length;PEAKS.splice(Math.round(AU_CA/per),Math.round(AU_CD/per));const nb=BEATS.filter(v=>v<AU_CA-.02).concat(BEATS.filter(v=>v>=AU_CA+AU_CD-.02).map(v=>+(v-AU_CD).toFixed(3)));BEATS.length=0;BEATS.push(...nb);PEAKS.splice(Math.round(132.5917/per),Math.round(0.0142/per));const nb2=BEATS.filter(v=>v<132.5917-.02).concat(BEATS.filter(v=>v>=132.6059-.02).map(v=>+(v-0.0142).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}
 const AU_OFF=0; // Musik startet bei Frame 0; das Intro dauert genau 3 Takte länger, das Logo liegt auf dem Drop (alles danach bleibt im Takt)
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)
 const MUSIC_SNAPS=[0,...[2.35,5.32,8.64].map(v=>v+AU_OFF),...BEATS];
@@ -3920,7 +3920,7 @@ const LAPTOP={key:'laptop',name:'Tablet (Platzhalter)',lane:'laneV4',cls:'bento'
   model(P){return {P,key:P.scrollAt,keyName:'Scrollen',total:P.len}},
   show(on){LTL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=LTE,u=eStFlow(seg(t,0,P.inDur)),k=1-u,dr=seg(t,0,M.total); /* kommt gedreht und tiefer rein, setzt sich weich in leichte Schräglage, driftet danach minimal */
-    const ox=-2100*eIO(seg(t,M.total-.6,M.total+.05));LTL.style.background=t>M.total-.36?'transparent':'#f4f1ea'; /* darunter gleiten schon die POS-Karten rein */ /* Kunde: gleitet am Ende nach links raus, POS-Karten schieben von rechts nach */
+    const ox=-2100*eIO(seg(t,M.total-.6,M.total+.05)); /* Kunde: gleitet am Ende nach links raus, das Newsletter-Handy schiebt von rechts nach */
     E.tab.style.transform=`translateX(${ox.toFixed(1)}px) translateY(${(k*620-22).toFixed(1)}px) rotateX(${(5+22*k).toFixed(2)}deg) rotateY(${(-9-20*k+3*dr).toFixed(2)}deg) rotateZ(${(-3-9*k+1*dr).toFixed(2)}deg) scale(${(.92+.08*u).toFixed(4)})`;
     E.site.style.transform=`translateY(${(-P.scroll*eIO(seg(t,P.scrollAt,P.scrollAt+P.scrollDur))).toFixed(1)}px)`},
   marks(M){const P=M.P;return [[0,'Tablet'],[P.scrollAt,'Scrollen']]},
@@ -3928,6 +3928,58 @@ const LAPTOP={key:'laptop',name:'Tablet (Platzhalter)',lane:'laneV4',cls:'bento'
     ['Tablet kommt rein',`0–${F(P.inDur)}`,'kommt gedreht von unten, setzt sich mit weicher Drehung in leichte Schräglage (wie das Handy)'],
     ['Website scrollt',`${F(P.scrollAt)}–${F(P.scrollAt+P.scrollDur)}`,`Platzhalter-Website (Navigation, Hero im jö-Verlauf, Karten, Text, Footer), ${P.scroll} px weich gescrollt`]]},
   note:'Platzhalter (Kunde): Tablet-Mockup im Stil des Handys mit scrollender Website.'};
+/* =====================================================================
+   COMP: NEWSLETTER (Partnerfilm, Kunde) – nach dem Tablet: Handy gleitet von rechts rein (Sperrbildschirm im jö-Verlauf),
+   die Push-Benachrichtigung „Neuer Newsletter verfügbar“ fällt groß von oben ins Bild, wird angetippt und
+   zieht sich ins Handy zurück; dort öffnet sich der Newsletter und scrollt durch. Am Ende gleitet das Handy nach links raus.
+   ===================================================================== */
+const NL_K=1000/866,NL_W=420*NL_K,NL_H=1000,NL_IN=18*NL_K,NL_SW=NL_W-2*NL_IN,NL_SH=NL_H-2*NL_IN,NL_IH=NL_SW*3279/900,NL_PW=900,NL_PH=NL_PW*549/1807;
+const NLL=document.createElement('div');NLL.id='newslL';NLL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;background:#f4f1ea;font-family:var(--font)';
+NLL.innerHTML=`<div style="position:absolute;left:${(1920-NL_W)/2}px;top:${(1080-NL_H)/2}px;width:${NL_W}px;height:${NL_H}px;perspective:2600px">
+ <div id="nlPhone" style="position:absolute;inset:0;transform-origin:50% 55%;transform-style:preserve-3d">
+  ${[22,18,14,10,6,3].map(z=>`<div style="position:absolute;inset:0;border-radius:${70*NL_K}px;transform:translateZ(-${z}px);background:linear-gradient(135deg,#9aa0a7,#5b6168 45%,#a9aeb4 60%,#4d5359)"></div>`).join('')}
+  <div style="position:absolute;inset:0;border-radius:${70*NL_K}px;background:linear-gradient(135deg,#d9dde2,#8a9098 40%,#cfd3d8 60%,#6d737b);box-shadow:0 40px 80px rgba(60,10,20,.28)"></div>
+  <div style="position:absolute;inset:${6*NL_K}px;border-radius:${64*NL_K}px;background:#111"></div>
+  <div style="position:absolute;inset:${NL_IN}px;border-radius:${54*NL_K}px;overflow:hidden;background:${JG_CSS}">
+   <div style="position:absolute;left:0;right:0;top:120px;text-align:center;color:#fff"><div style="font-size:22px;font-weight:600;opacity:.9">Dienstag, 21. Oktober</div><div style="font-size:104px;font-weight:700;letter-spacing:-.02em;line-height:1.05">12:30</div></div>
+   <div id="nlMail" style="position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;background:#f4f1ea"><img id="nlImg" src="ooh/newsletter.webp" alt="" style="position:absolute;left:0;top:0;width:${NL_SW}px;height:${NL_IH.toFixed(1)}px;max-width:none"></div></div>
+  <div style="position:absolute;left:50%;top:${30*NL_K}px;width:${108*NL_K}px;height:${30*NL_K}px;margin-left:-${54*NL_K}px;border-radius:${15*NL_K}px;background:#111"></div></div></div>
+ <img id="nlPop" src="ooh/popup.svg" alt="" style="position:absolute;left:${(1920-NL_PW)/2}px;top:0;width:${NL_PW}px;height:${NL_PH.toFixed(1)}px;transform-origin:50% 50%;filter:drop-shadow(0 30px 50px rgba(60,20,30,.25))">`;
+$('stage').appendChild(NLL);
+const NLE={phone:$('nlPhone'),mail:$('nlMail'),img:$('nlImg'),pop:$('nlPop')};
+const NEWSL={key:'newsl',name:'Newsletter',lane:'laneV4',cls:'bento',
+  DEF:{len:4.925,inDur:.75,popAt:.7,tapAt:1.65,openDur:.55,outDur:.6},
+  params:[
+    {k:'inDur',label:'Handy gleitet rein über',min:.3,max:1.5,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+    {k:'popAt',label:'Benachrichtigung fällt rein ab',min:0,max:2,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+    {k:'tapAt',label:'Benachrichtigung wird angetippt ab',min:.8,max:3,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'zieht sich ins Handy, der Newsletter öffnet sich'},
+    {k:'openDur',label:'Öffnen über',min:.2,max:1.2,step:1/24,fmt:v=>Math.round(v*24)+' F'},
+    {k:'outDur',label:'Handy gleitet raus über',min:.3,max:1.2,step:1/24,fmt:v=>Math.round(v*24)+' F'}],
+  model(P){return {P,key:P.tapAt,keyName:'Antippen',total:P.len}},
+  show(on){NLL.style.display=on?'':'none'},
+  render(M,t){const P=M.P,E=NLE,T=M.total,f=eStFlow;
+    // Handy: von rechts rein (übernimmt den Schwung des Tablets), setzt sich mit weicher Drehung; am Ende nach links raus
+    const u=f(seg(t,0,P.inDur)),k=1-u,ox=1150*k-2100*eIO(seg(t,T-P.outDur,T+.05)),dr=seg(t,0,T);
+    E.phone.style.transform=`translateX(${ox.toFixed(1)}px) rotateY(${(-14+18*k+4*dr).toFixed(2)}deg) rotateZ(${(3+5*k-1.5*dr).toFixed(2)}deg)`;
+    NLL.style.background=t>T-.36||t<.4?'transparent':'#f4f1ea'; /* an den Übergängen sieht man Tablet bzw. POS-Karten darunter */
+    // Benachrichtigung: fällt mit Federn von oben, Antippen (kurz eindrücken), dann zieht sie sich ins Handy oben zurück
+    const pin=eBack(seg(t,P.popAt,P.popAt+.5)),tap=seg(t,P.tapAt,P.tapAt+.14),pr=1-.05*Math.sin(Math.PI*tap),o=eIO(seg(t,P.tapAt+.12,P.tapAt+.12+P.openDur));
+    const y0=-NL_PH-60,y1=150,y2=(1080-NL_H)/2+NL_IN+40,sc=(1-o)+o*(NL_SW-30)/NL_PW;
+    E.pop.style.transform=`translate(${(ox*o).toFixed(1)}px,${(y0+(y1-y0)*pin+(y2-y1)*o).toFixed(1)}px) scale(${(sc*pr).toFixed(4)})`;
+    E.pop.style.opacity=(1-seg(o,.7,1)).toFixed(3);E.pop.style.visibility=t<P.popAt?'hidden':'visible';
+    // Newsletter: schiebt sich im Handy von unten auf, dann weich bis zum Ende scrollen
+    const op=eIO(seg(t,P.tapAt+.2,P.tapAt+.2+P.openDur)),s0=P.tapAt+.2+P.openDur+.15;
+    E.mail.style.transform=`translateY(${((1-op)*NL_SH).toFixed(1)}px)`;
+    E.img.style.transform=`translateY(${(-(NL_IH-NL_SH)*eIO(seg(t,s0,T-P.outDur-.1))).toFixed(1)}px)`},
+  marks(M){const P=M.P;return [[0,'Handy'],[P.popAt,'Benachrichtigung'],[P.tapAt,'Antippen'],[P.tapAt+.2+P.openDur,'Newsletter scrollt']]},
+  table(M){const F=s=>Math.round(s*FPS),P=M.P,T=M.total;return [
+    ['Handy gleitet rein',`0–${F(P.inDur)}`,'von rechts, Sperrbildschirm im jö-Verlauf, setzt sich mit weicher Drehung'],
+    ['Benachrichtigung',`${F(P.popAt)}–${F(P.popAt+.5)}`,'„jö · jetzt – Neuer Newsletter verfügbar“ fällt groß von oben ins Bild (Federn)'],
+    ['Antippen + Öffnen',`${F(P.tapAt)}–${F(P.tapAt+.2+P.openDur)}`,'drückt kurz ein, zieht sich ins Handy zurück; der Newsletter schiebt sich von unten auf'],
+    ['Scrollen',`${F(P.tapAt+.2+P.openDur+.15)}–${F(T-P.outDur)}`,'Newsletter weich bis zum Footer'],
+    ['Raus',`${F(T-P.outDur)}–${F(T)}`,'Handy gleitet nach links raus, die POS-Karten schieben nach']]},
+  note:'Newsletter (Kunde): Push-Benachrichtigung → Newsletter im Handy.'};
+
 /* Partnerfilm (Kunde): „Farben“ – der Verlauf kommt von oben und drückt die Farbspalten ins untere Viertel,
    die Hex-Erklärung läuft in den oberen drei Vierteln (alle Markenfarben bleiben sichtbar); zum Schluss wird der Verlauf Vollbild. */
 {const box=FCE.box,wrap=document.createElement('div');wrap.style.cssText='position:absolute;inset:0;filter:drop-shadow(0 24px 40px rgba(60,20,30,.18))';
@@ -4288,7 +4340,7 @@ const ENDTXT={
 const WHITE2=Object.assign(Object.create(WHITE),{key:'white2',name:'Weiße Fläche (Julian)',render(M,t){WH_J=true;try{WHITE.render.call(this,M,t)}finally{WH_J=false}}});
 ["c2", "c3", "c4", "c5", "c6", "c7", "c8"].forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen
 [$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel
-const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,gutsch:GUTSCH,laptop:LAPTOP,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};
+const COMPS={c2:C2,c3:C3,c4:C4,c5:C5,c6:C6,c7:C7,c8:C8,box:BOX,bill:BILL,endc:ENDC,prod:PROD,logo:LOGO,julian:JULIAN,colors:COLORS,deal:ADS,partner:PARTNER,brand:BRAND,full:FULLP,hl1:HL1,story:STORY,story2:STORY2,story3:STORY3,story4:STORY4,story5:STORY5,story6:STORY6,city:CITY,rabatt:RABATT,cloud:CLOUD,white:WHITE,people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,gutsch:GUTSCH,laptop:LAPTOP,newsl:NEWSL,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};
 try{POSTER.show(false);HL2.show(false);FONT.show(false)}catch(e){}
 try{DOTS.show(false);PDOTS.show(false);POPCORN.show(false)}catch(e){}
 try{NEU.show(false);BENTO.show(false)}catch(e){}
@@ -4345,7 +4397,7 @@ S.clips.c7={start:9000.0,len:5.1431,in:0};
 S.clips.city={start:128.0129,len:4.5788,in:0,rate:0.9429};
 S.clips.bill={start:9000.0,len:4.5788,in:0,rate:0.7598};
 S.clips.c8={start:9000.0,len:5.9952,in:0};
-S.clips.logo2={start:152.8987,len:3.7092,in:0};
+S.clips.logo2={start:157.4704,len:3.7092,in:0};
 S.clips.slot={start:9000.0,len:4.5717,in:0};
 S.clips.badges={start:80.0553,len:9.1433,in:0,rate:1.0937};
 S.clips.wall={start:93.7703,len:6.8578,in:1.3,rate:1.1437};
@@ -4364,16 +4416,17 @@ S.clips.flex={start:117.7727,len:2.2858,in:0};
 S.clips.ivKochen={start:0,len:2.4019,in:0};
 S.clips.ivTanken={start:2.4019,len:2.1731,in:0};
 S.clips.ivBrille={start:4.575,len:2.0016,in:0};
-S.clips.endtxt={start:144.0437,len:12.5642,in:0};
-S.clips.endc={start:156.6079,len:10.5208,in:0};
+S.clips.endtxt={start:148.6154,len:12.5642,in:0};
+S.clips.endc={start:161.1796,len:10.5208,in:0};
 S.clips.logo3={start:11.7953,len:2.4833,in:0.475};
 S.clips.ubahn={start:9000.0,len:4.5788,in:0};
 S.clips.welt={start:9000.0,len:2.2859,in:0};
 S.clips.logo4={start:9000.0,len:3.1453,in:0};
-S.clips.pos={start:136.8134,len:2.6563,in:0};
-S.clips.pos2={start:139.4697,len:2.275,in:0};
-S.clips.pos3={start:141.7447,len:2.299,in:0};
+S.clips.pos={start:141.3851,len:2.6563,in:0};
+S.clips.pos2={start:144.0414,len:2.275,in:0};
+S.clips.pos3={start:146.3164,len:2.299,in:0};
 S.clips.laptop={start:132.5917,len:4.5717,in:0};
+S.clips.newsl={start:136.8134,len:4.9217,in:0};
 S.clips.gutsch={start:89.1986,len:4.5717,in:0};
 Object.assign(S.comps.julian.params,{"sStart": 3.7572, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 3.086, "lOut": 4.473, "sent": 1000, "sent2": 4.583, "popGap": 99, "end": 15, "spread": 1.15, "flyStep": 0.0686, "swap": 2.0});FM.partner=COMPS.partner.model(S.comps.partner.params);
@@ -4403,6 +4456,7 @@ Object.assign(S.comps.city.params,{"start": 0, "speed": 1.8});FM.city=COMPS.city
 Object.assign(S.comps.pos.params,{"len": 4.033, "outAt": 5.033});FM.pos=COMPS.pos.model(S.comps.pos.params);
 Object.assign(S.comps.pos2.params,{"len": 3.978, "outAt": 4.978});FM.pos2=COMPS.pos2.model(S.comps.pos2.params);
 Object.assign(S.comps.pos3.params,{"len": 4.02, "outAt": 5.02});FM.pos3=COMPS.pos3.model(S.comps.pos3.params);
+Object.assign(S.comps.newsl.params,{"len": 4.9217});FM.newsl=COMPS.newsl.model(S.comps.newsl.params);
 Object.assign(S.comps.gutsch.params,{"len": 4.5717});FM.gutsch=COMPS.gutsch.model(S.comps.gutsch.params);
 let db=null;const DOC_TL='jo/timeline',docComp=k=>'jo/comp-'+k;
 async function saveComp(k){const c=S.comps[k],d={params:c.params,version:c.version,frozenAt:c.frozenAt};
@@ -4483,7 +4537,7 @@ let actx=null,abuf=null,abuf0=null,abufAt=null,asrc=null,gain=null,muted=false;
 // Musik-Schnitt: der große Bass vom Ende des Tracks (91,44 s) wird genau auf den H·A-Aufbau der Endcard gelegt
 const AU_BASS=91.4537,AU_CUT=93.7395,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
 function auTarget(){return AU_CUT}
-const AU_CB=132.5917,AU_CBD=4.5859;function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track mit Schleife: [0,LB) + LN × [LA,LB) + [LB,Ende)
+const AU_CB=132.5917,AU_CBD=0.0142;function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf; // Track mit Schleife: [0,LB) + LN × [LA,LB) + [LB,Ende)
   const sr=abuf0.sampleRate,a=Math.round(AU_LA*sr),b=Math.round(AU_LB*sr),L=b-a,n=abuf0.length+AU_LN*L,xf=Math.round(.006*sr);
   const out=actx.createBuffer(abuf0.numberOfChannels,n,sr);
   for(let ch=0;ch<abuf0.numberOfChannels;ch++){const src=abuf0.getChannelData(ch),dst=out.getChannelData(ch);dst.set(src.subarray(0,b));
@@ -4646,7 +4700,7 @@ window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,open
 <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <script type="text/babel" data-presets="react">
 const {createContext, useContext, useEffect, useLayoutEffect, useRef, useState} = React;
-const WIDTH = 3840, HEIGHT = 2160, FPS = 24, DURATION = 4008;
+const WIDTH = 3840, HEIGHT = 2160, FPS = 24, DURATION = 4118;
 
 // Stage/useTime: vom Renderer bereitgestellt, sonst eigene Variante (spielt automatisch, ohne Klick)
 const TimeCtx = createContext(0);

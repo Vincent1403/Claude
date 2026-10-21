@@ -278,6 +278,7 @@ aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Log
            + wl_imgs((here / "gutschein_comp.js").read_text(encoding="utf-8")) + "\n"
            + (here / "pos_mod.js").read_text(encoding="utf-8").replace("__POS1__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos1.webp").read_bytes()).decode()).replace("__POS2__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos2.webp").read_bytes()).decode()).replace("__POS3__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos3.webp").read_bytes()).decode()) + "\n"
            + (here / "laptop_comp.js").read_text(encoding="utf-8").replace("__TABWEB__", "ooh/tablet_web.webp")   # als eigene Datei neben der Seite (Seite bliebe sonst über 16 MB) + "\n"
+           + (here / "newsletter_comp.js").read_text(encoding="utf-8").replace("__NLIMG__", "ooh/newsletter.webp").replace("__NLPOP__", "ooh/popup.svg") + "\n"
            + (here / "colors_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + wl_imgs((here / "formats_comp.js").read_text(encoding="utf-8")) + "\n"
@@ -290,7 +291,7 @@ old_comps = s[s.index("const COMPS={"):s.index("};", s.index("const COMPS={")) +
 keys = [kv.split(":")[0] for kv in old_comps[len("const COMPS={"):-2].split(",")]
 assert all(k in keys for k in DROP), keys
 body = ",".join(kv for kv in old_comps[len("const COMPS={"):-2].split(",") if kv.split(":")[0] not in DROP)
-new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,gutsch:GUTSCH,laptop:LAPTOP,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
+new_comps = ("const COMPS={" + ",".join(f"{k}:{k.upper()}" for k in CARDS) + "," + body + ",people:PEOPLE,slot:SLOT,badges:BADGES,wall:WALL,tags:TAGS,showcase:SHOWCASE,hl1b:HL1B,hl1c:HL1C,hl1d:HL1D,ivKochen:IV_KOCHEN,ivTanken:IV_TANKEN,ivBrille:IV_BRILLE,fuer:FUER,pers:PERS,system:SYSTEM,kanal:KANAL,welt:WELT,pos:POS,pos2:POS2,pos3:POS3,gutsch:GUTSCH,laptop:LAPTOP,newsl:NEWSL,formats:FORMATS,flex:FLEX,ubahn:UBAHN,endtxt:ENDTXT,white2:WHITE2,logo2:LOGO2,logo3:LOGO3,logo4:LOGO4};")
 layers = (json.dumps(CARDS) + ".forEach(k=>$('stage').appendChild($('hl_'+k))); // Tafeln über allen Szenen\n"
           "[$('logo'),LBOX,GL].forEach(el=>$('stage').appendChild(el)); // Logo am Schluss liegt über der Verlaufs-Tafel\n")
 rep(old_comps, aliases + layers + new_comps)
@@ -775,13 +776,14 @@ PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(CLIPS["endtxt"]["len"] / BE
 # Kunde: U-Bahn- und Billboard-Screen raus → Film genau so viel kürzer; die Musik bekommt an derselben Stelle einen zweiten Schnitt,
 # alles danach rückt um dieselbe Länge vor und bleibt dadurch auf den Hits
 AU_CB = CLIPS["ubahn"]["start"]; AU_CBD = round(CLIPS["bill"]["start"] + CLIPS["bill"]["len"] - AU_CB, 4)
-_LTL = round(2 * BARL, 4); AU_CBD = round(AU_CBD - _LTL, 4)   # Kunde: Laptop (2 Takte) direkt nach dem Citylight → Musik verliert dort nur noch 2 Takte
+_LTL = round(2 * BARL, 4); _NLL = round(2 * BARL, 4); AU_CBD = round(AU_CBD - _LTL - _NLL, 4)   # + Newsletter (2 Takte) nach dem Tablet → der zweite Musikschnitt entfällt praktisch   # Kunde: Laptop (2 Takte) direkt nach dem Citylight → Musik verliert dort nur noch 2 Takte
 for k in ("ubahn", "bill"):
     CLIPS[k]["start"] = 9000.0
 for k, v in CLIPS.items():
-    if AU_CB + AU_CBD + _LTL - 1e-3 <= v["start"] < 1000:
+    if AU_CB + AU_CBD + _LTL + _NLL - 1e-3 <= v["start"] < 1000:
         v["start"] = round(v["start"] - AU_CBD, 4)
 CLIPS["laptop"] = C(AU_CB, _LTL)
+CLIPS["newsl"] = C(round(AU_CB + _LTL - .35, 4), round(_NLL + .35, 4)); PARAMS["newsl"] = {"len": round(_NLL + .35, 4)}   # startet überlappend, während das Tablet rausgleitet
 rep("const T_MAIN=173.71, FPS=24, TRACK_LEN=169.19;", f"const T_MAIN={round(173.71 - AU_CBD, 2)}, FPS=24, TRACK_LEN={round(169.19 - AU_CBD, 2)};")
 rep("    return o2}}", "    {const cb=Math.round(AU_CB*sr),cbd=Math.round(AU_CBD*sr),o3=actx.createBuffer(o2.numberOfChannels,o2.length-cbd,sr); // zweiter Schnitt (Kunde): U-Bahn + Billboard raus\n"
     "    for(let ch=0;ch<o2.numberOfChannels;ch++){const d=o2.getChannelData(ch),e=o3.getChannelData(ch);e.set(d.subarray(0,cb));e.set(d.subarray(cb+cbd),cb);for(let i=0;i<xf;i++){const w=i/xf;e[cb+i]=d[cb+cbd+i]*w+d[cb+i]*(1-w)}}\n"
@@ -800,7 +802,7 @@ CLIPS["gutsch"]["len"] = round(2 * BARL, 4); PARAMS["gutsch"] = {"len": round(2 
 _wi = 1.3; _wa = round(CLIPS["gutsch"]["start"] + CLIPS["gutsch"]["len"], 4); _wl = round(_we - _wa, 4)
 CLIPS["wall"] = {**C(_wa, _wl, _wi), "rate": round((_wc - _wi) / _wl, 4)}
 # Kunde: Ende ab den POS-Platzhaltern lag neben dem Takt → alle Schnitte auf Taktanfänge (Taktstriche nach dem zweiten Musikschnitt)
-_bars = [round(b + _LTL, 4) for b in (134.898, 137.173, 139.472)]   # Taktanfänge laut Beat-Analyse (nach dem Laptop um 2 Takte später)
+_bars = [round(b + _LTL + _NLL, 4) for b in (134.898, 137.173, 139.472)]   # Taktanfänge laut Beat-Analyse (nach dem Laptop um 2 Takte später)
 _p0 = CLIPS["pos"]["start"]
 for _k, _a, _b in (("pos", _p0, _bars[0]), ("pos2", _bars[0], _bars[1]), ("pos3", _bars[1], _bars[2])):
     CLIPS[_k] = C(_a, round(_b - _a, 4)); PARAMS[_k] = {"len": round((_b - _a) / BEAT, 3), "outAt": round((_b - _a) / BEAT + 1, 3)}

@@ -28,7 +28,7 @@ const LAPTOP={key:'laptop',name:'Tablet (Platzhalter)',lane:'laneV4',cls:'bento'
   model(P){return {P,key:P.scrollAt,keyName:'Scrollen',total:P.len}},
   show(on){LTL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=LTE,u=eStFlow(seg(t,0,P.inDur)),k=1-u,dr=seg(t,0,M.total); /* kommt gedreht und tiefer rein, setzt sich weich in leichte Schräglage, driftet danach minimal */
-    const ox=-2100*eIO(seg(t,M.total-.6,M.total+.05));LTL.style.background=t>M.total-.36?'transparent':'#f4f1ea'; /* darunter gleiten schon die POS-Karten rein */ /* Kunde: gleitet am Ende nach links raus, POS-Karten schieben von rechts nach */
+    const ox=-2100*eIO(seg(t,M.total-.6,M.total+.05)); /* Kunde: gleitet am Ende nach links raus, das Newsletter-Handy schiebt von rechts nach */
     E.tab.style.transform=`translateX(${ox.toFixed(1)}px) translateY(${(k*620-22).toFixed(1)}px) rotateX(${(5+22*k).toFixed(2)}deg) rotateY(${(-9-20*k+3*dr).toFixed(2)}deg) rotateZ(${(-3-9*k+1*dr).toFixed(2)}deg) scale(${(.92+.08*u).toFixed(4)})`;
     E.site.style.transform=`translateY(${(-P.scroll*eIO(seg(t,P.scrollAt,P.scrollAt+P.scrollDur))).toFixed(1)}px)`},
   marks(M){const P=M.P;return [[0,'Tablet'],[P.scrollAt,'Scrollen']]},
