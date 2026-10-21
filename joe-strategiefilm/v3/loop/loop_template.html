@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BILLA Gutschein Loop</title>
+<style>
+:root{--bg:#f4f1ea;--ink:#670003;--font:"Satoshi",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(--font)}
+#vp{position:absolute;overflow:hidden;background:var(--bg)}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:var(--bg)}
+.card{position:absolute;background:#fff;overflow:hidden}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#ui{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;padding:16px;background:linear-gradient(transparent,rgba(0,0,0,.5));opacity:0;transition:opacity .25s}
+body:hover #ui,body.paused #ui{opacity:1}
+#ui button,#ui a{appearance:none;border:0;border-radius:999px;height:44px;padding:0 20px;background:#fff;color:#1d1d1b;font:700 15px/44px var(--font);text-decoration:none;cursor:pointer}
+#ui button:focus-visible,#ui a:focus-visible{outline:3px solid #ee2a06;outline-offset:2px}
+#hint{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none}
+#hint span{background:rgba(0,0,0,.6);color:#fff;font:700 18px/1 var(--font);padding:16px 24px;border-radius:999px}
+body.render #ui,body.render #hint{display:none}
+</style>
+</head>
+<body class="paused">
+<div id="vp"><div id="stage">
+ <div id="wall" style="position:absolute;inset:0"><div id="wg" style="position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0"></div></div>
+ <div id="phoneL" style="position:absolute;inset:0"><div id="phone" style="position:absolute;transform-origin:0 0"></div></div>
+</div></div>
+<div id="hint"><span>Klicken zum Abspielen mit Ton</span></div>
+<div id="ui"><button id="play" type="button">Abspielen</button></div>
+<script>
+/* BILLA-Gutschein-Loop: 8 Takte = 32 Schläge. Handy mit großem BILLA-Gutschein → Zoom raus, Liste scrollt →
+   Match-Cut in die Angebotswand → Wand läuft, fährt auf die BILLA-Karte → Match-Cut zurück ins Handy → großer BILLA-Gutschein (= Bild 1). */
+const IMG=__IMGS__;
+const LEN=18.25,B=LEN/32,FPS=24;          // Musik: 8 Takte aus dem Synth-Teil, Loop-Naht vor dem Drop
+const $=id=>document.getElementById(id);
+const clamp=v=>Math.max(0,Math.min(1,v)),seg=(t,a,b)=>clamp((t-a)/(b-a));
+const eIO=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2,eOut=p=>1-Math.pow(1-p,3);
+
+// --- Handy (wie im Partnerfilm: Gutscheine-Screen der jö App)
+const K=960/866,PW=420*K,PH=960,PL=(1920-PW)/2,PT=60,IN=18*K,SW=PW-2*IN,PAD=18,CW=SW-2*PAD,GAP=16,Y0=175,AR=854/814;
+const LIST=['billa','penny','adeg','omv','pearle','universal','bipa_bonusbox','sutterluety','zgonc','forstinger'];
+const MI=6;                                // diese Karte landet beim Match-Cut auf derselben Karte in der Wand
+const IH=CW/AR,IY=LIST.map((_,i)=>Y0+i*(IH+GAP));
+$('phone').style.cssText+=`left:${PL}px;top:${PT}px;width:${PW}px;height:${PH}px`;
+$('phone').innerHTML=`<div style="position:absolute;inset:0;border-radius:${70*K}px;background:linear-gradient(135deg,#d9dde2,#8a9098 40%,#cfd3d8 60%,#6d737b);box-shadow:0 40px 80px rgba(60,10,20,.28)"></div>
+ <div style="position:absolute;inset:${6*K}px;border-radius:${64*K}px;background:#111"></div>
+ <div style="position:absolute;inset:${IN}px;border-radius:${54*K}px;overflow:hidden;background:#f4f1ea">
+  <div id="list" style="position:absolute;inset:0">${LIST.map((n,i)=>`<div class="card" style="left:${PAD}px;top:${IY[i]}px;width:${CW}px;height:${IH}px;border-radius:11px;box-shadow:0 8px 22px rgba(60,20,30,.10)"><img src="${IMG[n]}" alt=""></div>`).join('')}</div>
+  <div style="position:absolute;left:0;right:0;top:0;height:${Y0-8}px;background:#f4f1ea"></div>
+  <div style="position:absolute;left:30px;top:20px;color:#1d1d1b;font-size:17px;font-weight:700">12:30</div>
+  <div style="position:absolute;left:${PAD}px;top:62px;color:var(--ink);font-size:36px;font-weight:800;letter-spacing:-.01em">Gutscheine</div>
+  <div style="position:absolute;left:${PAD}px;top:118px;display:flex;gap:10px">${['Alle','Favoriten','Aktiviert'].map((l,i)=>`<div style="height:38px;padding:0 18px;border-radius:19px;display:flex;align-items:center;font-size:17px;font-weight:700;${i?'background:#fff;color:var(--ink)':'background:var(--ink);color:#fff'}">${l}</div>`).join('')}</div>
+ </div>
+ <div style="position:absolute;left:50%;top:${30*K}px;width:${108*K}px;height:${30*K}px;margin-left:-${54*K}px;border-radius:${15*K}px;background:#111"></div>`;
+// Handy so verschieben/skalieren, dass Listeneintrag i bei Scroll scr auf dem Rechteck [x,y,Breite] liegt
+const fit=(i,scr,T)=>{const S=T[2]/CW;return [T[0]-PL-S*(IN+PAD),T[1]-PT-S*(IN+IY[i]-scr),S]};
+
+// --- Angebotswand (drei Spalten, außen nach unten, Mitte nach oben)
+const CWW=854,CHW=814,GX=64,GY=64,WS=.66,SIDE=.5,CTR=2;
+const COLS=[['sutterluety','forstinger','pearle','biogena','penny','adeg','omv','zgonc'],['zgonc','universal','bipa_bonusbox','billa','omv','adeg','penny','pearle'],['adeg','penny','universal','sutterluety','billa','zgonc','pearle','forstinger']];
+$('wg').innerHTML=COLS.map((c,ci)=>`<div class="wcol" style="position:absolute;left:0;top:0">${c.map((n,ri)=>`<div class="card" style="left:${(ci-1)*(CWW+GX)-CWW/2}px;top:${(ri-CTR)*(CHW+GY)-CHW/2}px;width:${CWW}px;height:${CHW}px;border-radius:24px;box-shadow:0 30px 70px rgba(94,23,8,.12)"><img src="${IMG[n]}" alt=""></div>`).join('')}</div>`).join('');
+const WC=[...document.querySelectorAll('.wcol')];
+const WSPD=150;                            // px/s auf dem Bildschirm bei 66 %
+// Laufweg der Spalten (Wandeinheiten): setzt nach dem Schnitt sofort ein, bremst vor dem Heranfahren weich ab
+const W0=8*B,WSTOP=23*B,WPUSH=24*B,WCUT=26*B;
+const run=t=>{const a=t-W0,T=WSTOP-W0,r=2*B;return a<=0?0:a<T-r?a:(T-r)+r*.5-(r*.5)*Math.pow(1-clamp((a-(T-r))/r),2)};
+const wallD=t=>WSPD*run(t)/WS;
+// Rechteck (Bildschirm) einer Wandkarte bei Kamera scale s und Verschiebung (ox,oy)
+const wRect=(ci,ri,t,s,ox,oy)=>{const d=wallD(t),dir=ci===1?-1:1,off=ci===1?0:-SIDE*(CHW+GY),y=(ri-CTR)*(CHW+GY)-CHW/2+dir*d+off,x=(ci-1)*(CWW+GX)-CWW/2;return [960+ox+s*x,540+oy+s*y,s*CWW]};
+const MATCH_A=wRect(1,2,W0,WS,0,0);         // Bonusbox in der Mitte der Wand beim ersten Schnitt
+const BIG=[960-880/2,580-880/AR/2,880];    // Startbild: BILLA-Gutschein groß im Handy
+const TB=[1,3];                            // Wand: Mitte, Zeile 3 = BILLA
+const CUT_W=640;                           // so breit ist die BILLA-Karte beim zweiten Match-Cut
+const CUT_C=[960-CUT_W/2,580-CUT_W/AR/2,CUT_W];
+const xc=(TB[0]-1)*(CWW+GX),dir1=TB[0]===1?-1:1; // Kartenmitte in Wandeinheiten (x)
+function frame(t){
+ t=((t%LEN)+LEN)%LEN;
+ const inWall=t>=W0&&t<WCUT;
+ $('wall').style.display=inWall?'':'none';$('phoneL').style.display=inWall?'none':'';
+ const d=wallD(t);
+ if(inWall){
+  // Heranfahren: die BILLA-Karte gleitet gerade zur Bildmitte und wächst auf die Größe, mit der sie im Handy weiterläuft
+  const p=eIO(seg(t,WPUSH,WCUT)),s=WS+(CUT_W/CWW-WS)*p;
+  const yc=(TB[1]-CTR)*(CHW+GY)+dir1*d+(TB[0]===1?0:-SIDE*(CHW+GY));
+  const c0x=960+WS*xc,c0y=540+WS*yc,cx=c0x+(CUT_C[0]+CUT_W/2-c0x)*p,cy=c0y+(CUT_C[1]+CUT_W/AR/2-c0y)*p; // Kartenmitte: von der Lage in der Wand gerade zur Mitte des Handy-Schnitts
+  $('wg').style.transform=`translate(${(cx-s*xc).toFixed(2)}px,${(cy-s*yc).toFixed(2)}px) scale(${s.toFixed(5)})`;
+  WC.forEach((c,i)=>{const dr=i===1?-1:1;c.style.transform=`translateY(${(dr*d+(i===1?0:-SIDE*(CHW+GY))).toFixed(2)}px)`});
+ }else{
+  let scr,A;
+  if(t<W0){ // Startbild → Zoom raus ins Handy → Liste scrollt → Handy fährt heran, Bonusbox liegt auf der Bonusbox der Wand
+   const sp=eIO(seg(t,2.5*B,5.75*B));scr=(IY[MI]-Y0)*sp;
+   const z=1-eIO(seg(t,.75*B,2.75*B)),m=eIO(seg(t,6*B,W0-1/FPS));
+   const P0=fit(0,0,BIG),P2=fit(MI,scr,MATCH_A);
+   A=[P0[0]*z+P2[0]*m,P0[1]*z+P2[1]*m,1+(P0[2]-1)*z+(P2[2]-1)*m];
+  }else{ // aus der BILLA-Karte der Wand zurück ins Handy, weiter heran bis zum Startbild
+   scr=0;const z=eOut(seg(t,WCUT,30*B)),P1=fit(0,0,CUT_C),P0=fit(0,0,BIG);
+   A=[0,1,2].map(k=>P1[k]+(P0[k]-P1[k])*z);
+  }
+  $('list').style.transform=`translateY(${(-scr).toFixed(2)}px)`;
+  $('phone').style.transform=`translate(${A[0].toFixed(2)}px,${A[1].toFixed(2)}px) scale(${A[2].toFixed(5)})`;
+ }
+}
+// --- Anzeige: Bühne 1920×1080 ins Fenster einpassen
+const RENDER=new URLSearchParams(location.search).has('__render');
+if(RENDER)document.body.classList.add('render');
+function size(){const vp=$('vp');let w,h;if(RENDER){w=innerWidth;h=innerHeight}else{w=Math.min(innerWidth,innerHeight*16/9);h=w*9/16}
+ vp.style.cssText=`left:${(innerWidth-w)/2}px;top:${(innerHeight-h)/2}px;width:${w}px;height:${h}px`;$('stage').style.transform=`scale(${w/1920})`}
+addEventListener('resize',size);size();
+// --- Wiedergabe: Bild folgt der Audiouhr, Musik läuft lückenlos im Loop
+let ac=null,src=null,buf=null,t0=0,playing=false,tPause=0;
+const now=()=>playing?(ac?ac.currentTime-t0:(performance.now()/1000-t0)):tPause;
+async function play(){
+ if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();try{buf=await ac.decodeAudioData(await (await fetch('billa_loop_musik.wav')).arrayBuffer())}catch(e){buf=null}}
+ await ac.resume();
+ if(buf){src=ac.createBufferSource();src.buffer=buf;src.loop=true;src.loopStart=0;src.loopEnd=Math.min(LEN,buf.duration);src.connect(ac.destination);src.start(0,tPause%LEN)}
+ t0=ac.currentTime-tPause;playing=true;document.body.classList.remove('paused');$('hint').style.display='none';$('play').textContent='Pausieren';
+}
+function pause(){tPause=now()%LEN;playing=false;if(src){src.stop();src=null}document.body.classList.add('paused');$('play').textContent='Abspielen'}
+const toggle=()=>playing?pause():play();
+$('play').onclick=e=>{e.stopPropagation();toggle()};$('vp').onclick=toggle;
+addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();toggle()}});
+(function tick(){if(!RENDER)frame(now());requestAnimationFrame(tick)})();
+// Export-Schnittstelle: ?__render=1, window.__seek(t)
+window.__videoMeta={width:3840,height:2160,duration:LEN,fps:FPS};
+window.__seek=async t=>{frame(t);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))};
+frame(0);
+</script>
+</body>
+</html>
