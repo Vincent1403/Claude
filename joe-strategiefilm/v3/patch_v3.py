@@ -904,6 +904,25 @@ for _k, _off in (("badges", .55), ("cloud", .35)):                     # Musiksc
     _ED4.append((_P, -_D, 0))
 CLIPS["endc"]["len"] = 8.5955   # Kunde: Endcard wieder lang (mit HammerAlbrecht), Länge wie im Editor gesetzt
 _ED = _ED + _ED4
+# Kunde (Runde 5): 2 Lockups mehr (+1 Schlag Markenfarben, −1 Schlag „Markenerlebnis“); Citylight raus (7 Schläge): 3 Schläge ans Tablet, 1 Takt Musik raus
+_b1 = round(_BS[_BS.index(min(_BS, key=lambda b: abs(b - CLIPS["brand"]["start"]))) - 1], 4); _bd = round(CLIPS["brand"]["start"] - _b1, 4)
+_pc = CLIPS["partner"]["len"] * CLIPS["partner"].get("rate", 1)
+CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - _bd, 4); CLIPS["partner"]["rate"] = round(_pc * (CLIPS["partner"]["len"]) / (CLIPS["partner"]["len"] + _bd) / CLIPS["partner"]["len"], 4) if False else CLIPS["partner"].get("rate", 1)
+CLIPS["brand"]["start"] = _b1; CLIPS["brand"]["len"] = round(CLIPS["brand"]["len"] + _bd, 4)
+_ci = min(range(len(_BS)), key=lambda i: abs(_BS[i] - CLIPS["city"]["start"])); _P5 = _BS[_ci]; _D5 = round(_BS[_ci + 4] - _P5, 4)
+_lx = round(_BS[_ci + 7] - _BS[_ci + 4], 4)                                 # 3 Schläge mehr fürs Tablet
+CLIPS["city"]["start"] = 9000.0
+_old_lap = CLIPS["laptop"]["start"]
+for _v in CLIPS.values():
+    if _v["start"] < 1000 and _v["start"] >= _old_lap - 1e-3: _v["start"] = round(_v["start"] - (_old_lap - _P5), 4)
+CLIPS["laptop"]["len"] = round(CLIPS["laptop"]["len"] + _lx, 4); CLIPS["laptop"]["rate"] = 1
+for _v in CLIPS.values():
+    if _v["start"] < 1000 and _v is not CLIPS["laptop"] and _v["start"] >= _P5 + 1e-3: _v["start"] = round(_v["start"] + _lx, 4)
+_gp = round(CLIPS["laptop"]["start"] - (CLIPS["deal"]["start"] + CLIPS["deal"]["len"]), 4)   # nahtlos an die Anzeigen anschließen
+CLIPS["laptop"]["start"] = round(CLIPS["laptop"]["start"] - _gp, 4); CLIPS["laptop"]["len"] = round(CLIPS["laptop"]["len"] + _gp, 4)
+PARAMS["laptop"] = {**PARAMS.get("laptop", {}), "len": CLIPS["laptop"]["len"], "scrollDur": round(3.75 + _lx, 3)}
+_BS = [b for b in _BS if b < _P5 - .02] + [round(b - _D5, 4) for b in _BS if b >= _P5 + _D5 - .02]
+_ED = _ED + [(_P5, -_D5, 0)]
 PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
 PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
 _NET = round(sum(d for _, d, _ in _ED), 4)
@@ -932,7 +951,7 @@ _PL = {k: "data:image/webp;base64," + base64.b64encode((here / "partner_logos" /
 _PL["joyn"] = "data:image/svg+xml;base64," + base64.b64encode((here / "partner_logos" / "joyn_black.svg").read_bytes()).decode()   # Kunde: joyn-Schriftzug optisch mittig (etwas tiefer)
 rep("const PT_N=['adeg'", "Object.assign(PTA," + json.dumps(_PL) + ");\nconst PT_N=['adeg'")
 _BRK = {"ADEG": "adeg", "PENNY": "penny", "BILLA": "billa", "OMV": "omv", "SUTTERLÜTY": "sutterluety", "FORSTINGER": "forstinger", "PEARLE": "pearle", "PAGRO": "pagro",
-        "RAIFFEISEN": "raiffeisen", "universal": "universal", "BIOGENA": "biogena", "ZGONC": "zgonc", "BIPA": "bipa", "LIBRO": "libro", "BILLA REISEN": "billareisen"}
+        "RAIFFEISEN": "raiffeisen", "universal": "universal", "BIOGENA": "biogena", "ZGONC": "zgonc", "BIPA": "bipa", "LIBRO": "libro", "BILLA REISEN": "billareisen", "jö SPORT": "josport", "jö REISEN": "joreisen"}
 rep("const BR_LX=-220,", "Object.assign(BR_LOGO,{" + ",".join(f"{json.dumps(b)}:PTA.{k}" for b, k in _BRK.items()) + "});\nconst BR_LX=-220,")
 rep("const BR_LX=-220,", "BR_LOGO.joyn=\"data:image/svg+xml;base64," + base64.b64encode((here / "partner_logos" / "joyn_white.svg").read_bytes()).decode() + "\";\nconst BR_LX=-220,")
 rep("const PT_N2=['adeg','pearle','bipa','raiffeisen','penny','libro','pagro','joyn','billa','sutterluety','universal','forstinger','omv','biogena','zgonc'];",
@@ -942,6 +961,8 @@ rep("const PT_CLOUD=[[-120,-330,170],[190,-300,140],[430,-210,180],[660,-330,130
 rep("const PT_POP=[3,9,0,12,6,14,1,10,4,7,13,2,11,5,8];", "const PT_POP=[5,11,0,14,8,17,2,12,6,9,16,3,13,7,10,1,15,4];")
 rep("const PT_FLYORD=[3,12,14,10,2,8,5,13,1,9,4,11,6,0,7]", "const PT_FLYORD=[5,12,17,0,6,9,13,4,16,1,7,10,14,3,15,2,8,11]")
 rep(" ['LIBRO','#d2322a','#ffffff','#efbd31'],", " ['BILLA REISEN','#fdd000','#ffffff',null],\n ['LIBRO','#d2322a','#ffffff','#efbd31'],")
+rep(" ['SUTTERLÜTY',", " ['jö SPORT',JG_CSS,'#ffffff',null],\n ['SUTTERLÜTY',")   # Kunde: jö Sport und jö Reisen auch als Lockup
+rep(" ['LIBRO','#d2322a','#ffffff','#efbd31'],", " ['LIBRO','#d2322a','#ffffff','#efbd31'],\n ['jö REISEN',JG_CSS,'#ffffff',null],")
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
