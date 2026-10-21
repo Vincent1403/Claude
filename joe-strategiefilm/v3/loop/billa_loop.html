@@ -58,14 +58,14 @@ const COLS=[['sutterluety','forstinger','pearle','biogena','penny','adeg','omv',
 $('wg').innerHTML=COLS.map((c,ci)=>`<div class="wcol" style="position:absolute;left:0;top:0">${c.map((n,ri)=>`<div class="card" style="left:${(ci-1)*(CWW+GX)-CWW/2}px;top:${(ri-CTR)*(CHW+GY)-CHW/2}px;width:${CWW}px;height:${CHW}px;border-radius:24px;box-shadow:0 30px 70px rgba(94,23,8,.12)"><img src="${IMG[n]}" alt=""></div>`).join('')}</div>`).join('');
 const WC=[...document.querySelectorAll('.wcol')];
 // Laufweg der Spalten (Wandeinheiten): setzt nach dem Schnitt sofort ein, bremst vor dem Heranfahren weich ab
-const W0=8*B,WSTOP=25*B,WPUSH=25*B,WCUT=28.5*B;
+const W0=8*B,WSTOP=25*B,WPUSH=25*B,WCUT=27.25*B;
 const WSPD=2*(CHW+GY)*WS/(WSTOP-W0-B);          // px/s bei 66 %: die Mitte läuft genau 2 Karten weit, BILLA steht danach in der Bildmitte
 const run=t=>{const a=t-W0,T=WSTOP-W0,r=2*B;return a<=0?0:a<T-r?a:(T-r)+r*.5-(r*.5)*Math.pow(1-clamp((a-(T-r))/r),2)};
 const wallD=t=>WSPD*run(t)/WS;
 // Rechteck (Bildschirm) einer Wandkarte bei Kamera scale s und Verschiebung (ox,oy)
 const wRect=(ci,ri,t,s,ox,oy)=>{const d=wallD(t),dir=ci===1?-1:1,off=ci===1?0:-SIDE*(CHW+GY),y=(ri-CTR)*(CHW+GY)-CHW/2+dir*d+off,x=(ci-1)*(CWW+GX)-CWW/2;return [960+ox+s*x,540+oy+s*y,s*CWW]};
 const MATCH_A=wRect(1,2,W0,WS,0,0);         // Bonusbox in der Mitte der Wand beim ersten Schnitt
-const XA0=6.5*B,XF0=25.5*B,ZEND=29.5*B;    // Überblendungen Handy → Wand ab XA0, Wand → Handy ab XF0; Handy steht ab ZEND wieder in der Ausgangslage
+const XA0=7.25*B,XF0=26.5*B,ZEND=29.5*B;    // Überblendungen Handy → Wand ab XA0, Wand → Handy ab XF0; Handy steht ab ZEND wieder in der Ausgangslage
 // Ausgangslage = ganzes Handy, BILLA oben in der Liste. Wand: BILLA (Mitte, Zeile 4) steht nach dem Abbremsen in der Bildmitte,
 // die Kamera zieht leicht auf, bis die Karte so groß ist wie im Handy, und das Handy blendet deckungsgleich darüber – kein Hin-und-her-Zoom
 const HOME=[PL+IN+PAD,PT+IN+Y0,CW];         // BILLA-Karte im Handy in der Ausgangslage
