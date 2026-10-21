@@ -3933,7 +3933,7 @@ const LAPTOP={key:'laptop',name:'Tablet (Platzhalter)',lane:'laneV4',cls:'bento'
    die Push-Benachrichtigung „Neuer Newsletter verfügbar“ fällt groß von oben ins Bild, wird angetippt und
    zieht sich ins Handy zurück; dort öffnet sich der Newsletter und scrollt durch. Am Ende gleitet das Handy nach links raus.
    ===================================================================== */
-const NL_SW=LT_SW,NL_SH=LT_SH,NL_B=LT_B,NL_R=LT_R,NL_W=NL_SW+2*NL_B,NL_H=NL_SH+2*NL_B,NL_EW=820,NL_IH=NL_EW*9039/2480,NL_PW=900,NL_PH=NL_PW*549/1807; // Tablet wie in „Tablet“; Newsletter im Original-Seitenverhältnis (nicht verzerrt)
+const NL_SW=LT_SW,NL_SH=LT_SH,NL_B=LT_B,NL_R=LT_R,NL_W=NL_SW+2*NL_B,NL_H=NL_SH+2*NL_B,NL_EW=NL_SW,NL_IH=NL_EW*9039/2480,NL_PW=900,NL_PH=NL_PW*549/1807; // Tablet wie in „Tablet“; Newsletter im Original-Seitenverhältnis (nicht verzerrt)
 const NLL=document.createElement('div');NLL.id='newslL';NLL.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;background:#f4f1ea;font-family:var(--font)';
 NLL.innerHTML=`<div style="position:absolute;left:${(1920-NL_W)/2}px;top:${(1080-NL_H)/2}px;width:${NL_W}px;height:${NL_H}px;perspective:3200px">
  <div id="nlPhone" style="position:absolute;inset:0;transform-origin:50% 55%;transform-style:preserve-3d">
