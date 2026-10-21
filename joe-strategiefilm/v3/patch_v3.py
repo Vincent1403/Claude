@@ -976,6 +976,25 @@ rep(" ['SUTTERLÜTY',", " ['jö SPORT',JG_CSS,'#ffffff',null],\n ['SUTTERLÜTY',
 rep(" ['LIBRO','#d2322a','#ffffff','#efbd31'],", " ['LIBRO','#d2322a','#ffffff','#efbd31'],\n ['jö REISEN',JG_CSS,'#ffffff',null],")
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
+# Kunde: Musik weniger zerstückeln. Statt Schleife + 13 Schnitten läuft der Original-Track fast durch:
+# Track startet 2,17 s später (kein Schnitt im Intro mehr), 1 Takt Wiederholung beim jö-Logo (wie bisher), dann EINE 16-Takt-Wiederholung an einer Stelle,
+# an der der Track sich selbst wiederholt (Takt 30 → Takt 14, Rest identisch). „Das neue jö.“ bleibt auf dem Drop, der lange Bass auf der Endcard.
+_EDN = [(77.764, 36.5715, 41.1925), (13.769, 2.275, 11.494), (.05, -2.1731, 0)]   # (Trackzeit vor dieser Änderung, +einfügen/−schneiden, Quelle)
+_EDNJ = json.dumps([list(e) for e in _EDN])
+_EDCODE = ("for(const [p,d,src] of " + _EDNJ + "){const P=Math.round((p-.05)*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr);\n"
+    "      for(let ch=0;ch<o.numberOfChannels;ch++){const a=o.getChannelData(ch),e=q.getChannelData(ch);\n"
+    "        if(d<0){e.set(a.subarray(0,P));e.set(a.subarray(P+D),P);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[P+D+i]*w+a[P+i]*(1-w)}}\n"
+    "        else{const S=Math.round((src-.05)*sr);e.set(a.subarray(0,P));e.set(a.subarray(S,S+D),P);e.set(a.subarray(P),P+D);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[S+i]*w+a[P+i]*(1-w);e[P+D+i]=a[P+i]*w+a[S+D+i]*(1-w)}}}\n"
+    "      o=q}")
+_i = s.index("function spliceAudio(){"); _j = s.index("return o}}}}", _i) + len("return o}}}}")
+s = s[:_i] + "function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf;abufAt='loop';const sr=abuf0.sampleRate,xf=Math.round(.04*sr);let o=abuf0; // Kunde: Track läuft fast durch (3 Stellen)\n    " + _EDCODE + "return o}" + s[_j:]
+_k = s.index("const AU_LA="); s = s[:_k] + "const BEATS0=BEATS.slice(),PEAKS0=PEAKS.slice();\n" + s[_k:]
+_k = s.index("const AU_OFF=0;")
+s = s[:_k] + ("{BEATS.length=0;BEATS.push(...BEATS0);PEAKS.length=0;PEAKS.push(...PEAKS0);const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<96)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));"
+    "const per=96.0522/PEAKS.length;for(const [p,d,src] of " + _EDNJ + "){let nb;if(d<0){const D=-d;PEAKS.splice(Math.round(p/per),Math.round(D/per));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=p+D-.02).map(v=>+(v-D).toFixed(3)))}"
+    "else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(src/per)+Math.round(d/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<src+d-.02).map(v=>+(v-src+p).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}"
+    "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))} // Kunde: Beat-Raster und Wellenform zum durchlaufenden Track\n") + s[_k:]
+s = re.sub(r"TRACK_LEN=[\d.]+;", f"TRACK_LEN={round(96.0522 + sum(d for _, d, _ in _EDN), 2)};", s, count=1)
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
 (here / "index.html").write_text(s, encoding="utf-8")
 # Player-Version zum Teilen: nur das Video, ohne Timeline, Header und Infos
