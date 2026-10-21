@@ -26,7 +26,7 @@ body.render #ui{display:none}
 <div id="ui"><button id="play" type="button">Pausieren</button></div>
 <script>
 /* BILLA-Gutschein-Loop: 8 Takte = 32 Schläge. Handy mit großem BILLA-Gutschein → Zoom raus, Liste scrollt →
-   Match-Cut in die Angebotswand → Wand läuft, fährt auf die BILLA-Karte → Überblendung ins Handy → großer BILLA-Gutschein (= Bild 1). */
+   Überblendung in die Angebotswand → Wand läuft, fährt auf die BILLA-Karte → Überblendung ins Handy → großer BILLA-Gutschein (= Bild 1). */
 const IMG=__IMGS__;
 const LEN=18.25,B=LEN/32,FPS=24;          // 8 Takte im Tempo des Partnerfilms, ohne Musik
 const $=id=>document.getElementById(id);
@@ -65,24 +65,19 @@ const wallD=t=>WSPD*run(t)/WS;
 // Rechteck (Bildschirm) einer Wandkarte bei Kamera scale s und Verschiebung (ox,oy)
 const wRect=(ci,ri,t,s,ox,oy)=>{const d=wallD(t),dir=ci===1?-1:1,off=ci===1?0:-SIDE*(CHW+GY),y=(ri-CTR)*(CHW+GY)-CHW/2+dir*d+off,x=(ci-1)*(CWW+GX)-CWW/2;return [960+ox+s*x,540+oy+s*y,s*CWW]};
 const MATCH_A=wRect(1,2,W0,WS,0,0);         // Bonusbox in der Mitte der Wand beim ersten Schnitt
-const BIG=880,XF0=25*B,ZEND=30*B;       // Startbild: BILLA-Gutschein 880 px breit in der Bildmitte; Überblendung Wand → Handy ab XF0
+const BIG=700,XA0=6.25*B,XF0=25*B,ZEND=30*B; // Startbild: BILLA-Gutschein 700 px breit in der Bildmitte; Überblendungen Handy → Wand ab XA0, Wand → Handy ab XF0
 // BILLA (Mitte, Zeile 4) steht nach dem Abbremsen genau in der Bildmitte; ein durchgehender Zoom auf die Karte,
 // währenddessen blendet das Handy (BILLA-Karte deckungsgleich) über die Wand, danach weiter heran bis zum Startbild
 const zoomW=t=>CWW*WS+(BIG-CWW*WS)*eIO(seg(t,WPUSH,ZEND));
 const ctr=w=>[960-w/2,540-w/AR/2,w];
 function frame(t){
  t=((t%LEN)+LEN)%LEN;
- const wallOn=t>=W0&&t<WCUT,phoneOn=t<W0||t>=XF0;
+ const wallOn=t>=XA0&&t<WCUT,phoneOn=t<W0||t>=XF0;
  $('wall').style.display=wallOn?'':'none';$('phoneL').style.display=phoneOn?'':'none';
- $('phoneL').style.opacity=t>=XF0&&t<WCUT?eIO(seg(t,XF0,WCUT)).toFixed(3):'1';
- if(wallOn){
-  const d=wallD(t),s=zoomW(t)/CWW;
-  $('wg').style.transform=`translate(960px,540px) scale(${s.toFixed(5)})`;
-  WC.forEach((c,i)=>{const dr=i===1?-1:1;c.style.transform=`translateY(${(dr*d+(i===1?0:-SIDE*(CHW+GY))).toFixed(2)}px)`});
- }
+ $('phoneL').style.opacity=t>=XA0&&t<W0?(1-eIO(seg(t,XA0,W0))).toFixed(3):t>=XF0&&t<WCUT?eIO(seg(t,XF0,WCUT)).toFixed(3):'1';
+ let A=null,scr=0;
  if(phoneOn){
-  let scr=0,A;
-  if(t<W0){ // Startbild → Zoom raus ins Handy → Liste scrollt → Handy fährt heran, Bonusbox liegt auf der Bonusbox der Wand
+  if(t<W0){ // Startbild → Zoom raus ins Handy → Liste scrollt → Handy fährt heran, Bonusbox landet auf der Bonusbox der Wand
    const sp=eIO(seg(t,2.5*B,5.75*B));scr=(IY[MI]-Y0)*sp;
    const z=1-eIO(seg(t,.75*B,2.75*B)),m=eIO(seg(t,6*B,W0-1/FPS));
    const P0=fit(0,0,ctr(BIG)),P2=fit(MI,scr,MATCH_A);
@@ -90,6 +85,14 @@ function frame(t){
   }else A=fit(0,0,ctr(zoomW(t)));
   $('list').style.transform=`translateY(${(-scr).toFixed(2)}px)`;
   $('phone').style.transform=`translate(${A[0].toFixed(2)}px,${A[1].toFixed(2)}px) scale(${A[2].toFixed(5)})`;
+ }
+ if(wallOn){
+  const d=wallD(t);
+  if(t<W0){ // Überblendung: die Wand liegt so, dass ihre Bonusbox deckungsgleich mit der Bonusbox im Handy mitfährt
+   const S=A[2],x=A[0]+PL+S*(IN+PAD),y=A[1]+PT+S*(IN+IY[MI]-scr),s=S*CW/CWW;
+   $('wg').style.transform=`translate(${(x+s*CWW/2).toFixed(2)}px,${(y+s*CHW/2).toFixed(2)}px) scale(${s.toFixed(5)})`;
+  }else $('wg').style.transform=`translate(960px,540px) scale(${(zoomW(t)/CWW).toFixed(5)})`;
+  WC.forEach((c,i)=>{const dr=i===1?-1:1;c.style.transform=`translateY(${(dr*d+(i===1?0:-SIDE*(CHW+GY))).toFixed(2)}px)`});
  }
 }
 // --- Anzeige: Bühne 1920×1080 ins Fenster einpassen
