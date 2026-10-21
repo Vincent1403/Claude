@@ -936,6 +936,23 @@ _BS = [b for b in _BS if b < _P6 - .02] + [round(b - _D6, 4) for b in _BS if b >
 _ED = _ED + [(_P6, -_D6, 0)]
 PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
 PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
+# Kunde: Musik läuft fast durch (s. _EDN unten) → Beat-Raster des durchlaufenden Tracks; Clip-Grenzen, die auf dem alten Raster lagen, rücken auf den nächsten Schlag
+_EDN = [(77.764, 38.857, 38.907), (.05, -2.1731, 0)]
+_i0 = s.index("BEATS=["); _NBT = [float(v) for v in s[_i0 + 7:s.index("]", _i0)].split(",")]
+_bt = (_NBT[-1] - _NBT[-41]) / 40
+while _NBT[-1] + _bt < 96: _NBT.append(round(_NBT[-1] + _bt, 3))
+for _p, _d, _sr in _EDN:
+    if _d < 0: _NBT = [v for v in _NBT if v < _p - .02] + [round(v + _d, 3) for v in _NBT if v >= _p - _d - .02]
+    else: _NBT = [v for v in _NBT if v < _p - .02] + [round(v - _sr + _p, 3) for v in _NBT if _sr - .02 <= v < _sr + _d - .02] + [round(v + _d, 3) for v in _NBT if v >= _p - .02]
+_near = lambda g, x: min(g, key=lambda b: abs(b - x))
+for _v in CLIPS.values():
+    if _v["start"] >= 1000: continue
+    _s0, _e0 = _v["start"], _v["start"] + _v["len"]; _cont = _v["len"] * _v.get("rate", 1)
+    _s1 = _near(_NBT, _s0) if abs(_near(_BS, _s0) - _s0) < .03 and abs(_near(_NBT, _s0) - _s0) < .12 else _s0
+    _e1 = _near(_NBT, _e0) if abs(_near(_BS, _e0) - _e0) < .03 and abs(_near(_NBT, _e0) - _e0) < .12 else _e0
+    if (_s1, _e1) != (_s0, _e0):
+        _v["start"], _v["len"] = round(_s1, 4), round(_e1 - _s1, 4)
+        if "rate" in _v or abs(_v["len"] - (_e0 - _s0)) > 1e-3: _v["rate"] = round(_cont / _v["len"], 4)
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
 _EDJ = json.dumps([[p, d, src] for p, d, src in _ED])
@@ -977,9 +994,9 @@ rep(" ['LIBRO','#d2322a','#ffffff','#efbd31'],", " ['LIBRO','#d2322a','#ffffff',
 rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL='jo/timeline'")
 
 # Kunde: Musik weniger zerstückeln. Statt Schleife + 13 Schnitten läuft der Original-Track fast durch:
-# Track startet 2,17 s später (kein Schnitt im Intro mehr), 1 Takt Wiederholung beim jö-Logo (wie bisher), dann EINE 16-Takt-Wiederholung an einer Stelle,
-# an der der Track sich selbst wiederholt (Takt 30 → Takt 14, Rest identisch). „Das neue jö.“ bleibt auf dem Drop, der lange Bass auf der Endcard.
-_EDN = [(77.764, 36.5715, 41.1925), (13.769, 2.275, 11.494), (.05, -2.1731, 0)]   # (Trackzeit vor dieser Änderung, +einfügen/−schneiden, Quelle)
+# Track startet 2,17 s später (kein Schnitt im Intro), keine Takt-Wiederholung beim jö-Logo mehr (klang wie ein Fehler), dafür EINE
+# 17-Takt-Wiederholung mitten im Synth-Riff (Takt 30 → Takt 13; der Riff wiederholt sich taktweise, der Sprung ist nicht zu hören). „Das neue jö.“ bleibt auf dem Drop, der lange Bass auf der Endcard.
+_EDN = [(77.764, 38.857, 38.907), (.05, -2.1731, 0)]   # (Trackzeit vor dieser Änderung, +einfügen/−schneiden, Quelle)
 _EDNJ = json.dumps([list(e) for e in _EDN])
 _EDCODE = ("for(const [p,d,src] of " + _EDNJ + "){const P=Math.round((p-.05)*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr);\n"
     "      for(let ch=0;ch<o.numberOfChannels;ch++){const a=o.getChannelData(ch),e=q.getChannelData(ch);\n"
