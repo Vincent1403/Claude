@@ -104,7 +104,7 @@ const FM_S3=[
   <div style="position:absolute;left:18px;top:230px;color:#6a1006;font-size:17px;font-weight:600">3fach Ös auf deinen Wocheneinkauf</div>
   <div style="position:absolute;left:18px;top:264px;width:42px;height:42px;border-radius:50%;border:2px solid #6a1006;box-sizing:border-box;display:grid;place-items:center"><svg viewBox="0 0 24 24" style="width:20px"><path d="M12 20s-7-4.4-7-9.6A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.4C19 15.6 12 20 12 20z" fill="none" stroke="#6a1006" stroke-width="2"/></svg></div>
   <div style="position:absolute;right:18px;top:264px;height:42px;padding:0 26px;border-radius:42px;background:#6a1006;color:#fff;font-size:16px;font-weight:700;display:grid;place-items:center">Aktivieren</div>`]];
-const FM_SC=[FM_S1,FM_S2,FM_S3];
+const FM_SC=[FM_S1,FM_S3]; // Kunde (Kürzung): mittlerer Bildschirm raus – drei Screens hatten dieselbe Botschaft
 const FML=document.createElement('div');FML.id='fmtL';FML.style.cssText='position:absolute;inset:0;display:none;overflow:hidden;font-family:var(--font);background:#f4f1ea';
 FML.innerHTML=`<div id="fmG" style="position:absolute;inset:0;transform-origin:50% 50%">${FM_SC.map((sc,si)=>sc.map(([x,y,w,h,bg,html])=>`
  <div class="fmFr" data-s="${si}" data-x="${x}" style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:24px;overflow:hidden;background:${bg};box-shadow:0 26px 60px rgba(60,20,0,.16);transform-origin:50% 60%">${html}</div>`).join('')).join('')}</div>`;
@@ -122,12 +122,12 @@ const FORMATS={
     {k:'lag',label:'Versatz Rahmen (Wechsel)',min:0,max:.3,step:.01,fmt:v=>Math.round(v*1000)+' ms',sub:'Rahmen weiter rechts/unten folgen etwas später: Parallaxe'},
     {k:'inLag',label:'Versatz Rahmen (erster Aufbau)',min:0,max:.8,step:.01,fmt:v=>Math.round(v*1000)+' ms'},
     {k:'travel',label:'Weg nach oben',min:1100,max:1600,step:10,fmt:v=>v+' px'}],
-  model(P){const b=P.beat,T=[0,P.hold*b+(P.sh||0),2*P.hold*b+(P.sh||0)]; /* sh: Wechsel auf die Synth-Hits verschieben */return {P,b,T,key:T[1],keyName:'Wechsel 2',total:3*P.hold*b}},
+  model(P){const b=P.beat,T=FM_SC.map((_,i)=>i?i*P.hold*b+(P.sh||0):0); /* sh: Wechsel auf die Synth-Hits verschieben */return {P,b,T,key:T[1],keyName:'Wechsel 2',total:FM_SC.length*P.hold*b}},
   show(on){FML.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=FME,T=M.T,D=P.dur,ef=u=>eStFlow(clamp(u));FML.style.background=t<(P.clearUntil||0)?'transparent':'#f4f1ea'; /* durchsichtig, solange die Headline darunter noch rausläuft */
     E.g.style.transform='none';
     E.fr.forEach((f,i)=>{const si=+f.dataset.s,x=+f.dataset.x,y=parseFloat(f.style.top),o=(x/1740+(y>500?.35:0)); // Reihenfolge: links → rechts, oben → unten
-      const inA=si===0?o*P.inLag:T[si]+o*P.lag+.06,outA=si<2?T[si+1]+o*P.lag:1e9;
+      const inA=si===0?o*P.inLag:T[si]+o*P.lag+.06,outA=si<FM_SC.length-1?T[si+1]+o*P.lag:1e9;
       const yi=P.travel*(1-ef((t-inA)/D)),yo=-P.travel*ef((t-outA)/D),dy=yi+yo;
       f.style.visibility=dy>-1150&&dy<1150?'visible':'hidden';f.style.opacity='1';
       f.style.transform=`translateY(${dy.toFixed(1)}px)`;
@@ -143,7 +143,7 @@ const FORMATS={
         const v=ef((t-r-.5-k*.08)/(.6*D)),d=(el._w-el._h)*(1-v),R2=el._h/2,base=el.classList.contains('fmBd')?el.style.transform:'';
         if(el.dataset.side==='r'){el.style.clipPath=`inset(0 0 0 ${d.toFixed(1)}px round ${R2}px)`;el.style.transform=`${base} translateX(${(-d).toFixed(1)}px)`}
         else el.style.clipPath=`inset(0 ${d.toFixed(1)}px 0 0 round ${R2}px)`})})},
-  marks(M){return [[0,'Bildschirm 1'],[M.T[1],'Bildschirm 2'],[M.T[2],'Bildschirm 3']]},
+  marks(M){return M.T.map((x,i)=>[x,'Bildschirm '+(i+1)])},
   table(M){const F=s=>Math.round(s*FPS),P=M.P;return [
     ['Bildschirm 1',`0–${F(M.T[1])}`,'Story 9:16, Landscape 16:9, Square 1:1, In-App, Feed 4:5, Push: Einkaufs-Kampagne, Rahmen gleiten von unten rein, Zeilen rollen aus Masken, Badges setzen sich'],
     ['Bildschirm 2',`${F(M.T[1])}–${F(M.T[2])}`,'kommt von unten: Games, Deal (Hirter), Feed „Deine Einkaufswoche.“, Push, Story „Top-Deals“'],

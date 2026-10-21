@@ -275,6 +275,7 @@ rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:(
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO4=Object.assign(Object.create(LOGO),{key:'logo4',name:'Logo (Schluss, vor „Markenbühne“)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf und bleibt stehen, kein App-Icon\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "endpartner_mod.js").read_text(encoding="utf-8") + "\n"
+           + (here / "logo_hold_mod.js").read_text(encoding="utf-8").replace("__LH__", "1.88").replace("__LL__", "2.275") + "\n"
            + wl_imgs((here / "gutschein_comp.js").read_text(encoding="utf-8")) + "\n"
            + (here / "pos_mod.js").read_text(encoding="utf-8").replace("__POS1__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos1.webp").read_bytes()).decode()).replace("__POS2__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos2.webp").read_bytes()).decode()).replace("__POS3__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos3.webp").read_bytes()).decode()) + "\n"
            + (here / "laptop_comp.js").read_text(encoding="utf-8").replace("__TABWEB__", "ooh/tablet_web.webp")   # als eigene Datei neben der Seite (Seite bliebe sonst über 16 MB) + "\n"
@@ -831,6 +832,32 @@ rep("""    E.hl.forEach((ls,h)=>{const on=h===B.hl,was=s>0&&h===A.hl&&A.hl!==B.h
     """    E.hl.forEach((ls,h)=>{const t0=h?T[h]+P.morph*.4:.25,te=h<3?T[h+1]:1e9; /* jede Anzeige eigener Satz: steigt aus der Maske, fällt beim nächsten Wechsel nach oben raus */
       ls.forEach((ln,i)=>{const y=t<te?110*(1-f(seg(t,t0+i*.08,t0+i*.08+.5))):-110*eInCub(seg(t,te,te+.3+i*.04));ln.style.transform=`translateY(${y.toFixed(1)}%)`})});""")
 rep("E.price.style.display=pin>0&&pout<1?'flex':'none'", "E.price.style.display='none'")
+# ===== Kunde (Kürzung Richtung 2 Minuten): Logo +1 Takt, Markenfarben −2 Takte (doppelt so schnell), Formate −3 Takte (mittlerer Bildschirm raus)
+_ED = [(107.491, -6.85, 0), (61.765, -4.574, 0), (13.769, 2.275, 11.494)]   # (Filmzeit, −schneiden/+einfügen, Quelle des eingefügten Takts) – absteigend
+for _p, _d, _src in _ED:
+    for _k, _v in CLIPS.items():
+        if _v["start"] >= 1000: continue
+        _e = _v["start"] + _v["len"]
+        if _d < 0:
+            if _v["start"] >= _p - 1e-3 - _d: _v["start"] = round(_v["start"] + _d, 4)
+            elif _v["start"] < _p and _e > _p: _v["len"] = round(_v["len"] + _d, 4)
+        else:
+            if _v["start"] >= _p - 1e-3: _v["start"] = round(_v["start"] + _d, 4)
+            elif _e > _p: _v["len"] = round(_v["len"] + _d, 4)
+PARAMS["brand"] = {**PARAMS["brand"], "step": .375}                       # 16 Marken à ½ Schlag
+PARAMS["formats"] = {**PARAMS["formats"], "hold": 6}                      # 2 Bildschirme, schneller
+_NET = round(sum(d for _, d, _ in _ED), 4)
+s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
+_EDJ = json.dumps([[p, d, src] for p, d, src in _ED])
+rep("    return o3}}}", "    {let o=o3;for(const [p,d,src] of " + _EDJ + "){const P=Math.round(p*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr); // Kunde: Kürzung / Logo-Takt\n"
+    "      for(let ch=0;ch<o.numberOfChannels;ch++){const a=o.getChannelData(ch),e=q.getChannelData(ch);\n"
+    "        if(d<0){e.set(a.subarray(0,P));e.set(a.subarray(P+D),P);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[P+D+i]*w+a[P+i]*(1-w)}}\n"
+    "        else{const S=Math.round(src*sr);e.set(a.subarray(0,P));e.set(a.subarray(S,S+D),P);e.set(a.subarray(P),P+D);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[S+i]*w+a[P+i]*(1-w);e[P+D+i]=a[P+i]*w+a[S+D+i]*(1-w)}}}\n"
+    "      o=q}return o}}}}")
+rep("BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n",
+    "for(const [p,d,src] of " + _EDJ + "){let nb;if(d<0){const D=-d;PEAKS.splice(Math.round(p/per),Math.round(D/per));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=p+D-.02).map(v=>+(v-D).toFixed(3)))}"
+    "else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(p/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<p-.02).map(v=>+(v+d).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}"
+    "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}\n")
 block = f"S.warp={{r0:{WR0_REAL}}};S.clips.white.len=8.7;\n" + "\n".join(f"S.clips.{k}={{start:{v['start']},len:{v['len']},in:{v['in']}" + (f",rate:{v['rate']}" if 'rate' in v else "") + "};" for k, v in CLIPS.items()) + "\n"
 block += "".join(f"Object.assign(S.comps.{k}.params,{json.dumps(v)});FM.{k}=COMPS.{k}.model(S.comps.{k}.params);\n" for k, v in PARAMS.items())
 rep("w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110).toFixed(2)}%)`", "w.style.transform=`translateY(${((1-eExpo(p))*110+eInCub(q)*110*(P.outDir||1)).toFixed(2)}%)`")  # Tafeln: Ausstieg wahlweise nach oben
@@ -901,7 +928,7 @@ _p = _p.replace("vp.addEventListener('click',()=>document.getElementById('mPlay'
 (here / "player.html").write_text(_p, encoding="utf-8")
 
 # Stage-Version für den Video-Export: 3840×2160, 4118 Frames @ 24 fps, Bild kommt nur aus useTime()
-ST_W, ST_H, ST_FPS, ST_FRAMES = 3840, 2160, 24, 4118 - round(AU_CBD * 24)
+ST_W, ST_H, ST_FPS, ST_FRAMES = 3840, 2160, 24, 4118 - round((AU_CBD - _NET) * 24)
 _sc = f"""<style id="stageOnly">
 html,body{{margin:0;background:#000;overflow:hidden}}
 .wrap{{display:none!important}}
