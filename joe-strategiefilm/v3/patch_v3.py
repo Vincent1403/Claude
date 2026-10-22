@@ -816,7 +816,7 @@ for _k, _a, _b in (("pos", _b0, _q1), ("pos2", _q1, _q2), ("pos3", _q2, _bars[2]
 CLIPS["pos"] = C(round(CLIPS["pos"]["start"] - .35, 4), round(CLIPS["pos"]["len"] + .35, 4))   # Kunde: Pearle-Karte gleitet schon rein, während das Tablet nach links rausgleitet
 _es = _bars[2]; _el = round(CLIPS["endc"]["start"] - _es, 4)   # Verlauf liegt weiter unter dem Schluss-Logo (Text endet vorher über cOut)
 CLIPS["endtxt"] = C(_es, _el)
-PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(_el / BEAT, 3), "aIn": 0, "bIn": 2, "hold": 2, "aOut": 8, "bOut": 8, "cIn": 8.5,
+PARAMS["endtxt"] = {**PARAMS["endtxt"], "len": round(_el / BEAT, 3), "aIn": 1, "bIn": 2, "hold": 2, "aOut": 8, "bOut": 8, "cIn": 8.5,
                     "cOut": round((CLIPS["logo2"]["start"] - .1 - _es) / BEAT, 2)}   # Gemeinsam mehr auf der Eins, Satzenden auf 2/4/6, Markenbühne nach dem Taktwechsel
 # Markenfarben: 16 Marken à 1 Schlag brauchen einen Schlag mehr – den gibt das Ende der Partner-Szene ab, alles danach bleibt
 CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BEAT, 4)
@@ -1016,7 +1016,8 @@ rep("COMPS[k].render(FM[k],Math.min(c.in+t-c.start,FM[k].total))", "COMPS[k].ren
 rep("function wDesign(", f"const CL_HOLD={{julian:[3.75,1.6,{round(BARL*.76873,4)}],white2:[3.75,1.6,{round(BARL*.76873,4)}]}};function clipHold(k,u){{const h=CL_HOLD[k];if(!h||u<=h[0])return u;const L=h[1]+h[2];if(u>=h[0]+L)return u-h[2];const x=(u-h[0])/L,m=.9,f=(1-m)*x+m*(.5+4*Math.pow(x-.5,3));return h[0]+h[1]*f}} // Kunde: Julian-UI-Screen – schnell rein, in der Mitte ganz langsam (nie stehend), schnell wieder raus\nfunction wDesign(")
 rep("const fg=use?use[2]:'#fff',", "const fg='#fff',")  # Kunde: jö-Logo (und ×) im Partner-Lockup immer weiß, auch auf hellen Partnerfarben
 # Kunde: neue Partner-Logos (Frisbee-Stil) überall; dazu jö Sport, jö Reisen und BILLA Reisen. joyn wurde nicht neu geliefert und bleibt wie bisher.
-_PL = {k: "data:image/webp;base64," + base64.b64encode((here / "partner_logos" / (k + ".webp")).read_bytes()).decode() for k in
+_PLF = {"josport": "josport_weiss", "joreisen": "joreisen_weiss"}   # Kunde: jö SPORT / jö REISEN überall als weiße Bubble mit Verlaufs-Logo
+_PL = {k: "data:image/webp;base64," + base64.b64encode((here / "partner_logos" / (_PLF.get(k, k) + ".webp")).read_bytes()).decode() for k in
        ("adeg", "biogena", "bipa", "billa", "josport", "joreisen", "forstinger", "omv", "pagro", "pearle", "penny", "raiffeisen", "sutterluety", "universal", "zgonc", "billareisen", "libro")}
 _PL["joyn"] = "data:image/svg+xml;base64," + base64.b64encode((here / "partner_logos" / "joyn_black.svg").read_bytes()).decode()   # Kunde: joyn-Schriftzug optisch mittig (etwas tiefer)
 rep("const PT_N=['adeg'", "Object.assign(PTA," + json.dumps(_PL) + ");\nconst PT_N=['adeg'")

@@ -30,8 +30,8 @@ const ENDTXT={
   render(M,t){const P=M.P,b=M.b,E=ETE;
     E.bg.style.transform=`scale(${(1.04-.04*eOut(seg(t,0,M.total))).toFixed(4)})`;
     // Wort für Wort aus der Maske, Ausstieg nach oben
-    const words=(ws,i0,o0)=>ws.forEach((w,k)=>{const a=(i0+k*P.step)*b,o=o0*b+k*.03,pi=eExpo(seg(t,a,a+.45)),po=eInCub(seg(t,o,o+.22));w.style.transform=`translateY(${((1-pi)*110-po*110).toFixed(1)}%)`;w.style.visibility=pi>0&&po<1?'visible':'hidden'}); // ganz draußen unsichtbar (sonst blitzen Umlaut-Punkte am Maskenrand)
-    words(E.a,P.aIn,P.aOut);words(E.c,P.cIn,P.cOut);
+    const words=(ws,i0,o0,st=P.step)=>ws.forEach((w,k)=>{const a=(i0+k*st)*b,o=o0*b+k*.03,pi=eExpo(seg(t,a,a+.45)),po=eInCub(seg(t,o,o+.22));w.style.transform=`translateY(${((1-pi)*110-po*110).toFixed(1)}%)`;w.style.visibility=pi>0&&po<1?'visible':'hidden'}); // ganz draußen unsichtbar (sonst blitzen Umlaut-Punkte am Maskenrand)
+    words(E.a,P.aIn,P.aOut,.08); /* Kunde: erst nur der Verlauf, dann steigt „Gemeinsam mehr“ als Ganzes auf (aIn s. patch) */words(E.c,P.cIn,P.cOut);
     // „Mehr“ + Walze
     if(!E._w){E._wf=E.fix.offsetWidth;E._wp=E.ph.map(p=>p.offsetWidth);if(E._wf)E._w=1}
     E.row.style.left='0px';E.mask.style.left='0px';E.mask.style.width='1920px'; // „Gemeinsam mehr“ steht oben, das Satzende läuft mittig darunter durch
