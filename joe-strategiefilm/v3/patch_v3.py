@@ -1003,7 +1003,19 @@ if KURZ:
         elif _v["start"] + _v["len"] > _se + 1e-3: _v["len"] = round(_v["len"] + _Dm, 4)
     _sy["len"] = round(_sy["len"] + _Dm, 4); _sy["rate"] = 1
     PARAMS["system"] = {**PARAMS.get("system", {}), "len": round(_sy["len"] / BEAT, 3), "step": 3, "outAt": round(_sy["len"] / BEAT - .45, 3)}
-    _EDN_A = [(66.339, 29.7145, 36.6245), (.05, -2.1731, 0)]
+    # Kunde: dafür im Bild 1 Takt wieder raus (Musik bleibt beim sauberen 12-Takt-Sprung): Handy-Scroll −2 Schläge (Scroll kürzer, normales Tempo),
+    # Angebotswand −2 Schläge (endet früher)
+    _dB = round(_Dm / 2, 4)
+    def _cut(_c, _d):
+        _e = _c["start"] + _c["len"]
+        for _v in CLIPS.values():
+            if _v is _c or _v["start"] >= 1000: continue
+            if _v["start"] >= _e - 1e-3: _v["start"] = round(_v["start"] - _d, 4)
+            elif _v["start"] + _v["len"] > _e + 1e-3: _v["len"] = round(_v["len"] - _d, 4)
+        _c["len"] = round(_c["len"] - _d, 4)
+    _gs = CLIPS["gutsch"]; _cut(_gs, _dB); _gs["rate"] = 1
+    PARAMS["gutsch"] = {**PARAMS.get("gutsch", {}), "len": _gs["len"], "hold": .25, "zoomDur": .8, "scrollAt": 1.0, "scrollDur": 1.0, "matchAt": round(_gs["len"] - .97, 4)}
+    _cut(CLIPS["wall"], _dB)
     print("KURZ: Faktoren", [round((b - a - r) / (b - a), 3) for (a, b), r in zip(_R, _RM)], "Ende", round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
