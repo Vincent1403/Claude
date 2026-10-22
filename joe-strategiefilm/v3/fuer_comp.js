@@ -50,12 +50,12 @@ const FUER={
     const a=P.inAt*b,o=P.outAt*b,rin=eExpo(seg(t,a,a+.5)),rout=eInCub(seg(t,o,o+.3));
     {const fi=eExpo(seg(t,ns+.18,ns+.6)),fo=eInCub(seg(t,ne,ne+.3));E.fix.style.transform=`translateY(${((1-fi)*120-fo*120+rout*120).toFixed(1)}%)`} // „Für“ nur zu den Namen
     // Position auf der „Walze“: 0 = erstes Satzende, 1 = zweites …; jedes läuft von unten rein und oben raus
-    let p=-1+eExpo(seg(t,a+.08,a+.58));for(let k=1;k<FU_PH.length;k++){const s=M.st[k]*b;p+=k>FU_N0?.5-.5*Math.cos(Math.PI*seg(t,s,s+P.nMove)):eIO(seg(t,s,s+P.move)) /* Namen: weiche Sinus-Kurve */}
+    let p=-1+eExpo(seg(t,0,.5)); /* Kunde: erster Satz steigt direkt mit dem Clip-Start (auf dem Drop) auf, kein halb sichtbares Stehen davor */for(let k=1;k<FU_PH.length;k++){const s=M.st[k]*b;p+=k>FU_N0?.5-.5*Math.cos(Math.PI*seg(t,s,s+P.nMove)):eIO(seg(t,s,s+P.move)) /* Namen: weiche Sinus-Kurve */}
     p+=eInCub(seg(t,o+.04,o+.34));
     // ab dem ersten Namen steht die Kombi „Für [Bild] Name.“ mittig (Breite folgt dem laufenden Namen), endet als „Für jeden.“ in der Mitte
     E.row.style.left=R.toFixed(1)+'px';
     {const k=Math.max(0,Math.min(1,p));E.mask.style.clipPath=`inset(${(50*k).toFixed(1)}px 0 ${(70*k).toFixed(1)}px 0)`} // Maske nur für den zweizeiligen ersten Satz größer
-    E.ph.forEach((el,i)=>{const d=i-p;el.style.left=(i===0||i===FU_PH.length-1?960-E._wp[i]/2:R+ML).toFixed(1)+'px';el.style.transform=`translateY(${(d*(i===0&&d<0?340:240)).toFixed(1)}px)`; /* erster Satz ist zweizeilig: läuft weiter nach oben raus */el.style.opacity=Math.abs(d)<1.05?'1':'0'});
+    E.ph.forEach((el,i)=>{const d=i-p;el.style.left=(i===0||i===FU_PH.length-1?960-E._wp[i]/2:R+ML).toFixed(1)+'px';el.style.transform=`translateY(${(d*(i===0?340:240)).toFixed(1)}px)`; /* erster Satz startet ganz unter der Maske */ /* erster Satz ist zweizeilig: läuft weiter nach oben raus */el.style.opacity=Math.abs(d)<1.05?'1':'0'});
     E.pi.forEach((el,i)=>{const d=i+FU_N0-Math.min(p,FU_PH.length-2);el.style.transform=`translate(${((pw-FU_PW)/2).toFixed(1)}px,${(d*FU_PHH).toFixed(1)}px)`;el.style.visibility=Math.abs(d)<1.02?'visible':'hidden'});
     // Profil-Wolke (Kian gehört von Anfang an dazu), Kamera zieht beim Aufbau auf
     const c0=P.cloudAt*b,zu=eIO(seg(t,c0,c0+P.cloudZoom)),[kx,ky,kd]=FU_POS[FU_KI],D=CL_D;

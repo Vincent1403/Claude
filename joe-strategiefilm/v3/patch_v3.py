@@ -1074,7 +1074,8 @@ HALF_JS = """(function(){if(window.__videoMeta)return;
  let half=false;try{half=localStorage.getItem('jo_preview_half')==='1'}catch(e){}
  const btns=[],player=!!document.getElementById('playerOnly');
  // halbe Größe = halbe Auflösung: der Browser rastert nur ein Viertel der Pixel (hochskalieren würde er wieder scharf nachrechnen)
- const apply=()=>{if(player){const w=Math.min(innerWidth,innerHeight*16/9)*(half?.5:1);vp.style.width=w+'px';vp.style.height=(w*9/16)+'px'}
+ if(player){const st=document.createElement('style');st.textContent='body.halfprev #vp{width:var(--hw)!important;height:var(--hh)!important;margin:auto!important}#pBar input{min-width:0}';document.head.appendChild(st)}
+ const apply=()=>{if(player){const w=Math.min(innerWidth,innerHeight*16/9)/2;document.body.style.setProperty('--hw',w+'px');document.body.style.setProperty('--hh',(w*9/16)+'px');document.body.classList.toggle('halfprev',half)}
   else{vp.style.width=half?'50%':'';vp.style.margin=half?'0 auto':''}
   fit()};
  addEventListener('resize',()=>setTimeout(apply,0));
@@ -1083,7 +1084,7 @@ HALF_JS = """(function(){if(window.__videoMeta)return;
   b.onclick=e=>{e.stopPropagation();half=!half;try{localStorage.setItem('jo_preview_half',half?'1':'0')}catch(e){}apply();upd()};btns.push(b);return b};
  const c=document.querySelector('#viewMain .controls');if(c)c.appendChild(mk());
  const addBar=()=>{const bar=document.getElementById('pBar');if(bar&&!bar._half){bar._half=1;const b=mk();Object.assign(b.style,{flex:'none',height:'34px',padding:'0 14px',borderRadius:'17px',border:'0',font:'600 13px/34px system-ui,sans-serif',cursor:'pointer'});bar.appendChild(b);upd()}};
- setTimeout(addBar,0);setTimeout(addBar,600);setTimeout(apply,700);upd();
+ setTimeout(addBar,0);setTimeout(addBar,600);apply();setTimeout(apply,700);setTimeout(apply,1500);upd();
 })();"""
 _FIT = "function fit(){$('stage').style.transform=`scale(${$('vp').clientWidth/1920})`}"
 assert s.count(_FIT) == 1
