@@ -1055,7 +1055,9 @@ for _a, _b in (("VDV.playbackRate=P.speed;", "VDV.playbackRate=P.speed*(window._
                ("if(pl&&CLV.paused)CLV.play()", "CLV.playbackRate=window.__RATE||1;if(pl&&CLV.paused)CLV.play()")):
     assert s.count(_a) == 1, _a
     s = s.replace(_a, _b)
-s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
+s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon_verlauf.webp").read_bytes()).decode())   # Kunde: großes jö mit Farbverlauf (vorher endc_icon.webp)
+s = s.replace("__ECICON_OLD__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
+for _ph, _fn in (("__EPJS__", "josport_weiss"), ("__EPJR__", "joreisen_weiss")): s = s.replace(_ph, "data:image/webp;base64," + base64.b64encode((here / "partner_logos" / (_fn + ".webp")).read_bytes()).decode())
 (here / "index.html").write_text(s, encoding="utf-8")
 # Player-Version zum Teilen: nur das Video, ohne Timeline, Header und Infos
 _pc = """<style id="playerOnly">
