@@ -1067,6 +1067,27 @@ s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here /
 s = s.replace("__GRADJO__", "data:image/webp;base64," + base64.b64encode((here / "jo_verlauf.webp").read_bytes()).decode())
 s = s.replace("__ECICON_OLD__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
 for _ph, _fn in (("__EPJS__", "josport_weiss"), ("__EPJR__", "joreisen_weiss")): s = s.replace(_ph, "data:image/webp;base64," + base64.b64encode((here / "partner_logos" / (_fn + ".webp")).read_bytes()).decode())
+# Kunde: Schalter „Vorschau ½“ – die Vorschau wird mit halber Auflösung gerastert und hochskaliert (flüssiger beim Ansehen);
+# Export (stage.html) und Timing bleiben unberührt, die Einstellung merkt sich der Browser
+HALF_JS = """(function(){if(window.__videoMeta)return;
+ const vp=document.getElementById('vp');if(!vp)return;
+ let half=false;try{half=localStorage.getItem('jo_preview_half')==='1'}catch(e){}
+ const btns=[],player=!!document.getElementById('playerOnly');
+ // halbe Größe = halbe Auflösung: der Browser rastert nur ein Viertel der Pixel (hochskalieren würde er wieder scharf nachrechnen)
+ const apply=()=>{if(player){const w=Math.min(innerWidth,innerHeight*16/9)*(half?.5:1);vp.style.width=w+'px';vp.style.height=(w*9/16)+'px'}
+  else{vp.style.width=half?'50%':'';vp.style.margin=half?'0 auto':''}
+  fit()};
+ addEventListener('resize',()=>setTimeout(apply,0));
+ const upd=()=>btns.forEach(b=>{b.setAttribute('aria-pressed',half);b.textContent=half?'Vorschau ½ an':'Vorschau ½';b.style.background=half?'#ee2a06':'';b.style.color=half?'#fff':''});
+ const mk=()=>{const b=document.createElement('button');b.type='button';b.className='chip';b.title='Vorschau halb so groß (halbe Auflösung, flüssiger) – nur zum Ansehen';
+  b.onclick=e=>{e.stopPropagation();half=!half;try{localStorage.setItem('jo_preview_half',half?'1':'0')}catch(e){}apply();upd()};btns.push(b);return b};
+ const c=document.querySelector('#viewMain .controls');if(c)c.appendChild(mk());
+ const addBar=()=>{const bar=document.getElementById('pBar');if(bar&&!bar._half){bar._half=1;const b=mk();Object.assign(b.style,{flex:'none',height:'34px',padding:'0 14px',borderRadius:'17px',border:'0',font:'600 13px/34px system-ui,sans-serif',cursor:'pointer'});bar.appendChild(b);upd()}};
+ setTimeout(addBar,0);setTimeout(addBar,600);setTimeout(apply,700);upd();
+})();"""
+_FIT = "function fit(){$('stage').style.transform=`scale(${$('vp').clientWidth/1920})`}"
+assert s.count(_FIT) == 1
+s = s.replace(_FIT, _FIT + "\n" + HALF_JS, 1)
 (here / "index.html").write_text(s, encoding="utf-8")
 # Player-Version zum Teilen: nur das Video, ohne Timeline, Header und Infos
 _pc = """<style id="playerOnly">
