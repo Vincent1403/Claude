@@ -953,13 +953,13 @@ for _v in CLIPS.values():
     if (_s1, _e1) != (_s0, _e0):
         _v["start"], _v["len"] = round(_s1, 4), round(_e1 - _s1, 4)
         if "rate" in _v or abs(_v["len"] - (_e0 - _s0)) > 1e-3: _v["rate"] = round(_cont / _v["len"], 4)
-# Kunde (Kürzung 2:13 → ~2:02, umschaltbar): Wiederholung im Synth-Riff nur noch 12 statt 17 Takte (Takt 34 → Takt 22, sauberster Übergang),
+# Kunde (Kürzung 2:13 → ~2:02, umschaltbar): Wiederholung nur noch 12 statt 17 Takte (Takt 24 → Takt 12; davor und danach Musik wie in der 2:13-Fassung),
 # im Bild fallen dieselben 20 Schläge weg: Julian … Partner und Menschen … Endtext laufen gleichmäßig schneller (auf Schläge gerundet),
 # jö-Logo, Markenfarben und Endcard bleiben unverändert. KURZ = False stellt die lange Fassung (2:13) wieder her.
 KURZ = True
 _EDN_A = _EDN
 if KURZ:
-    _EDN_A = [(86.912, 27.4285, 59.4835), (.05, -2.1731, 0)]
+    _EDN_A = [(64.064, 27.4285, 36.6355), (.05, -2.1731, 0)]   # Takt 24 → Takt 12: ab dem Sprung klingt alles genau wie in der 2:13-Fassung (zweiter Durchlauf bis zum Bass)
     _i0 = s.index("BEATS=["); _NB2 = [float(v) for v in s[_i0 + 7:s.index("]", _i0)].split(",")]
     while _NB2[-1] + _bt < 96: _NB2.append(round(_NB2[-1] + _bt, 3))
     for _p, _d, _sr in _EDN_A:
@@ -1045,6 +1045,15 @@ s = s[:_k] + ("{BEATS.length=0;BEATS.push(...BEATS0);PEAKS.length=0;PEAKS.push(.
     "else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(src/per)+Math.round(d/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<src+d-.02).map(v=>+(v-src+p).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}"
     "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))} // Kunde: Beat-Raster und Wellenform zum durchlaufenden Track\n") + s[_k:]
 s = re.sub(r"TRACK_LEN=[\d.]+;", f"TRACK_LEN={round(96.0522 + sum(d for _, d, _ in _EDN), 2)};", s, count=1)
+# Videos laufen im Clip-Tempo (rate) mit – sonst driftet das Video beim Abspielen weg und wird alle ~2 s neu gesetzt (sichtbarer Sprung, z. B. Kian bei 0:35)
+rep("try{COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))", "try{window.__RATE=(c.rate||1);COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))")
+for _a, _b in (("VDV.playbackRate=P.speed;", "VDV.playbackRate=P.speed*(window.__RATE||1);"), ("CLV2.playbackRate=P.v2Rate;", "CLV2.playbackRate=P.v2Rate*(window.__RATE||1);"),
+               ("if(!still){V.playbackRate=P.speed;", "if(!still){V.playbackRate=P.speed*(window.__RATE||1);"), ("sync=(V,vt,rate)=>{V.playbackRate=rate;", "sync=(V,vt,rate)=>{V.playbackRate=rate*(window.__RATE||1);"),
+               ("if(playing){if(RBV.paused)RBV.play()", "RBV.playbackRate=window.__RATE||1;if(playing){if(RBV.paused)RBV.play()"),
+               ("if(!small&&playing&&vt<5){if(CLV.paused)", "CLV.playbackRate=window.__RATE||1;if(window.__noCLV){}else if(!small&&playing&&vt<5){if(CLV.paused)"),
+               ("if(pl&&CLV.paused)CLV.play()", "CLV.playbackRate=window.__RATE||1;if(pl&&CLV.paused)CLV.play()")):
+    assert s.count(_a) == 1, _a
+    s = s.replace(_a, _b)
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
 (here / "index.html").write_text(s, encoding="utf-8")
 # Player-Version zum Teilen: nur das Video, ohne Timeline, Header und Infos
