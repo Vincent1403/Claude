@@ -4078,6 +4078,12 @@ const NEWSL={key:'newsl',name:'Newsletter',lane:'laneV4',cls:'bento',
  const s0=CLOUD.show;CLOUD.show=function(on){s0.call(this,on);const W=$('clFW');if(W)W.style.visibility='';CLE.w.style.visibility='';const ct=$('clT');if(ct)ct.style.transform=''};
 }
 
+/* Kunde: kein Schwarzbild beim Wechsel Kian-Foto (Zoom) → Kian-Video bei 0:35. Unter dem Video liegt dasselbe Standbild (= erstes Videobild),
+   und das Video steht schon während des Zooms auf Anfang, damit beim Start sofort ein Bild dekodiert ist. Sonst ändert sich nichts. */
+{const im=document.createElement('img');im.src=$('fuKian').firstChild.src;im.alt='';im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+ RBV.parentNode.insertBefore(im,RBV);
+ const r0=FUER.render;FUER.render=function(M,t){r0.call(this,M,t);if(t>M.total-2.5&&RBV.paused&&RBV.currentTime>.01)RBV.currentTime=0}}
+
 /* =====================================================================
    COMP: FORMATE (Partnerfilm) – nach „Konsistent über alle Kanäle.“: dieselbe Kampagne in verschiedenen Formaten
    (Story 9:16, Landscape 16:9, Square 1:1, In-App-Karte, Feed 4:5, Push) mit den Elementen aus den Badges

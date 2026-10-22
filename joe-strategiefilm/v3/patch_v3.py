@@ -283,6 +283,7 @@ aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Log
            + (here / "colors_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "cloud_swipe_mod.js").read_text(encoding="utf-8") + "\n"
+           + (here / "rabatt_still_mod.js").read_text(encoding="utf-8") + "\n"
            + wl_imgs((here / "formats_comp.js").read_text(encoding="utf-8")) + "\n"
            + (here / "box_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "ooh_mod.js").read_text(encoding="utf-8").replace("__CTSCREEN__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "ct_screen.webp").read_bytes()).decode()) + "\n"
