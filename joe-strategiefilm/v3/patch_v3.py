@@ -953,6 +953,39 @@ for _v in CLIPS.values():
     if (_s1, _e1) != (_s0, _e0):
         _v["start"], _v["len"] = round(_s1, 4), round(_e1 - _s1, 4)
         if "rate" in _v or abs(_v["len"] - (_e0 - _s0)) > 1e-3: _v["rate"] = round(_cont / _v["len"], 4)
+# Kunde (Kürzung 2:13 → ~2:02, umschaltbar): Wiederholung im Synth-Riff nur noch 12 statt 17 Takte (Takt 34 → Takt 22, sauberster Übergang),
+# im Bild fallen dieselben 20 Schläge weg: Julian … Partner und Menschen … Endtext laufen gleichmäßig schneller (auf Schläge gerundet),
+# jö-Logo, Markenfarben und Endcard bleiben unverändert. KURZ = False stellt die lange Fassung (2:13) wieder her.
+KURZ = True
+_EDN_A = _EDN
+if KURZ:
+    _EDN_A = [(86.912, 27.4285, 59.4835), (.05, -2.1731, 0)]
+    _i0 = s.index("BEATS=["); _NB2 = [float(v) for v in s[_i0 + 7:s.index("]", _i0)].split(",")]
+    while _NB2[-1] + _bt < 96: _NB2.append(round(_NB2[-1] + _bt, 3))
+    for _p, _d, _sr in _EDN_A:
+        if _d < 0: _NB2 = [v for v in _NB2 if v < _p - .02] + [round(v + _d, 3) for v in _NB2 if v >= _p - _d - .02]
+        else: _NB2 = [v for v in _NB2 if v < _p - .02] + [round(v - _sr + _p, 3) for v in _NB2 if _sr - .02 <= v < _sr + _d - .02] + [round(v + _d, 3) for v in _NB2 if v >= _p - .02]
+    while _NB2[-1] < 200: _NB2.append(round(_NB2[-1] + _bt, 3))
+    _OB = list(_NBT)
+    while _OB[-1] < 200: _OB.append(round(_OB[-1] + _bt, 3))
+    _ki = lambda x: min(range(len(_OB)), key=lambda i: abs(_OB[i] - x))
+    _R = [(_ki(CLIPS["julian"]["start"]), _ki(CLIPS["brand"]["start"])), (_ki(CLIPS["brand"]["start"] + CLIPS["brand"]["len"]), _ki(CLIPS["endc"]["start"]))]
+    _n = [b - a for a, b in _R]; _r1 = round(20 * _n[0] / sum(_n)); _RM = [_r1, 20 - _r1]
+    def _imap(k):                                   # alter Schlag-Index → neuer Index, Faktor
+        sh = 0
+        for (a, b), r in zip(_R, _RM):
+            if k < a: return k - sh, 1
+            if k <= b: f = (b - a - r) / (b - a); return a - sh + round((k - a) * f), f
+            sh += r
+        return k - sh, 1
+    def _tmap(x):
+        k = _ki(x); j, f = _imap(k); return round(_NB2[j] + (x - _OB[k]) * f, 4)
+    for _v in CLIPS.values():
+        if _v["start"] >= 1000: continue
+        _s0, _e0 = _v["start"], _v["start"] + _v["len"]; _s1, _e1 = _tmap(_s0), _tmap(_e0)
+        if abs((_e1 - _s1) - (_e0 - _s0)) > 1e-3: _v["rate"] = round(_v.get("rate", 1) * (_e0 - _s0) / (_e1 - _s1), 4)
+        _v["start"], _v["len"] = _s1, round(_e1 - _s1, 4)
+    print("KURZ: Faktoren", [round((b - a - r) / (b - a), 3) for (a, b), r in zip(_R, _RM)], "Ende", round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
 _EDJ = json.dumps([[p, d, src] for p, d, src in _ED])
@@ -996,7 +1029,7 @@ rep("let db=null;const DOC_TL='jo/timeline'", block + "let db=null;const DOC_TL=
 # Kunde: Musik weniger zerstückeln. Statt Schleife + 13 Schnitten läuft der Original-Track fast durch:
 # Track startet 2,17 s später (kein Schnitt im Intro), keine Takt-Wiederholung beim jö-Logo mehr (klang wie ein Fehler), dafür EINE
 # 17-Takt-Wiederholung mitten im Synth-Riff (Takt 30 → Takt 13; der Riff wiederholt sich taktweise, der Sprung ist nicht zu hören). „Das neue jö.“ bleibt auf dem Drop, der lange Bass auf der Endcard.
-_EDN = [(77.764, 38.857, 38.907), (.05, -2.1731, 0)]   # (Trackzeit vor dieser Änderung, +einfügen/−schneiden, Quelle)
+_EDN = _EDN_A   # (Trackzeit vor dieser Änderung, +einfügen/−schneiden, Quelle) – s. KURZ
 _EDNJ = json.dumps([list(e) for e in _EDN])
 _EDCODE = ("for(const [p,d,src] of " + _EDNJ + "){const P=Math.round((p-.05)*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr);\n"
     "      for(let ch=0;ch<o.numberOfChannels;ch++){const a=o.getChannelData(ch),e=q.getChannelData(ch);\n"

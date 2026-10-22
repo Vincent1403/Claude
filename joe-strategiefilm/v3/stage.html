@@ -168,7 +168,7 @@ html,body{margin:0;background:#000;overflow:hidden}
 #c2v{position:fixed;left:0;top:0;width:3840px;height:2160px;transform-origin:0 0;background:#000}
 #c2v #vp{position:absolute!important;inset:0!important;width:3840px!important;height:2160px!important;margin:0!important;border-radius:0!important;max-width:none!important;aspect-ratio:auto!important}
 </style><script>
-window.__videoMeta={width:3840,height:2160,duration:133.333333,fps:24};
+window.__videoMeta={width:3840,height:2160,duration:121.916667,fps:24};
 window.__render=new URLSearchParams(location.search).has('__render');
 window.__seek=async function(t){
   window.__seeking=true;
@@ -269,13 +269,13 @@ const eOut=p=>1-Math.pow(1-p,3);
 const eBack=p=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2)};
 const num=(v,d=2)=>v.toFixed(d).replace('.',',');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const T_MAIN=137.23, FPS=24, TRACK_LEN=132.74;
+const T_MAIN=137.23, FPS=24, TRACK_LEN=121.31;
 const BAR=[9.20,11.49,13.77,16.04,18.34,20.62,22.92,25.19,27.47,29.77,32.07,34.34,36.64,38.92,41.19,43.49,45.79,48.07,50.36,52.64,54.92,57.19,59.49,61.77,64.06,66.34,68.64,70.91,73.19,75.49,77.76,80.06,82.36,84.64,86.91,89.21,91.37];
 const BEATS0=BEATS.slice(),PEAKS0=PEAKS.slice();
 const AU_LA=45.732,AU_LB=91.4456,AU_LN=2,AU_LL=AU_LB-AU_LA; // Musik-Schleife: ab dem Bass-Einsatz (Takt 37) springt der Track zurück auf den Break (Takt 17) – Break + zweite Hälfte laufen zweimal extra, ~187 s
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<AU_LB-.05)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const mid=BEATS.filter(v=>v>=AU_LA-.01&&v<AU_LB-.05);for(let k=1;k<=AU_LN;k++)BEATS.push(...mid.map(v=>+(v+k*AU_LL).toFixed(3)));BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2));const per=96.0522/PEAKS.length,ia=Math.round(AU_LA/per),ib=Math.round(AU_LB/per),seg=PEAKS.slice(ia,ib),tail=PEAKS.splice(ib);for(let k=0;k<AU_LN;k++)PEAKS.push(...seg);PEAKS.push(...tail)}
 const AU_CA=100.545,AU_CD=18.28544;{const per=(96.0522+AU_LN*AU_LL)/PEAKS.length;PEAKS.splice(Math.round(AU_CA/per),Math.round(AU_CD/per));const nb=BEATS.filter(v=>v<AU_CA-.02).concat(BEATS.filter(v=>v>=AU_CA+AU_CD-.02).map(v=>+(v-AU_CD).toFixed(3)));BEATS.length=0;BEATS.push(...nb);PEAKS.splice(Math.round(132.5917/per),Math.round(0.0142/per));const nb2=BEATS.filter(v=>v<132.5917-.02).concat(BEATS.filter(v=>v>=132.6059-.02).map(v=>+(v-0.0142).toFixed(3)));BEATS.length=0;BEATS.push(...nb2);for(const [p,d,src] of [[107.491, -6.85, 0], [61.765, -4.574, 0], [13.769, 2.275, 11.494], [114.357, -2.276, 0], [93.779, -2.276, 0], [73.189, -2.276, 0], [2.4019, -2.1731, 0], [73.315, -4.574, 0], [32.169, -4.574, 0], [73.315, -2.293, 0], [43.593, -2.299, 0], [97.885, -2.276, 0], [84.727, -2.299, 0]]){let nb;if(d<0){const D=-d;PEAKS.splice(Math.round(p/per),Math.round(D/per));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=p+D-.02).map(v=>+(v-D).toFixed(3)))}else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(p/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<p-.02).map(v=>+(v+d).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))}
-{BEATS.length=0;BEATS.push(...BEATS0);PEAKS.length=0;PEAKS.push(...PEAKS0);const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<96)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const per=96.0522/PEAKS.length;for(const [p,d,src] of [[77.764, 38.857, 38.907], [0.05, -2.1731, 0]]){let nb;if(d<0){const D=-d;PEAKS.splice(Math.round(p/per),Math.round(D/per));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=p+D-.02).map(v=>+(v-D).toFixed(3)))}else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(src/per)+Math.round(d/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<src+d-.02).map(v=>+(v-src+p).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))} // Kunde: Beat-Raster und Wellenform zum durchlaufenden Track
+{BEATS.length=0;BEATS.push(...BEATS0);PEAKS.length=0;PEAKS.push(...PEAKS0);const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<96)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const per=96.0522/PEAKS.length;for(const [p,d,src] of [[86.912, 27.4285, 59.4835], [0.05, -2.1731, 0]]){let nb;if(d<0){const D=-d;PEAKS.splice(Math.round(p/per),Math.round(D/per));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=p+D-.02).map(v=>+(v-D).toFixed(3)))}else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(src/per)+Math.round(d/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<src+d-.02).map(v=>+(v-src+p).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))} // Kunde: Beat-Raster und Wellenform zum durchlaufenden Track
 const AU_OFF=0; // Musik startet bei Frame 0; das Intro dauert genau 3 Takte länger, das Logo liegt auf dem Drop (alles danach bleibt im Takt)
 {const bt=(BEATS[BEATS.length-1]-BEATS[BEATS.length-41])/40;while(BEATS[BEATS.length-1]+bt<T_MAIN)BEATS.push(+(BEATS[BEATS.length-1]+bt).toFixed(3));const br=bt*4;while(BAR[BAR.length-1]+br<T_MAIN)BAR.push(+(BAR[BAR.length-1]+br).toFixed(2))} // Raster über das Ende der Musik hinaus (Ablage)
 const MUSIC_SNAPS=[0,...[2.35,5.32,8.64].map(v=>v+AU_OFF),...BEATS];
@@ -4425,56 +4425,56 @@ S.warp={r0:9000.0};S.clips.white.len=8.7;
 S.clips.hl1={start:0.0,len:2.4019,in:0};
 S.clips.logo={start:9000.0,len:2.4833,in:0.475};
 S.clips.c2={start:7.022,len:2.6227,in:0,rate:0.9868};
-S.clips.people={start:57.317,len:6.849,in:0,rate:1.0026};
+S.clips.people={start:53.299,len:6.293,in:0,rate:1.0912};
 S.clips.c3={start:9000.0,len:4.5717,in:0};
 S.clips.pers={start:9000.0,len:2.2858,in:0};
-S.clips.rabatt={start:37.5049,len:3.9653,in:0,rate:0.9078};
-S.clips.cloud={start:40.9111,len:3.2859,in:0,rate:1.856};
+S.clips.rabatt={start:35.1867,len:3.4114,in:0,rate:1.0552};
+S.clips.cloud={start:38.0606,len:2.6764,in:0,rate:2.2787};
 S.clips.c4={start:9000.0,len:2.2858,in:0};
 S.clips.box={start:9000.0,len:3.5,in:0};
 S.clips.c5={start:9000.0,len:2.2875,in:0};
-S.clips.partner={start:44.197,len:7.407,in:0,rate:0.8074};
-S.clips.brand={start:51.604,len:5.713,in:0.0625,rate:0.7483};
+S.clips.partner={start:40.737,len:6.85,in:0,rate:0.8731};
+S.clips.brand={start:47.587,len:5.712,in:0.0625,rate:0.7484};
 S.clips.full={start:9000.0,len:7.0317,in:0};
 S.clips.c6={start:9000.0,len:2.8539,in:0};
-S.clips.colors={start:21.9737,len:5.6213,in:0.2,rate:0.7778};
-S.clips.deal={start:90.461,len:5.0838,in:0,rate:0.796};
+S.clips.colors={start:21.3831,len:4.4939,in:0.2,rate:0.9729};
+S.clips.deal={start:83.021,len:4.5381,in:0,rate:0.8917};
 S.clips.prod={start:9000.0,len:4.5717,in:0.634,rate:0.4972};
 S.clips.c7={start:9000.0,len:5.1431,in:0};
 S.clips.city={start:9000.0,len:3.9966,in:0,rate:1.0803};
 S.clips.bill={start:9000.0,len:4.5788,in:0,rate:0.7598};
 S.clips.c8={start:9000.0,len:5.9952,in:0};
-S.clips.logo2={start:121.0299,len:3.7271,in:0,rate:0.9952};
+S.clips.logo2={start:110.151,len:3.177,in:0,rate:1.1675};
 S.clips.slot={start:9000.0,len:4.5717,in:0};
-S.clips.badges={start:65.885,len:6.292,in:0,rate:1.2258};
-S.clips.wall={start:76.762,len:3.97,in:1.3,rate:1.9756};
+S.clips.badges={start:60.753,len:5.712,in:0,rate:1.3503};
+S.clips.wall={start:70.459,len:3.413,in:1.3,rate:2.298};
 S.clips.tags={start:9000.0,len:5.9994,in:0,rate:0.8};
 S.clips.showcase={start:9000.0,len:8.47,in:0};
 S.clips.hl1b={start:9000.0,len:2.1731,in:0};
 S.clips.hl1c={start:2.4019,len:2.0016,in:0};
 S.clips.hl1d={start:4.4035,len:2.6185,in:0,rate:1.0042};
-S.clips.julian={start:13.8268,len:9.3378,in:0,rate:0.8638};
-S.clips.white2={start:13.8268,len:9.3378,in:0,rate:0.8638};
-S.clips.fuer={start:27.595,len:9.9099,in:0,rate:1.0631};
-S.clips.system={start:64.166,len:1.719,in:0,rate:1.3297};
-S.clips.kanal={start:80.732,len:2.694,in:0,rate:0.9911};
-S.clips.formats={start:82.6253,len:5.5377,in:0,rate:1.0992};
-S.clips.flex={start:88.163,len:2.298,in:0,rate:0.9947};
-S.clips.ivKochen={start:0,len:2.4019,in:0};
+S.clips.julian={start:13.8316,len:8.1798,in:0,rate:0.9861};
+S.clips.white2={start:13.8316,len:8.1798,in:0,rate:0.9861};
+S.clips.fuer={start:25.877,len:9.3097,in:0,rate:1.1316};
+S.clips.system={start:59.592,len:1.161,in:0,rate:1.9688};
+S.clips.kanal={start:73.872,len:2.7145,in:0,rate:0.9836};
+S.clips.formats={start:75.7256,len:5.0194,in:0,rate:1.2127};
+S.clips.flex={start:80.745,len:2.276,in:0,rate:1.0043};
+S.clips.ivKochen={start:0.0,len:2.4019,in:0};
 S.clips.ivTanken={start:9000.0,len:2.1731,in:0};
 S.clips.ivBrille={start:2.4019,len:2.0016,in:0};
-S.clips.endtxt={start:112.729,len:12.028,in:0,rate:0.9983};
-S.clips.endc={start:124.757,len:8.5776,in:0,rate:1.1134};
-S.clips.logo3={start:9.6447,len:4.1821,in:0.475,rate:1.1378};
+S.clips.endtxt={start:102.462,len:10.866,in:0,rate:1.1051};
+S.clips.endc={start:113.328,len:8.5776,in:0,rate:1.1134};
+S.clips.logo3={start:9.6447,len:4.1869,in:0.475,rate:1.1365};
 S.clips.ubahn={start:9000.0,len:4.5788,in:0};
 S.clips.welt={start:9000.0,len:2.2859,in:0};
 S.clips.logo4={start:9000.0,len:3.1453,in:0};
-S.clips.pos={start:107.2213,len:2.0947,in:0,rate:0.9859};
-S.clips.pos2={start:109.316,len:1.718,in:0,rate:0.9985};
-S.clips.pos3={start:111.034,len:1.695,in:0,rate:1.0119};
-S.clips.laptop={start:95.5448,len:6.3412,in:0,rate:0.9964};
-S.clips.newsl={start:101.886,len:5.7236,in:0,rate:1.1018};
-S.clips.gutsch={start:72.177,len:4.585,in:0,rate:0.9971};
+S.clips.pos={start:97.5128,len:2.0932,in:0,rate:0.9866};
+S.clips.pos2={start:99.606,len:1.695,in:0,rate:1.012};
+S.clips.pos3={start:101.301,len:1.161,in:0,rate:1.4773};
+S.clips.laptop={start:87.5591,len:5.1969,in:0,rate:1.2158};
+S.clips.newsl={start:92.756,len:5.1423,in:0,rate:1.2264};
+S.clips.gutsch={start:66.465,len:3.994,in:0,rate:1.1446};
 Object.assign(S.comps.julian.params,{"sStart": 3.7572, "pause": 0.3});FM.julian=COMPS.julian.model(S.comps.julian.params);
 Object.assign(S.comps.partner.params,{"hit": 3.086, "lOut": 4.473, "sent": 1000, "sent2": 4.583, "popGap": 99, "end": 15, "spread": 1.15, "flyStep": 0.0686, "swap": 2.0});FM.partner=COMPS.partner.model(S.comps.partner.params);
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
@@ -4588,7 +4588,7 @@ let actx=null,abuf=null,abuf0=null,abufAt=null,asrc=null,gain=null,muted=false;
 const AU_BASS=91.4537,AU_CUT=93.7395,AU_XF=.004; // Bass-Downbeat im Original ↔ Kick-Downbeat auf der Timeline: genau 12 Takte Abstand, gleiche Position im Takt → nahtlos
 function auTarget(){return AU_CUT}
 const AU_CB=132.5917,AU_CBD=0.0142;function spliceAudio(){if(!abuf0)return null;if(abufAt==='loop'&&abuf)return abuf;abufAt='loop';const sr=abuf0.sampleRate,xf=Math.round(.04*sr);let o=abuf0; // Kunde: Track läuft fast durch (3 Stellen)
-    for(const [p,d,src] of [[77.764, 38.857, 38.907], [0.05, -2.1731, 0]]){const P=Math.round((p-.05)*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr);
+    for(const [p,d,src] of [[86.912, 27.4285, 59.4835], [0.05, -2.1731, 0]]){const P=Math.round((p-.05)*sr),D=Math.round(Math.abs(d)*sr),q=actx.createBuffer(o.numberOfChannels,o.length+(d<0?-D:D),sr);
       for(let ch=0;ch<o.numberOfChannels;ch++){const a=o.getChannelData(ch),e=q.getChannelData(ch);
         if(d<0){e.set(a.subarray(0,P));e.set(a.subarray(P+D),P);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[P+D+i]*w+a[P+i]*(1-w)}}
         else{const S=Math.round((src-.05)*sr);e.set(a.subarray(0,P));e.set(a.subarray(S,S+D),P);e.set(a.subarray(P),P+D);for(let i=0;i<xf;i++){const w=i/xf;e[P+i]=a[S+i]*w+a[P+i]*(1-w);e[P+D+i]=a[P+i]*w+a[S+D+i]*(1-w)}}}
@@ -4745,7 +4745,7 @@ window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:()=>spliceAudio(),mSeek,open
 <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <script type="text/babel" data-presets="react">
 const {createContext, useContext, useEffect, useLayoutEffect, useRef, useState} = React;
-const WIDTH = 3840, HEIGHT = 2160, FPS = 24, DURATION = 3200;
+const WIDTH = 3840, HEIGHT = 2160, FPS = 24, DURATION = 2926;
 
 // Stage/useTime: vom Renderer bereitgestellt, sonst eigene Variante (spielt automatisch, ohne Klick)
 const TimeCtx = createContext(0);
