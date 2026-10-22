@@ -3,6 +3,8 @@
 {const J=__CJ__,SW=.55,r0=CLOUD.render,m0=CLOUD.model;
  // Standbild des Tamara-Videos an der Swipe-Stelle unter dem Video – falls das Video beim Abspielen noch nicht dekodiert ist, blitzt kein Verlauf durch
  {const ct=$('clT'),im=document.createElement('img');im.src='ooh/tamara_f.webp';im.alt='';im.id='clT2';im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0';ct.insertBefore(im,ct.firstChild);CLV2.style.zIndex=1}
+ // Kunde: Standbild des Kian-Videos unter dem Video in der Wolke – ist das Video beim Abspielen/Springen noch nicht dekodiert, scheint kein Verlauf durch
+ {const im=document.createElement('img');im.src='ooh/kian_mid.webp';im.alt='';im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';CLE.main.insertBefore(im,CLE.main.firstChild)}
  CLOUD.model=function(P){const M=m0.call(this,P);M.total-=J;return M};
  CLOUD.render=function(M,t){const P=M.P,E=CLE,T2=P.z2At+P.z2Dur,S=T2-J-SW,ct=$('clT'),W=$('clFW');
   if(t<S){window.__noCLV=1;try{r0.call(this,M,0)}finally{window.__noCLV=0} /* Video steuert nur dieser Teil – sonst setzen zwei Stellen es abwechselnd auf verschiedene Zeiten (Ruckeln) */
