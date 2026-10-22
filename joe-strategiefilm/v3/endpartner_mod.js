@@ -8,11 +8,9 @@
  ENDC.DEF.pre=13.725/24*4;
  ENDC.params.unshift({k:'pre',label:'Partner um das jö-Logo',min:0,max:5,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'so lange steht das runde jö-Logo mit allen Partnern, bevor die Endcard startet'});
  const m0=ENDC.model,r0=ENDC.render;
- // Kunde: großes jö jetzt mit Farbverlauf – das bisherige (flach rot, wie am Ende des Logos davor) blendet zu Beginn kurz darüber aus
- const IO=document.createElement('img');IO.src='__ECICON_OLD__';IO.alt='';{const ic=$('ecIcon');IO.style.cssText=ic.style.cssText+';box-shadow:none;pointer-events:none';ic.after(IO)}
+
  ENDC.model=function(P){const M=m0.call(this,P);M.total+=P.pre||0;return M};
  ENDC.render=function(M,t){const P=M.P,pre=P.pre||0;r0.call(this,M,Math.max(0,t-pre));
-  {const ic=$('ecIcon'),o=1-eIO(seg(t,.04,.4));IO.style.transform=ic.style.transform;IO.style.opacity=(o*(+ic.style.opacity||0)).toFixed(3);IO.style.display=o>0?'':'none'}
   const out=pre+P.flyAt-.05;
   cs.forEach((c,i)=>{const a=.05+PT_POP[i]*.035,o=out+PT_POP[i]*.012,k=eBack(seg(t,a,a+.4))*(1-eInCub(seg(t,o,o+.25)));
    const ox=9*Math.sin(t*(1+i*.11)+i*1.7),oy=7*Math.cos(t*(.9+i*.13)+i*1.1); // gleiches Schweben wie die Profilbilder bei „Für jeden.“

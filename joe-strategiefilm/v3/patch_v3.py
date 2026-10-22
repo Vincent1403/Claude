@@ -275,6 +275,7 @@ rep("window.__t={mSeek,", "window.__t={BEATS,BAR,PEAKS,ensureAudio,spliceAudio:(
 aliases = ("const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“\nconst LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);\nconst LOGO4=Object.assign(Object.create(LOGO),{key:'logo4',name:'Logo (Schluss, vor „Markenbühne“)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf und bleibt stehen, kein App-Icon\nconst LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt\n"
            + (here / "partner_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "endpartner_mod.js").read_text(encoding="utf-8") + "\n"
+           + (here / "logo2_grad_mod.js").read_text(encoding="utf-8") + "\n"
            + (here / "logo_hold_mod.js").read_text(encoding="utf-8").replace("__LH__", "1.88").replace("__LL__", "2.275") + "\n"
            + wl_imgs((here / "gutschein_comp.js").read_text(encoding="utf-8")) + "\n"
            + (here / "pos_mod.js").read_text(encoding="utf-8").replace("__POS1__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos1.webp").read_bytes()).decode()).replace("__POS2__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos2.webp").read_bytes()).decode()).replace("__POS3__", "data:image/webp;base64," + base64.b64encode((here / "ooh" / "pos" / "pos3.webp").read_bytes()).decode()) + "\n"
@@ -1056,6 +1057,7 @@ for _a, _b in (("VDV.playbackRate=P.speed;", "VDV.playbackRate=P.speed*(window._
     assert s.count(_a) == 1, _a
     s = s.replace(_a, _b)
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon_verlauf.webp").read_bytes()).decode())   # Kunde: großes jö mit Farbverlauf (vorher endc_icon.webp)
+s = s.replace("__GRADJO__", "data:image/webp;base64," + base64.b64encode((here / "jo_verlauf.webp").read_bytes()).decode())
 s = s.replace("__ECICON_OLD__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
 for _ph, _fn in (("__EPJS__", "josport_weiss"), ("__EPJR__", "joreisen_weiss")): s = s.replace(_ph, "data:image/webp;base64," + base64.b64encode((here / "partner_logos" / (_fn + ".webp")).read_bytes()).decode())
 (here / "index.html").write_text(s, encoding="utf-8")
