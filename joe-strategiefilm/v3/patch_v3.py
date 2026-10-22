@@ -987,6 +987,13 @@ if KURZ:
         _s0, _e0 = _v["start"], _v["start"] + _v["len"]; _s1, _e1 = _tmap(_s0), _tmap(_e0)
         if abs((_e1 - _s1) - (_e0 - _s0)) > 1e-3: _v["rate"] = round(_v.get("rate", 1) * (_e0 - _s0) / (_e1 - _s1), 4)
         _v["start"], _v["len"] = _s1, round(_e1 - _s1, 4)
+    # Kunde: „So persönlich wie nie zuvor.“ genau auf den Drop (Synth-Teil, Track 27,48 s) – nur die Grenze Farben | Für … rückt 1 Schlag vor,
+    # Farben läuft dafür etwas schneller, „Für …“ etwas langsamer; Ende von „Für …“ (Zoom in Kian) und alles danach bleibt
+    _drop = _near(_NB2, 27.48 - 2.1731); _fu, _co = CLIPS["fuer"], CLIPS["colors"]; _dd = round(_fu["start"] - _drop, 4)
+    if 0 < _dd < .7:
+        _cc, _fc = _co["len"] * _co.get("rate", 1), _fu["len"] * _fu.get("rate", 1)
+        _co["len"] = round(_co["len"] - _dd, 4); _co["rate"] = round(_cc / _co["len"], 4)
+        _fu["start"] = round(_drop, 4); _fu["len"] = round(_fu["len"] + _dd, 4); _fu["rate"] = round(_fc / _fu["len"], 4)
     print("KURZ: Faktoren", [round((b - a - r) / (b - a), 3) for (a, b), r in zip(_R, _RM)], "Ende", round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
