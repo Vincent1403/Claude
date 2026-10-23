@@ -2983,7 +2983,7 @@ const RABATT={
     const c=f(seg(t,P.outAt,P.outAt+P.outDur)),pw=1010+(166-1010)*c;
     E.pill.style.width=pw.toFixed(1)+'px';E.pill.style.left=(P.cx-pw/2).toFixed(1)+'px'; // Mitte der Pill bei cx (über seiner linken Schulter)
     E.txW.style.opacity=(1-f(seg(t,P.outAt,P.outAt+P.outDur*.45))).toFixed(3);
-    const kk=seg(t,P.outAt+P.outDur*.75,P.outAt+P.outDur*.75+.4),ke=f(kk);
+    const kk=seg(t,P.outAt+P.outDur*.75,P.outAt+P.outDur*.75+.32),ke=f(kk);
     E.logo.style.opacity=(1-f(seg(kk,0,.4))).toFixed(3);E.logo.style.transform=`scale(${(1-.4*f(seg(kk,0,.5))).toFixed(3)})`;
     E.ckP.style.strokeDashoffset=(1-ke).toFixed(3);E.ck.style.opacity=kk>0?1:0;
     const pop=kk>0&&kk<1?1+.08*Math.sin(Math.PI*kk):1;E.jo.style.transform=`scale(${((.7+.3*je)*pop).toFixed(4)})`;E.jo.style.opacity=Math.min(1,j*2.2).toFixed(3);
@@ -4097,6 +4097,10 @@ const NEWSL={key:'newsl',name:'Newsletter',lane:'laneV4',cls:'bento',
 {const im=document.createElement('img');im.src=$('fuKian').firstChild.src;im.alt='';im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
  RBV.parentNode.insertBefore(im,RBV);
  const r0=FUER.render;FUER.render=function(M,t){r0.call(this,M,t);if(t>M.total-2.5&&RBV.paused&&RBV.currentTime>.01)RBV.currentTime=0}}
+/* Kunde: der fertige Haken ploppt kurz vor dem Schnitt in die Wolke weg (statt halb gezeichnet abgeschnitten zu werden) */
+{const r1=RABATT.render;RABATT.render=function(M,t){r1.call(this,M,t);const c=S.clips.rabatt,w=view==='main'&&S.clips.cloud;if(!w)return;
+  const tc=(S.clips.cloud.start-c.start)*(c.rate||1),e=eInCub(seg(t,tc-.16,tc-.01));if(e<=0)return;
+  RBE.pill.style.transform+=` scale(${(1-e).toFixed(4)})`;RBE.pill.style.opacity=(1-e).toFixed(3)}}
 
 /* =====================================================================
    COMP: FORMATE (Partnerfilm) – nach „Konsistent über alle Kanäle.“: dieselbe Kampagne in verschiedenen Formaten
@@ -4513,7 +4517,7 @@ Object.assign(S.comps.ubahn.params,{"len": 4.5788});FM.ubahn=COMPS.ubahn.model(S
 Object.assign(S.comps.endtxt.params,{"len": 21.97, "aIn": 1, "aOut": 8, "bIn": 2, "hold": 2, "bOut": 8, "cOut": 15.31, "cIn": 8.5});FM.endtxt=COMPS.endtxt.model(S.comps.endtxt.params);
 Object.assign(S.comps.endc.params,{"flyAt": 0.35, "txAt": 0.95, "wmAt": 1.0, "outAt": 2.881, "linkAt": 3.08, "pillAt": 3.381});FM.endc=COMPS.endc.model(S.comps.endc.params);
 Object.assign(S.comps.kanal.params,{"len": 4.672, "inAt": 0, "outAt": 3.833});FM.kanal=COMPS.kanal.model(S.comps.kanal.params);
-Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.3835, "banner": 0, "sc": 0.85, "y": 300, "cx": 470});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);
+Object.assign(S.comps.rabatt.params,{"banAt": 0.3544, "inAt": 0.875, "outAt": 2.1, "banner": 0, "sc": 0.85, "y": 300, "cx": 470});FM.rabatt=COMPS.rabatt.model(S.comps.rabatt.params);
 Object.assign(S.comps.formats.params,{"sh": 0.314, "clearUntil": 0.75, "len": 6.087, "hold": 6});FM.formats=COMPS.formats.model(S.comps.formats.params);
 Object.assign(S.comps.prod.params,{"ppIn": 0.5, "ppStag": 0.1});FM.prod=COMPS.prod.model(S.comps.prod.params);
 Object.assign(S.comps.logo2.params,{"outAt": 2.4467, "circ": 1});FM.logo2=COMPS.logo2.model(S.comps.logo2.params);

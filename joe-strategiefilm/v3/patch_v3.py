@@ -712,6 +712,8 @@ for k in ("julian", "white2"):
 # Kunden-Feedback (WhatsApp): Rabattsammler-Pill nicht übers Gesicht; Partner-Logos fliegen früher ein (Takt zurück an die Wand);
 # jö-Logo hinter den Menschen größer; Formate Bildschirm 1 kürzer (Wechsel 2 und 3 je 1 Takt früher, weiter auf Hits)
 PARAMS["rabatt"] = {**PARAMS["rabatt"], "sc": .85, "cx": 470, "y": 300}
+PARAMS["rabatt"] = {**PARAMS["rabatt"], "outAt": 2.1}   # Kunde: Haken bei 0:38 ganz zeichnen – Pill schrumpft etwas früher (15 % ist da schon fertig gezählt)
+rep("const kk=seg(t,P.outAt+P.outDur*.75,P.outAt+P.outDur*.75+.4)", "const kk=seg(t,P.outAt+P.outDur*.75,P.outAt+P.outDur*.75+.32)")
 _pd = round(BARL * .75, 3)
 PARAMS["partner"] = {**PARAMS["partner"], **{k: round(PARAMS["partner"][k] - _pd, 3) for k in ("hit", "lOut", "sent2")}}
 CLIPS["partner"]["len"] = round(CLIPS["partner"]["len"] - BARL, 4)
