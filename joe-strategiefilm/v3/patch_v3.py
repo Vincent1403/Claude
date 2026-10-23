@@ -1018,6 +1018,18 @@ if KURZ:
     _gs = CLIPS["gutsch"]; _cut(_gs, _dB); _gs["rate"] = 1
     PARAMS["gutsch"] = {**PARAMS.get("gutsch", {}), "len": _gs["len"], "hold": .25, "zoomDur": .8, "scrollAt": 1.0, "scrollDur": 1.0, "matchAt": round(_gs["len"] - .97, 4)}
     _cut(CLIPS["wall"], _dB)
+    # Kunde: die drei POS-Bilder (Türfolie, Schild, BIPA-Kassa) je genau 1 Takt; die 4 Schläge dafür geben die beiden Tablets davor ab
+    # (Website −2, Newsletter −2 Schläge, scrollen etwas schneller). Schluss-Text und alles danach bleiben, wo sie sind.
+    _lp, _nl, _p1, _p2, _p3, _et = (CLIPS[k] for k in ("laptop", "newsl", "pos", "pos2", "pos3", "endtxt"))
+    _Le, _Ne, _ov, _E = _nl["start"], _nl["start"] + _nl["len"], _nl["start"] + _nl["len"] - _p1["start"], _et["start"]
+    _lc, _nc = _lp["len"] * _lp.get("rate", 1), _nl["len"] * _nl.get("rate", 1)
+    _Le2 = _near(_NB2, _Le - 2 * BEAT); _Ne2 = _near(_NB2, _Ne - 4 * BEAT)
+    _lp["len"] = round(_Le2 - _lp["start"], 4); _lp["rate"] = round(_lc / _lp["len"], 4)
+    _nl["start"] = round(_Le2, 4); _nl["len"] = round(_Ne2 - _Le2, 4); _nl["rate"] = round(_nc / _nl["len"], 4)
+    _s1, _s2, _s3 = round(_Ne2 - _ov, 4), round(_near(_NB2, _E - 8 * BEAT), 4), round(_near(_NB2, _E - 4 * BEAT), 4)
+    for _k, _c, _a, _b in (("pos", _p1, _s1, _s2), ("pos2", _p2, _s2, _s3), ("pos3", _p3, _s3, _E)):
+        _c["start"], _c["len"], _c["rate"] = _a, round(_b - _a, 4), 1
+        PARAMS[_k] = {**PARAMS.get(_k, {}), "len": round(_c["len"] / BEAT, 3), "outAt": round(_c["len"] / BEAT + 1, 3)}
     print("KURZ: Faktoren", [round((b - a - r) / (b - a), 3) for (a, b), r in zip(_R, _RM)], "Ende", round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)

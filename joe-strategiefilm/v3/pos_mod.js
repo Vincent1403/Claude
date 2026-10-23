@@ -5,7 +5,7 @@
  L.innerHTML=SRC.map(s=>`<div class="posCard" style="position:absolute;left:0;top:${(1080-CH)/2}px;width:${CW}px;height:${CH}px;border-radius:56px;overflow:hidden;box-shadow:0 40px 90px rgba(60,20,30,.18);will-change:transform"><img src="${s}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 50%"></div>`).join('');
  $('stage').appendChild(L);const cards=[...L.querySelectorAll('.posCard')];
  [POS,POS2,POS3].forEach((C,i)=>{const s0=C.show;Object.assign(C,{name:'POS-System '+(i+1)+': '+NM[i],
-  show(on){s0.call(this,false);if(on)L.style.display='';else if(![POS,POS2,POS3].some(x=>x._on))L.style.display='none';this._on=on},
+  show(on){s0.call(this,false);this._on=on;L.style.display=[POS,POS2,POS3].some(x=>x._on)?'':'none'} /* erst den eigenen Zustand setzen, sonst bleibt die Ebene nach dem letzten Bild stehen */,
   render(M,t){const T=M.total||2.3,e=eIO(seg(t,0,.6)),c=i?i-1+e:-1+eOut(seg(t,0,.75));/* erste Karte gleitet über das rausgleitende Tablet herein */ /* erste Karte: steht schon halb im Bild und übernimmt den Schwung des rausgleitenden Tablets */ /* Reihe gleitet eine Karte weiter, dann ruht sie */
    cards.forEach((el,k)=>{const x=960+(k-c)*STEP-CW/2,d=Math.abs(k-c);el.style.transform=`translateX(${x.toFixed(1)}px) scale(${(1-.06*Math.min(1,d)).toFixed(4)})`;
     el.firstChild.style.transform=`scale(${(1.06-.04*(k===i?seg(t,0,T):0)).toFixed(4)})`})},
