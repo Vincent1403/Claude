@@ -1109,6 +1109,24 @@ for _a, _b in (("VDV.playbackRate=P.speed;", "VDV.playbackRate=P.speed*(window._
 # kian0.webp (Zoom-Foto davor + Standbild darunter) ist jetzt genau dieses Bild (alt: src_alt/kian0_alt.webp)
 rep("vt=Math.min(5.0,t),playing=(view==='main'?mPlaying:cPlaying);", "vt=Math.min(5.0,t+.75),playing=(view==='main'?mPlaying:cPlaying);")
 rep("RBV.paused&&RBV.currentTime>.01)RBV.currentTime=0}", "RBV.paused&&Math.abs(RBV.currentTime-.75)>.01)RBV.currentTime=.75}")
+# Kunde: Kopfneigen am Ende von Kians Clip weg, ohne Timing zu ändern → Kian-Video läuft über die ganze sichtbare Strecke
+# (Rabatt-Szene + Wolke bis Swipe-Ende) mit KIAN_R× Echtzeit: 0,75 s → ~2,9 s im Rohvideo, das Kippen beginnt erst bei 2,8–3,5 s
+KIAN_R = .6
+_rq = round(KIAN_R / CLIPS["rabatt"].get("rate", 1), 5); _cq = round(KIAN_R / CLIPS["cloud"].get("rate", 1), 5)
+_vs = round(.75 + (CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]) * KIAN_R, 4)
+rep("vt=Math.min(5.0,t+.75),playing=(view==='main'?mPlaying:cPlaying);", f"vt=Math.min(5.0,.75+t*{_rq}),playing=(view==='main'?mPlaying:cPlaying);")
+rep("RBV.playbackRate=window.__RATE||1;", f"RBV.playbackRate=(window.__RATE||1)*{_rq};")
+rep("const vt=Math.min(4.98,P.vStart+t);", f"const vt=Math.min(4.98,P.vStart+t*{_cq});", 1)
+rep("const vt=Math.min(4.98,P.vStart+t),pl=", f"const vt=Math.min(4.98,P.vStart+t*{_cq}),pl=")
+rep("CLV.playbackRate=window.__RATE||1;", f"CLV.playbackRate=(window.__RATE||1)*{_cq};", 2)
+rep("vStart:3.19,", f"vStart:{_vs},")
+print("Kian-Video:", _rq, _cq, "vStart", _vs)
+# … und der leichte Push-in der Rabatt-Szene läuft im Wolken-Video weiter (vorher sprang das Bild beim Wechsel 0:38,06 von 101,8 % auf 100 %)
+_zm = PARAMS["rabatt"].get("zoom", .03); _zr = CLIPS["rabatt"].get("rate", 1)
+_z0 = round(1 + _zm * min(1, (CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]) * _zr / 5.0417), 5); _zk = round(_zm / 5.0417 * _zr / CLIPS["cloud"].get("rate", 1), 6)
+_zs = f"CLV.style.transform=`scale(${{Math.min({1 + _zm},{_z0}+{_zk}*t).toFixed(4)}})`;"
+rep("Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return}", _zs + "Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return}")
+rep("Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});", "Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});" + _zs)
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon_verlauf.webp").read_bytes()).decode())   # Kunde: großes jö mit Farbverlauf (vorher endc_icon.webp)
 s = s.replace("__GRADJO__", "data:image/webp;base64," + base64.b64encode((here / "jo_verlauf.webp").read_bytes()).decode())
 s = s.replace("__ECICON_OLD__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
