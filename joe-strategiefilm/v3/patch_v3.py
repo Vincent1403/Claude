@@ -1114,6 +1114,7 @@ HALF_JS = """(function(){if(window.__videoMeta)return;
 _FIT = "function fit(){$('stage').style.transform=`scale(${$('vp').clientWidth/1920})`}"
 assert s.count(_FIT) == 1
 s = s.replace(_FIT, _FIT + "\n" + HALF_JS, 1)
+s = s.replace("</style>", "svg.oesg{overflow:visible!important} /* Kunde: Ös-Zeichen nie am eigenen Rahmen abschneiden */\n</style>", 1)
 (here / "index.html").write_text(s, encoding="utf-8")
 # Player-Version zum Teilen: nur das Video, ohne Timeline, Header und Infos
 _pc = """<style id="playerOnly">
