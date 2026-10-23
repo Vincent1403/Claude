@@ -12,6 +12,10 @@ import pathlib, json, base64, re
 
 here = pathlib.Path(__file__).parent
 s = (here / "index_markenfilm.html").read_text(encoding="utf-8")
+# Kunde: neuer Julian (freigestellt) + neues Porträt für „Hallo Julian“ (Quelle: julian_neu/quelle.webp; Markenfilm-Originale bleiben in index_markenfilm.html)
+for _k, _f in (("julian", "julian_frei.webp"), ("avatar", "julian_avatar.webp")):
+    s, _n = re.subn(r'"%s": "data:image/webp;base64,[A-Za-z0-9+/=]+"' % _k, '"%s": "data:image/webp;base64,%s"' % (_k, base64.b64encode((here / "julian_neu" / _f).read_bytes()).decode()), s, count=1)
+    assert _n == 1, _k
 
 
 def rep(a, b, count=1):
