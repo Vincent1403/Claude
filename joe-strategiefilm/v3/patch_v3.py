@@ -1033,6 +1033,9 @@ if KURZ:
     print("KURZ: Faktoren", [round((b - a - r) / (b - a), 3) for (a, b), r in zip(_R, _RM)], "Ende", round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 # Kunde: Tamara-Video in der Wolke (0:38) im ursprünglichen Tempo (×0,8875), unabhängig davon, wie stark der Clip gestaucht ist – Clip-Länge bleibt
 PARAMS["cloud"] = {**PARAMS.get("cloud", {}), "v2Rate": round(.8875 / CLIPS["cloud"].get("rate", 1), 4)}
+# Kunde: Haken-Animation 1 s früher (sonst unverändert) – Pill startet mit dem ersten Videobild, nach der KURZ-Stauchung (früher geht nicht, davor läuft noch der Foto-Zoom)
+_rr = CLIPS["rabatt"].get("rate", 1)
+PARAMS["rabatt"] = {**PARAMS["rabatt"], "inAt": 0, "outAt": round(PARAMS["rabatt"]["outAt"] - 1.0 * _rr, 4)}
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
 _EDJ = json.dumps([[p, d, src] for p, d, src in _ED])
