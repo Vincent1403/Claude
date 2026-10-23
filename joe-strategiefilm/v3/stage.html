@@ -2970,8 +2970,8 @@ const RABATT={
     {k:'zoom',label:'Leichter Push-in Video',min:0,max:.08,step:.005,fmt:v=>num(v*100,1)+' %'}],
   model(P){return {P,key:P.inAt,keyName:'Pill',total:5.0417}},
   show(on){RBL.style.display=on?'':'none';if(!on&&!RBV.paused)RBV.pause()},
-  render(M,t){const P=M.P,E=RBE,f=eStFlow,k=1/P.speed,A=x=>P.inAt+x*k,vt=Math.min(5.0,.75+t*0.56861),playing=(view==='main'?mPlaying:cPlaying);
-    RBV.playbackRate=(window.__RATE||1)*0.56861;if(playing){if(RBV.paused)RBV.play().catch(()=>{});if(Math.abs(RBV.currentTime-vt)>.12)RBV.currentTime=vt}
+  render(M,t){const P=M.P,E=RBE,f=eStFlow,k=1/P.speed,A=x=>P.inAt+x*k,vt=Math.min(5.0,.75+t*1),playing=(view==='main'?mPlaying:cPlaying);
+    RBV.playbackRate=(window.__RATE||1)*1;if(playing){if(RBV.paused)RBV.play().catch(()=>{});if(Math.abs(RBV.currentTime-vt)>.12)RBV.currentTime=vt}
     else{if(!RBV.paused)RBV.pause();if(Math.abs(RBV.currentTime-vt)>.01)RBV.currentTime=vt}
     RBV.style.transform=`scale(${(1+P.zoom*seg(t,0,M.total)).toFixed(4)})`;
     E.pill.style.top=(P.banner?P.yBan:P.y)+'px'; /* mit Banner sitzt die Pill höher */
@@ -3012,7 +3012,7 @@ $('stage').appendChild(CLL);CLL.appendChild(MB_K2.el);CLL.appendChild(MB_T.el);M
 const CLV=$('clV'),CLV2=$('clV2'),CL_TI=14;const CLE={w:$('clW'),av:[...CLL.querySelectorAll('.clAv')],main:$('clMain'),img:$('clImg'),pill:$('clPill')};
 const CLOUD={
   key:'cloud',name:'Profil-Wolke',lane:'laneV4',cls:'bento',
-  DEF:{hold:.25,dur:1.6,pillOut:.35,drift:1,size:380,vStart:2.4743,z2At:2.75,z2Dur:1.4,hudOff:2.0,v2Rate:.8875,banner:1,banGap:.15},
+  DEF:{hold:.25,dur:1.6,pillOut:.35,drift:1,size:380,vStart:3.7825,z2At:2.75,z2Dur:1.4,hudOff:2.0,v2Rate:.8875,banner:1,banGap:.15},
   params:[
     {k:'hold',label:'Standbild hält',min:0,max:1.5,step:1/24,fmt:v=>Math.round(v*24)+' F',sub:'letztes Bild des Rabattsammler-Videos mit Pill, nahtloser Anschluss'},
     {k:'pillOut',label:'Pill blendet aus über',min:.1,max:1,step:1/24,fmt:v=>Math.round(v*24)+' F'},
@@ -3031,7 +3031,7 @@ const CLOUD={
     // Video läuft während des Zooms weiter; sobald der Kreis klein ist, Wechsel auf das Standbild
     const small=t>=P.hold+P.dur,vt=Math.min(5.0,P.vStart+t),playing=(view==='main'?mPlaying:cPlaying);
     CLV.style.display='';E.img.style.display='none'; // kein Wechsel aufs Standbild: Video bleibt auf dem letzten Frame stehen (gleiche Farben)
-    CLV.playbackRate=(window.__RATE||1)*0.26331;if(window.__noCLV){}else if(!small&&playing&&vt<5){if(CLV.paused)CLV.play().catch(()=>{});if(Math.abs(CLV.currentTime-vt)>.12)CLV.currentTime=vt}else{if(!CLV.paused)CLV.pause();if(Math.abs(CLV.currentTime-vt)>.01)CLV.currentTime=vt}
+    CLV.playbackRate=(window.__RATE||1)*1;if(window.__noCLV){}else if(!small&&playing&&vt<5){if(CLV.paused)CLV.play().catch(()=>{});if(Math.abs(CLV.currentTime-vt)>.12)CLV.currentTime=vt}else{if(!CLV.paused)CLV.pause();if(Math.abs(CLV.currentTime-vt)>.01)CLV.currentTime=vt}
     // Kamera: Maßstab so, dass der Mittelkreis am Anfang das ganze Bild abdeckt
     const s0=Math.hypot(1920,1080)/D*1.02,s=s0+(1-s0)*u,sc=s*D/CL_D;
     // Hauptbild: Rechteck 1920×1080 → Kreis D
@@ -4078,7 +4078,7 @@ const NEWSL={key:'newsl',name:'Newsletter',lane:'laneV4',cls:'bento',
  CLOUD.model=function(P){const M=m0.call(this,P);M.total-=J;return M};
  CLOUD.render=function(M,t){const P=M.P,E=CLE,T2=P.z2At+P.z2Dur,S=T2-J-SW,ct=$('clT'),W=$('clFW');
   if(t<S){window.__noCLV=1;try{r0.call(this,M,0)}finally{window.__noCLV=0} /* Video steuert nur dieser Teil – sonst setzen zwei Stellen es abwechselnd auf verschiedene Zeiten (Ruckeln) */
-   const vt=Math.min(4.98,P.vStart+t*0.26331),pl=(view==='main'?mPlaying:cPlaying);if(!pl||Math.abs(CLV.currentTime-vt)>.12){if(!CLV.paused&&!pl)CLV.pause();CLV.currentTime=vt}CLV.playbackRate=(window.__RATE||1)*0.26331;if(pl&&CLV.paused)CLV.play().catch(()=>{});
+   const vt=Math.min(4.98,P.vStart+t*1),pl=(view==='main'?mPlaying:cPlaying);if(!pl||Math.abs(CLV.currentTime-vt)>.12){if(!CLV.paused&&!pl)CLV.pause();CLV.currentTime=vt}CLV.playbackRate=(window.__RATE||1)*1;if(pl&&CLV.paused)CLV.play().catch(()=>{});
    const po=eStFlow(seg(t,P.hold,P.hold+P.pillOut));E.pill.style.opacity=(1-po).toFixed(3);
    CLV.style.transform=`scale(${Math.min(1.03,1.01804+0.002755*t).toFixed(4)})`;Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return} /* außerhalb des Bildes schon da (Bild/Video geladen) */
   window.__noCLV=1;try{r0.call(this,M,Math.max(t+J,T2))}finally{window.__noCLV=0}
@@ -4086,7 +4086,7 @@ const NEWSL={key:'newsl',name:'Newsletter',lane:'laneV4',cls:'bento',
   // Swipe: Kian (Vollbild) nach links raus, Tamara (Vollbild) schiebt von rechts nach
   E.main.style.display='';Object.assign(E.main.style,{left:'0px',top:'0px',width:'1920px',height:'1080px',borderRadius:'0px',boxShadow:'none',transformOrigin:'50% 50%',transform:`translateX(${(-1920*e).toFixed(1)}px)`,zIndex:2});
   const iw=1920,ih=1080;Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});CLV.style.transform=`scale(${Math.min(1.03,1.01804+0.002755*t).toFixed(4)})`;CLV.style.display='';E.img.style.display='none';
-  const vt=Math.min(4.98,P.vStart+t*0.26331);if(Math.abs(CLV.currentTime-vt)>.12)CLV.currentTime=vt;
+  const vt=Math.min(4.98,P.vStart+t*1);if(Math.abs(CLV.currentTime-vt)>.12)CLV.currentTime=vt;
   E.pill.style.opacity='0';
   Object.assign(ct.style,{display:'',left:'0px',top:'0px',width:'1920px',height:'1080px',borderRadius:'0px',zIndex:3,transform:`translateX(${(1920*(1-e)).toFixed(1)}px)`});
   if(W)W.style.visibility='hidden';E.w.style.visibility='hidden'};

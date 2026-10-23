@@ -1111,9 +1111,14 @@ rep("vt=Math.min(5.0,t),playing=(view==='main'?mPlaying:cPlaying);", "vt=Math.mi
 rep("RBV.paused&&RBV.currentTime>.01)RBV.currentTime=0}", "RBV.paused&&Math.abs(RBV.currentTime-.75)>.01)RBV.currentTime=.75}")
 # Kunde: Kopfneigen am Ende von Kians Clip weg, ohne Timing zu ändern → Kian-Video läuft über die ganze sichtbare Strecke
 # (Rabatt-Szene + Wolke bis Swipe-Ende) mit KIAN_R× Echtzeit: 0,75 s → ~2,9 s im Rohvideo, das Kippen beginnt erst bei 2,8–3,5 s
-KIAN_R = .6
-_rq = round(KIAN_R / CLIPS["rabatt"].get("rate", 1), 5); _cq = round(KIAN_R / CLIPS["cloud"].get("rate", 1), 5)
-_vs = round(.75 + (CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]) * KIAN_R, 4)
+# Kunde: Kopfneigen doch wieder drin → KIAN_R = None: Videos im bisherigen Tempo (Clip-Tempo), die Wolke setzt nur nahtlos dort fort, wo das Rabatt-Video aufhört
+KIAN_R = None
+if KIAN_R:
+    _rq = round(KIAN_R / CLIPS["rabatt"].get("rate", 1), 5); _cq = round(KIAN_R / CLIPS["cloud"].get("rate", 1), 5)
+    _vs = round(.75 + (CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]) * KIAN_R, 4)
+else:
+    _rq = _cq = 1
+    _vs = round(.75 + (CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]) * CLIPS["rabatt"].get("rate", 1), 4)
 rep("vt=Math.min(5.0,t+.75),playing=(view==='main'?mPlaying:cPlaying);", f"vt=Math.min(5.0,.75+t*{_rq}),playing=(view==='main'?mPlaying:cPlaying);")
 rep("RBV.playbackRate=window.__RATE||1;", f"RBV.playbackRate=(window.__RATE||1)*{_rq};")
 rep("const vt=Math.min(4.98,P.vStart+t);", f"const vt=Math.min(4.98,P.vStart+t*{_cq});", 1)
