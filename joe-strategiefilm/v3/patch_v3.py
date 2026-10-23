@@ -1133,7 +1133,10 @@ print("Kian-Video:", _rq, _cq, "vStart", _vs)
 # … und der leichte Push-in der Rabatt-Szene läuft im Wolken-Video weiter (vorher sprang das Bild beim Wechsel 0:38,06 von 101,8 % auf 100 %)
 _zm = PARAMS["rabatt"].get("zoom", .03); _zr = CLIPS["rabatt"].get("rate", 1)
 _z0 = round(1 + _zm * min(1, (CLIPS["cloud"]["start"] - CLIPS["rabatt"]["start"]) * _zr / 5.0417), 5); _zk = round(_zm / 5.0417 * _zr / CLIPS["cloud"].get("rate", 1), 6)
-_zs = f"CLV.style.transform=`scale(${{Math.min({1 + _zm},{_z0}+{_zk}*t).toFixed(4)}})`;"
+_zs = f"CLV.style.transform=`scale(${{Math.min({1 + _zm},{_z0}+{_zk}*t).toFixed(4)}})`;{{const k=$('clKM');if(k)k.style.transform=CLV.style.transform}}"
+# Standbild unter dem Wolken-Video = genau das Anschlussbild (ooh/kian_mid.webp aus rabatt.webm bei vStart) und mit demselben Zoom –
+# im 4K-Render zeigte das erste Wolken-Bild (0:38,08) noch das alte, ungezoomte Standbild → kurzer Sprung
+rep("im.src='ooh/kian_mid.webp';im.alt='';", "im.src='ooh/kian_mid.webp';im.alt='';im.id='clKM';")
 rep("Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return}", _zs + "Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return}")
 rep("Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});", "Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});" + _zs)
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon_verlauf.webp").read_bytes()).decode())   # Kunde: großes jö mit Farbverlauf (vorher endc_icon.webp)
