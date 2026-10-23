@@ -1031,6 +1031,8 @@ if KURZ:
         _c["start"], _c["len"], _c["rate"] = _a, round(_b - _a, 4), 1
         PARAMS[_k] = {**PARAMS.get(_k, {}), "len": round(_c["len"] / BEAT, 3), "outAt": round(_c["len"] / BEAT + 1, 3)}
     print("KURZ: Faktoren", [round((b - a - r) / (b - a), 3) for (a, b), r in zip(_R, _RM)], "Ende", round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
+# Kunde: Tamara-Video in der Wolke (0:38) im ursprünglichen Tempo (×0,8875), unabhängig davon, wie stark der Clip gestaucht ist – Clip-Länge bleibt
+PARAMS["cloud"] = {**PARAMS.get("cloud", {}), "v2Rate": round(.8875 / CLIPS["cloud"].get("rate", 1), 4)}
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
 _EDJ = json.dumps([[p, d, src] for p, d, src in _ED])
@@ -1100,6 +1102,10 @@ for _a, _b in (("VDV.playbackRate=P.speed;", "VDV.playbackRate=P.speed*(window._
                ("if(pl&&CLV.paused)CLV.play()", "CLV.playbackRate=window.__RATE||1;if(pl&&CLV.paused)CLV.play()")):
     assert s.count(_a) == 1, _a
     s = s.replace(_a, _b)
+# Kunde: Kian zuckt im Rohvideo 0,2–0,7 s nach Start kurz nach hinten → Video steigt 0,75 s später ein (Clip-Länge/Timing gleich);
+# kian0.webp (Zoom-Foto davor + Standbild darunter) ist jetzt genau dieses Bild (alt: src_alt/kian0_alt.webp)
+rep("vt=Math.min(5.0,t),playing=(view==='main'?mPlaying:cPlaying);", "vt=Math.min(5.0,t+.75),playing=(view==='main'?mPlaying:cPlaying);")
+rep("RBV.paused&&RBV.currentTime>.01)RBV.currentTime=0}", "RBV.paused&&Math.abs(RBV.currentTime-.75)>.01)RBV.currentTime=.75}")
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon_verlauf.webp").read_bytes()).decode())   # Kunde: großes jö mit Farbverlauf (vorher endc_icon.webp)
 s = s.replace("__GRADJO__", "data:image/webp;base64," + base64.b64encode((here / "jo_verlauf.webp").read_bytes()).decode())
 s = s.replace("__ECICON_OLD__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
