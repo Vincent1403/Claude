@@ -79,6 +79,12 @@ durchstreicht, wofür der ORF nicht stehen will.
 3. **Haushaltsabgabe statt Abo:** 50-Cent-Münze in den Fernseher ziehen; daraus wachsen
    zwölf Angebote (ZIB, Bundesland heute, Ö1, FM4, ORF III, ÖGS …).
 
+**Look der Module:** plastischer Vektor-Stil. Zweiton-Schattierung (Licht von links oben),
+weiche Bodenschatten, Squash und Funken beim Fangen, Staubwölkchen beim Gehen, pendelnde
+Archivstücke mit wachsendem Schatten, Stempel mit Farbspritzern und Wumms, Fernseher, der
+beim Einwurf ruckelt und aufflackert, rotierende Münze. Alles ruht bei
+`prefers-reduced-motion`.
+
 ## Gestaltung
 
 - Farben: ORF-Rot `#E2001A`, Rot-Halbton `#F6C2C8`, Tinte `#111111`, Papier `#FFFFFF`,

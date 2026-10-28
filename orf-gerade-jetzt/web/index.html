@@ -13,6 +13,7 @@
   --rule:2.5px;
   --font:'Archivo','Arial Narrow',system-ui,sans-serif;
   --halftone:radial-gradient(circle, var(--red) 1.3px, transparent 1.7px) 0 0/6px 6px;
+  --shadow:rgba(17,17,17,.13);  /* Bodenschatten */
   color-scheme:light;
 }
 body{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5}
@@ -105,9 +106,34 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .item.fading .fade-note{visibility:visible}
 .item.caught{transition:transform .35s ease-in,opacity .35s ease-in;opacity:0}
 
+/* Plastik & Bewegung: Bodenschatten, Squash beim Fangen, Funken, Staubwölkchen, ziehende Wolken */
+.drop-shadow{position:absolute;left:0;top:0;width:110px;height:14px;border-radius:50%;background:var(--shadow);will-change:transform,opacity}
+#m1-body{transform-origin:50% 100%}
+#m1-body.squash{animation:squash .42s cubic-bezier(.3,1.6,.5,1)}
+@keyframes squash{0%{transform:none}30%{transform:scale(1.05,.93)}65%{transform:scale(.98,1.03)}100%{transform:none}}
+.burst{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
+.burst i{position:absolute;left:-2px;top:-8px;width:4px;height:16px;border-radius:2px;background:var(--red);transform:rotate(var(--a)) translateY(-14px);animation:ray .5s cubic-bezier(.2,.8,.3,1) forwards}
+.burst i:nth-child(even){background:var(--ink);height:10px}
+@keyframes ray{to{transform:rotate(var(--a)) translateY(-56px);opacity:0}}
+.puff{position:absolute;left:0;top:0;width:22px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--ink);pointer-events:none;animation:puff .5s ease-out forwards}
+@keyframes puff{from{opacity:.9;transform:translate(var(--x),0) scale(.5)}to{opacity:0;transform:translate(calc(var(--x) + var(--dx)),-10px) scale(1.3)}}
+.cloud{animation:drift 16s ease-in-out infinite alternate}
+.cloud.slow{animation-duration:23s;animation-direction:alternate-reverse}
+@keyframes drift{to{transform:translateX(34px)}}
+.breathe{animation:breathe 3.4s ease-in-out infinite}
+@keyframes breathe{50%{transform:translateY(-3px)}}
+
 /* Modul 2 */
 .paper{position:absolute;width:400px;height:520px;border:var(--rule) solid var(--ink);background:var(--paper)}
-.paper.front{padding:20px 24px;display:flex;flex-direction:column}
+.paper.front{padding:20px 24px;display:flex;flex-direction:column;box-shadow:7px 7px 0 0 var(--paper),7px 7px 0 2.5px var(--ink)}
+.paper.front.thud{animation:thud .4s cubic-bezier(.3,1.5,.5,1)}
+@keyframes thud{0%{transform:rotate(-3deg)}25%{transform:rotate(-3.6deg) translate(-2px,5px) scale(.985)}60%{transform:rotate(-2.6deg) translateY(-2px)}100%{transform:rotate(-3deg)}}
+.splat{position:absolute;left:30px;top:160px;width:330px;height:150px;pointer-events:none;opacity:0;background:
+  radial-gradient(circle at 6% 34%, var(--red) 0 5px, transparent 6px),radial-gradient(circle at 12% 18%, var(--red) 0 2.5px, transparent 3.5px),
+  radial-gradient(circle at 94% 16%, var(--red) 0 4px, transparent 5px),radial-gradient(circle at 86% 88%, var(--red) 0 6px, transparent 7px),
+  radial-gradient(circle at 18% 92%, var(--red) 0 3px, transparent 4px),radial-gradient(circle at 54% 4%, var(--red) 0 3px, transparent 4px)}
+.splat.show{animation:splat .35s ease-out .08s forwards}
+@keyframes splat{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
 .paper.back{background:var(--tint)}
 .toplines{display:flex;gap:12px;margin-bottom:8px}.toplines span{height:2px;background:var(--ink);flex:1}.toplines span:last-child{flex:.7}
 .bars{display:flex;gap:10px;margin-top:12px}.bars .r{height:8px;width:46%;background:var(--red)}.bars .g{height:8px;flex:1;background:#E4E4E4}
@@ -141,12 +167,20 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .coin{position:absolute;left:0;top:0;width:80px;height:80px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);box-shadow:5px 5px 0 0 var(--red),5px 5px 0 3px var(--ink);display:flex;align-items:center;justify-content:center;cursor:grab;z-index:6;touch-action:none;transition:transform .45s cubic-bezier(.4,0,.2,1),opacity .25s .3s}
 .coin.drag{cursor:grabbing;transition:none}
 .coin.in{opacity:0}
+.coin:not(.drag):not(.in) .face{animation:coinspin 4.2s ease-in-out infinite}
+@keyframes coinspin{0%,72%,100%{transform:scaleX(1)}81%{transform:scaleX(.12)}90%{transform:scaleX(1)}}
+.coin::after{content:"";position:absolute;inset:9px;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.85) 0 22%,transparent 23%);pointer-events:none}
+.jolt{animation:jolt .45s ease-out}
+@keyframes jolt{20%{transform:translate(-4px,2px) rotate(-1deg)}45%{transform:translate(4px,-2px) rotate(1deg)}70%{transform:translate(-2px,1px)}}
 .coin::before{content:"";position:absolute;inset:6px;border-radius:50%;border:2px solid var(--ink);background:#E4E4E4}
 .coin .face{position:relative;width:46px;height:46px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .coin .face b{font-weight:900;font-size:20px;line-height:1}
 .coin .face small{font-weight:800;font-size:7px;letter-spacing:.12em}
 .screen{position:absolute;left:253px;top:358px;width:183px;height:175px;border-radius:17px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--ink);color:var(--paper)}
-.screen.on{background:var(--ink)}
+.screen::after{content:"";position:absolute;inset:0;background:linear-gradient(128deg,rgba(255,255,255,.16) 0 26%,transparent 26.5%);pointer-events:none}
+.screen.on{background:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 2px,transparent 2px 5px),var(--ink)}
+.screen.on::before{content:"";position:absolute;inset:0;background:var(--paper);animation:tvon .5s ease-out forwards;pointer-events:none}
+@keyframes tvon{0%{transform:scaleY(.03);opacity:1}35%{transform:scaleY(1);opacity:.95}100%{transform:scaleY(1);opacity:0}}
 .screen .disp{font-size:24px;line-height:1.05}
 .screen.on .disp{font-size:50px;line-height:.9}
 .screen small{display:block;margin-top:8px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tint)}
@@ -166,7 +200,9 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 
 @media (prefers-reduced-motion: reduce){
   .strike path{transition:none}
-  .slot.filled,.steps li,.chip > div,.leaf{animation:none}
+  .slot.filled,.steps li,.chip > div,.leaf,.cloud,.breathe,#m1-body.squash,.paper.front.thud,.coin .face,.jolt,.screen.on::before{animation:none!important}
+  .splat.show{animation:none;opacity:1}
+  .burst,.puff{display:none}
   .stem{animation:none;stroke-dashoffset:0}
   .stamp.show{animation:none;opacity:1}
 }
@@ -210,12 +246,14 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     <div class="stage" id="m1-stage" style="aspect-ratio:760/560;touch-action:none">
       <div class="stage-inner" id="m1-inner">
         <svg aria-hidden="true" width="760" height="560" viewBox="0 0 760 560" style="position:absolute;left:0;top:0">
-          <path d="M70 92 q4-26 30-24 q10-20 34-12 q22-8 30 12 q24 0 24 18 q0 16-22 16 h-88 q-24 0-8-10z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
-          <path d="M540 150 q4-24 28-22 q10-18 32-10 q20-6 28 12 q22 0 22 16 q0 14-20 14 h-82 q-22 0-8-10z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+          <path class="cloud" d="M70 92 q4-26 30-24 q10-20 34-12 q22-8 30 12 q24 0 24 18 q0 16-22 16 h-88 q-24 0-8-10z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+          <path class="cloud slow" d="M540 150 q4-24 28-22 q10-18 32-10 q20-6 28 12 q22 0 22 16 q0 14-20 14 h-82 q-22 0-8-10z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
           <path d="M0 549 H760" stroke="#111111" stroke-width="2.5"></path>
         </svg>
+        <div id="m1-shadows"></div>
         <div id="m1-items"></div>
-        <div id="m1-figure" style="position:absolute;left:0;top:117px;width:280px"></div>
+        <div id="m1-figure" style="position:absolute;left:0;top:117px;width:280px"><div id="m1-body"></div></div>
+        <div id="m1-fx"></div>
       </div>
     </div>
     <div class="ui">
@@ -250,7 +288,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     </div>
     <div class="stage" id="m2-stage" style="aspect-ratio:760/600">
       <div class="stage-inner" id="m2-inner">
-        <svg aria-hidden="true" width="760" height="600" viewBox="0 0 760 600" style="position:absolute;left:0;top:0"><path d="M0 589 H760" stroke="#111111" stroke-width="2.5"></path></svg>
+        <svg aria-hidden="true" width="760" height="600" viewBox="0 0 760 600" style="position:absolute;left:0;top:0"><ellipse cx="560" cy="588" rx="70" ry="8" fill="rgba(17,17,17,.13)"></ellipse><path d="M0 589 H760" stroke="#111111" stroke-width="2.5"></path></svg>
         <div class="paper back" style="left:62px;top:58px;transform:rotate(3deg)"></div>
         <div class="paper front" style="left:50px;top:40px;transform:rotate(-3deg)">
           <div class="toplines"><span></span><span></span></div>
@@ -270,9 +308,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
               <circle cx="150" cy="30" r="14" fill="#E2001A" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></circle>
             </svg>
           </div>
+          <div class="splat" id="m2-splat"></div>
           <div class="stamp disp" id="m2-stamp"></div>
         </div>
-        <div id="m2-fig" style="position:absolute;left:408px;top:157px;width:280px"></div>
+        <div id="m2-fig" class="breathe" style="position:absolute;left:408px;top:157px;width:280px"></div>
       </div>
     </div>
     <div class="ui">
@@ -312,13 +351,16 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     </div>
     <div class="stage" id="m3-stage" style="aspect-ratio:760/640;touch-action:none">
       <div class="stage-inner" id="m3-inner">
-        <svg aria-hidden="true" width="760" height="640" viewBox="0 0 760 640" style="position:absolute;left:0;top:0"><path d="M0 633 H760" stroke="#111111" stroke-width="2.5"></path></svg>
-        <svg aria-hidden="true" width="300" height="308" viewBox="0 0 360 370" style="position:absolute;left:230px;top:300px;overflow:visible">
+        <svg aria-hidden="true" width="760" height="640" viewBox="0 0 760 640" style="position:absolute;left:0;top:0"><ellipse cx="380" cy="632" rx="168" ry="9" fill="rgba(17,17,17,.13)"></ellipse><ellipse cx="690" cy="632" rx="62" ry="7" fill="rgba(17,17,17,.13)"></ellipse><path d="M0 633 H760" stroke="#111111" stroke-width="2.5"></path></svg>
+        <svg id="m3-tv" aria-hidden="true" width="300" height="308" viewBox="0 0 360 370" style="position:absolute;left:230px;top:300px;overflow:visible">
+          <defs><clipPath id="tvbody"><rect x="4" y="44" width="352" height="262" rx="26"></rect></clipPath></defs>
           <path d="M262 46 L244 8 M292 46 L316 12" stroke="#111111" stroke-width="4" stroke-linecap="round"></path>
           <circle cx="244" cy="7" r="6" fill="#111111"></circle><circle cx="317" cy="11" r="6" fill="#111111"></circle>
           <path d="M80 306 L64 366 M280 306 L296 366" stroke="#111111" stroke-width="6" stroke-linecap="round"></path>
           <path d="M4 58 L-14 72 V292 L4 304 Z" fill="#E2001A" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
-          <rect x="4" y="44" width="352" height="262" rx="26" fill="#E4E4E4" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></rect>
+          <rect x="4" y="44" width="352" height="262" rx="26" fill="#E4E4E4"></rect>
+          <g clip-path="url(#tvbody)"><rect x="0" y="278" width="360" height="30" fill="#CBCBCB"></rect><path d="M4 44 H356 V58 Q180 50 4 58 Z" fill="#F2F2F2"></path></g>
+          <rect x="4" y="44" width="352" height="262" rx="26" fill="none" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></rect>
           <rect x="128" y="4" width="104" height="44" rx="6" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></rect>
           <rect x="150" y="16" width="60" height="11" rx="5.5" fill="#111111"></rect>
           <text x="180" y="41" text-anchor="middle" fill="#111111" style="font-family:Archivo,sans-serif;font-size:10px;font-weight:900;font-stretch:75%;letter-spacing:1px">50 CENT</text>
@@ -330,7 +372,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <div class="screen" id="m3-screen"><div class="disp">&#8593;<br>Münze<br>einwerfen</div></div>
         <svg id="m3-stems" aria-hidden="true" width="760" height="640" viewBox="0 0 760 640" style="position:absolute;left:0;top:0;pointer-events:none"></svg>
         <div id="m3-chips"></div>
-        <div id="m3-fig" style="position:absolute;left:548px;top:201px;width:280px"></div>
+        <div id="m3-fig" class="breathe" style="position:absolute;left:548px;top:201px;width:280px"></div>
         <div class="coin" id="m3-coin" aria-hidden="true"><div class="face"><b>50</b><small>CENT</small></div></div>
         <div id="m3-hint" style="position:absolute;left:480px;top:282px;font-size:15px;font-weight:700;font-style:italic;transform:rotate(-4deg)">Zieh mich zum Schlitz</div>
       </div>
@@ -471,7 +513,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const f1 = v => v.toFixed(1);
 
   /* Gliedmaße als Band um eine Mittellinie (Breite je Punkt) */
-  function limb(pts, ws){
+  function limb(pts, ws, k){
     const seg = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; };
     const L = [], R = [], n = pts.length;
     for (let i = 0; i < n; i++){
@@ -479,12 +521,18 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       if (i === 0) nv = seg(pts[0], pts[1]);
       else if (i === n - 1) nv = seg(pts[n - 2], pts[n - 1]);
       else { const a = seg(pts[i - 1], pts[i]), b = seg(pts[i], pts[i + 1]); nv = [a[0] + b[0], a[1] + b[1]]; const l = Math.hypot(nv[0], nv[1]) || 1; nv = [nv[0] / l, nv[1] / l]; }
-      const w = ws[i] / 2;
-      L.push([pts[i][0] + nv[0] * w, pts[i][1] + nv[1] * w]);
+      const w = ws[i] / 2, wl = k ? -w * (1 - 2 * k) : w;  /* k: nur ein Streifen der Breite k an der rechten Kante */
+      L.push([pts[i][0] + nv[0] * wl, pts[i][1] + nv[1] * wl]);
       R.push([pts[i][0] - nv[0] * w, pts[i][1] - nv[1] * w]);
     }
     return 'M' + L.concat(R.reverse()).map(p => f1(p[0]) + ' ' + f1(p[1])).join(' L') + ' Z';
   }
+
+  /* Zweiton-Schattierung: Fläche, Schattenseite, dann die Kontur obenauf (Licht von links oben) */
+  const SHADE_RED = '#B3001A', SHADE_WHITE = '#E6E0E1';
+  const solid = (d, fill, shadeD, shade) =>
+    '<path d="' + d + '" fill="' + fill + '"/>' + (shadeD ? '<path d="' + shadeD + '" fill="' + shade + '"/>' : '') + '<path d="' + d + '" fill="none" ' + LN + '/>';
+  const groundShadow = (cx, rx) => '<ellipse cx="' + cx + '" cy="' + (GROUND - 1) + '" rx="' + rx + '" ry="7" fill="rgba(17,17,17,.13)"/>';
 
   /* Locken: Ellipse mit nach außen gewölbten Bögen */
   function curls(cx, cy, rx, ry, n, b, a0, a1){
@@ -518,18 +566,22 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     let px = -uy, py = ux; if (px < 0){ px = -px; py = -py; }
     const knee = [hip[0] + ux * along + px * off, hip[1] + uy * along + py * off];
     const boot = '<g transform="translate(' + f1(ank[0]) + ' ' + f1(ank[1]) + ') rotate(' + rot + ')">' +
-      '<path d="M-14 -4 Q-17 4 -16 10 Q-16 15 -11 15 L30 15 Q35 15 34 9 Q32 1 18 -2 L10 -6 Q0 -8 -14 -4 Z" fill="' + INK + '" ' + LN + '/></g>';
-    return boot + '<path d="' + limb([hip, knee, ank], [36, 33, 36]) + '" fill="#FFFFFF" ' + LN + '/>';
+      '<path d="M-14 -4 Q-17 4 -16 10 Q-16 15 -11 15 L30 15 Q35 15 34 9 Q32 1 18 -2 L10 -6 Q0 -8 -14 -4 Z" fill="' + INK + '" ' + LN + '/>' +
+      '<path d="M15 2 Q25 3 29 8" fill="none" stroke="#5C5C5C" stroke-width="2.2" stroke-linecap="round"/></g>';
+    const pts = [hip, knee, ank], ws = [36, 33, 36];
+    return boot + solid(limb(pts, ws), '#FFFFFF', limb(pts, ws, .3), SHADE_WHITE);
   }
 
   /* Hüftstück zwischen Pullover-Saum und Beinen */
   const pelvis = (bx, hy) => '<path d="M' + (bx - 31) + ' 286 H' + (bx + 31) + ' L' + (bx + 22) + ' ' + (hy + 10) + ' H' + (bx - 24) + ' Z" fill="#FFFFFF" ' + LN + '/>';
-  const sleeve = (sh, wr) => '<path d="' + limb([wr, sh], [22, 28]) + '" fill="' + RED + '" ' + LN + '/>';
+  const sleeve = (sh, wr) => solid(limb([wr, sh], [22, 28]), RED, limb([wr, sh], [22, 28], .34), SHADE_RED);
   const hand = (x, y, r) =>
     '<path d="M-10 10 C-12 2 -12 -6 -6 -10 C-4 -4 -2 -2 0 -4 C2 -10 8 -12 11 -6 C13 0 12 6 10 10 Z" fill="#FFFFFF" ' + LN + ' transform="translate(' + f1(x) + ' ' + f1(y) + ') rotate(' + r + ')"/>';
 
   /* Pullover im Profil: Schultern bei y 206, Saum bei y 292, leicht nach vorn geneigt */
-  const sweater = (bx, dy) => '<path transform="translate(' + bx + ' ' + (dy || 0) + ')" d="M-28 206 Q0 197 28 207 L35 291 Q0 297 -37 292 Z" fill="' + RED + '" ' + LN + '/>';
+  const sweater = (bx, dy) => '<g transform="translate(' + bx + ' ' + (dy || 0) + ')">' +
+    solid('M-28 206 Q0 197 28 207 L35 291 Q0 297 -37 292 Z', RED, 'M10 201.5 Q20 203 28 207 L35 291 Q24 294.5 12 295.5 Z', SHADE_RED) + '</g>';
+  const blush = (x, y) => '<ellipse cx="' + x + '" cy="' + y + '" rx="4.5" ry="3" fill="#F6C2C8"/>';
 
   /* Kopf im Profil (blickt nach rechts), Mitte hx/hy */
   const headSide = (hx, hy, tilt) =>
@@ -537,6 +589,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     hair(curls(-14, 10, 24, 30, 13, 3.5)) +
     '<path d="M-6 -20 Q8 -27 15 -16 Q18 -10 17 -5 L23 0 L17 3 Q18 8 15 11 Q14 17 8 20 Q1 22 -6 18 Z" fill="#FFFFFF" ' + LN + '/>' +
     hair(hairline(-5, -4, 18, 20, 8, 3, 300, 150, 1, 4)) +
+    blush(8, 9) +
+    '<path d="M-30 2 q4 -7 11 -5 M-27 24 q5 -5 11 -2 M-6 -24 q6 -4 12 -1" fill="none" stroke="#4E4E4E" stroke-width="2" stroke-linecap="round"/>' +
     '</g>';
   /* Kopf von vorn */
   const headFront = (hx, hy) =>
@@ -544,17 +598,20 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     hair(curls(0, 8, 34, 32, 16, 3.5)) + hair(curls(-25, 30, 14, 16, 7, 3)) + hair(curls(24, 28, 13, 14, 6, 3)) +
     '<ellipse cx="0" cy="4" rx="15" ry="20" fill="#FFFFFF" ' + LN + '/>' +
     hair(hairline(0, -6, 17, 14, 7, 2.5, 190, 350, 0, -8)) +
+    blush(-8, 11) + blush(8, 11) +
+    '<path d="M-26 -10 q5 -7 12 -6 M-36 18 q3 -6 9 -6 M14 -16 q7 -2 11 4" fill="none" stroke="#4E4E4E" stroke-width="2" stroke-linecap="round"/>' +
     '</g>';
 
   /* Archivkarton, Front zur Betrachterin; Hände greifen an die unteren Ecken */
   const BOX_F = { l: 60, r: 220, t: 46, b: 126 };
   const box = (dy, tilt) =>
     '<g transform="translate(0 ' + f1(dy) + ') rotate(' + tilt + ' 140 86)">' +
-    '<path d="M60 46 L68 22 H213 L220 46 Z" fill="#D6D6D6" ' + LN + '/>' +
+    '<path d="M60 46 L68 22 H213 L220 46 Z" fill="#C9C9C9" ' + LN + '/>' +
+    '<path d="M68 22 H213 L215 30 H67 Z" fill="#A9A9A9"/>' +
     '<path d="M60 46 L22 41 L50 25 L68 22 Z" fill="#FFFFFF" ' + LN + '/>' +
-    '<path d="M220 46 L257 39 L234 21 L213 22 Z" fill="#FFFFFF" ' + LN + '/>' +
-    '<path d="M220 46 L229 40 V119 L220 126 Z" fill="' + GREY + '" ' + LN + '/>' +
-    '<rect x="60" y="46" width="160" height="80" fill="#FFFFFF" ' + LN + '/>' +
+    '<path d="M220 46 L257 39 L234 21 L213 22 Z" fill="#E9E9E9" ' + LN + '/>' +
+    '<path d="M220 46 L229 40 V119 L220 126 Z" fill="#CFCFCF" ' + LN + '/>' +
+    solid('M60 46 H220 V126 H60 Z', '#FFFFFF', 'M60 46 H220 V54 H60 Z M196 54 H220 V126 H196 Z', '#F1EFEF') +
     '<rect x="124" y="58" width="32" height="11" rx="5.5" fill="' + INK + '"/>' +
     '<text x="140" y="112" text-anchor="middle" textLength="106" lengthAdjust="spacingAndGlyphs" fill="' + INK + '" style="font-family:Archivo,sans-serif;font-size:34px;font-weight:900;font-stretch:62%">ARCHIV</text>' +
     '</g>';
@@ -581,6 +638,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     const body = h => dir > 0 ? h : [FW - h[0], h[1]];
     const back = body(dir > 0 ? hl : hr), front = body(dir > 0 ? hr : hl);
     const figure =
+      groundShadow(bx, 52 - p.bob) +
       pelvis(bx, p.hy) +
       leg([hip[0] - 4, hip[1]], ank(p.far), rot(p.far)) +
       sleeve([bx - 12, 218 + p.bob], [back[0] + 2, back[1] + 8]) +
@@ -594,26 +652,29 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   function frontFig(){
     const [hl, hr] = boxHands(0, 0);
     return (
+      groundShadow(140, 50) +
       '<rect x="108" y="403" width="33" height="29" rx="10" fill="' + INK + '"/><rect x="139" y="403" width="33" height="29" rx="10" fill="' + INK + '"/>' +
-      '<path d="M110 288 H170 L168 412 H142 L140 318 L138 412 H112 Z" fill="#FFFFFF" ' + LN + '/>' +
+      solid('M110 288 H170 L168 412 H142 L140 318 L138 412 H112 Z', '#FFFFFF', 'M156 288 H170 L168 412 H156 Z', SHADE_WHITE) +
       '<path d="M140 318 V410" ' + LN + '/>' +
-      '<path d="M110 208 Q140 198 170 208 L176 290 Q140 296 104 290 Z" fill="' + RED + '" ' + LN + '/>' +
+      solid('M110 208 Q140 198 170 208 L176 290 Q140 296 104 290 Z', RED, 'M152 201.5 Q162 204 170 208 L176 290 Q166 293 154 294.5 Z', SHADE_RED) +
       sleeve([118, 220], [hl[0] + 2, hl[1] + 8]) + sleeve([162, 220], [hr[0] - 2, hr[1] + 8]) +
       headFront(140, 170) +
       box(0, 0) + hand(hl[0], hl[1], -4) + hand(hr[0], hr[1], 4)
     );
   }
   /* Stehend im Profil, ohne Karton; nearWrist: Handgelenk des vorderen Arms, props: SVG im selben Koordinatensystem */
-  function standFig(nearWrist, nearHandRot, props){
+  function standFig(nearWrist, nearHandRot, props, sway){
     const bx = CX;
+    const swing = sway && !reduce ? '<animateTransform attributeName="transform" type="rotate" values="0 152 218;' + sway + ' 152 218;0 152 218" dur="3.4s" repeatCount="indefinite"/>' : '';
     return (
+      groundShadow(bx, 46) +
       pelvis(bx, 298) +
       leg([bx - 4, 298], [bx - 8, plantY(0)], 0) +
       sweater(bx) +
       leg([bx + 4, 298], [bx + 12, plantY(0)], 0) +
       headSide(bx + 2, 172, 0) +
-      (props || '') +
-      sleeve([bx + 12, 218], nearWrist) + hand(nearWrist[0] + 4, nearWrist[1] - 6, nearHandRot)
+      '<g>' + swing + (props || '') +
+      sleeve([bx + 12, 218], nearWrist) + hand(nearWrist[0] + 4, nearWrist[1] - 6, nearHandRot) + '</g>'
     );
   }
 
@@ -622,9 +683,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const LENS =
     '<path d="M229 119 L214 142" stroke="' + INK + '" stroke-width="16" stroke-linecap="round"/><path d="M229 119 L214 142" stroke="' + RED + '" stroke-width="10" stroke-linecap="round"/>' +
     '<circle cx="256" cy="92" r="38" fill="rgba(246,194,200,0.55)" stroke="' + INK + '" stroke-width="5"/>' +
-    '<path d="M234 82 Q240 64 258 60" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>';
-  const FIG_LOOK = wrapFig(FIG_MIRROR(standFig([212, 150], 30, LENS)));
-  const FIG_COIN = wrapFig(FIG_MIRROR(standFig([238, 204], 0)));
+    '<path d="M234 82 Q240 64 258 60" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round">' +
+    (reduce ? '' : '<animate attributeName="opacity" values="1;.25;1" dur="2.6s" repeatCount="indefinite"/>') + '</path>';
+  const FIG_LOOK = wrapFig(FIG_MIRROR(standFig([212, 150], 30, LENS, -5)));
+  const FIG_COIN = wrapFig(FIG_MIRROR(standFig([238, 204], 0, '', 2)));
 
   const MOMENTS = [
     { type:'paper',  year:'1955', title:'Staatsvertrag' },
@@ -639,6 +701,9 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     inner: document.getElementById('m1-inner'),
     layer: document.getElementById('m1-items'),
     fig: document.getElementById('m1-figure'),
+    body: document.getElementById('m1-body'),
+    shadows: document.getElementById('m1-shadows'),
+    fx: document.getElementById('m1-fx'),
     shelf: document.getElementById('m1-shelf'),
     count: document.getElementById('m1-count'),
     caption: document.getElementById('m1-caption'),
@@ -652,14 +717,36 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   let curX = MAXX / 2, targetX = MAXX / 2, stepT = 0, stepI = 0, poseKey = '';
   let items, caught, spawnT, visible1 = false, last1 = 0;
 
-  function setPose(k){ if (k !== poseKey){ poseKey = k; m1.fig.innerHTML = FIG[k]; } }
+  function setPose(k){ if (k !== poseKey){ poseKey = k; m1.body.innerHTML = FIG[k]; } }
+  /* Effekte: kurzlebige Elemente in der fx-Ebene */
+  function fx(cls, x, y, html, life, vars){
+    if (reduce) return;
+    const el = document.createElement('div');
+    el.className = cls; el.style.left = x + 'px'; el.style.top = y + 'px';
+    if (vars) for (const k in vars) el.style.setProperty(k, vars[k]);
+    el.innerHTML = html || '';
+    m1.fx.appendChild(el);
+    setTimeout(() => el.remove(), life);
+  }
+  function burst(x, y){
+    let rays = '';
+    for (let k = 0; k < 10; k++) rays += '<i style="--a:' + (k * 36 + 8) + 'deg;animation-delay:' + (k % 2) * .04 + 's"></i>';
+    fx('burst', x, y, rays, 700);
+  }
+  function catchFx(){
+    m1.body.classList.remove('squash'); void m1.body.offsetWidth; m1.body.classList.add('squash');
+    burst(curX + (BOX_L + BOX_R) / 2, BOX_TOP + 6);
+  }
   function setTarget(x){ targetX = Math.max(0, Math.min(MAXX, x)); }
   function walk(dt){
     const dx = targetX - curX;
     if (Math.abs(dx) > 2){
       curX += Math.sign(dx) * Math.min(Math.abs(dx), WALK * dt);
       stepT += dt;
-      if (stepT > 0.11){ stepT = 0; stepI = (stepI + 1) % WALK_POSES.length; }
+      if (stepT > 0.11){
+        stepT = 0; stepI = (stepI + 1) % WALK_POSES.length;
+        if (stepI === 0 || stepI === 2) fx('puff', 0, 536, '', 520, { '--x': (curX + FW / 2 - Math.sign(dx) * 44) + 'px', '--dx': (-Math.sign(dx) * 18) + 'px' });
+      }
       setPose((dx > 0 ? 'r' : 'l') + stepI);
     } else {
       stepT = 0; stepI = 0;
@@ -678,7 +765,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   }
   function reset1(){
     caught = []; spawnT = 0.3;
-    m1.layer.innerHTML = '';
+    m1.layer.innerHTML = ''; m1.shadows.innerHTML = '';
     items = MOMENTS.map((m, i) => ({ i, phase:'queued', x:0, y:-160, op:1, el:null }));
     slotHTML();
     m1.caption.hidden = true; m1.done.hidden = true;
@@ -696,12 +783,21 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     el.innerHTML = MOTION + iconSVG(m.type, 150, 131) + '<div class="fade-note">wird vergessen …</div>';
     m1.layer.appendChild(el);
     it.el = el;
+    it.sh = document.createElement('div'); it.sh.className = 'drop-shadow';
+    m1.shadows.appendChild(it.sh);
+    it.spin = (Math.random() < .5 ? -1 : 1) * (5 + Math.random() * 4);
     place(it);
   }
+  /* fallend: leichtes Pendeln; der Bodenschatten wächst, je näher das Stück dem Boden kommt */
   function place(it){
-    it.el.style.transform = 'translate(' + it.x.toFixed(1) + 'px,' + it.y.toFixed(1) + 'px)';
+    const wob = reduce ? 0 : Math.sin(it.y / 46 + it.i) * it.spin;
+    it.el.style.transform = 'translate(' + it.x.toFixed(1) + 'px,' + it.y.toFixed(1) + 'px) rotate(' + wob.toFixed(1) + 'deg)';
     it.el.style.opacity = it.op.toFixed(2);
+    const near = Math.max(0, Math.min(1, (it.y + 160) / 560));
+    it.sh.style.transform = 'translate(' + (it.x + 20).toFixed(1) + 'px,541px) scale(' + (.35 + .65 * near).toFixed(2) + ')';
+    it.sh.style.opacity = (near * it.op).toFixed(2);
   }
+  const dropShadow = it => { if (it.sh){ it.sh.remove(); it.sh = null; } };
   function fillSlot(it){
     const k = caught.length - 1;
     const m = MOMENTS[it.i];
@@ -733,6 +829,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
           it.el.classList.add('caught');
           it.el.style.transform = 'translate(' + (curX + (BOX_L + BOX_R) / 2 - 75).toFixed(1) + 'px,' + (BOX_TOP - 20) + 'px) scale(.3)';
           const el = it.el; setTimeout(() => el.remove(), 400);
+          dropShadow(it); catchFx();
           fillSlot(it);
           m1.count.textContent = caught.length + ' / 6 archiviert';
           if (caught.length === 6){ m1.strike.classList.add('on'); m1.done.hidden = false; }
@@ -743,7 +840,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       } else if (it.phase === 'fading'){
         it.y += SPEED * dt;
         it.op -= 0.8 * dt;
-        if (it.op <= 0){ it.el.remove(); it.el = null; it.phase = 'queued'; it.op = 1; }
+        if (it.op <= 0){ it.el.remove(); it.el = null; dropShadow(it); it.phase = 'queued'; it.op = 1; }
         else place(it);
       }
     });
@@ -781,6 +878,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const m2 = {
     stage: document.getElementById('m2-stage'), inner: document.getElementById('m2-inner'),
     head: document.getElementById('m2-head'), num: document.getElementById('m2-num'), stamp: document.getElementById('m2-stamp'),
+    splat: document.getElementById('m2-splat'), paper: document.querySelector('#m2-inner .paper.front'),
     progress: document.getElementById('m2-progress'), count: document.getElementById('m2-count'),
     ask: document.getElementById('m2-ask'), check: document.getElementById('m2-check'),
     you: document.getElementById('m2-you'), fb: document.getElementById('m2-fb'), steps: document.getElementById('m2-steps'),
@@ -801,7 +899,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     m2.done.hidden = !finished;
     m2.next.hidden = finished;
     m2.strike.classList.toggle('on', finished);
-    if (!revealed){ m2.stamp.classList.remove('show'); }
+    if (!revealed){ m2.stamp.classList.remove('show'); m2.splat.classList.remove('show'); }
   }
   function pick(choice){
     const c = CASES[idx];
@@ -816,7 +914,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     m2.steps.innerHTML = c.steps.map((s, i) => '<li style="animation-delay:' + (0.25 + i * 0.25) + 's"><span class="n">' + (i + 1) + '</span><div><b>' + s[0] + '</b><span class="d">' + s[1] + '</span></div></li>').join('');
     m2.next.innerHTML = (idx < CASES.length - 1 ? 'Nächste Zeitung' : 'Abschließen') + ' &#8594;';
     m2.stamp.textContent = c.verdict;
-    m2.stamp.classList.remove('show'); void m2.stamp.offsetWidth; m2.stamp.classList.add('show');
+    m2.stamp.classList.remove('show'); m2.splat.classList.remove('show'); m2.paper.classList.remove('thud');
+    void m2.stamp.offsetWidth;
+    m2.stamp.classList.add('show'); m2.splat.classList.add('show');
+    setTimeout(() => m2.paper.classList.add('thud'), reduce ? 0 : 200);
     render2();
     m2.next.focus({ preventScroll: true });
   }
@@ -835,7 +936,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   /* ---------- MODUL 3: Münze ---------- */
   const m3 = {
     stage: document.getElementById('m3-stage'), inner: document.getElementById('m3-inner'),
-    coin: document.getElementById('m3-coin'), screen: document.getElementById('m3-screen'),
+    coin: document.getElementById('m3-coin'), screen: document.getElementById('m3-screen'), tv: document.getElementById('m3-tv'),
     stems: document.getElementById('m3-stems'), chips: document.getElementById('m3-chips'),
     hint: document.getElementById('m3-hint'), ask: document.getElementById('m3-ask'),
     done: document.getElementById('m3-done'), strike: document.getElementById('m3-strike')
@@ -855,6 +956,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   function placeCoin(){ m3.coin.style.transform = 'translate(' + (coin.x - 40).toFixed(1) + 'px,' + (coin.y - 40).toFixed(1) + 'px)' + (inserted ? ' scale(.35)' : dragging ? ' scale(1.08)' : ''); }
   function sprout(){
     m3.screen.classList.add('on');
+    [m3.tv, m3.screen].forEach(el => { el.classList.remove('jolt'); void el.offsetWidth; el.classList.add('jolt'); });
     m3.screen.innerHTML = '<div><div class="disp">1 Tag<br>ORF</div><small>für alle</small></div>';
     let stems = '', chips = '';
     CONTENT.forEach((c, i) => {
@@ -885,7 +987,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     inserted = false; dragging = false; coin = { ...HOME };
     m3.coin.classList.remove('in', 'drag');
     m3.hint.hidden = false;
-    m3.screen.classList.remove('on');
+    m3.screen.classList.remove('on', 'jolt'); m3.tv.classList.remove('jolt');
     m3.screen.innerHTML = '<div class="disp">&#8593;<br>Münze<br>einwerfen</div>';
     m3.stems.innerHTML = ''; m3.chips.innerHTML = '';
     m3.strike.classList.remove('on');
