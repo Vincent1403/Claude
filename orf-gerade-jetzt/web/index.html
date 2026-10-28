@@ -104,6 +104,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .fade-note{text-align:center;font-size:13px;font-weight:700;font-style:italic;color:var(--red);visibility:hidden}
 .item.fading .fade-note{visibility:visible}
 .item.caught{transition:transform .35s ease-in,opacity .35s ease-in;opacity:0}
+/* Figur mit Archivkarton: Sprite-Sheet aus 11 Zellen à 280 × 360 (vorne, 5× rechts, 5× links) */
+.walker{position:absolute;left:0;top:197px;width:280px;height:360px;background:url(assets/archiv_figur.webp) 0 0/3080px 360px no-repeat}
 
 /* Modul 2 */
 .paper{position:absolute;width:400px;height:520px;border:var(--rule) solid var(--ink);background:var(--paper)}
@@ -215,7 +217,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
           <path d="M0 549 H760" stroke="#111111" stroke-width="2.5"></path>
         </svg>
         <div id="m1-items"></div>
-        <div id="m1-figure" style="position:absolute;left:0;top:117px;width:256px"></div>
+        <div id="m1-figure" class="walker"></div>
       </div>
     </div>
     <div class="ui">
@@ -464,7 +466,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const iconSVG = (t, w, h) => '<svg aria-hidden="true" width="' + w + '" height="' + h + '" viewBox="0 0 160 140" style="display:block;overflow:visible;margin:0 auto">' + ICONS[t] + '</svg>';
   const MOTION = '<svg aria-hidden="true" width="150" height="22" viewBox="0 0 150 22" style="display:block"><path d="M66 3 V19 M75 0 V22 M84 5 V17" stroke="#111111" stroke-width="1.8" stroke-linecap="round"/></svg>';
 
-  /* Figur mit Archivkarton – Proportionen nach Referenz: Karton ~30 %, Arme/Oberkörper ~35 %, Beine ~35 % (viewBox 256 × 440, Boden y 432) */
+  /* Stehende Profil-Figur für Modul 2 und 3 (viewBox 256 × 440, Boden y 432) */
   function limb(pts, ws){
     const seg = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; };
     const L = [], R = [], n = pts.length;
@@ -483,9 +485,6 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const leg = (h, k, a, rot) =>
     '<path d="' + limb([h, k, a], [36, 33, 30]) + '" fill="#FFFFFF" ' + S + '/>' +
     '<g transform="translate(' + a[0] + ' ' + a[1] + ') rotate(' + rot + ')">' + SHOE + '</g>';
-  const legFront = (x) =>
-    '<path d="' + limb([[x, 282], [x, 352], [x, 422]], [32, 30, 28]) + '" fill="#FFFFFF" ' + S + '/>' +
-    '<rect x="' + (x - 17) + '" y="414" width="34" height="18" rx="7" fill="' + INK + '"/>';
   const arm = (sh, wr) => '<path d="' + limb([wr, sh], [24, 33]) + '" fill="' + RED + '" ' + S + '/>';
   const TORSO = '<path d="M82 216 Q120 202 158 216 L163 292 H77 Z" fill="' + RED + '" ' + S + '/>';
   const HEAD_SIDE =
@@ -493,43 +492,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     '<path d="M118 154 Q106 144 94 152 Q80 152 80 166 Q71 176 78 189 Q73 203 87 208 Q95 219 108 211 Q118 209 116 199 Q109 193 111 182 Q112 170 122 166 Q131 164 129 157 Q126 151 118 154 Z" fill="' + INK + '"/>' +
     '<circle cx="114" cy="183" r="5" fill="#FFFFFF" stroke="' + INK + '" stroke-width="2.2"/>' +
     '<circle cx="134" cy="168" r="2.2" fill="' + INK + '"/>';
-  const HEAD_FRONT =
-    '<ellipse cx="120" cy="180" rx="15" ry="19" fill="#FFFFFF" ' + S + '/>' +
-    '<path d="M120 152 Q100 150 96 164 Q86 174 92 187 Q88 201 100 207 Q107 211 111 203 Q106 191 106 179 Q108 166 120 165 Q132 166 134 179 Q134 191 129 203 Q133 211 140 207 Q152 201 148 187 Q154 174 144 164 Q140 150 120 152 Z" fill="' + INK + '"/>';
   const hand = (x, y, r) =>
     '<path d="M-10 10 C-12 2 -12 -6 -6 -10 C-4 -4 -2 -2 0 -4 C2 -10 8 -12 11 -6 C13 0 12 6 10 10 Z" fill="#FFFFFF" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round" transform="translate(' + x + ' ' + y + ') rotate(' + r + ')"/>';
-  const BOX = (t) =>
-    '<g transform="rotate(' + t + ' 120 84)">' +
-    '<path d="M48 20 L56 4 H222 L228 20 Z" fill="#F2F2F2" ' + S + '/>' +
-    '<path d="M30 34 H210 L228 20 H48 Z" fill="#D6D6D6" ' + S + '/>' +
-    '<path d="M30 34 L48 20 L20 6 L2 20 Z" fill="#FFFFFF" ' + S + '/>' +
-    '<path d="M210 34 L228 20 L252 28 L236 44 Z" fill="#FFFFFF" ' + S + '/>' +
-    '<path d="M210 34 L228 20 V118 L210 134 Z" fill="' + GREY + '" ' + S + '/>' +
-    '<rect x="30" y="34" width="180" height="100" fill="#FFFFFF" ' + S + '/>' +
-    '<rect x="106" y="50" width="28" height="10" rx="5" fill="' + INK + '"/>' +
-    '<text x="120" y="116" text-anchor="middle" textLength="122" lengthAdjust="spacingAndGlyphs" fill="' + INK + '" style="font-family:Archivo,sans-serif;font-size:38px;font-weight:900">ARCHIV</text>' +
-    '</g>';
-  const ARMS_UP = arm([92, 216], [58, 150]) + arm([148, 216], [182, 150]);
-  const HANDS_UP = hand(58, 140, -6) + hand(182, 140, 6);
-  const POSES = [
-    { dy: 0,  tilt: -2, back: [[104, 284], [90, 352], [70, 422], -16], front: [[136, 284], [160, 352], [180, 422], 4] },  /* Kontakt */
-    { dy: 6,  tilt: 2,  back: [[104, 290], [96, 358], [80, 418], -28], front: [[136, 290], [158, 358], [158, 422], 0] },  /* Tief */
-    { dy: -2, tilt: -1, back: [[112, 282], [124, 352], [122, 422], 0], front: [[128, 282], [150, 344], [126, 392], 22] }, /* Passieren */
-    { dy: -8, tilt: 3,  back: [[108, 276], [116, 348], [104, 422], -4], front: [[134, 276], [168, 336], [170, 398], 8] }  /* Hoch */
-  ];
   const wrapFig = s => '<svg aria-hidden="true" width="256" height="440" viewBox="0 0 256 440" style="display:block;overflow:visible">' + s + '</svg>';
   const mirror = s => '<g transform="translate(240 0) scale(-1 1)">' + s + '</g>';
-  function figWalk(i, dir){
-    const p = POSES[i];
-    let body = leg(p.back[0], p.back[1], p.back[2], p.back[3]) + leg(p.front[0], p.front[1], p.front[2], p.front[3]) +
-      '<g transform="translate(0 ' + p.dy + ')">' + ARMS_UP + TORSO + HEAD_SIDE + '</g>';
-    if (dir < 0) body = mirror(body);
-    return wrapFig(body + '<g transform="translate(0 ' + p.dy + ')">' + BOX(p.tilt * dir) + HANDS_UP + '</g>');
-  }
-  const FIG = { f: wrapFig(legFront(104) + legFront(136) + ARMS_UP + TORSO + HEAD_FRONT + BOX(0) + HANDS_UP) };
-  for (let i = 0; i < 4; i++){ FIG['r' + i] = figWalk(i, 1); FIG['l' + i] = figWalk(i, -1); }
-
-  /* Stehende Profil-Figur (blickt nach links) für Modul 2 und 3 */
   const STAND_LEGS = leg([110, 282], [112, 352], [112, 422], 0) + leg([132, 282], [136, 352], [138, 422], 0);
   const FIG_LOOK = wrapFig(mirror(
     STAND_LEGS + arm([96, 218], [92, 300]) + TORSO + HEAD_SIDE + arm([146, 216], [196, 156]) +
@@ -564,22 +530,24 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   };
   const s1 = makeStage(m1.stage, m1.inner, 760, 560);
 
-  const BOX_TOP = 147, SPEED = 85, WALK = 560, MAXX = 504;
-  let curX = 252, targetX = 252, stepT = 0, stepI = 0, poseKey = '';
+  /* Sprite-Zellen: 0 vorne, 1–5 Gehen rechts, 6–10 Gehen links (Kontakt, Tief, Passieren, Hoch, Kontakt) */
+  const CELL = 280, FRONT = 0, RIGHT = 1, LEFT = 6, CYCLE = [0, 1, 2, 3, 4, 1, 2, 3];
+  const BOX_TOP = 219, BOX_L = 40, BOX_R = 240, SPEED = 85, WALK = 520, MAXX = 760 - CELL;
+  let curX = MAXX / 2, targetX = MAXX / 2, stepT = 0, stepI = 0, cell = -1;
   let items, caught, spawnT, visible1 = false, last1 = 0;
 
-  function setPose(k){ if (k !== poseKey){ poseKey = k; m1.fig.innerHTML = FIG[k]; } }
+  function setCell(i){ if (i !== cell){ cell = i; m1.fig.style.backgroundPosition = (-i * CELL) + 'px 0'; } }
   function setTarget(x){ targetX = Math.max(0, Math.min(MAXX, x)); }
   function walk(dt){
     const dx = targetX - curX;
     if (Math.abs(dx) > 2){
       curX += Math.sign(dx) * Math.min(Math.abs(dx), WALK * dt);
       stepT += dt;
-      if (stepT > 0.1){ stepT = 0; stepI = (stepI + 1) % 4; }
-      setPose((dx > 0 ? 'r' : 'l') + stepI);
+      if (stepT > 0.09){ stepT = 0; stepI = (stepI + 1) % CYCLE.length; }
+      setCell((dx > 0 ? RIGHT : LEFT) + CYCLE[stepI]);
     } else {
       stepT = 0; stepI = 0;
-      setPose('f');
+      setCell(FRONT);
     }
     m1.fig.style.transform = 'translateX(' + curX.toFixed(1) + 'px)';
   }
@@ -643,11 +611,11 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       if (it.phase === 'falling'){
         it.y += SPEED * dt;
         const bottom = it.y + 144, cx = it.x + 75;
-        if (bottom >= BOX_TOP - 2 && bottom <= BOX_TOP + 40 && cx >= curX + 36 && cx <= curX + 214){
+        if (bottom >= BOX_TOP - 2 && bottom <= BOX_TOP + 40 && cx >= curX + BOX_L && cx <= curX + BOX_R){
           it.phase = 'caught';
           caught.push(it.i);
           it.el.classList.add('caught');
-          it.el.style.transform = 'translate(' + (curX + 50).toFixed(1) + 'px,' + (BOX_TOP - 20) + 'px) scale(.3)';
+          it.el.style.transform = 'translate(' + (curX + (BOX_L + BOX_R) / 2 - 75).toFixed(1) + 'px,' + (BOX_TOP - 20) + 'px) scale(.3)';
           const el = it.el; setTimeout(() => el.remove(), 400);
           fillSlot(it);
           m1.count.textContent = caught.length + ' / 6 archiviert';
@@ -664,8 +632,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       }
     });
   }
-  m1.stage.addEventListener('pointermove', e => { const p = s1.toLocal(e); setTarget(p.x - 120); });
-  m1.stage.addEventListener('pointerdown', e => { const p = s1.toLocal(e); setTarget(p.x - 120); });
+  m1.stage.addEventListener('pointermove', e => { const p = s1.toLocal(e); setTarget(p.x - CELL / 2); });
+  m1.stage.addEventListener('pointerdown', e => { const p = s1.toLocal(e); setTarget(p.x - CELL / 2); });
   document.getElementById('m1-left').addEventListener('click', () => setTarget(targetX - 110));
   document.getElementById('m1-right').addEventListener('click', () => setTarget(targetX + 110));
   document.getElementById('m1-reset').addEventListener('click', reset1);
@@ -679,7 +647,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     requestAnimationFrame(loop);
   }
   reset1();
-  setPose('f');
+  setCell(FRONT);
   m1.fig.style.transform = 'translateX(' + curX + 'px)';
   requestAnimationFrame(loop);
 

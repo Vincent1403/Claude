@@ -16,7 +16,9 @@ daraus (Stand 28.10.2026):
 ## Ordner
 
 ```
-web/index.html        Website-Prototyp, läuft direkt im Browser (eine Datei, keine Abhängigkeiten außer Google Fonts)
+web/index.html        Website-Prototyp, läuft direkt im Browser (Google Fonts + web/assets/)
+web/assets/           archiv_figur.webp: Sprite-Sheet der Archiv-Figur (11 Zellen à 280 × 360)
+web/sprites/          Referenz-Sheet der Figur + cut.py/sheet.py, die daraus das Sprite-Sheet bauen
 print/src/*.dc.html   Doppelseiten-Quellen aus dem Design-Canvas (2× A4 = 1588 × 1123 px)
 print/build.py        macht daraus eigenständige Seiten: print/spreads/*.html + print/index.html (Übersicht)
 design-canvas/        Original-Quellen der Web-Module aus dem Canvas (brauchen dessen Runtime, nur als Referenz) + canvas.json
