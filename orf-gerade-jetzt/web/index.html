@@ -35,13 +35,17 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 
 /* Einstieg */
 .hero{padding-block:28px 56px}
-.hero h1{margin:0;font-size:clamp(72px,14vw,190px);display:flex;align-items:center;gap:.12em}
-.hero h1 .dot{width:.16em;height:.16em}
+.hero h1{margin:0;font-size:clamp(72px,14vw,190px)}
+.hero h1 .dot{display:inline-block;width:.16em;height:.16em;margin-left:.1em;vertical-align:.12em}
 .hero-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:end;margin-top:24px}
 .hero p{margin:0;max-width:58ch;font-size:18px;font-weight:500}
 .jump{display:flex;flex-wrap:wrap;gap:8px}
 .jump a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:var(--rule) solid var(--ink);color:var(--ink);text-decoration:none;font-weight:900;font-stretch:62%;font-size:18px;text-transform:uppercase}
 .jump a:hover{background:var(--tint)}
+/* Dicke Vektor-Knöpfe: versetzter Tintenschatten, beim Drücken sinkt der Knopf hinein */
+.jump a,.btn{box-shadow:4px 4px 0 0 var(--ink);transition:transform .08s ease-out,box-shadow .08s ease-out,background-color .15s}
+.jump a:hover,.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 0 var(--ink)}
+.jump a:active,.btn:active{transform:translate(4px,4px);box-shadow:0 0 0 0 var(--ink)}
 @media (max-width:760px){.hero-row{grid-template-columns:minmax(0,1fr)}}
 
 /* Module */
@@ -73,6 +77,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .btn:hover{background:var(--tint)}
 .btn.solid{background:var(--ink);color:var(--paper)}
 .btn.solid:hover{background:var(--red);border-color:var(--red)}
+.btn.solid{box-shadow:4px 4px 0 0 var(--red)}
+.btn.solid:hover{box-shadow:5px 5px 0 0 var(--ink)}
 .btn.small{min-height:44px;font-size:18px;padding:0 14px}
 .btn.icon{width:48px;padding:0;font-size:22px}
 .linkbtn{border:0;background:none;padding:8px 0;min-height:44px;font-size:15px;font-weight:600;color:var(--mute);text-decoration:underline;cursor:pointer}
@@ -80,11 +86,12 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .label{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .count{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
-.done{background:var(--red);color:var(--paper);padding:18px 20px}
+.done{background:var(--red);color:var(--paper);padding:18px 20px;box-shadow:6px 6px 0 0 var(--ink)}
 .done .disp{font-size:32px;line-height:1}
 .done p{margin:8px 0 0;font-size:14px;font-weight:600;line-height:1.45}
 .done .btn{margin-top:12px;background:transparent;color:var(--paper);border-color:var(--paper);font-size:18px;min-height:44px}
 .done .btn:hover{background:var(--paper);color:var(--red)}
+.done .btn,.done .btn:hover{box-shadow:4px 4px 0 0 var(--ink)}
 
 /* Modul 1 */
 .shelf{margin-top:20px}
@@ -92,12 +99,13 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .slot{height:104px;border:2px dashed var(--ink);background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;color:var(--ink);cursor:default}
 .slot svg{width:84px;height:74px}
 .slot .yr{font-weight:900;font-size:14px;line-height:1}
-.slot.filled{border-style:solid;cursor:pointer;animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
+.slot.filled{border-style:solid;cursor:pointer;animation:pop .35s cubic-bezier(.2,1.4,.4,1);box-shadow:3px 3px 0 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.slot.filled:active{transform:translate(3px,3px);box-shadow:none}
 .slot.filled:hover{background:var(--tint)}
 .slot.sel{background:var(--tint)}
 .plank{height:12px;margin-top:10px;border:var(--rule) solid var(--ink);background:var(--halftone),var(--paper)}
 @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
-.caption{margin-top:16px;border:var(--rule) solid var(--ink);padding:14px 16px}
+.caption{margin-top:16px;border:var(--rule) solid var(--ink);padding:14px 16px;box-shadow:5px 5px 0 0 var(--tint),5px 5px 0 2.5px var(--ink)}
 .caption .disp{font-size:26px;line-height:1}
 .caption p{margin:6px 0 0;font-size:14px;font-weight:500}
 .caption .ph{display:inline-block;margin-top:6px;font-size:14px;font-weight:800;color:var(--red)}
@@ -120,6 +128,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .cloud{animation:drift 16s ease-in-out infinite alternate}
 .cloud.slow{animation-duration:23s;animation-direction:alternate-reverse}
 @keyframes drift{to{transform:translateX(34px)}}
+.catch-label{position:absolute;display:flex;align-items:center;gap:7px;background:var(--ink);color:var(--paper);padding:6px 11px 5px;font-weight:900;font-stretch:62%;font-size:19px;line-height:1;text-transform:uppercase;white-space:nowrap;pointer-events:none;transform:translate(-50%,0);animation:rise 1.05s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes rise{0%{opacity:0;transform:translate(-50%,12px) scale(.6)}18%{opacity:1;transform:translate(-50%,-6px) scale(1.08)}30%{transform:translate(-50%,-10px) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-52px)}}
 .breathe{animation:breathe 3.4s ease-in-out infinite}
 @keyframes breathe{50%{transform:translateY(-3px)}}
 
@@ -127,6 +137,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .paper{position:absolute;width:400px;height:520px;border:var(--rule) solid var(--ink);background:var(--paper)}
 .paper.front{padding:20px 24px;display:flex;flex-direction:column;box-shadow:7px 7px 0 0 var(--paper),7px 7px 0 2.5px var(--ink)}
 .paper.front.thud{animation:thud .4s cubic-bezier(.3,1.5,.5,1)}
+.paper.front.toss{animation:toss .26s ease-in forwards}
+.paper.front.land{animation:land .5s cubic-bezier(.25,1.3,.45,1)}
+@keyframes toss{to{transform:translate(-140px,-26px) rotate(-16deg);opacity:0}}
+@keyframes land{0%{transform:translate(170px,-50px) rotate(12deg);opacity:0}25%{opacity:1}100%{transform:rotate(-3deg)}}
 @keyframes thud{0%{transform:rotate(-3deg)}25%{transform:rotate(-3.6deg) translate(-2px,5px) scale(.985)}60%{transform:rotate(-2.6deg) translateY(-2px)}100%{transform:rotate(-3deg)}}
 .splat{position:absolute;left:30px;top:160px;width:330px;height:150px;pointer-events:none;opacity:0;background:
   radial-gradient(circle at 6% 34%, var(--red) 0 5px, transparent 6px),radial-gradient(circle at 12% 18%, var(--red) 0 2.5px, transparent 3.5px),
@@ -149,7 +163,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .progress{display:flex;align-items:center;gap:8px;margin-top:4px}
 .progress span{width:26px;height:34px;border:var(--rule) solid var(--ink);background:var(--paper)}
 .progress span.cur{background:repeating-linear-gradient(0deg,var(--paper) 0 5px,var(--tint) 5px 6px)}
-.progress span.ok{background:var(--red)}
+.progress span.ok{background:var(--red);box-shadow:2px 2px 0 0 var(--ink)}
 .ask{margin-top:20px}
 .ask .row .btn{flex:1 1 140px}
 .check{margin-top:20px}
@@ -171,6 +185,9 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 @keyframes coinspin{0%,72%,100%{transform:scaleX(1)}81%{transform:scaleX(.12)}90%{transform:scaleX(1)}}
 .coin::after{content:"";position:absolute;inset:9px;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.85) 0 22%,transparent 23%);pointer-events:none}
 .jolt{animation:jolt .45s ease-out}
+#m3-slot{transition:fill .15s}
+#m3-slot.near{fill:var(--red);animation:slotpulse .5s ease-in-out infinite alternate}
+@keyframes slotpulse{to{opacity:.45}}
 @keyframes jolt{20%{transform:translate(-4px,2px) rotate(-1deg)}45%{transform:translate(4px,-2px) rotate(1deg)}70%{transform:translate(-2px,1px)}}
 .coin::before{content:"";position:absolute;inset:6px;border-radius:50%;border:2px solid var(--ink);background:#E4E4E4}
 .coin .face{position:relative;width:46px;height:46px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -200,9 +217,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 
 @media (prefers-reduced-motion: reduce){
   .strike path{transition:none}
-  .slot.filled,.steps li,.chip > div,.leaf,.cloud,.breathe,#m1-body.squash,.paper.front.thud,.coin .face,.jolt,.screen.on::before{animation:none!important}
+  .slot.filled,.steps li,.chip > div,.leaf,.cloud,.breathe,#m1-body.squash,.paper.front.thud,.paper.front.land,.paper.front.toss,#m3-slot.near,.coin .face,.jolt,.screen.on::before{animation:none!important}
   .splat.show{animation:none;opacity:1}
-  .burst,.puff{display:none}
+  .burst,.puff,.catch-label{display:none}
+  .jump a,.btn,.slot.filled{transition:none}
   .stem{animation:none;stroke-dashoffset:0}
   .stamp.show{animation:none;opacity:1}
 }
@@ -246,6 +264,26 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     <div class="stage" id="m1-stage" style="aspect-ratio:760/560;touch-action:none">
       <div class="stage-inner" id="m1-inner">
         <svg aria-hidden="true" width="760" height="560" viewBox="0 0 760 560" style="position:absolute;left:0;top:0">
+<g id="m1-sky" fill="#FBE3E7" stroke="#F0AEB7" stroke-width="2.5" stroke-linejoin="round">
+            <!-- Wien im Hintergrund, blass wie Luftperspektive: Häuser, Stephansdom, Riesenrad -->
+            <path d="M-60 549 V506 H-10 V494 H44 V512 H70 V488 L100 470 L130 488 V549 Z"></path>
+            <path d="M318 549 V500 H360 V486 H404 V504 H446 V480 H486 V549 Z"></path>
+            <path d="M676 549 V508 H712 V494 L740 478 L768 494 V504 H820 V549 Z"></path>
+            <path d="M184 549 V490 H292 V549 Z"></path>
+            <path d="M184 490 L238 452 L292 490 Z"></path>
+            <path d="M200 482 L214 470 L228 482 L242 470 L256 482 L270 470 L282 480" fill="none"></path>
+            <path d="M150 549 V474 H188 V549 Z"></path>
+            <path d="M150 474 L169 360 L188 474 Z"></path>
+            <path d="M160 440 H178 M158 456 H180 M163 418 H175" fill="none"></path>
+            <path d="M162 549 V524 Q169 512 176 524 V549" fill="#FFFFFF"></path>
+            <g fill="none">
+              <path d="M560 549 L592 446 L624 549 M570 516 H614"></path>
+              <circle cx="592" cy="446" r="64"></circle><circle cx="592" cy="446" r="52"></circle>
+              <path d="M592 382 V510 M528 446 H656 M547 401 L637 491 M637 401 L547 491 M567 387 L617 505 M617 387 L567 505 M533 421 L651 471 M651 421 L533 471"></path>
+            </g>
+            <circle cx="592" cy="446" r="7" fill="#F0AEB7"></circle>
+            <g id="m1-gondolas"></g>
+          </g>
           <path class="cloud" d="M70 92 q4-26 30-24 q10-20 34-12 q22-8 30 12 q24 0 24 18 q0 16-22 16 h-88 q-24 0-8-10z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
           <path class="cloud slow" d="M540 150 q4-24 28-22 q10-18 32-10 q20-6 28 12 q22 0 22 16 q0 14-20 14 h-82 q-22 0-8-10z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
           <path d="M0 549 H760" stroke="#111111" stroke-width="2.5"></path>
@@ -362,7 +400,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
           <g clip-path="url(#tvbody)"><rect x="0" y="278" width="360" height="30" fill="#CBCBCB"></rect><path d="M4 44 H356 V58 Q180 50 4 58 Z" fill="#F2F2F2"></path></g>
           <rect x="4" y="44" width="352" height="262" rx="26" fill="none" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></rect>
           <rect x="128" y="4" width="104" height="44" rx="6" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></rect>
-          <rect x="150" y="16" width="60" height="11" rx="5.5" fill="#111111"></rect>
+          <rect id="m3-slot" x="150" y="16" width="60" height="11" rx="5.5" fill="#111111"></rect>
           <text x="180" y="41" text-anchor="middle" fill="#111111" style="font-family:Archivo,sans-serif;font-size:10px;font-weight:900;font-stretch:75%;letter-spacing:1px">50 CENT</text>
           <rect x="28" y="70" width="220" height="210" rx="20" fill="#111111"></rect>
           <path d="M276 96 H322 M276 110 H322 M276 124 H322 M276 138 H322 M276 152 H322" stroke="#111111" stroke-width="4" stroke-linecap="round"></path>
@@ -704,6 +742,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     body: document.getElementById('m1-body'),
     shadows: document.getElementById('m1-shadows'),
     fx: document.getElementById('m1-fx'),
+    sky: document.getElementById('m1-sky'),
     shelf: document.getElementById('m1-shelf'),
     count: document.getElementById('m1-count'),
     caption: document.getElementById('m1-caption'),
@@ -733,10 +772,18 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     for (let k = 0; k < 10; k++) rays += '<i style="--a:' + (k * 36 + 8) + 'deg;animation-delay:' + (k % 2) * .04 + 's"></i>';
     fx('burst', x, y, rays, 700);
   }
-  function catchFx(){
+  function catchFx(it){
+    const x = curX + (BOX_L + BOX_R) / 2;
     m1.body.classList.remove('squash'); void m1.body.offsetWidth; m1.body.classList.add('squash');
-    burst(curX + (BOX_L + BOX_R) / 2, BOX_TOP + 6);
+    burst(x, BOX_TOP + 6);
+    fx('catch-label', x, BOX_TOP - 52, '<span class="dot"></span>' + MOMENTS[it.i].year + ' bewahrt', 1100);
   }
+  /* Riesenrad-Gondeln; die Stadt im Hintergrund wandert leicht gegen die Figur (Parallaxe) */
+  document.getElementById('m1-gondolas').innerHTML = Array.from({ length: 10 }, (_, k) => {
+    const a = k * 36 * Math.PI / 180, x = 592 + 64 * Math.cos(a), y = 446 + 64 * Math.sin(a);
+    return '<rect x="' + (x - 6).toFixed(1) + '" y="' + (y - 2).toFixed(1) + '" width="12" height="10" rx="2.5"></rect>';
+  }).join('');
+  const parallax = () => m1.sky.setAttribute('transform', 'translate(' + ((MAXX / 2 - curX) * 0.1).toFixed(1) + ' 0)');
   function setTarget(x){ targetX = Math.max(0, Math.min(MAXX, x)); }
   function walk(dt){
     const dx = targetX - curX;
@@ -753,6 +800,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       setPose('f');
     }
     m1.fig.style.transform = 'translateX(' + curX.toFixed(1) + 'px)';
+    parallax();
   }
   function slotHTML(){
     m1.shelf.innerHTML = '';
@@ -829,7 +877,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
           it.el.classList.add('caught');
           it.el.style.transform = 'translate(' + (curX + (BOX_L + BOX_R) / 2 - 75).toFixed(1) + 'px,' + (BOX_TOP - 20) + 'px) scale(.3)';
           const el = it.el; setTimeout(() => el.remove(), 400);
-          dropShadow(it); catchFx();
+          dropShadow(it); catchFx(it);
           fillSlot(it);
           m1.count.textContent = caught.length + ' / 6 archiviert';
           if (caught.length === 6){ m1.strike.classList.add('on'); m1.done.hidden = false; }
@@ -922,8 +970,20 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     m2.next.focus({ preventScroll: true });
   }
   m2.ask.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => pick(b.dataset.pick)));
+  /* nächste Zeitung: die alte fliegt vom Stapel, die neue landet */
+  let tossing = false;
   m2.next.addEventListener('click', () => {
-    if (idx < CASES.length - 1){ idx++; revealed = false; render2(); }
+    if (tossing) return;
+    if (idx < CASES.length - 1){
+      if (reduce){ idx++; revealed = false; render2(); return; }
+      tossing = true;
+      m2.paper.classList.remove('thud', 'land'); m2.paper.classList.add('toss');
+      setTimeout(() => {
+        idx++; revealed = false; render2();
+        m2.paper.classList.remove('toss'); void m2.paper.offsetWidth; m2.paper.classList.add('land');
+        setTimeout(() => { m2.paper.classList.remove('land'); tossing = false; }, 520);
+      }, 260);
+    }
     else {
       finished = true;
       m2.sum.textContent = relied === 0 ? 'Kein einziges Mal blind vertraut.' : relied === 1 ? 'Einmal hättest du dich verlassen.' : relied + '-mal hättest du dich verlassen.';
@@ -936,7 +996,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   /* ---------- MODUL 3: Münze ---------- */
   const m3 = {
     stage: document.getElementById('m3-stage'), inner: document.getElementById('m3-inner'),
-    coin: document.getElementById('m3-coin'), screen: document.getElementById('m3-screen'), tv: document.getElementById('m3-tv'),
+    coin: document.getElementById('m3-coin'), screen: document.getElementById('m3-screen'), tv: document.getElementById('m3-tv'), slot: document.getElementById('m3-slot'),
     stems: document.getElementById('m3-stems'), chips: document.getElementById('m3-chips'),
     hint: document.getElementById('m3-hint'), ask: document.getElementById('m3-ask'),
     done: document.getElementById('m3-done'), strike: document.getElementById('m3-strike')
@@ -953,7 +1013,12 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const DOTS = ['var(--red)', 'var(--tint)', '#E4E4E4'];
   document.getElementById('m3-fig').innerHTML = FIG_COIN;
   let coin = { ...HOME }, dragging = false, grab = null, inserted = false, timer = null;
-  function placeCoin(){ m3.coin.style.transform = 'translate(' + (coin.x - 40).toFixed(1) + 'px,' + (coin.y - 40).toFixed(1) + 'px)' + (inserted ? ' scale(.35)' : dragging ? ' scale(1.08)' : ''); }
+  let tilt = 0, lastX = 0;
+  function placeCoin(){
+    m3.coin.style.transform = 'translate(' + (coin.x - 40).toFixed(1) + 'px,' + (coin.y - 40).toFixed(1) + 'px)' +
+      (inserted ? ' scale(.35)' : dragging ? ' scale(1.08) rotate(' + tilt.toFixed(1) + 'deg)' : '');
+    m3.slot.classList.toggle('near', dragging && Math.hypot(coin.x - SLOT.x, coin.y - SLOT.y) < 170);
+  }
   function sprout(){
     m3.screen.classList.add('on');
     [m3.tv, m3.screen].forEach(el => { el.classList.remove('jolt'); void el.offsetWidth; el.classList.add('jolt'); });
@@ -998,7 +1063,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     if (inserted) return;
     e.preventDefault();
     const p = s3.toLocal(e);
-    grab = { x: p.x - coin.x, y: p.y - coin.y };
+    grab = { x: p.x - coin.x, y: p.y - coin.y }; lastX = coin.x; tilt = 0;
     dragging = true; m3.coin.classList.add('drag');
     try { m3.coin.setPointerCapture(e.pointerId); } catch (err) {}
     m3.hint.hidden = true;
@@ -1008,12 +1073,15 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     if (!dragging) return;
     const p = s3.toLocal(e);
     coin = { x: p.x - grab.x, y: p.y - grab.y };
+    /* die Münze kippt in Zugrichtung und richtet sich langsam wieder auf */
+    if (!reduce) tilt = Math.max(-28, Math.min(28, tilt * .7 + (coin.x - lastX) * 1.4));
+    lastX = coin.x;
     placeCoin();
   });
   const drop = () => {
     if (!dragging) return;
     if (Math.hypot(coin.x - SLOT.x, coin.y - SLOT.y) < 80) insert();
-    else { dragging = false; m3.coin.classList.remove('drag'); coin = { ...HOME }; m3.hint.hidden = false; placeCoin(); }
+    else { dragging = false; tilt = 0; m3.coin.classList.remove('drag'); coin = { ...HOME }; m3.hint.hidden = false; placeCoin(); }
   };
   m3.coin.addEventListener('pointerup', drop);
   m3.coin.addEventListener('pointercancel', drop);

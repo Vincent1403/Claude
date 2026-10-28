@@ -82,7 +82,10 @@ durchstreicht, wofür der ORF nicht stehen will.
 **Look der Module:** plastischer Vektor-Stil. Zweiton-Schattierung (Licht von links oben),
 weiche Bodenschatten, Squash und Funken beim Fangen, Staubwölkchen beim Gehen, pendelnde
 Archivstücke mit wachsendem Schatten, Stempel mit Farbspritzern und Wumms, Fernseher, der
-beim Einwurf ruckelt und aufflackert, rotierende Münze. Alles ruht bei
+beim Einwurf ruckelt und aufflackert, rotierende Münze, die beim Ziehen kippt, und ein
+Schlitz, der aufleuchtet, wenn sie nah ist. Wien (Stephansdom, Riesenrad) steht blass im
+Hintergrund und wandert leicht gegen die Figur. Knöpfe sind dicke Vektor-Knöpfe, die beim
+Drücken einsinken; die Zeitungen fliegen beim Weiterblättern vom Stapel. Alles ruht bei
 `prefers-reduced-motion`.
 
 ## Gestaltung
