@@ -104,8 +104,6 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .fade-note{text-align:center;font-size:13px;font-weight:700;font-style:italic;color:var(--red);visibility:hidden}
 .item.fading .fade-note{visibility:visible}
 .item.caught{transition:transform .35s ease-in,opacity .35s ease-in;opacity:0}
-/* Figur mit Archivkarton: Sprite-Sheet aus 11 Zellen à 280 × 360 (vorne, 5× rechts, 5× links) */
-.walker{position:absolute;left:0;top:197px;width:280px;height:360px;background:url(assets/archiv_figur.webp) 0 0/3080px 360px no-repeat}
 
 /* Modul 2 */
 .paper{position:absolute;width:400px;height:520px;border:var(--rule) solid var(--ink);background:var(--paper)}
@@ -217,7 +215,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
           <path d="M0 549 H760" stroke="#111111" stroke-width="2.5"></path>
         </svg>
         <div id="m1-items"></div>
-        <div id="m1-figure" class="walker"></div>
+        <div id="m1-figure" style="position:absolute;left:0;top:117px;width:280px"></div>
       </div>
     </div>
     <div class="ui">
@@ -274,7 +272,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
           </div>
           <div class="stamp disp" id="m2-stamp"></div>
         </div>
-        <div id="m2-fig" style="position:absolute;left:428px;top:157px;width:256px"></div>
+        <div id="m2-fig" style="position:absolute;left:408px;top:157px;width:280px"></div>
       </div>
     </div>
     <div class="ui">
@@ -332,7 +330,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <div class="screen" id="m3-screen"><div class="disp">&#8593;<br>Münze<br>einwerfen</div></div>
         <svg id="m3-stems" aria-hidden="true" width="760" height="640" viewBox="0 0 760 640" style="position:absolute;left:0;top:0;pointer-events:none"></svg>
         <div id="m3-chips"></div>
-        <div id="m3-fig" style="position:absolute;left:548px;top:201px;width:256px"></div>
+        <div id="m3-fig" style="position:absolute;left:548px;top:201px;width:280px"></div>
         <div class="coin" id="m3-coin" aria-hidden="true"><div class="face"><b>50</b><small>CENT</small></div></div>
         <div id="m3-hint" style="position:absolute;left:480px;top:282px;font-size:15px;font-weight:700;font-style:italic;transform:rotate(-4deg)">Zieh mich zum Schlitz</div>
       </div>
@@ -466,7 +464,13 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const iconSVG = (t, w, h) => '<svg aria-hidden="true" width="' + w + '" height="' + h + '" viewBox="0 0 160 140" style="display:block;overflow:visible;margin:0 auto">' + ICONS[t] + '</svg>';
   const MOTION = '<svg aria-hidden="true" width="150" height="22" viewBox="0 0 150 22" style="display:block"><path d="M66 3 V19 M75 0 V22 M84 5 V17" stroke="#111111" stroke-width="1.8" stroke-linecap="round"/></svg>';
 
-  /* Stehende Profil-Figur für Modul 2 und 3 (viewBox 256 × 440, Boden y 432) */
+  /* Figur – nachgebaut nach dem Referenz-Sheet (referenz/archiv_figur.webp).
+     viewBox 280 × 440, Körpermitte x 140, Boden y 432. Profil-Posen blicken nach rechts, FIG_MIRROR dreht sie um. */
+  const FW = 280, GROUND = 432, CX = 140;
+  const LN = 'stroke="' + INK + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
+  const f1 = v => v.toFixed(1);
+
+  /* Gliedmaße als Band um eine Mittellinie (Breite je Punkt) */
   function limb(pts, ws){
     const seg = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [-dy / l, dx / l]; };
     const L = [], R = [], n = pts.length;
@@ -479,35 +483,148 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       L.push([pts[i][0] + nv[0] * w, pts[i][1] + nv[1] * w]);
       R.push([pts[i][0] - nv[0] * w, pts[i][1] - nv[1] * w]);
     }
-    return 'M' + L.concat(R.reverse()).map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L') + ' Z';
+    return 'M' + L.concat(R.reverse()).map(p => f1(p[0]) + ' ' + f1(p[1])).join(' L') + ' Z';
   }
-  const SHOE = '<path d="M-15 -9 L12 -9 Q28 -5 29 9 L-16 9 Z" fill="' + INK + '"/>';
-  const leg = (h, k, a, rot) =>
-    '<path d="' + limb([h, k, a], [36, 33, 30]) + '" fill="#FFFFFF" ' + S + '/>' +
-    '<g transform="translate(' + a[0] + ' ' + a[1] + ') rotate(' + rot + ')">' + SHOE + '</g>';
-  const arm = (sh, wr) => '<path d="' + limb([wr, sh], [24, 33]) + '" fill="' + RED + '" ' + S + '/>';
-  const TORSO = '<path d="M82 216 Q120 202 158 216 L163 292 H77 Z" fill="' + RED + '" ' + S + '/>';
-  const HEAD_SIDE =
-    '<path d="M112 158 Q128 152 138 162 Q141 166 141 170 L147 172 L141 177 Q140 190 128 196 Q118 199 112 192 Z" fill="#FFFFFF" ' + S + '/>' +
-    '<path d="M118 154 Q106 144 94 152 Q80 152 80 166 Q71 176 78 189 Q73 203 87 208 Q95 219 108 211 Q118 209 116 199 Q109 193 111 182 Q112 170 122 166 Q131 164 129 157 Q126 151 118 154 Z" fill="' + INK + '"/>' +
-    '<circle cx="114" cy="183" r="5" fill="#FFFFFF" stroke="' + INK + '" stroke-width="2.2"/>' +
-    '<circle cx="134" cy="168" r="2.2" fill="' + INK + '"/>';
+
+  /* Locken: Ellipse mit nach außen gewölbten Bögen */
+  function curls(cx, cy, rx, ry, n, b, a0, a1){
+    a0 = a0 == null ? 0 : a0; a1 = a1 == null ? 360 : a1;
+    const pt = (a, k) => { const r = a * Math.PI / 180; return f1(cx + (rx + k) * Math.cos(r)) + ' ' + f1(cy + (ry + k) * Math.sin(r)); };
+    let d = 'M' + pt(a0, 0);
+    for (let i = 1; i <= n; i++) d += ' Q' + pt(a0 + (a1 - a0) * (i - .5) / n, 2 * b) + ' ' + pt(a0 + (a1 - a0) * i / n, 0);
+    return d + ' Z';
+  }
+  /* Haaransatz: Locken über den Kopf, Rückweg als weiche Kurve durchs Gesicht */
+  function hairline(cx, cy, rx, ry, n, b, a0, a1, qx, qy){
+    const d = curls(cx, cy, rx, ry, n, b, a0, a1).slice(0, -2);
+    const r = a0 * Math.PI / 180;
+    return d + ' Q' + qx + ' ' + qy + ' ' + f1(cx + rx * Math.cos(r)) + ' ' + f1(cy + ry * Math.sin(r)) + ' Z';
+  }
+  const hair = d => '<path d="' + d + '" fill="' + INK + '"/>';
+
+  /* Beine: Hüfte → Knie (IK, Knie zeigt nach vorn) → Knöchel; Stiefel dreht um den Knöchel */
+  const THIGH = 60, SHIN = 60;
+  const SHOE = [[-16, 15], [34, 15]];
+  function plantY(rot){
+    const r = rot * Math.PI / 180;
+    return GROUND - Math.max(...SHOE.map(p => p[0] * Math.sin(r) + p[1] * Math.cos(r)));
+  }
+  function leg(hip, ank, rot){
+    let dx = ank[0] - hip[0], dy = ank[1] - hip[1], d = Math.hypot(dx, dy);
+    const L = THIGH + SHIN - .5;
+    if (d > L){ ank = [hip[0] + dx * L / d, hip[1] + dy * L / d]; dx = ank[0] - hip[0]; dy = ank[1] - hip[1]; d = L; }
+    const along = d / 2, off = Math.sqrt(Math.max(0, THIGH * THIGH - along * along));
+    const ux = dx / d, uy = dy / d;
+    let px = -uy, py = ux; if (px < 0){ px = -px; py = -py; }
+    const knee = [hip[0] + ux * along + px * off, hip[1] + uy * along + py * off];
+    const boot = '<g transform="translate(' + f1(ank[0]) + ' ' + f1(ank[1]) + ') rotate(' + rot + ')">' +
+      '<path d="M-14 -4 Q-17 4 -16 10 Q-16 15 -11 15 L30 15 Q35 15 34 9 Q32 1 18 -2 L10 -6 Q0 -8 -14 -4 Z" fill="' + INK + '" ' + LN + '/></g>';
+    return boot + '<path d="' + limb([hip, knee, ank], [36, 33, 36]) + '" fill="#FFFFFF" ' + LN + '/>';
+  }
+
+  /* Hüftstück zwischen Pullover-Saum und Beinen */
+  const pelvis = (bx, hy) => '<path d="M' + (bx - 31) + ' 286 H' + (bx + 31) + ' L' + (bx + 22) + ' ' + (hy + 10) + ' H' + (bx - 24) + ' Z" fill="#FFFFFF" ' + LN + '/>';
+  const sleeve = (sh, wr) => '<path d="' + limb([wr, sh], [22, 28]) + '" fill="' + RED + '" ' + LN + '/>';
   const hand = (x, y, r) =>
-    '<path d="M-10 10 C-12 2 -12 -6 -6 -10 C-4 -4 -2 -2 0 -4 C2 -10 8 -12 11 -6 C13 0 12 6 10 10 Z" fill="#FFFFFF" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round" transform="translate(' + x + ' ' + y + ') rotate(' + r + ')"/>';
-  const wrapFig = s => '<svg aria-hidden="true" width="256" height="440" viewBox="0 0 256 440" style="display:block;overflow:visible">' + s + '</svg>';
-  const mirror = s => '<g transform="translate(240 0) scale(-1 1)">' + s + '</g>';
-  const STAND_LEGS = leg([110, 282], [112, 352], [112, 422], 0) + leg([132, 282], [136, 352], [138, 422], 0);
-  const FIG_LOOK = wrapFig(mirror(
-    STAND_LEGS + arm([96, 218], [92, 300]) + TORSO + HEAD_SIDE + arm([146, 216], [196, 156]) +
-    '<path d="M200 148 L220 118" stroke="' + INK + '" stroke-width="16" stroke-linecap="round"/><path d="M200 148 L220 118" stroke="' + RED + '" stroke-width="10" stroke-linecap="round"/>' +
-    hand(92, 310, 180) + hand(198, 150, 34) +
-    '<circle cx="236" cy="92" r="38" fill="rgba(246,194,200,0.55)" stroke="' + INK + '" stroke-width="5"/>' +
-    '<path d="M214 82 Q220 64 238 60" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>'
-  ));
-  const FIG_COIN = wrapFig(mirror(
-    STAND_LEGS + arm([96, 218], [92, 300]) + TORSO + HEAD_SIDE + arm([146, 216], [202, 210]) +
-    hand(92, 310, 180) + hand(208, 202, 0)
-  ));
+    '<path d="M-10 10 C-12 2 -12 -6 -6 -10 C-4 -4 -2 -2 0 -4 C2 -10 8 -12 11 -6 C13 0 12 6 10 10 Z" fill="#FFFFFF" ' + LN + ' transform="translate(' + f1(x) + ' ' + f1(y) + ') rotate(' + r + ')"/>';
+
+  /* Pullover im Profil: Schultern bei y 206, Saum bei y 292, leicht nach vorn geneigt */
+  const sweater = (bx, dy) => '<path transform="translate(' + bx + ' ' + (dy || 0) + ')" d="M-28 206 Q0 197 28 207 L35 291 Q0 297 -37 292 Z" fill="' + RED + '" ' + LN + '/>';
+
+  /* Kopf im Profil (blickt nach rechts), Mitte hx/hy */
+  const headSide = (hx, hy, tilt) =>
+    '<g transform="translate(' + f1(hx) + ' ' + f1(hy) + ') rotate(' + tilt + ')">' +
+    hair(curls(-14, 10, 24, 30, 13, 3.5)) +
+    '<path d="M-6 -20 Q8 -27 15 -16 Q18 -10 17 -5 L23 0 L17 3 Q18 8 15 11 Q14 17 8 20 Q1 22 -6 18 Z" fill="#FFFFFF" ' + LN + '/>' +
+    hair(hairline(-5, -4, 18, 20, 8, 3, 300, 150, 1, 4)) +
+    '</g>';
+  /* Kopf von vorn */
+  const headFront = (hx, hy) =>
+    '<g transform="translate(' + hx + ' ' + hy + ')">' +
+    hair(curls(0, 8, 34, 32, 16, 3.5)) + hair(curls(-25, 30, 14, 16, 7, 3)) + hair(curls(24, 28, 13, 14, 6, 3)) +
+    '<ellipse cx="0" cy="4" rx="15" ry="20" fill="#FFFFFF" ' + LN + '/>' +
+    hair(hairline(0, -6, 17, 14, 7, 2.5, 190, 350, 0, -8)) +
+    '</g>';
+
+  /* Archivkarton, Front zur Betrachterin; Hände greifen an die unteren Ecken */
+  const BOX_F = { l: 60, r: 220, t: 46, b: 126 };
+  const box = (dy, tilt) =>
+    '<g transform="translate(0 ' + f1(dy) + ') rotate(' + tilt + ' 140 86)">' +
+    '<path d="M60 46 L68 22 H213 L220 46 Z" fill="#D6D6D6" ' + LN + '/>' +
+    '<path d="M60 46 L22 41 L50 25 L68 22 Z" fill="#FFFFFF" ' + LN + '/>' +
+    '<path d="M220 46 L257 39 L234 21 L213 22 Z" fill="#FFFFFF" ' + LN + '/>' +
+    '<path d="M220 46 L229 40 V119 L220 126 Z" fill="' + GREY + '" ' + LN + '/>' +
+    '<rect x="60" y="46" width="160" height="80" fill="#FFFFFF" ' + LN + '/>' +
+    '<rect x="124" y="58" width="32" height="11" rx="5.5" fill="' + INK + '"/>' +
+    '<text x="140" y="112" text-anchor="middle" textLength="106" lengthAdjust="spacingAndGlyphs" fill="' + INK + '" style="font-family:Archivo,sans-serif;font-size:34px;font-weight:900;font-stretch:62%">ARCHIV</text>' +
+    '</g>';
+  const boxHands = (dy, tilt) => {
+    const r = tilt * Math.PI / 180, at = (x, y) => [140 + (x - 140) * Math.cos(r) - (y - 86) * Math.sin(r), 86 + (x - 140) * Math.sin(r) + (y - 86) * Math.cos(r) + dy];
+    return [at(72, 130), at(208, 130)];
+  };
+  const wrapFig = s => '<svg aria-hidden="true" width="' + FW + '" height="440" viewBox="0 0 ' + FW + ' 440" style="display:block;overflow:visible">' + s + '</svg>';
+  const FIG_MIRROR = s => '<g transform="translate(' + FW + ' 0) scale(-1 1)">' + s + '</g>';
+
+  /* Gehen mit Karton: Kontakt, Tief, Passieren, Hoch (Knöchel-x relativ zur Körpermitte, rot > 0 = Ferse hoch) */
+  const WALK_POSES = [
+    { hy: 304, bob: 2,  tilt: -2, far: [-46, 26],  near: [48, -14] },
+    { hy: 310, bob: 6,  tilt: 1,  far: [-44, 40],  near: [22, 0] },
+    { hy: 298, bob: -1, tilt: -1, far: [-16, 392, 30], near: [2, 0] },
+    { hy: 294, bob: -4, tilt: 2,  far: [-16, 12],  near: [34, 392, -8] }
+  ];
+  /* dir 1 = nach rechts, -1 = nach links: nur der Körper wird gespiegelt, der Karton zeigt immer seine Front */
+  function walkFig(p, dir){
+    const bx = CX, hip = [bx, p.hy], tilt = p.tilt * dir;
+    const ank = a => a.length === 3 ? [bx + a[0], a[1]] : [bx + a[0], plantY(a[1])];
+    const rot = a => a.length === 3 ? a[2] : a[1];
+    const [hl, hr] = boxHands(p.bob, tilt);
+    const body = h => dir > 0 ? h : [FW - h[0], h[1]];
+    const back = body(dir > 0 ? hl : hr), front = body(dir > 0 ? hr : hl);
+    const figure =
+      pelvis(bx, p.hy) +
+      leg([hip[0] - 4, hip[1]], ank(p.far), rot(p.far)) +
+      sleeve([bx - 12, 218 + p.bob], [back[0] + 2, back[1] + 8]) +
+      sweater(bx, p.bob) +
+      leg([hip[0] + 4, hip[1]], ank(p.near), rot(p.near)) +
+      headSide(bx + 2, 172 + p.bob, -8) +
+      sleeve([bx + 12, 218 + p.bob], [front[0] - 2, front[1] + 8]);
+    return (dir > 0 ? figure : FIG_MIRROR(figure)) +
+      box(p.bob, tilt) + hand(hl[0], hl[1], -4 + tilt) + hand(hr[0], hr[1], 4 + tilt);
+  }
+  function frontFig(){
+    const [hl, hr] = boxHands(0, 0);
+    return (
+      '<rect x="108" y="403" width="33" height="29" rx="10" fill="' + INK + '"/><rect x="139" y="403" width="33" height="29" rx="10" fill="' + INK + '"/>' +
+      '<path d="M110 288 H170 L168 412 H142 L140 318 L138 412 H112 Z" fill="#FFFFFF" ' + LN + '/>' +
+      '<path d="M140 318 V410" ' + LN + '/>' +
+      '<path d="M110 208 Q140 198 170 208 L176 290 Q140 296 104 290 Z" fill="' + RED + '" ' + LN + '/>' +
+      sleeve([118, 220], [hl[0] + 2, hl[1] + 8]) + sleeve([162, 220], [hr[0] - 2, hr[1] + 8]) +
+      headFront(140, 170) +
+      box(0, 0) + hand(hl[0], hl[1], -4) + hand(hr[0], hr[1], 4)
+    );
+  }
+  /* Stehend im Profil, ohne Karton; nearWrist: Handgelenk des vorderen Arms, props: SVG im selben Koordinatensystem */
+  function standFig(nearWrist, nearHandRot, props){
+    const bx = CX;
+    return (
+      pelvis(bx, 298) +
+      leg([bx - 4, 298], [bx - 8, plantY(0)], 0) +
+      sweater(bx) +
+      leg([bx + 4, 298], [bx + 12, plantY(0)], 0) +
+      headSide(bx + 2, 172, 0) +
+      (props || '') +
+      sleeve([bx + 12, 218], nearWrist) + hand(nearWrist[0] + 4, nearWrist[1] - 6, nearHandRot)
+    );
+  }
+
+  const FIG = { f: wrapFig(frontFig()) };
+  WALK_POSES.forEach((p, i) => { FIG['r' + i] = wrapFig(walkFig(p, 1)); FIG['l' + i] = wrapFig(walkFig(p, -1)); });
+  const LENS =
+    '<path d="M229 119 L214 142" stroke="' + INK + '" stroke-width="16" stroke-linecap="round"/><path d="M229 119 L214 142" stroke="' + RED + '" stroke-width="10" stroke-linecap="round"/>' +
+    '<circle cx="256" cy="92" r="38" fill="rgba(246,194,200,0.55)" stroke="' + INK + '" stroke-width="5"/>' +
+    '<path d="M234 82 Q240 64 258 60" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>';
+  const FIG_LOOK = wrapFig(FIG_MIRROR(standFig([212, 150], 30, LENS)));
+  const FIG_COIN = wrapFig(FIG_MIRROR(standFig([238, 204], 0)));
 
   const MOMENTS = [
     { type:'paper',  year:'1955', title:'Staatsvertrag' },
@@ -530,24 +647,23 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   };
   const s1 = makeStage(m1.stage, m1.inner, 760, 560);
 
-  /* Sprite-Zellen: 0 vorne, 1–5 Gehen rechts, 6–10 Gehen links (Kontakt, Tief, Passieren, Hoch, Kontakt) */
-  const CELL = 280, FRONT = 0, RIGHT = 1, LEFT = 6, CYCLE = [0, 1, 2, 3, 4, 1, 2, 3];
-  const BOX_TOP = 219, BOX_L = 40, BOX_R = 240, SPEED = 85, WALK = 520, MAXX = 760 - CELL;
-  let curX = MAXX / 2, targetX = MAXX / 2, stepT = 0, stepI = 0, cell = -1;
+  /* Kartonöffnung in Bühnenkoordinaten (Figur steht bei top 117) */
+  const BOX_TOP = 117 + BOX_F.t - 4, BOX_L = BOX_F.l, BOX_R = BOX_F.r, SPEED = 85, WALK = 520, MAXX = 760 - FW;
+  let curX = MAXX / 2, targetX = MAXX / 2, stepT = 0, stepI = 0, poseKey = '';
   let items, caught, spawnT, visible1 = false, last1 = 0;
 
-  function setCell(i){ if (i !== cell){ cell = i; m1.fig.style.backgroundPosition = (-i * CELL) + 'px 0'; } }
+  function setPose(k){ if (k !== poseKey){ poseKey = k; m1.fig.innerHTML = FIG[k]; } }
   function setTarget(x){ targetX = Math.max(0, Math.min(MAXX, x)); }
   function walk(dt){
     const dx = targetX - curX;
     if (Math.abs(dx) > 2){
       curX += Math.sign(dx) * Math.min(Math.abs(dx), WALK * dt);
       stepT += dt;
-      if (stepT > 0.09){ stepT = 0; stepI = (stepI + 1) % CYCLE.length; }
-      setCell((dx > 0 ? RIGHT : LEFT) + CYCLE[stepI]);
+      if (stepT > 0.11){ stepT = 0; stepI = (stepI + 1) % WALK_POSES.length; }
+      setPose((dx > 0 ? 'r' : 'l') + stepI);
     } else {
       stepT = 0; stepI = 0;
-      setCell(FRONT);
+      setPose('f');
     }
     m1.fig.style.transform = 'translateX(' + curX.toFixed(1) + 'px)';
   }
@@ -632,8 +748,8 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       }
     });
   }
-  m1.stage.addEventListener('pointermove', e => { const p = s1.toLocal(e); setTarget(p.x - CELL / 2); });
-  m1.stage.addEventListener('pointerdown', e => { const p = s1.toLocal(e); setTarget(p.x - CELL / 2); });
+  m1.stage.addEventListener('pointermove', e => { const p = s1.toLocal(e); setTarget(p.x - FW / 2); });
+  m1.stage.addEventListener('pointerdown', e => { const p = s1.toLocal(e); setTarget(p.x - FW / 2); });
   document.getElementById('m1-left').addEventListener('click', () => setTarget(targetX - 110));
   document.getElementById('m1-right').addEventListener('click', () => setTarget(targetX + 110));
   document.getElementById('m1-reset').addEventListener('click', reset1);
@@ -647,7 +763,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     requestAnimationFrame(loop);
   }
   reset1();
-  setCell(FRONT);
+  setPose('f');
   m1.fig.style.transform = 'translateX(' + curX + 'px)';
   requestAnimationFrame(loop);
 
