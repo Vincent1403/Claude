@@ -1,0 +1,79 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Erinnern.dc.html": {
+      "h": 800,
+      "is_interactive": true,
+      "title": "Web-Modul: Erinnern statt Vergessen – Archiv fängt auf",
+      "w": 1280,
+      "x": -183,
+      "y": 1562
+    },
+    "Kontrolle.dc.html": {
+      "h": 800,
+      "is_interactive": true,
+      "title": "Web-Modul: Kontrolle statt wird schon stimmen – Zeitungen prüfen",
+      "w": 1280,
+      "x": 1360,
+      "y": 1560
+    },
+    "Kuvert.dc.html": {
+      "h": 1123,
+      "title": "Doppelseite Transparenz – Kuvert (2× A4)",
+      "w": 1588,
+      "x": 3336,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 1123,
+      "title": "Doppelseite Vertrauen (2× A4)",
+      "w": 1588,
+      "x": 0,
+      "y": 0
+    },
+    "Megafon.dc.html": {
+      "h": 1123,
+      "title": "Doppelseite Vielfalt – Megafon (2× A4)",
+      "w": 1588,
+      "x": 1668,
+      "y": 0
+    },
+    "Muenze.dc.html": {
+      "h": 800,
+      "is_interactive": true,
+      "title": "Web-Modul: Haushaltsabgabe statt Abo – Münze einwerfen",
+      "w": 1280,
+      "x": 2720,
+      "y": 1560
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-27T10:58:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "webmodule": {
+      "kind": "title1",
+      "maxW": 4000,
+      "text": "Digitale Module – interaktive Prototypen",
+      "w": 240,
+      "x": 0,
+      "y": 1300
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Megafon.dc.html",
+    "Kuvert.dc.html",
+    "Erinnern.dc.html",
+    "Kontrolle.dc.html",
+    "Muenze.dc.html"
+  ],
+  "pages": [],
+  "title": "Gerade jetzt – Doppelseite Vertrauen"
+}

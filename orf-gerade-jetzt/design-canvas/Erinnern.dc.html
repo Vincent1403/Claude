@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Modul – Erinnern statt Vergessen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#E2001A}a:hover{color:#111111}
+button:focus-visible{outline:3px solid #E2001A;outline-offset:3px}
+.strike{stroke-dasharray:1;stroke-dashoffset:1;animation:pvdraw .6s cubic-bezier(.6,.1,.3,1) .2s forwards}
+@keyframes pvdraw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.strike{animation:none;stroke-dashoffset:0}}
+</style>
+</helmet>
+<div ref="{{rootRef}}" onPointerMove="{{onMove}}" style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #FFFFFF; color: #111111; font-family: 'Archivo', system-ui, sans-serif; touch-action: none; user-select: none">
+
+<svg width="0" height="0" aria-hidden="true" style="position: absolute"><defs><pattern id="pv1ht" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#FFFFFF"></rect><circle cx="3" cy="3" r="1.5" fill="#E2001A"></circle></pattern></defs></svg>
+
+<!-- Insert oben rechts -->
+<div style="position: absolute; right: 64px; top: 56px; display: flex; align-items: center; gap: 10px; background: #111111; color: #FFFFFF; padding: 10px 16px; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase">
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #E2001A"></span>
+<span>Gerade jetzt:</span>
+<span style="font-weight: 900; font-stretch: 62%; font-size: 20px; letter-spacing: 0.02em">ORF III</span>
+<span style="font-weight: 600; letter-spacing: 0.04em; text-transform: none">· Zeitgeschichte</span>
+</div>
+
+<!-- Textspalte -->
+<div style="position: absolute; left: 64px; top: 56px; width: 360px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 12px; height: 12px; border-radius: 50%; background: #E2001A"></span>
+<span style="font-weight: 900; font-stretch: 62%; font-size: 22px; text-transform: uppercase">Gerade jetzt:</span>
+</div>
+<div style="margin-top: 12px; font-weight: 900; font-stretch: 62%; font-size: 92px; line-height: 0.88; text-transform: uppercase">Erinnern</div>
+<div style="display: flex; align-items: baseline; gap: 12px; margin-top: 8px">
+<span style="font-style: italic; font-weight: 500; font-size: 22px">statt</span>
+<span style="position: relative; display: inline-block; font-weight: 900; font-stretch: 62%; font-size: 54px; line-height: 1; text-transform: uppercase">Vergessen<sc-if value="{{done}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" viewBox="0 0 600 60" preserveAspectRatio="none" style="position: absolute; left: -4%; top: 30%; width: 108%; height: 42%; overflow: visible"><path class="strike" pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26" fill="none" stroke="#E2001A" stroke-width="9" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></svg></sc-if></span>
+</div>
+<p style="margin: 22px 0 0; font-size: 16px; line-height: 1.5; font-weight: 500">Momente der Zeitgeschichte fallen. Was niemand auffängt, verblasst. Bewege das Archiv mit der Maus und bewahre sie auf.</p>
+<div style="margin-top: 18px; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700">
+<span>Archiv bewegen:</span>
+<button type="button" onClick="{{left}}" aria-label="Archiv nach links" style="width: 44px; height: 44px; border: 2.5px solid #111111; background: #FFFFFF; font-size: 18px; font-weight: 900; cursor: pointer">←</button>
+<button type="button" onClick="{{right}}" aria-label="Archiv nach rechts" style="width: 44px; height: 44px; border: 2.5px solid #111111; background: #FFFFFF; font-size: 18px; font-weight: 900; cursor: pointer">→</button>
+<span style="margin-left: auto">{{count}} / 6 archiviert</span>
+</div>
+</div>
+
+<!-- Info-Feld über dem Regal -->
+<div style="position: absolute; left: 64px; top: 440px; width: 360px; height: 120px">
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{false}}">
+<div style="border: 2.5px solid #111111; padding: 14px 16px; background: #FFFFFF">
+<div style="font-weight: 900; font-stretch: 62%; font-size: 28px; line-height: 1; text-transform: uppercase">{{selYear}} · {{selTitle}}</div>
+<div style="margin-top: 8px; font-size: 13px; line-height: 1.45; font-weight: 500">Aus dem ORF-Archiv, dem Gedächtnis der Nation.</div>
+<a href="#" style="display: inline-block; margin-top: 8px; font-size: 14px; font-weight: 800">▶ Ausschnitt in ORF III ansehen</a>
+</div>
+</sc-if>
+<sc-if value="{{showDone}}" hint-placeholder-val="{{false}}">
+<div style="background: #E2001A; color: #FFFFFF; padding: 14px 16px">
+<div style="font-weight: 900; font-stretch: 62%; font-size: 28px; line-height: 1; text-transform: uppercase">Sechs Momente bewahrt.</div>
+<div style="margin-top: 8px; font-size: 13px; line-height: 1.45; font-weight: 600">Das ORF-Archiv bewahrt [ZAHL] Stunden Zeitgeschichte. Klick auf einen Moment im Regal.</div>
+<button type="button" onClick="{{reset}}" style="margin-top: 10px; border: 2px solid #FFFFFF; background: transparent; color: #FFFFFF; font-weight: 800; font-size: 13px; padding: 6px 12px; cursor: pointer">Nochmal</button>
+</div>
+</sc-if>
+<sc-if value="{{showHint}}" hint-placeholder-val="{{true}}">
+<div style="font-size: 13px; line-height: 1.45; font-weight: 600; border-top: 2px solid #111111; padding-top: 10px">Gefangene Momente landen im Regal. Klick sie an, um sie anzusehen.</div>
+</sc-if>
+</div>
+
+<!-- Regal -->
+<svg aria-hidden="true" width="360" height="200" viewBox="0 0 360 200" style="position: absolute; left: 64px; top: 586px">
+<text x="0" y="12" style="font-family: 'Archivo', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 3px" fill="#111111">ORF-ARCHIV</text>
+<g fill="none" stroke="#111111" stroke-width="1.5" stroke-dasharray="5 5">
+<rect x="14" y="20" width="80" height="72"></rect><rect x="124" y="20" width="80" height="72"></rect><rect x="234" y="20" width="80" height="72"></rect>
+<rect x="14" y="112" width="80" height="72"></rect><rect x="124" y="112" width="80" height="72"></rect><rect x="234" y="112" width="80" height="72"></rect>
+</g>
+<rect x="0" y="96" width="340" height="9" fill="url(#pv1ht)" stroke="#111111" stroke-width="2.5"></rect>
+<rect x="0" y="188" width="340" height="9" fill="url(#pv1ht)" stroke="#111111" stroke-width="2.5"></rect>
+<path d="M2 16 V197 M338 16 V197" stroke="#111111" stroke-width="2.5"></path>
+</svg>
+
+<!-- Boden -->
+<div style="position: absolute; left: 440px; right: 40px; top: 790px; height: 2.5px; background: #111111"></div>
+
+<!-- Fallende und gefangene Momente -->
+<sc-for list="{{items}}" as="it" hint-placeholder-count="6">
+<sc-if value="{{it.visible}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; left: 0; top: 0; width: 110px; transform-origin: top left; transform: {{it.transform}}; opacity: {{it.op}}; transition: {{it.transition}}">
+<svg aria-hidden="true" width="110" height="90" viewBox="0 0 110 90" style="display: block; overflow: visible">
+<sc-if value="{{it.isPaper}}" hint-placeholder-val="{{false}}"><rect x="12" y="10" width="86" height="72" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></rect><rect x="20" y="18" width="70" height="12" fill="#E2001A" stroke="#111111" stroke-width="2"></rect><path d="M20 40 H58 M20 48 H58 M20 56 H58 M20 64 H58 M20 72 H90" stroke="#111111" stroke-width="2"></path><rect x="64" y="38" width="26" height="28" fill="url(#pv1ht)" stroke="#111111" stroke-width="2"></rect></sc-if>
+<sc-if value="{{it.isTv}}" hint-placeholder-val="{{false}}"><path d="M42 22 L30 6 M60 22 L72 6" stroke="#111111" stroke-width="2.5" stroke-linecap="round"></path><rect x="12" y="22" width="86" height="60" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></rect><rect x="20" y="30" width="56" height="44" rx="7" fill="url(#pv1ht)" stroke="#111111" stroke-width="2"></rect><circle cx="48" cy="52" r="10" fill="#FFFFFF" stroke="#111111" stroke-width="2"></circle><circle cx="88" cy="40" r="4" fill="#E2001A" stroke="#111111" stroke-width="2"></circle><circle cx="88" cy="58" r="4" fill="#FFFFFF" stroke="#111111" stroke-width="2"></circle></sc-if>
+<sc-if value="{{it.isPhoto}}" hint-placeholder-val="{{false}}"><g transform="rotate(-5 55 46)"><rect x="18" y="8" width="74" height="78" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></rect><rect x="26" y="16" width="58" height="48" fill="url(#pv1ht)" stroke="#111111" stroke-width="2"></rect><path d="M26 56 Q 55 30 84 56" fill="none" stroke="#111111" stroke-width="2.5"></path><path d="M38 47 V60 M55 40 V60 M72 47 V60" stroke="#111111" stroke-width="2"></path></g></sc-if>
+<sc-if value="{{it.isReel}}" hint-placeholder-val="{{false}}"><path d="M84 66 L104 86" stroke="#111111" stroke-width="2.5" stroke-linecap="round"></path><circle cx="55" cy="45" r="36" fill="url(#pv1ht)" stroke="#111111" stroke-width="2.5"></circle><circle cx="55" cy="24" r="8" fill="#FFFFFF" stroke="#111111" stroke-width="2"></circle><circle cx="55" cy="66" r="8" fill="#FFFFFF" stroke="#111111" stroke-width="2"></circle><circle cx="34" cy="45" r="8" fill="#FFFFFF" stroke="#111111" stroke-width="2"></circle><circle cx="76" cy="45" r="8" fill="#FFFFFF" stroke="#111111" stroke-width="2"></circle><circle cx="55" cy="45" r="6" fill="#E2001A" stroke="#111111" stroke-width="2"></circle></sc-if>
+<sc-if value="{{it.isMic}}" hint-placeholder-val="{{false}}"><path d="M33 38 Q33 66 55 66 Q77 66 77 38" fill="none" stroke="#111111" stroke-width="2.5"></path><path d="M55 66 V82 M40 84 H70" stroke="#111111" stroke-width="2.5" stroke-linecap="round"></path><rect x="41" y="6" width="28" height="48" rx="14" fill="#E2001A" stroke="#111111" stroke-width="2.5"></rect><path d="M41 22 H69 M41 32 H69" stroke="#111111" stroke-width="2"></path></sc-if>
+<sc-if value="{{it.isRecord}}" hint-placeholder-val="{{false}}"><circle cx="55" cy="45" r="38" fill="#111111"></circle><circle cx="55" cy="45" r="30" fill="none" stroke="#FFFFFF" stroke-width="1"></circle><circle cx="55" cy="45" r="23" fill="none" stroke="#FFFFFF" stroke-width="1"></circle><circle cx="55" cy="45" r="13" fill="#E2001A" stroke="#FFFFFF" stroke-width="2"></circle><circle cx="55" cy="45" r="2.5" fill="#FFFFFF"></circle></sc-if>
+</svg>
+<div style="text-align: center; margin-top: 4px">
+<div style="font-weight: 900; font-size: 18px; line-height: 1">{{it.year}}</div>
+<sc-if value="{{it.notFading}}" hint-placeholder-val="{{true}}"><div style="font-size: 12px; font-weight: 600; line-height: 1.2; margin-top: 2px">{{it.title}}</div></sc-if>
+<sc-if value="{{it.fading}}" hint-placeholder-val="{{false}}"><div style="font-size: 12px; font-weight: 700; font-style: italic; line-height: 1.2; margin-top: 2px; color: #E2001A">wird vergessen …</div></sc-if>
+</div>
+<sc-if value="{{it.caught}}" hint-placeholder-val="{{false}}">
+<button type="button" onClick="{{it.select}}" aria-label="{{it.label}}" style="position: absolute; left: -8px; top: -8px; width: 126px; height: 140px; background: transparent; border: none; cursor: pointer"></button>
+</sc-if>
+</div>
+</sc-if>
+</sc-for>
+
+<!-- Figur mit Archivkarton -->
+<div style="position: absolute; left: 147px; top: 481px; width: 180px; transform: {{boxTransform}}; transition: transform .12s linear">
+<svg aria-hidden="true" width="180" height="320" viewBox="0 0 180 320" style="display: block; overflow: visible">
+<!-- Arme -->
+<path d="M66 186 L44 116" stroke="#111111" stroke-width="17" stroke-linecap="round"></path>
+<path d="M66 186 L44 116" stroke="#E2001A" stroke-width="11" stroke-linecap="round"></path>
+<path d="M114 186 L136 116" stroke="#111111" stroke-width="17" stroke-linecap="round"></path>
+<path d="M114 186 L136 116" stroke="#E2001A" stroke-width="11" stroke-linecap="round"></path>
+<!-- Karton -->
+<path d="M6 26 L22 6 H158 L174 26" fill="url(#pv1ht)" stroke="#111111" stroke-width="3" stroke-linejoin="round"></path>
+<rect x="6" y="26" width="168" height="84" fill="#FFFFFF" stroke="#111111" stroke-width="3"></rect>
+<rect x="54" y="46" width="72" height="28" fill="#E2001A" stroke="#111111" stroke-width="2.5"></rect>
+<text x="90" y="66" text-anchor="middle" style="font-family: 'Archivo', sans-serif; font-size: 14px; font-weight: 900; letter-spacing: 2px" fill="#FFFFFF">ARCHIV</text>
+<rect x="74" y="88" width="32" height="10" rx="5" fill="#111111"></rect>
+<circle cx="44" cy="114" r="8" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></circle>
+<circle cx="136" cy="114" r="8" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></circle>
+<!-- Kopf -->
+<rect x="81" y="160" width="18" height="18" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></rect>
+<circle cx="90" cy="146" r="21" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></circle>
+<path d="M69 144 Q68 120 90 122 Q112 122 111 142 Q104 133 92 135 Q80 135 69 144 Z" fill="#111111"></path>
+<!-- Körper -->
+<path d="M58 182 Q90 170 122 182 L128 252 H52 Z" fill="#E2001A" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+<path d="M54 252 L52 308 H76 L88 268 L100 308 H124 L126 252 Z" fill="url(#pv1ht)" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+<path d="M48 308 H78 V318 H42 Q42 310 48 308 Z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+<path d="M100 308 H130 Q136 310 136 318 H100 Z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+</svg>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.moments = [
+      { id: 0, type: 'paper', year: '1955', title: 'Staatsvertrag' },
+      { id: 1, type: 'tv', year: '1969', title: 'Mondlandung' },
+      { id: 2, type: 'photo', year: '1976', title: 'Einsturz der Reichsbrücke' },
+      { id: 3, type: 'reel', year: '1989', title: 'Fall des Eisernen Vorhangs' },
+      { id: 4, type: 'mic', year: '1995', title: 'EU-Beitritt' },
+      { id: 5, type: 'record', year: '2008', title: 'Fußball-EM in Österreich' }
+    ];
+    this.state = this.freshState();
+    this.spawnTimer = 0.4;
+    this.rootRef = (el) => { this.root = el; };
+  }
+  freshState() {
+    return {
+      boxX: 700,
+      items: this.moments.map((m) => ({ id: m.id, phase: 'queued', x: 0, y: -160, op: 1 })),
+      caughtOrder: [],
+      selected: null
+    };
+  }
+  componentDidMount() {
+    this.last = performance.now();
+    const loop = (now) => {
+      const dt = Math.min(0.05, (now - this.last) / 1000);
+      this.last = now;
+      this.tick(dt);
+      this.raf = requestAnimationFrame(loop);
+    };
+    this.raf = requestAnimationFrame(loop);
+  }
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf);
+  }
+  tick(dt) {
+    const s = this.state;
+    if (s.caughtOrder.length === 6) return;
+    const items = s.items.map((i) => ({ ...i }));
+    const caughtOrder = s.caughtOrder.slice();
+    const BOX_TOP = 470;
+    let changed = false;
+    this.spawnTimer -= dt;
+    const active = items.filter((i) => i.phase === 'falling' || i.phase === 'fading').length;
+    if (this.spawnTimer <= 0 && active < 2) {
+      const queued = items.filter((i) => i.phase === 'queued');
+      if (queued.length) {
+        const it = queued[Math.floor(Math.random() * queued.length)];
+        it.phase = 'falling';
+        it.x = 470 + Math.random() * 660;
+        it.y = -150;
+        it.op = 1;
+        changed = true;
+      }
+      this.spawnTimer = 1.9;
+    }
+    items.forEach((it) => {
+      if (it.phase === 'falling') {
+        it.y += 92 * dt;
+        changed = true;
+        const bottom = it.y + 92;
+        const cx = it.x + 55;
+        if (bottom >= BOX_TOP + 6 && bottom <= BOX_TOP + 46 && cx >= s.boxX + 4 && cx <= s.boxX + 176) {
+          it.phase = 'caught';
+          caughtOrder.push(it.id);
+        } else if (bottom > BOX_TOP + 46) {
+          it.phase = 'fading';
+        }
+      } else if (it.phase === 'fading') {
+        it.y += 92 * dt;
+        it.op -= 0.85 * dt;
+        changed = true;
+        if (it.op <= 0) {
+          it.phase = 'queued';
+          it.op = 1;
+          it.y = -160;
+        }
+      }
+    });
+    if (changed) this.setState({ items, caughtOrder });
+  }
+  clampBox(x) {
+    return Math.max(440, Math.min(1080, x));
+  }
+  renderVals() {
+    const s = this.state;
+    const done = s.caughtOrder.length === 6;
+    const items = s.items.map((it) => {
+      const m = this.moments[it.id];
+      const caught = it.phase === 'caught';
+      let transform, op, transition;
+      if (caught) {
+        const k = s.caughtOrder.indexOf(it.id);
+        const col = k % 3;
+        const row = Math.floor(k / 3);
+        transform = 'translate(' + (86 + col * 110) + 'px, ' + (608 + row * 92) + 'px) scale(0.66)';
+        op = 1;
+        transition = 'transform .7s cubic-bezier(.3,.8,.3,1)';
+      } else {
+        transform = 'translate(' + it.x.toFixed(1) + 'px, ' + it.y.toFixed(1) + 'px)';
+        op = it.phase === 'fading' ? Math.max(0, it.op).toFixed(2) : 1;
+        transition = 'none';
+      }
+      return {
+        year: m.year,
+        title: m.title,
+        visible: it.phase !== 'queued',
+        caught,
+        fading: it.phase === 'fading',
+        notFading: it.phase !== 'fading',
+        transform,
+        op,
+        transition,
+        isPaper: m.type === 'paper',
+        isTv: m.type === 'tv',
+        isPhoto: m.type === 'photo',
+        isReel: m.type === 'reel',
+        isMic: m.type === 'mic',
+        isRecord: m.type === 'record',
+        label: m.year + ' – ' + m.title + ': Ausschnitt ansehen',
+        select: () => this.setState({ selected: it.id })
+      };
+    });
+    const sel = s.selected != null ? this.moments[s.selected] : null;
+    return {
+      rootRef: this.rootRef,
+      items,
+      done,
+      count: s.caughtOrder.length,
+      hasSel: !!sel,
+      selYear: sel ? sel.year : '',
+      selTitle: sel ? sel.title : '',
+      showDone: done && !sel,
+      showHint: !done && !sel,
+      boxTransform: 'translateX(' + s.boxX + 'px)',
+      onMove: (e) => {
+        const el = this.root || e.currentTarget;
+        const r = el.getBoundingClientRect();
+        const sc = r.width / 1280 || 1;
+        const x = (e.clientX - r.left) / sc;
+        this.setState({ boxX: this.clampBox(x - 90) });
+      },
+      left: () => this.setState({ boxX: this.clampBox(this.state.boxX - 90) }),
+      right: () => this.setState({ boxX: this.clampBox(this.state.boxX + 90) }),
+      reset: () => { this.spawnTimer = 0.4; this.setState(this.freshState()); }
+    };
+  }
+}
+</script>
+</body>
+</html>

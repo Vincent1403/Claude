@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Modul – Haushaltsabgabe statt Abo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#E2001A}a:hover{color:#111111}
+button:focus-visible{outline:3px solid #E2001A;outline-offset:3px}
+.strike{stroke-dasharray:1;stroke-dashoffset:1;animation:pvdraw .6s cubic-bezier(.6,.1,.3,1) 1.6s forwards}
+@keyframes pvdraw{to{stroke-dashoffset:0}}
+.grow{stroke-dasharray:1;stroke-dashoffset:1;animation:pvdraw .5s ease-out both}
+.sprout{transform-origin:50% 100%;animation:pvsprout .5s cubic-bezier(.2,1.35,.4,1) both}
+@keyframes pvsprout{from{opacity:0;transform:scale(.2) translateY(30px)}to{opacity:1;transform:none}}
+.leaf{transform-box:fill-box;transform-origin:center;animation:pvleaf .4s ease-out both}
+@keyframes pvleaf{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+.pvfade{animation:pvfade .5s ease-out both}
+@keyframes pvfade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){.strike,.grow{animation:none;stroke-dashoffset:0}.sprout,.leaf,.pvfade{animation:none}}
+</style>
+</helmet>
+<div ref="{{rootRef}}" onPointerMove="{{onMove}}" onPointerUp="{{onUp}}" style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #FFFFFF; color: #111111; font-family: 'Archivo', system-ui, sans-serif; touch-action: none; user-select: none">
+
+<svg width="0" height="0" aria-hidden="true" style="position: absolute"><defs><pattern id="pv3ht" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#FFFFFF"></rect><circle cx="3" cy="3" r="1.5" fill="#E2001A"></circle></pattern></defs></svg>
+
+<!-- Insert oben rechts -->
+<div style="position: absolute; right: 64px; top: 56px; display: flex; align-items: center; gap: 10px; background: #111111; color: #FFFFFF; padding: 10px 16px; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; z-index: 3">
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #E2001A"></span>
+<span>Gerade jetzt:</span>
+<span style="font-weight: 900; font-stretch: 62%; font-size: 20px; letter-spacing: 0.02em">50 Cent am Tag</span>
+</div>
+
+<!-- Textspalte -->
+<div style="position: absolute; left: 64px; top: 56px; width: 360px; z-index: 3">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 12px; height: 12px; border-radius: 50%; background: #E2001A"></span>
+<span style="font-weight: 900; font-stretch: 62%; font-size: 22px; text-transform: uppercase">Gerade jetzt:</span>
+</div>
+<div style="margin-top: 12px; font-weight: 900; font-stretch: 62%; font-size: 62px; line-height: 0.9; text-transform: uppercase; white-space: nowrap">Haushaltsabgabe</div>
+<div style="display: flex; align-items: baseline; gap: 12px; margin-top: 8px">
+<span style="font-style: italic; font-weight: 500; font-size: 22px">statt</span>
+<span style="position: relative; display: inline-block; font-weight: 900; font-stretch: 62%; font-size: 62px; line-height: 1; text-transform: uppercase">Abo<sc-if value="{{on}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" viewBox="0 0 600 60" preserveAspectRatio="none" style="position: absolute; left: -8%; top: 30%; width: 116%; height: 42%; overflow: visible"><path class="strike" pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26" fill="none" stroke="#E2001A" stroke-width="9" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></svg></sc-if></span>
+</div>
+<p style="margin: 22px 0 0; font-size: 16px; line-height: 1.5; font-weight: 500">Was bekommt man eigentlich für 50 Cent am Tag? Zieh die Münze in den Schlitz und sieh selbst.</p>
+<sc-if value="{{off}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{insert}}" style="margin-top: 18px; height: 46px; padding: 0 16px; border: 2.5px solid #111111; background: #FFFFFF; font-family: inherit; font-weight: 800; font-size: 14px; cursor: pointer">Münze einwerfen</button>
+</sc-if>
+<sc-if value="{{on}}" hint-placeholder-val="{{false}}">
+<div class="pvfade" style="margin-top: 22px; background: #E2001A; color: #FFFFFF; padding: 16px 18px; animation-delay: 1.4s">
+<div style="font-weight: 900; font-stretch: 62%; font-size: 30px; line-height: 1; text-transform: uppercase">Das alles. Jeden Tag.</div>
+<div style="margin-top: 8px; font-size: 13px; line-height: 1.45; font-weight: 600">Kein Abo, keine Paywall. Für alle in Österreich. [ZAHL] Stunden Programm pro Tag.</div>
+<button type="button" onClick="{{reset}}" style="margin-top: 12px; border: 2px solid #FFFFFF; background: transparent; color: #FFFFFF; font-family: inherit; font-weight: 800; font-size: 13px; padding: 7px 14px; cursor: pointer">Nochmal</button>
+</div>
+</sc-if>
+</div>
+
+<!-- Boden -->
+<div style="position: absolute; left: 440px; right: 40px; top: 760px; height: 2.5px; background: #111111"></div>
+
+<!-- Fernseher mit Münzschlitz -->
+<svg aria-hidden="true" width="360" height="380" viewBox="0 0 360 380" style="position: absolute; left: 640px; top: 380px; overflow: visible">
+<path d="M80 306 L60 380 M280 306 L300 380" stroke="#111111" stroke-width="5" stroke-linecap="round"></path>
+<rect x="128" y="4" width="104" height="40" rx="6" fill="#FFFFFF" stroke="#111111" stroke-width="3"></rect>
+<rect x="150" y="18" width="60" height="11" rx="5.5" fill="#111111"></rect>
+<rect x="4" y="44" width="352" height="262" rx="26" fill="#FFFFFF" stroke="#111111" stroke-width="3"></rect>
+<rect x="28" y="70" width="220" height="210" rx="20" fill="#FFFFFF" stroke="#111111" stroke-width="3"></rect>
+<rect x="264" y="70" width="70" height="210" rx="10" fill="url(#pv3ht)" stroke="#111111" stroke-width="2.5"></rect>
+<circle cx="299" cy="112" r="17" fill="#E2001A" stroke="#111111" stroke-width="2.5"></circle>
+<path d="M299 112 L309 102" stroke="#111111" stroke-width="2.5" stroke-linecap="round"></path>
+<circle cx="299" cy="166" r="17" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></circle>
+<path d="M276 210 H322 M276 222 H322 M276 234 H322 M276 246 H322" stroke="#111111" stroke-width="2.5" stroke-linecap="round"></path>
+</svg>
+
+<!-- Bildschirm -->
+<div style="position: absolute; left: 670px; top: 452px; width: 216px; height: 206px; border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: {{screenBg}}; color: {{screenFg}}; transition: background .4s">
+<sc-if value="{{off}}" hint-placeholder-val="{{true}}">
+<div style="font-size: 30px; font-weight: 900; line-height: 1">↑</div>
+<div style="margin-top: 6px; font-weight: 900; font-stretch: 62%; font-size: 24px; line-height: 1.05; text-transform: uppercase">Münze<br>einwerfen</div>
+</sc-if>
+<sc-if value="{{on}}" hint-placeholder-val="{{false}}">
+<div class="pvfade" style="font-weight: 900; font-stretch: 62%; font-size: 52px; line-height: 0.9; text-transform: uppercase">1 Tag<br>ORF</div>
+<div class="pvfade" style="margin-top: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">für alle</div>
+</sc-if>
+</div>
+
+<!-- Stiele und Blätter -->
+<sc-if value="{{on}}" hint-placeholder-val="{{false}}">
+<svg aria-hidden="true" width="1280" height="800" viewBox="0 0 1280 800" style="position: absolute; left: 0; top: 0; pointer-events: none">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="16">
+<path class="grow" pathLength="1" d="{{c.stem}}" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" style="animation-delay: {{c.stemDelay}}"></path>
+<ellipse class="leaf" cx="{{c.mx}}" cy="{{c.my}}" rx="10" ry="5" fill="#E2001A" stroke="#111111" stroke-width="1.5" transform="{{c.leafRot}}" style="animation-delay: {{c.leafDelay}}"></ellipse>
+</sc-for>
+</svg>
+</sc-if>
+
+<!-- Inhalte, die heraussprießen -->
+<sc-if value="{{on}}" hint-placeholder-val="{{false}}">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="16">
+<div style="position: absolute; left: {{c.left}}px; top: {{c.top}}px; width: 170px; transform: rotate({{c.rot}}deg)">
+<div class="sprout" style="animation-delay: {{c.delay}}; background: #FFFFFF; border: 2px solid #111111; padding: 8px 10px 9px; display: flex; gap: 10px; align-items: center">
+<span style="flex: none; width: 22px; height: 22px; border-radius: 50%; box-sizing: border-box; border: 2px solid #111111; background: {{c.dot}}"></span>
+<div style="min-width: 0">
+<div style="font-weight: 900; font-stretch: 75%; font-size: 16px; line-height: 1.05">{{c.t}}</div>
+<div style="font-size: 11px; font-weight: 600; line-height: 1.25; margin-top: 2px">{{c.d}}</div>
+</div>
+</div>
+</div>
+</sc-for>
+</sc-if>
+
+<!-- Figur, die die Münze hält -->
+<svg aria-hidden="true" width="160" height="300" viewBox="0 0 160 300" style="position: absolute; left: 1060px; top: 462px; overflow: visible">
+<path d="M66 102 L16 104" stroke="#111111" stroke-width="17" stroke-linecap="round"></path>
+<path d="M66 102 L16 104" stroke="#E2001A" stroke-width="11" stroke-linecap="round"></path>
+<path d="M114 102 L130 168" stroke="#111111" stroke-width="17" stroke-linecap="round"></path>
+<path d="M114 102 L130 168" stroke="#E2001A" stroke-width="11" stroke-linecap="round"></path>
+<circle cx="12" cy="104" r="8" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></circle>
+<circle cx="131" cy="172" r="8" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></circle>
+<rect x="81" y="68" width="18" height="18" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></rect>
+<circle cx="90" cy="52" r="22" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></circle>
+<path d="M68 50 Q66 24 92 26 Q116 28 112 52 Q108 40 96 38 Q80 36 76 50 Z" fill="#111111"></path>
+<circle cx="80" cy="54" r="2.2" fill="#111111"></circle>
+<path d="M74 64 Q80 68 86 64" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round"></path>
+<path d="M60 90 Q90 78 120 90 L126 182 H54 Z" fill="#E2001A" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+<path d="M56 182 L54 284 H78 L90 206 L102 284 H126 L124 182 Z" fill="url(#pv3ht)" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+<path d="M50 284 H80 V294 H44 Q44 286 50 284 Z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+<path d="M102 284 H132 Q138 286 138 294 H102 Z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+</svg>
+
+<!-- Münze -->
+<div onPointerDown="{{onDown}}" aria-hidden="true" style="position: absolute; left: 994px; top: 525px; width: 80px; height: 80px; box-sizing: border-box; border-radius: 50%; border: 3px solid #111111; background: #FFFFFF; cursor: {{coinCursor}}; opacity: {{coinOp}}; transform: scale({{coinScale}}); transition: {{coinTransition}}; display: flex; align-items: center; justify-content: center; z-index: 4">
+<div style="position: absolute; inset: 6px; border-radius: 50%; border: 2px solid #111111; background: radial-gradient(circle, #E2001A 1.3px, transparent 1.7px) 0 0 / 6px 6px, #FFFFFF"></div>
+<div style="position: relative; width: 46px; height: 46px; box-sizing: border-box; border-radius: 50%; border: 2px solid #111111; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center">
+<span style="font-weight: 900; font-size: 20px; line-height: 1">50</span>
+<span style="font-weight: 800; font-size: 7px; letter-spacing: 0.12em">CENT</span>
+</div>
+</div>
+
+<sc-if value="{{showDragHint}}" hint-placeholder-val="{{true}}">
+<div style="position: absolute; left: 1010px; top: 470px; font-size: 13px; font-weight: 700; font-style: italic; transform: rotate(-4deg)">Zieh mich zum Schlitz</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.home = { x: 1068, y: 540 };
+    this.slot = { x: 820, y: 403 };
+    this.state = { coin: { ...this.home }, dragging: false, inserted: false, on: false };
+    this.rootRef = (el) => { this.root = el; };
+    this.items = [
+      ['ZIB', 'Nachrichten, mehrmals täglich'],
+      ['Bundesland heute', 'aus neun Landesstudios'],
+      ['Ö1', 'Wissen, Musik, Hörspiel'],
+      ['Ö3', 'Musik und Service'],
+      ['FM4', 'junge Kultur'],
+      ['ORF III', 'Zeitgeschichte und Kultur'],
+      ['Sport live', 'Ski, Fußball und mehr'],
+      ['Kinderprogramm', 'für die Kleinsten'],
+      ['Untertitel', 'für Hörbehinderte'],
+      ['ÖGS', 'Nachrichten in Gebärdensprache'],
+      ['Einfache Sprache', 'Nachrichten für alle'],
+      ['Wetter und Warnungen', 'wenn es darauf ankommt'],
+      ['Archiv', 'Gedächtnis der Nation'],
+      ['Oper und Konzert', 'live übertragen'],
+      ['Regionalradios', 'neun Bundesländer'],
+      ['Dokumentation', 'Universum und mehr']
+    ];
+    this.pos = [
+      [560, 130], [760, 130], [960, 130], [1140, 130],
+      [520, 205], [700, 205], [880, 205], [1060, 205],
+      [600, 280], [800, 280], [1000, 280], [1170, 280],
+      [540, 355], [680, 355], [960, 355], [1110, 355]
+    ];
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+  point(e) {
+    const el = this.root;
+    if (!el) return { x: 0, y: 0 };
+    const r = el.getBoundingClientRect();
+    const sc = r.width / 1280 || 1;
+    return { x: (e.clientX - r.left) / sc, y: (e.clientY - r.top) / sc };
+  }
+  doInsert() {
+    if (this.state.inserted) return;
+    this.setState({ inserted: true, dragging: false, coin: { ...this.slot } });
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => this.setState({ on: true }), 520);
+  }
+  renderVals() {
+    const s = this.state;
+    const ox = 778, oy = 470;
+    const chips = this.items.map((it, i) => {
+      const p = this.pos[i];
+      const x = p[0] + (((i * 37) % 24) - 12);
+      const y = p[1] + (((i * 53) % 16) - 8);
+      const by = y + 46;
+      const mx = 0.5 * ox + 0.5 * x;
+      const my = 0.5 * oy + 0.5 * by + 6;
+      const dots = ['#E2001A', 'radial-gradient(circle, #E2001A 1.2px, #FFFFFF 1.6px) 0 0 / 5px 5px', '#FFFFFF'];
+      return {
+        t: it[0],
+        d: it[1],
+        left: x - 85,
+        top: y,
+        rot: ((i * 29) % 7) - 3,
+        dot: dots[i % 3],
+        stem: 'M' + ox + ' ' + oy + ' C' + ox + ' ' + (oy - 110) + ' ' + x + ' ' + (by + 110) + ' ' + x + ' ' + by,
+        mx: mx.toFixed(1),
+        my: my.toFixed(1),
+        leafRot: 'rotate(' + (x < ox ? -30 : 30) + ' ' + mx.toFixed(1) + ' ' + my.toFixed(1) + ')',
+        stemDelay: (i * 0.06).toFixed(2) + 's',
+        leafDelay: (0.3 + i * 0.06).toFixed(2) + 's',
+        delay: (0.35 + i * 0.06).toFixed(2) + 's'
+      };
+    });
+    const inSlot = s.inserted;
+    return {
+      rootRef: this.rootRef,
+      chips,
+      on: s.on,
+      off: !s.on,
+      showDragHint: !s.inserted && !s.dragging,
+      screenBg: s.on ? '#E2001A' : '#FFFFFF',
+      screenFg: s.on ? '#FFFFFF' : '#111111',
+      coinLeft: (s.coin.x - 40).toFixed(1),
+      coinTop: (s.coin.y - 40).toFixed(1),
+      coinCursor: s.inserted ? 'default' : (s.dragging ? 'grabbing' : 'grab'),
+      coinOp: inSlot ? 0 : 1,
+      coinScale: inSlot ? 0.35 : (s.dragging ? 1.08 : 1),
+      coinTransition: s.dragging ? 'transform .15s' : 'left .45s cubic-bezier(.4,0,.2,1), top .45s cubic-bezier(.4,0,.2,1), transform .45s, opacity .25s .3s',
+      onDown: (e) => {
+        if (this.state.inserted) return;
+        const p = this.point(e);
+        this.grab = { x: p.x - this.state.coin.x, y: p.y - this.state.coin.y };
+        try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
+        this.setState({ dragging: true });
+      },
+      onMove: (e) => {
+        if (!this.state.dragging) return;
+        const p = this.point(e);
+        this.setState({ coin: { x: p.x - this.grab.x, y: p.y - this.grab.y } });
+      },
+      onUp: () => {
+        if (!this.state.dragging) return;
+        const c = this.state.coin;
+        const d = Math.hypot(c.x - this.slot.x, c.y - this.slot.y);
+        if (d < 80) this.doInsert();
+        else this.setState({ dragging: false, coin: { ...this.home } });
+      },
+      insert: () => this.doInsert(),
+      reset: () => {
+        clearTimeout(this.timer);
+        this.setState({ coin: { ...this.home }, dragging: false, inserted: false, on: false });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

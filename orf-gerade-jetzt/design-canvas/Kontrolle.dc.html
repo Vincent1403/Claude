@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Modul – Kontrolle statt wird schon stimmen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#E2001A}a:hover{color:#111111}
+button:focus-visible{outline:3px solid #E2001A;outline-offset:3px}
+.strike{stroke-dasharray:1;stroke-dashoffset:1;animation:pvdraw .6s cubic-bezier(.6,.1,.3,1) .2s forwards}
+@keyframes pvdraw{to{stroke-dashoffset:0}}
+.pvstamp{animation:pvstamp .35s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pvstamp{from{opacity:0;transform:rotate(-12deg) scale(1.8)}to{opacity:1;transform:rotate(-12deg) scale(1)}}
+.pvstep{animation:pvstep .4s ease-out both}
+@keyframes pvstep{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.strike{animation:none;stroke-dashoffset:0}.pvstamp,.pvstep{animation:none}}
+</style>
+</helmet>
+<div style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #FFFFFF; color: #111111; font-family: 'Archivo', system-ui, sans-serif">
+
+<svg width="0" height="0" aria-hidden="true" style="position: absolute"><defs><pattern id="pv2ht" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#FFFFFF"></rect><circle cx="3" cy="3" r="1.5" fill="#E2001A"></circle></pattern></defs></svg>
+
+<!-- Insert oben rechts -->
+<div style="position: absolute; right: 64px; top: 56px; display: flex; align-items: center; gap: 10px; background: #111111; color: #FFFFFF; padding: 10px 16px; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase">
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #E2001A"></span>
+<span>Gerade jetzt:</span>
+<span style="font-weight: 900; font-stretch: 62%; font-size: 20px; letter-spacing: 0.02em">ORF-Qualitätssicherung</span>
+</div>
+
+<!-- Textspalte -->
+<div style="position: absolute; left: 64px; top: 56px; width: 360px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 12px; height: 12px; border-radius: 50%; background: #E2001A"></span>
+<span style="font-weight: 900; font-stretch: 62%; font-size: 22px; text-transform: uppercase">Gerade jetzt:</span>
+</div>
+<div style="margin-top: 12px; font-weight: 900; font-stretch: 62%; font-size: 92px; line-height: 0.88; text-transform: uppercase">Kontrolle</div>
+<div style="display: flex; align-items: baseline; gap: 12px; margin-top: 8px">
+<span style="font-style: italic; font-weight: 500; font-size: 22px">statt</span>
+<span style="position: relative; display: inline-block; font-weight: 900; font-stretch: 62%; font-size: 42px; line-height: 1; text-transform: uppercase; white-space: nowrap">wird schon stimmen<sc-if value="{{finished}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" viewBox="0 0 600 60" preserveAspectRatio="none" style="position: absolute; left: -3%; top: 30%; width: 106%; height: 42%; overflow: visible"><path class="strike" pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26" fill="none" stroke="#E2001A" stroke-width="8" stroke-linecap="round" vector-effect="non-scaling-stroke"></path></svg></sc-if></span>
+</div>
+<p style="margin: 22px 0 0; font-size: 16px; line-height: 1.5; font-weight: 500">Vier Zeitungen, vier Schlagzeilen. Stimmt das? Entscheide selbst und sieh dann, wie eine Redaktion es prüft, bevor es gesendet wird.</p>
+<div style="margin-top: 22px; display: flex; align-items: center; gap: 8px">
+<sc-for list="{{dots}}" as="d" hint-placeholder-count="4">
+<span style="width: 30px; height: 38px; box-sizing: border-box; border: 2.5px solid #111111; background: {{d.bg}}"></span>
+</sc-for>
+<span style="margin-left: 8px; font-size: 13px; font-weight: 700">{{progress}}</span>
+</div>
+<sc-if value="{{finished}}" hint-placeholder-val="{{false}}">
+<div style="margin-top: 26px; background: #E2001A; color: #FFFFFF; padding: 16px 18px">
+<div style="font-weight: 900; font-stretch: 62%; font-size: 30px; line-height: 1; text-transform: uppercase">{{summaryHead}}</div>
+<div style="margin-top: 8px; font-size: 13px; line-height: 1.45; font-weight: 600">Im ORF wird jede Meldung geprüft, bevor sie gesendet wird. [ZAHL] Programmbeschwerden wurden zuletzt unabhängig geprüft.</div>
+<button type="button" onClick="{{restart}}" style="margin-top: 12px; border: 2px solid #FFFFFF; background: transparent; color: #FFFFFF; font-weight: 800; font-size: 13px; padding: 7px 14px; cursor: pointer">Nochmal</button>
+</div>
+</sc-if>
+</div>
+
+<!-- Zeitungsstapel -->
+<div style="position: absolute; left: 488px; top: 150px; width: 400px; height: 520px; border: 2.5px solid #111111; background: #FFFFFF; transform: rotate(5deg)"></div>
+<div style="position: absolute; left: 482px; top: 146px; width: 400px; height: 520px; border: 2.5px solid #111111; background: #FFFFFF; transform: rotate(2deg)"></div>
+
+<div style="position: absolute; left: 478px; top: 140px; width: 400px; height: 520px; box-sizing: border-box; border: 2.5px solid #111111; background: #FFFFFF; transform: rotate(-2deg); padding: 22px 24px; display: flex; flex-direction: column">
+<div style="border-top: 3px solid #111111; border-bottom: 1px solid #111111; padding: 6px 0 4px; display: flex; align-items: baseline; justify-content: space-between">
+<span style="font-weight: 900; font-size: 34px; letter-spacing: -0.01em; line-height: 1">DER TAG</span>
+<span style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">Beispiel · Nr. {{num}}</span>
+</div>
+<div style="height: 2px; background: #111111; margin-top: 2px"></div>
+<div style="margin-top: 16px; font-weight: 900; font-stretch: 62%; font-size: 46px; line-height: 0.95; text-transform: uppercase; text-wrap: balance">{{head}}</div>
+<svg aria-hidden="true" width="348" height="140" viewBox="0 0 348 140" style="display: block; margin-top: 16px">
+<rect x="1.25" y="1.25" width="345.5" height="137.5" fill="url(#pv2ht)" stroke="#111111" stroke-width="2.5"></rect>
+<path d="M1 108 Q 60 78 120 98 T 240 92 T 347 86 V139 H1 Z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></path>
+<path d="M60 108 V70 H96 V108 M78 70 V52 M190 98 V58 L214 40 L238 58 V96" fill="none" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
+<circle cx="290" cy="38" r="16" fill="#FFFFFF" stroke="#111111" stroke-width="2.5"></circle>
+</svg>
+<svg aria-hidden="true" width="348" height="110" viewBox="0 0 348 110" style="display: block; margin-top: 14px">
+<g fill="#111111">
+<rect x="0" y="0" width="166" height="3"></rect><rect x="0" y="12" width="166" height="3"></rect><rect x="0" y="24" width="150" height="3"></rect><rect x="0" y="36" width="166" height="3"></rect><rect x="0" y="48" width="120" height="3"></rect><rect x="0" y="60" width="166" height="3"></rect><rect x="0" y="72" width="140" height="3"></rect>
+<rect x="182" y="0" width="166" height="3"></rect><rect x="182" y="12" width="166" height="3"></rect><rect x="182" y="24" width="166" height="3"></rect><rect x="182" y="36" width="132" height="3"></rect><rect x="182" y="48" width="166" height="3"></rect><rect x="182" y="60" width="150" height="3"></rect><rect x="182" y="72" width="100" height="3"></rect>
+</g>
+</svg>
+<sc-if value="{{revealed}}" hint-placeholder-val="{{false}}">
+<div class="pvstamp" style="position: absolute; left: 70px; top: 190px; border: 5px solid #E2001A; color: #E2001A; background: rgba(255,255,255,0.88); padding: 6px 20px 4px; font-weight: 900; font-stretch: 62%; font-size: 54px; line-height: 1; text-transform: uppercase; letter-spacing: 0.02em; transform: rotate(-12deg)">{{verdict}}</div>
+</sc-if>
+</div>
+
+<!-- Lupe -->
+<svg aria-hidden="true" width="190" height="190" viewBox="0 0 190 190" style="position: absolute; left: 790px; top: 520px">
+<path d="M112 112 L170 170" stroke="#111111" stroke-width="22" stroke-linecap="round"></path>
+<path d="M112 112 L170 170" stroke="#E2001A" stroke-width="15" stroke-linecap="round"></path>
+<circle cx="72" cy="72" r="56" fill="rgba(255,255,255,0.55)" stroke="#111111" stroke-width="5"></circle>
+<path d="M40 52 Q 48 36 66 32" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"></path>
+</svg>
+
+<!-- Entscheidung -->
+<sc-if value="{{asking}}" hint-placeholder-val="{{true}}">
+<div style="position: absolute; left: 478px; top: 696px; width: 420px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 12px">
+<button type="button" onClick="{{pickYes}}" style="flex: 1; height: 52px; border: 2.5px solid #111111; background: #111111; color: #FFFFFF; font-family: inherit; font-weight: 900; font-stretch: 62%; font-size: 24px; text-transform: uppercase; cursor: pointer">Stimmt</button>
+<button type="button" onClick="{{pickNo}}" style="flex: 1; height: 52px; border: 2.5px solid #111111; background: #FFFFFF; color: #111111; font-family: inherit; font-weight: 900; font-stretch: 62%; font-size: 24px; text-transform: uppercase; cursor: pointer">Stimmt nicht</button>
+</div>
+<button type="button" onClick="{{pickRely}}" style="align-self: flex-start; border: none; background: transparent; padding: 4px 0; font-family: inherit; font-size: 14px; font-weight: 600; color: #555555; text-decoration: underline; cursor: pointer">… wird schon stimmen</button>
+</div>
+</sc-if>
+
+<!-- Prüfweg -->
+<div style="position: absolute; left: 936px; top: 140px; width: 280px">
+<sc-if value="{{asking}}" hint-placeholder-val="{{true}}">
+<div style="border: 2px dashed #111111; padding: 22px 20px; margin-top: 60px">
+<div style="font-weight: 900; font-stretch: 62%; font-size: 24px; text-transform: uppercase">Prüfweg</div>
+<div style="margin-top: 8px; font-size: 14px; line-height: 1.45; font-weight: 500">Entscheide zuerst selbst. Dann erscheint hier, wie die Redaktion diese Meldung geprüft hat.</div>
+</div>
+</sc-if>
+<sc-if value="{{revealed}}" hint-placeholder-val="{{false}}">
+<div>
+<div style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase">Deine Einschätzung</div>
+<div style="margin-top: 4px; font-weight: 900; font-stretch: 62%; font-size: 26px; text-transform: uppercase">{{choiceLabel}}</div>
+<div style="margin-top: 4px; font-size: 14px; font-weight: 600; line-height: 1.4">{{feedback}}</div>
+<div style="height: 2.5px; background: #111111; margin: 16px 0 14px"></div>
+<div style="font-weight: 900; font-stretch: 62%; font-size: 24px; text-transform: uppercase">So wurde geprüft</div>
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="3">
+<div class="pvstep" style="display: flex; gap: 12px; margin-top: 14px; animation-delay: {{st.delay}}">
+<span style="flex: none; width: 30px; height: 30px; border-radius: 50%; background: #E2001A; color: #FFFFFF; border: 2.5px solid #111111; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px">{{st.n}}</span>
+<div>
+<div style="font-weight: 800; font-size: 15px">{{st.t}}</div>
+<div style="margin-top: 2px; font-size: 13px; line-height: 1.4; font-weight: 500">{{st.d}}</div>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{canNext}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{next}}" style="margin-top: 22px; height: 48px; padding: 0 18px; border: 2.5px solid #111111; background: #FFFFFF; font-family: inherit; font-weight: 900; font-stretch: 62%; font-size: 20px; text-transform: uppercase; cursor: pointer">{{nextLabel}} &#8594;</button>
+</sc-if>
+</div>
+</sc-if>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.cases = [
+      { head: 'Video zeigt Hochwasser – gerade eben gefilmt', truth: false, verdict: 'Gestoppt',
+        steps: [['Quelle', 'Das Video kursiert seit Jahren und stammt aus einem anderen Land.'], ['Gegencheck', 'Bild-Rückwärtssuche, Abgleich mit dem Landesstudio vor Ort.'], ['Entscheidung', 'Nicht gesendet. Altes Material, falsch eingeordnet.']] },
+      { head: 'Neuer Hitzerekord an Messstation gemessen', truth: true, verdict: 'Bestätigt',
+        steps: [['Quelle', 'Messdaten des nationalen Wetterdienstes.'], ['Gegencheck', 'Zweite Messstation verglichen, Meteorologin befragt.'], ['Entscheidung', 'Gesendet, mit Einordnung zum langfristigen Trend.']] },
+      { head: 'Ab Jänner gibt es Gratis-Strom für alle', truth: false, verdict: 'Gestoppt',
+        steps: [['Quelle', 'Nur ein Social-Media-Posting, keine offizielle Stelle.'], ['Gegencheck', 'Anfrage beim zuständigen Ministerium: kein solcher Beschluss.'], ['Entscheidung', 'Nicht gesendet. Im Faktencheck als Falschmeldung erklärt.']] },
+      { head: 'Neue Bahnstrecke halbiert die Fahrzeit', truth: 'teils', verdict: 'Richtiggestellt',
+        steps: [['Quelle', 'Pressemitteilung des Betreibers.'], ['Gegencheck', 'Fahrplan nachgerechnet: Zeitgewinn nur auf einer Teilstrecke.'], ['Entscheidung', 'Gesendet, mit der korrekten Zahl.']] }
+    ];
+    this.state = { idx: 0, phase: 'ask', choice: null, relied: 0, finished: false };
+  }
+  pick(choice) {
+    this.setState({ phase: 'reveal', choice, relied: this.state.relied + (choice === 'rely' ? 1 : 0) });
+  }
+  renderVals() {
+    const s = this.state;
+    const c = this.cases[s.idx];
+    const revealed = s.phase === 'reveal';
+    let feedback = '';
+    if (revealed) {
+      if (s.choice === 'rely') feedback = 'Du hast dich verlassen. Die Redaktion nicht.';
+      else if (c.truth === 'teils') feedback = 'Nur zum Teil richtig. Es kommt aufs Detail an.';
+      else if ((s.choice === 'yes') === c.truth) feedback = 'Richtig eingeschätzt.';
+      else feedback = 'Hier lag das Bauchgefühl daneben.';
+    }
+    const choiceLabel = s.choice === 'yes' ? 'Stimmt' : s.choice === 'no' ? 'Stimmt nicht' : 'Wird schon stimmen';
+    const dots = this.cases.map((x, i) => ({
+      bg: i < s.idx || (i === s.idx && (revealed || s.finished)) ? '#E2001A' : i === s.idx ? 'repeating-linear-gradient(0deg, #FFFFFF 0 5px, #F6C2C8 5px 6px)' : '#FFFFFF'
+    }));
+    const r = s.relied;
+    return {
+      num: s.idx + 1,
+      head: c.head,
+      verdict: c.verdict,
+      revealed,
+      asking: !revealed && !s.finished,
+      finished: s.finished,
+      choiceLabel,
+      feedback,
+      steps: c.steps.map((st, i) => ({ n: i + 1, t: st[0], d: st[1], delay: (0.25 + i * 0.25) + 's' })),
+      canNext: revealed && !s.finished,
+      nextLabel: s.idx < this.cases.length - 1 ? 'Nächste Zeitung' : 'Abschließen',
+      dots,
+      progress: s.finished ? 'Alle vier geprüft' : 'Zeitung ' + (s.idx + 1) + ' von 4',
+      summaryHead: r === 0 ? 'Kein einziges Mal blind vertraut.' : r === 1 ? 'Einmal hättest du dich verlassen.' : r + '-mal hättest du dich verlassen.',
+      pickYes: () => this.pick('yes'),
+      pickNo: () => this.pick('no'),
+      pickRely: () => this.pick('rely'),
+      next: () => {
+        if (s.idx < this.cases.length - 1) this.setState({ idx: s.idx + 1, phase: 'ask', choice: null });
+        else this.setState({ finished: true });
+      },
+      restart: () => this.setState({ idx: 0, phase: 'ask', choice: null, relied: 0, finished: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

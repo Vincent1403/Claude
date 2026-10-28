@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gerade jetzt – Doppelseiten</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
+<style>
+body{margin:0;padding:32px 16px 64px;background:#EDEDED;color:#111;font-family:Archivo,system-ui,sans-serif}
+h1{max-width:1200px;margin:0 auto 24px;font-weight:900;font-stretch:62%;font-size:56px;text-transform:uppercase;line-height:.9}
+figure{max-width:1200px;margin:0 auto 40px}
+.fit{position:relative;width:100%;aspect-ratio:1588/1123;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.fit iframe{position:absolute;left:0;top:0;width:1588px;height:1123px;border:0;transform-origin:0 0;pointer-events:none}
+figcaption{margin-top:10px;font-size:14px;font-weight:700}
+</style>
+<script>
+addEventListener('load',()=>{const f=()=>document.querySelectorAll('.fit').forEach(b=>{b.firstElementChild.style.transform='scale('+b.clientWidth/1588+')'});f();addEventListener('resize',f)});
+</script>
+</head>
+<body>
+<h1>Gerade jetzt – Doppelseiten</h1>
+<figure><a href="spreads/Vertrauen.html"><div class="fit"><iframe src="spreads/Vertrauen.html" title="Gerade jetzt – Vertrauen" tabindex="-1"></iframe></div></a><figcaption>Gerade jetzt – Vertrauen</figcaption></figure>
+<figure><a href="spreads/Megafon.html"><div class="fit"><iframe src="spreads/Megafon.html" title="Gerade jetzt – Vielfalt (Megafon)" tabindex="-1"></iframe></div></a><figcaption>Gerade jetzt – Vielfalt (Megafon)</figcaption></figure>
+<figure><a href="spreads/Kuvert.html"><div class="fit"><iframe src="spreads/Kuvert.html" title="Gerade jetzt – Transparenz (Kuvert)" tabindex="-1"></iframe></div></a><figcaption>Gerade jetzt – Transparenz (Kuvert)</figcaption></figure>
+</body>
+</html>
