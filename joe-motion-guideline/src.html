@@ -423,14 +423,14 @@ function headline(st,side,h,f,lines,o={}){const size=side==='b'?11:6.6;
  return textBlock(st,lines,{color:'var(--wine)',size,x:7,right:side==='r'?100*f+5:7,top:side==='b'?10:undefined,...o})}
 const STEP=[[.25,'25 / 75','Die Kachel ragt ein Viertel ins Bild. Viel Raum für Headline und Bild.'],[.5,'50 / 50','Halb Kachel, halb Hintergrund. Die ausgewogene Standardstufe.',1],[.75,'75 / 25','Die Kachel trägt den Inhalt, oben oder links bleibt ein schmaler Rand.']];
 STEP.forEach(([f,name,desc,std])=>{
- def('kb','kb-'+f*100,name,desc,{ratio:'9/16',badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
+ def('kb','kb-'+f*100,name,desc,{ratio:'9/16',dur:3.6,bg:'bg-lilac',build(st,h){
   const K=kachel(st,'b',h);const hl=f<.75?headline(st,'b',h,f,['Mehr aus','dem Moment.']):textBlock(st,['Mehr aus','dem Moment.'],{size:11,x:7,top:h*(1-f)+10});
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}});
- def('kr','kr-'+f*100,name,desc,{badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
+ def('kr','kr-'+f*100,name,desc,{dur:3.6,bg:'bg-lilac',build(st,h){
   const K=kachel(st,'r',h);const hl=f<.75?headline(st,'r',h,f,['Mehr','entdecken.']):textBlock(st,['Mehr','entdecken.'],{size:6.6,x:100*(1-f)+6,right:4});
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}})});
 
-def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stufe ins Bild, dann kommt die Headline.',{badge:'std',dur:3.6,bg:'bg-lilac',build(st,h){
+def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stufe ins Bild, dann kommt die Headline.',{dur:3.6,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr für','deinen','Alltag.']);const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:57,y:h-13});
  return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));hl(t-.9,3.2);pl(t-1.4,1.85)}}});
 def('trans','tr-step','Stufe wechseln','Die Kachel wandert von Stufe zu Stufe, 25, 50, 75 %. Bei 75 % ist kein Platz für die Headline: Sie geht vorher ab und kommt erst zurück, wenn die Kachel wieder kleiner ist.',{dur:7,bg:'bg-lilac',build(st,h){
@@ -440,7 +440,7 @@ def('trans','tr-step','Stufe wechseln','Die Kachel wandert von Stufe zu Stufe, 2
 def('trans','tr-full','Kachel wird Vollbild','Erst geht der Text ab, dann wächst die Kachel aus der Stufe über das ganze Bild. Die Rundung verlässt es über den Rand. Für neue Kapitel.',{dur:5.4,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const a=headline(st,'r',h,.5,['Mehr von','dem, was','zählt.']);const b=textBlock(st,['Alles in','einer App.'],{size:6.6});
  return t=>{K.set(t<2.8?.5*eFlow(seg(t,.2,.9)):lerp(.5,1+KR(h)/100+.02,eMorph(seg(t,2.8,3.5))));a(t-.8,1.6);b(t-3.35,9)}}});
-def('trans','tr-rainbow','Rainbow','Hellorange, Orange und Burgund schieben sich dicht nacheinander von der Seite über das Bild.',{badge:'acc',dur:3.8,bg:'bg-lilac',build(st,h){
+def('trans','tr-rainbow','Rainbow','Hellorange, Orange und Burgund schieben sich dicht nacheinander von der Seite über das Bild.',{dur:3.8,bg:'bg-lilac',build(st,h){
  const a=headline(st,'r',h,0,['Mehr aus','dem Moment.']);const ks=['bg-lor','bg-orange','bg-wine'].map(c=>kachel(st,'r',h,c));const b=textBlock(st,['Alles in','einer App.'],{size:6.6,align:'center'});
  return t=>{a(t-.1,1.0);ks.forEach((k,i)=>k.set(lerp(0,1+KR(h)/100+.03,eMorph(seg(t,1.0+i*.14,1.8+i*.14)))));b(t-2.15,9)}}});
 def('trans','tr-photo','Kachel mit Bild','Die Kachel maskiert ein Foto. Nach dem Reveal zoomt das Bild kontinuierlich sanft hinein, damit nichts stillsteht.',{dur:4,bg:'bg-lilac',build(st,h){
