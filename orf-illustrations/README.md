@@ -16,4 +16,4 @@ The last argument is the line join: `round` for the characters, `miter` for the 
 
 Add `v2` as an eighth argument to keep solid black shapes (like the stars on ORF-07) as black
 filled shapes, and to prune only the corner stubs of the trace instead of every short line end.
-ORF-07 and ORF-08 were traced with `v2`; ORF-02 to ORF-06 without it.
+ORF-07 to ORF-09 were traced with `v2` (ORF-09 with `miter` joins); ORF-02 to ORF-06 without it.
