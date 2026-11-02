@@ -3,134 +3,126 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&display=swap">
 <style>
-/* Layout: Prototyp der PV-Website – Einstieg, dann drei Module untereinander; je Modul links Text + Bedienung, rechts eine Bühne mit Linien-Illustration (skaliert mit der Breite). */
+/* Layout: ruhige Seite mit fester Kopfzeile, kompaktem Einstieg und drei Modulen. Jedes Modul: Kopfzeile (Nummer, Titel, Satz),
+   darunter links die Bühne als flache Farbfläche, rechts die Bedienung in einer Karte. Illustrationen im flachen Linienstil. */
 :root{
-  --red:#E2001A;      /* ORF-Rot */
-  --tint:#F6C2C8;     /* Rot-Halbton, flächig */
+  --red:#E2001A;      /* ORF-Rot, einzige Akzentfarbe */
+  --tint:#F6C2C8;     /* Rot-Halbton, sparsam */
   --ink:#111111;
   --paper:#FFFFFF;
-  --mute:#595959;
-  --rule:2.5px;
-  --font:'Archivo','Arial Narrow',system-ui,sans-serif;
-  --halftone:radial-gradient(circle, var(--red) 1.3px, transparent 1.7px) 0 0/6px 6px;
-  --shadow:rgba(17,17,17,.13);  /* Bodenschatten */
+  --panel:#F2F1EE;    /* Bühnenfläche */
+  --mute:#5C5C5C;
+  --line:#111111;
+  --rule:2px;
+  --radius:20px;
+  --font:'Archivo',system-ui,sans-serif;
+  --shadow:rgba(17,17,17,.08);
   color-scheme:light;
 }
-body{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5}
+body{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;font-weight:450}
 *{box-sizing:border-box}
 .band{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
 .wrap{max-width:1200px;margin:0 auto}
-.disp{font-weight:900;font-stretch:62%;text-transform:uppercase;line-height:.9;letter-spacing:.005em;text-wrap:balance}
+.disp{font-weight:800;letter-spacing:-.01em;line-height:1.05;text-wrap:balance}
 button{font-family:inherit}
 button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.count{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--red)}
 
 /* Kopfzeile */
-.top{padding-block:20px}
-.top .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
-.insert{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);padding:8px 14px;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-.insert b{font-weight:900;font-stretch:62%;font-size:18px;letter-spacing:.02em}
-.insert .sub{font-weight:600;letter-spacing:.03em;text-transform:none}
-.dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--red)}
-.meta{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(17,17,17,.14)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:0 20px;min-height:60px}
+.brand{font-weight:800;font-size:18px;letter-spacing:-.02em;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:8px;white-space:nowrap;min-height:60px}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav a{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;color:var(--ink);text-decoration:none;font-size:14px;font-weight:600}
+.nav a:hover{background:var(--panel)}
+.top .meta{font-size:12px;font-weight:600;color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+@media (max-width:760px){.top .meta{display:none}.nav{margin-left:0;flex-basis:100%;padding-bottom:8px;margin-top:-6px}.nav a{padding:0 10px;font-size:13px;margin-left:-10px;margin-right:10px}}
 
 /* Einstieg */
-.hero{padding-block:28px 56px}
-.hero h1{margin:0;font-size:clamp(72px,14vw,190px)}
-.hero h1 .dot{display:inline-block;width:.16em;height:.16em;margin-left:.1em;vertical-align:.12em}
-.hero-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:end;margin-top:24px}
-.hero p{margin:0;max-width:58ch;font-size:18px;font-weight:500}
-.jump{display:flex;flex-wrap:wrap;gap:8px}
-.jump a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:var(--rule) solid var(--ink);color:var(--ink);text-decoration:none;font-weight:900;font-stretch:62%;font-size:18px;text-transform:uppercase}
-.jump a:hover{background:var(--tint)}
-/* Dicke Vektor-Knöpfe: versetzter Tintenschatten, beim Drücken sinkt der Knopf hinein */
-.jump a,.btn{box-shadow:4px 4px 0 0 var(--ink);transition:transform .08s ease-out,box-shadow .08s ease-out,background-color .15s}
-.jump a:hover,.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 0 var(--ink)}
-.jump a:active,.btn:active{transform:translate(4px,4px);box-shadow:0 0 0 0 var(--ink)}
-@media (max-width:760px){.hero-row{grid-template-columns:minmax(0,1fr)}}
+.hero{padding-block:72px 56px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:32px;align-items:end}
+.hero h1{margin:0;font-size:clamp(48px,7.5vw,104px);letter-spacing:-.035em;line-height:.95}
+.hero h1 .dot{display:inline-block;width:.14em;height:.14em;margin-left:.06em;vertical-align:.04em}
+.hero p{margin:0;font-size:18px;line-height:1.5;max-width:42ch}
+.hero .lead{font-weight:600}
+@media (max-width:760px){.hero{padding-block:48px 36px}.hero .wrap{grid-template-columns:minmax(0,1fr)}}
 
 /* Module */
-.module{border-top:var(--rule) solid var(--ink);padding-block:48px 72px;scroll-margin-top:12px}
-.mgrid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"intro stage" "ui stage";grid-template-rows:auto 1fr;column-gap:48px;row-gap:24px;align-items:start}
-.intro{grid-area:intro;min-width:0}
-.ui{grid-area:ui;min-width:0}
-.stage{grid-area:stage}
-@media (max-width:880px){.mgrid{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "stage" "ui";grid-template-rows:auto}}
-.intro h2{margin:0;font-size:clamp(52px,6.6vw,92px)}
-.statt{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-top:8px}
-.statt i{font-weight:500;font-size:22px}
-.statt .old{font-size:clamp(30px,3.6vw,48px);white-space:nowrap}
-.intro p{margin:20px 0 0;max-width:46ch;font-size:16px;font-weight:500}
+.module{border-top:1px solid rgba(17,17,17,.14);padding-block:56px 72px;scroll-margin-top:72px}
+.mhead{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px 32px;align-items:end;margin-bottom:28px}
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--mute);margin-bottom:14px}
+.eyebrow .num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:var(--rule) solid var(--ink);border-radius:50%;color:var(--ink);font-weight:700;font-size:13px;font-variant-numeric:tabular-nums}
+.mhead h2{margin:0;font-size:clamp(34px,4.6vw,56px);letter-spacing:-.03em;line-height:1}
+.mhead h2 .statt{font-weight:500;color:var(--mute)}
+.mhead h2 .statt i{font-style:italic;font-size:.5em;margin:0 .25em 0 .15em;vertical-align:.18em}
+.mhead p{margin:0;max-width:46ch}
+@media (max-width:760px){.mhead{grid-template-columns:minmax(0,1fr)}}
+.mbody{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;align-items:start}
+@media (max-width:880px){.mbody{grid-template-columns:minmax(0,1fr)}}
+.panel{min-width:0;border:var(--rule) solid var(--ink);border-radius:var(--radius);padding:22px}
 
-/* Strich */
-.strike{position:relative;display:inline-block}
-.strike svg{position:absolute;left:-4%;top:30%;width:108%;height:42%;overflow:visible;pointer-events:none}
-.strike path{fill:none;stroke:var(--red);stroke-width:9;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .6s cubic-bezier(.6,.1,.3,1)}
+/* Strich durch das Wort, das nicht gilt */
+.strike{position:relative;display:inline-block;white-space:nowrap}
+.strike svg{position:absolute;left:-3%;top:34%;width:106%;height:36%;overflow:visible;pointer-events:none}
+.strike path{fill:none;stroke:var(--red);stroke-width:6;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .6s cubic-bezier(.6,.1,.3,1)}
 .strike.on path{stroke-dashoffset:0}
 
 /* Bühne */
-.stage{position:relative;width:100%;max-width:100%;overflow:hidden;background:var(--paper);outline:var(--rule) solid var(--ink);outline-offset:calc(-1 * var(--rule))}
+.stage{position:relative;width:100%;max-width:100%;overflow:hidden;background:var(--panel);border-radius:var(--radius)}
 .stage-inner{position:absolute;left:0;top:0;transform-origin:0 0}
-.stage-note{position:absolute;right:12px;bottom:10px;font-size:13px;font-weight:700;font-style:italic;z-index:5}
 
 /* Bedienelemente */
-.btn{min-height:48px;padding:0 18px;border:var(--rule) solid var(--ink);background:var(--paper);color:var(--ink);font-weight:900;font-stretch:62%;font-size:22px;text-transform:uppercase;cursor:pointer}
-.btn:hover{background:var(--tint)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:var(--rule) solid var(--ink);border-radius:999px;background:var(--paper);color:var(--ink);font-weight:600;font-size:15px;cursor:pointer;transition:background-color .15s,color .15s}
+.btn:hover{background:var(--panel)}
 .btn.solid{background:var(--ink);color:var(--paper)}
 .btn.solid:hover{background:var(--red);border-color:var(--red)}
-.btn.solid{box-shadow:4px 4px 0 0 var(--red)}
-.btn.solid:hover{box-shadow:5px 5px 0 0 var(--ink)}
-.btn.small{min-height:44px;font-size:18px;padding:0 14px}
-.btn.icon{width:48px;padding:0;font-size:22px}
-.linkbtn{border:0;background:none;padding:8px 0;min-height:44px;font-size:15px;font-weight:600;color:var(--mute);text-decoration:underline;cursor:pointer}
+.btn.small{min-height:40px;font-size:14px;padding:0 16px}
+.btn.icon{width:44px;padding:0;font-size:18px}
+.linkbtn{border:0;background:none;padding:6px 0;min-height:40px;font-size:14px;font-weight:500;color:var(--mute);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .linkbtn:hover{color:var(--ink)}
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.label{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-.count{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
-.done{background:var(--red);color:var(--paper);padding:18px 20px;box-shadow:6px 6px 0 0 var(--ink)}
-.done .disp{font-size:32px;line-height:1}
-.done p{margin:8px 0 0;font-size:14px;font-weight:600;line-height:1.45}
-.done .btn{margin-top:12px;background:transparent;color:var(--paper);border-color:var(--paper);font-size:18px;min-height:44px}
+.done{background:var(--red);color:var(--paper);padding:20px;border-radius:14px;margin-top:20px}
+.done .disp{font-size:26px}
+.done p{margin:8px 0 0;font-size:14px;line-height:1.5}
+.done .btn{margin-top:14px;background:transparent;color:var(--paper);border-color:var(--paper)}
 .done .btn:hover{background:var(--paper);color:var(--red)}
-.done .btn,.done .btn:hover{box-shadow:4px 4px 0 0 var(--ink)}
 
 /* Modul 1 */
 .shelf{margin-top:20px}
 .shelf-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.slot{height:104px;border:2px dashed var(--ink);background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;color:var(--ink);cursor:default}
-.slot svg{width:84px;height:74px}
-.slot .yr{font-weight:900;font-size:14px;line-height:1}
-.slot.filled{border-style:solid;cursor:pointer;animation:pop .35s cubic-bezier(.2,1.4,.4,1);box-shadow:3px 3px 0 0 var(--ink);transition:transform .08s,box-shadow .08s}
-.slot.filled:active{transform:translate(3px,3px);box-shadow:none}
-.slot.filled:hover{background:var(--tint)}
-.slot.sel{background:var(--tint)}
-.plank{height:12px;margin-top:10px;border:var(--rule) solid var(--ink);background:var(--halftone),var(--paper)}
+.slot{height:96px;border:var(--rule) dashed rgba(17,17,17,.35);border-radius:12px;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:4px;color:var(--ink);cursor:default}
+.slot svg{width:80px;height:70px}
+.slot.filled{border:var(--rule) solid var(--ink);cursor:pointer;animation:pop .35s cubic-bezier(.2,1.4,.4,1);transition:background-color .15s}
+.slot.filled:hover{background:var(--panel)}
+.slot.sel{background:var(--panel);border-color:var(--red)}
+.plank{height:0;margin-top:10px;border-top:var(--rule) solid var(--ink)}
 @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
-.caption{margin-top:16px;border:var(--rule) solid var(--ink);padding:14px 16px;box-shadow:5px 5px 0 0 var(--tint),5px 5px 0 2.5px var(--ink)}
-.caption .disp{font-size:26px;line-height:1}
-.caption p{margin:6px 0 0;font-size:14px;font-weight:500}
-.caption .ph{display:inline-block;margin-top:6px;font-size:14px;font-weight:800;color:var(--red)}
+.caption{margin-top:16px;border:var(--rule) solid var(--ink);border-radius:12px;padding:14px 16px}
+.caption .disp{font-size:22px}
+.caption p{margin:6px 0 0;font-size:14px}
+.caption .ph{display:inline-block;margin-top:6px;font-size:14px;font-weight:700;color:var(--red)}
 .item{position:absolute;left:0;top:0;width:150px;will-change:transform}
-.fade-note{text-align:center;font-size:13px;font-weight:700;font-style:italic;color:var(--red);visibility:hidden}
+.fade-note{text-align:center;font-size:13px;font-weight:600;font-style:italic;color:var(--red);visibility:hidden}
 .item.fading .fade-note{visibility:visible}
 .item.caught{transition:transform .35s ease-in,opacity .35s ease-in;opacity:0}
-
-/* Plastik & Bewegung: Bodenschatten, Squash beim Fangen, Funken, Staubwölkchen, ziehende Wolken */
-.drop-shadow{position:absolute;left:0;top:0;width:110px;height:14px;border-radius:50%;background:var(--shadow);will-change:transform,opacity}
+.drop-shadow{position:absolute;left:0;top:0;width:110px;height:10px;border-radius:50%;background:var(--shadow);will-change:transform,opacity}
 #m1-body{transform-origin:50% 100%}
 #m1-body.squash{animation:squash .42s cubic-bezier(.3,1.6,.5,1)}
-@keyframes squash{0%{transform:none}30%{transform:scale(1.05,.93)}65%{transform:scale(.98,1.03)}100%{transform:none}}
+@keyframes squash{0%{transform:none}30%{transform:scale(1.04,.95)}65%{transform:scale(.99,1.02)}100%{transform:none}}
 .burst{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
-.burst i{position:absolute;left:-2px;top:-8px;width:4px;height:16px;border-radius:2px;background:var(--red);transform:rotate(var(--a)) translateY(-14px);animation:ray .5s cubic-bezier(.2,.8,.3,1) forwards}
-.burst i:nth-child(even){background:var(--ink);height:10px}
-@keyframes ray{to{transform:rotate(var(--a)) translateY(-56px);opacity:0}}
-.puff{position:absolute;left:0;top:0;width:22px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--ink);pointer-events:none;animation:puff .5s ease-out forwards}
-@keyframes puff{from{opacity:.9;transform:translate(var(--x),0) scale(.5)}to{opacity:0;transform:translate(calc(var(--x) + var(--dx)),-10px) scale(1.3)}}
+.burst i{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:var(--red);transform:rotate(var(--a)) translateY(-14px);animation:ray .55s cubic-bezier(.2,.8,.3,1) forwards}
+.burst i:nth-child(even){background:var(--ink);width:4px;height:4px}
+@keyframes ray{to{transform:rotate(var(--a)) translateY(-54px);opacity:0}}
 .cloud{animation:drift 16s ease-in-out infinite alternate}
 .cloud.slow{animation-duration:23s;animation-direction:alternate-reverse}
 @keyframes drift{to{transform:translateX(34px)}}
-.catch-label{position:absolute;display:flex;align-items:center;gap:7px;background:var(--ink);color:var(--paper);padding:6px 11px 5px;font-weight:900;font-stretch:62%;font-size:19px;line-height:1;text-transform:uppercase;white-space:nowrap;pointer-events:none;transform:translate(-50%,0);animation:rise 1.05s cubic-bezier(.2,.8,.3,1) forwards}
-@keyframes rise{0%{opacity:0;transform:translate(-50%,12px) scale(.6)}18%{opacity:1;transform:translate(-50%,-6px) scale(1.08)}30%{transform:translate(-50%,-10px) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-52px)}}
+.catch-label{position:absolute;display:flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper);padding:7px 14px;border-radius:999px;font-weight:600;font-size:15px;line-height:1;white-space:nowrap;pointer-events:none;transform:translate(-50%,0);animation:rise 1.05s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes rise{0%{opacity:0;transform:translate(-50%,12px) scale(.6)}18%{opacity:1;transform:translate(-50%,-6px) scale(1.06)}30%{transform:translate(-50%,-10px) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-52px)}}
 .breathe{animation:breathe 3.4s ease-in-out infinite}
+@keyframes breathe{50%{transform:translateY(-3px)}}
 .idle-up{animation:idleup 2.8s ease-in-out infinite}
 @keyframes idleup{50%{transform:translateY(2.5px)}}
 .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite}
@@ -138,96 +130,86 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 .hop{transform-origin:50% 100%;animation:hop .55s cubic-bezier(.3,1.5,.5,1)}
 .hop.twice{animation-iteration-count:2}
 @keyframes hop{0%{transform:none}35%{transform:translateY(-16px) scale(.98,1.03)}70%{transform:translateY(0) scale(1.04,.96)}100%{transform:none}}
-@keyframes breathe{50%{transform:translateY(-3px)}}
 
 /* Modul 2 */
-.paper{position:absolute;width:400px;height:520px;border:var(--rule) solid var(--ink);background:var(--paper)}
-.paper.front{padding:20px 24px;display:flex;flex-direction:column;box-shadow:7px 7px 0 0 var(--paper),7px 7px 0 2.5px var(--ink)}
+.paper{position:absolute;width:400px;height:520px;border:var(--rule) solid var(--ink);border-radius:4px;background:var(--paper)}
+.paper.front{padding:22px 24px;display:flex;flex-direction:column}
+.paper.back{background:var(--tint)}
 .paper.front.thud{animation:thud .4s cubic-bezier(.3,1.5,.5,1)}
 .paper.front.toss{animation:toss .26s ease-in forwards}
 .paper.front.land{animation:land .5s cubic-bezier(.25,1.3,.45,1)}
 @keyframes toss{to{transform:translate(-140px,-26px) rotate(-16deg);opacity:0}}
 @keyframes land{0%{transform:translate(170px,-50px) rotate(12deg);opacity:0}25%{opacity:1}100%{transform:rotate(-3deg)}}
 @keyframes thud{0%{transform:rotate(-3deg)}25%{transform:rotate(-3.6deg) translate(-2px,5px) scale(.985)}60%{transform:rotate(-2.6deg) translateY(-2px)}100%{transform:rotate(-3deg)}}
-.splat{position:absolute;left:30px;top:160px;width:330px;height:150px;pointer-events:none;opacity:0;background:
-  radial-gradient(circle at 6% 34%, var(--red) 0 5px, transparent 6px),radial-gradient(circle at 12% 18%, var(--red) 0 2.5px, transparent 3.5px),
-  radial-gradient(circle at 94% 16%, var(--red) 0 4px, transparent 5px),radial-gradient(circle at 86% 88%, var(--red) 0 6px, transparent 7px),
-  radial-gradient(circle at 18% 92%, var(--red) 0 3px, transparent 4px),radial-gradient(circle at 54% 4%, var(--red) 0 3px, transparent 4px)}
-.splat.show{animation:splat .35s ease-out .08s forwards}
-@keyframes splat{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
-.paper.back{background:var(--tint)}
 .toplines{display:flex;gap:12px;margin-bottom:8px}.toplines span{height:2px;background:var(--ink);flex:1}.toplines span:last-child{flex:.7}
-.bars{display:flex;gap:10px;margin-top:12px}.bars .r{height:8px;width:46%;background:var(--red)}.bars .g{height:8px;flex:1;background:#E4E4E4}
+.bars{display:flex;gap:10px;margin-top:12px}.bars .r{height:6px;width:46%;background:var(--red)}.bars .g{height:6px;flex:1;background:#E4E4E2}
 .pcols{display:grid;grid-template-columns:150px 180px;gap:18px;margin-top:16px}
 .mast{border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);padding:6px 0 4px;display:flex;align-items:baseline;justify-content:space-between}
-.mast b{font-weight:900;font-size:34px;line-height:1}
-.mast span{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.mast b{font-weight:800;font-size:32px;line-height:1;letter-spacing:-.02em}
+.mast span{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
 .mast2{height:2px;background:var(--ink);margin-top:2px}
-.headline{margin-top:16px;font-size:46px;line-height:.95}
-.stamp{position:absolute;left:56px;top:196px;border:5px solid var(--red);color:var(--red);background:rgba(255,255,255,.9);padding:6px 20px 4px;font-size:54px;line-height:1;transform:rotate(-12deg);opacity:0;pointer-events:none}
+.headline{margin-top:16px;font-size:38px;line-height:1;letter-spacing:-.02em}
+.stamp{position:absolute;left:56px;top:196px;border:4px solid var(--red);border-radius:6px;color:var(--red);background:rgba(255,255,255,.92);padding:6px 18px 4px;font-size:46px;line-height:1;font-weight:800;font-stretch:75%;text-transform:uppercase;letter-spacing:.02em;transform:rotate(-12deg);opacity:0;pointer-events:none}
 .stamp.show{animation:stamp .35s cubic-bezier(.2,1.4,.4,1) forwards}
 @keyframes stamp{from{opacity:0;transform:rotate(-12deg) scale(1.8)}to{opacity:1;transform:rotate(-12deg) scale(1)}}
-.progress{display:flex;align-items:center;gap:8px;margin-top:4px}
-.progress span{width:26px;height:34px;border:var(--rule) solid var(--ink);background:var(--paper)}
-.progress span.cur{background:repeating-linear-gradient(0deg,var(--paper) 0 5px,var(--tint) 5px 6px)}
-.progress span.ok{background:var(--red);box-shadow:2px 2px 0 0 var(--ink)}
+.progress{display:flex;align-items:center;gap:6px}
+.progress span{width:14px;height:14px;border-radius:50%;border:var(--rule) solid var(--ink);background:var(--paper)}
+.progress span.cur{border-color:var(--red)}
+.progress span.ok{background:var(--red);border-color:var(--red)}
 .ask{margin-top:20px}
 .ask .row .btn{flex:1 1 140px}
 .check{margin-top:20px}
-.check .you{font-size:28px;margin-top:4px}
-.check .fb{margin:4px 0 0;font-size:15px;font-weight:600}
-.check hr{border:0;height:var(--rule);background:var(--ink);margin:16px 0 4px}
+.check .you{font-size:24px;margin-top:4px}
+.check .fb{margin:4px 0 0;font-size:15px}
+.check hr{border:0;height:1px;background:rgba(17,17,17,.2);margin:18px 0 6px}
 .steps{list-style:none;margin:0;padding:0}
 .steps li{display:flex;gap:12px;margin-top:14px;animation:step .4s ease-out both}
-.steps .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--red);color:var(--paper);border:var(--rule) solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
-.steps b{display:block;font-size:15px}
-.steps span.d{display:block;font-size:14px;font-weight:500;line-height:1.4;margin-top:2px}
+.steps .n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.steps b{display:block;font-size:15px;font-weight:700}
+.steps span.d{display:block;font-size:14px;line-height:1.45;margin-top:2px}
 @keyframes step{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
 /* Modul 3 */
-.coin{position:absolute;left:0;top:0;width:80px;height:80px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);box-shadow:5px 5px 0 0 var(--red),5px 5px 0 3px var(--ink);display:flex;align-items:center;justify-content:center;cursor:grab;z-index:6;touch-action:none;transition:transform .45s cubic-bezier(.4,0,.2,1),opacity .25s .3s}
+.coin{position:absolute;left:0;top:0;width:80px;height:80px;border-radius:50%;border:var(--rule) solid var(--ink);background:var(--paper);display:flex;align-items:center;justify-content:center;cursor:grab;z-index:6;touch-action:none;transition:transform .45s cubic-bezier(.4,0,.2,1),opacity .25s .3s}
 .coin.drag{cursor:grabbing;transition:none}
 .coin.in{opacity:0}
 .coin:not(.drag):not(.in) .face{animation:coinspin 4.2s ease-in-out infinite}
 @keyframes coinspin{0%,72%,100%{transform:scaleX(1)}81%{transform:scaleX(.12)}90%{transform:scaleX(1)}}
-.coin::after{content:"";position:absolute;inset:9px;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.85) 0 22%,transparent 23%);pointer-events:none}
+.coin::before{content:"";position:absolute;inset:7px;border-radius:50%;border:var(--rule) solid var(--ink);background:#E8E8E6}
+.coin .face{position:relative;width:44px;height:44px;border-radius:50%;border:var(--rule) solid var(--ink);background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.coin .face b{font-weight:800;font-size:19px;line-height:1;letter-spacing:-.02em}
+.coin .face small{font-weight:700;font-size:7px;letter-spacing:.12em}
 .jolt{animation:jolt .45s ease-out}
+@keyframes jolt{20%{transform:translate(-4px,2px) rotate(-1deg)}45%{transform:translate(4px,-2px) rotate(1deg)}70%{transform:translate(-2px,1px)}}
 #m3-slot{transition:fill .15s}
 #m3-slot.near{fill:var(--red);animation:slotpulse .5s ease-in-out infinite alternate}
 @keyframes slotpulse{to{opacity:.45}}
-@keyframes jolt{20%{transform:translate(-4px,2px) rotate(-1deg)}45%{transform:translate(4px,-2px) rotate(1deg)}70%{transform:translate(-2px,1px)}}
-.coin::before{content:"";position:absolute;inset:6px;border-radius:50%;border:2px solid var(--ink);background:#E4E4E4}
-.coin .face{position:relative;width:46px;height:46px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.coin .face b{font-weight:900;font-size:20px;line-height:1}
-.coin .face small{font-weight:800;font-size:7px;letter-spacing:.12em}
 .screen{position:absolute;left:253px;top:358px;width:183px;height:175px;border-radius:17px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--ink);color:var(--paper)}
-.screen::after{content:"";position:absolute;inset:0;background:linear-gradient(128deg,rgba(255,255,255,.16) 0 26%,transparent 26.5%);pointer-events:none}
-.screen.on{background:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 2px,transparent 2px 5px),var(--ink)}
 .screen.on::before{content:"";position:absolute;inset:0;background:var(--paper);animation:tvon .5s ease-out forwards;pointer-events:none}
 @keyframes tvon{0%{transform:scaleY(.03);opacity:1}35%{transform:scaleY(1);opacity:.95}100%{transform:scaleY(1);opacity:0}}
-.screen .disp{font-size:24px;line-height:1.05}
-.screen.on .disp{font-size:50px;line-height:.9}
-.screen small{display:block;margin-top:8px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tint)}
+.screen .disp{font-size:20px;line-height:1.1}
+.screen.on .disp{font-size:44px;line-height:.95}
+.screen small{display:block;margin-top:8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tint)}
 .chip{position:absolute;width:176px}
-.chip > div{background:var(--paper);border:2.5px solid var(--ink);box-shadow:5px 5px 0 0 var(--tint),5px 5px 0 2.5px var(--ink);padding:8px 10px 9px;display:flex;gap:10px;align-items:center;transform-origin:50% 100%;animation:sprout .5s cubic-bezier(.2,1.35,.4,1) both}
-.chip i{flex:none;width:18px;height:18px;border-radius:3px;border:2px solid var(--ink)}
-.chip b{display:block;font-weight:900;font-stretch:75%;font-size:15px;line-height:1.05;text-transform:uppercase}
-.chip span{display:block;font-size:12px;font-weight:600;line-height:1.25;margin-top:2px}
+.chip > div{background:var(--paper);border:var(--rule) solid var(--ink);border-radius:10px;padding:9px 11px;display:flex;gap:10px;align-items:center;transform-origin:50% 100%;animation:sprout .5s cubic-bezier(.2,1.35,.4,1) both}
+.chip i{flex:none;width:14px;height:14px;border-radius:50%;border:var(--rule) solid var(--ink)}
+.chip b{display:block;font-weight:700;font-size:14px;line-height:1.1}
+.chip span{display:block;font-size:12px;line-height:1.3;margin-top:2px;color:var(--mute)}
 @keyframes sprout{from{opacity:0;transform:scale(.2) translateY(30px)}to{opacity:1;transform:none}}
-.stem{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:grow .5s ease-out both}
+.stem{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:grow .5s ease-out both}
 @keyframes grow{to{stroke-dashoffset:0}}
 .leaf{fill:var(--red);stroke:var(--ink);stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:leaf .4s ease-out both}
 @keyframes leaf{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+.hint{position:absolute;font-size:13px;font-weight:600;color:var(--mute)}
 
-.foot{border-top:var(--rule) solid var(--ink);padding-block:20px 40px}
-.foot p{margin:0;font-size:13px;font-weight:600;color:var(--mute)}
+.foot{border-top:1px solid rgba(17,17,17,.14);padding-block:24px 48px}
+.foot p{margin:0;font-size:13px;color:var(--mute)}
 
 @media (prefers-reduced-motion: reduce){
   .strike path{transition:none}
   .slot.filled,.steps li,.chip > div,.leaf,.cloud,.breathe,#m1-body.squash,.paper.front.thud,.idle-up,.eye,.hop,.paper.front.land,.paper.front.toss,#m3-slot.near,.coin .face,.jolt,.screen.on::before{animation:none!important}
-  .splat.show{animation:none;opacity:1}
-  .burst,.puff,.catch-label{display:none}
-  .jump a,.btn,.slot.filled{transition:none}
+  .burst,.catch-label{display:none}
+  .btn,.slot.filled{transition:none}
   .stem{animation:none;stroke-dashoffset:0}
   .stamp.show{animation:none;opacity:1}
 }
@@ -242,37 +224,39 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
 
 <header class="band top">
   <div class="wrap">
-    <span class="meta">Public-Value-Bericht 2026/27 · Prototyp</span>
+    <a class="brand" href="#top">Gerade jetzt<span class="dot"></span></a>
+    <nav class="nav" aria-label="Zu den Modulen">
+      <a href="#erinnern">Erinnern</a>
+      <a href="#kontrolle">Kontrolle</a>
+      <a href="#abgabe">Haushaltsabgabe</a>
+    </nav>
+    <span class="meta">Public-Value-Bericht 2026/27</span>
   </div>
 </header>
 
-<section class="band hero">
+<section class="band hero" id="top">
   <div class="wrap">
     <h1 class="disp">Gerade jetzt<span class="dot"></span></h1>
-    <div class="hero-row">
-      <p>Drei Werte zum Ausprobieren. Jedes Modul fertig gemacht, streicht ein Wort durch: das, wofür der ORF nicht stehen will.</p>
-      <nav class="jump" aria-label="Zu den Modulen">
-        <a href="#erinnern">Erinnern</a>
-        <a href="#kontrolle">Kontrolle</a>
-        <a href="#abgabe">Haushaltsabgabe</a>
-      </nav>
-    </div>
+    <p><span class="lead">Drei Werte zum Ausprobieren.</span> Jedes Modul fertig gemacht, streicht ein Wort durch: das, wofür der ORF nicht stehen will.</p>
   </div>
 </section>
 
 <!-- MODUL 1 -->
 <section class="band module" id="erinnern" aria-labelledby="m1-title">
-  <div class="wrap mgrid">
-    <div class="intro">
-      <h2 class="disp" id="m1-title">Erinnern</h2>
-      <div class="statt"><i>statt</i><span class="disp old strike" id="m1-strike">Vergessen<svg viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26"></path></svg></span></div>
+  <div class="wrap">
+    <div class="mhead">
+      <div>
+        <div class="eyebrow"><span class="num">01</span>Österreichwert</div>
+        <h2 class="disp" id="m1-title">Erinnern <span class="statt"><i>statt</i><span class="strike" id="m1-strike">Vergessen<svg viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26"></path></svg></span></span></h2>
+      </div>
       <p>Momente der Zeitgeschichte fallen. Was niemand auffängt, verblasst. Bewege das Archiv mit der Maus oder den Pfeilen und bewahre sechs Momente auf.</p>
     </div>
+    <div class="mbody">
     <div class="stage" id="m1-stage" style="aspect-ratio:760/560;touch-action:none">
       <div class="stage-inner" id="m1-inner">
         <svg aria-hidden="true" width="760" height="560" viewBox="0 0 760 560" style="position:absolute;left:0;top:0">
-<g id="m1-sky" fill="#FBE3E7" stroke="#F0AEB7" stroke-width="2.5" stroke-linejoin="round">
-            <!-- Wien im Hintergrund, blass wie Luftperspektive: Häuser, Stephansdom, Riesenrad -->
+<g id="m1-sky" fill="#FFFFFF" stroke="#111111" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+            <!-- Wien im Hintergrund als Linienzeichnung: Häuser, Stephansdom, Riesenrad -->
             <path d="M-60 549 V506 H-10 V494 H44 V512 H70 V488 L100 470 L130 488 V549 Z"></path>
             <path d="M318 549 V500 H360 V486 H404 V504 H446 V480 H486 V549 Z"></path>
             <path d="M676 549 V508 H712 V494 L740 478 L768 494 V504 H820 V549 Z"></path>
@@ -282,18 +266,18 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
             <path d="M150 549 V474 H188 V549 Z"></path>
             <path d="M150 474 L169 360 L188 474 Z"></path>
             <path d="M160 440 H178 M158 456 H180 M163 418 H175" fill="none"></path>
-            <path d="M162 549 V524 Q169 512 176 524 V549" fill="#FFFFFF"></path>
+            <path d="M162 549 V524 Q169 512 176 524 V549" fill="#F2F1EE"></path>
             <g fill="none">
               <path d="M560 549 L592 446 L624 549 M570 516 H614"></path>
               <circle cx="592" cy="446" r="64"></circle><circle cx="592" cy="446" r="52"></circle>
               <path d="M592 382 V510 M528 446 H656 M547 401 L637 491 M637 401 L547 491 M567 387 L617 505 M617 387 L567 505 M533 421 L651 471 M651 421 L533 471"></path>
             </g>
-            <circle cx="592" cy="446" r="7" fill="#F0AEB7"></circle>
+            <circle cx="592" cy="446" r="7" fill="#111111"></circle>
             <g id="m1-gondolas"></g>
           </g>
           <path class="cloud" d="M70 92 q4-26 30-24 q10-20 34-12 q22-8 30 12 q24 0 24 18 q0 16-22 16 h-88 q-24 0-8-10z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
           <path class="cloud slow" d="M540 150 q4-24 28-22 q10-18 32-10 q20-6 28 12 q22 0 22 16 q0 14-20 14 h-82 q-22 0-8-10z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
-          <path d="M0 549 H760" stroke="#111111" stroke-width="2.5"></path>
+          <path d="M0 549 H760" stroke="#111111" stroke-width="2"></path>
         </svg>
         <div id="m1-shadows"></div>
         <div id="m1-items"></div>
@@ -301,7 +285,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <div id="m1-fx"></div>
       </div>
     </div>
-    <div class="ui">
+    <div class="ui panel">
       <div class="row">
         <span class="label">Archiv bewegen</span>
         <button class="btn icon" type="button" id="m1-left" aria-label="Archiv nach links">&#8592;</button>
@@ -309,7 +293,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <span class="count" id="m1-count" aria-live="polite" style="margin-left:auto">0 / 6 archiviert</span>
       </div>
       <div class="shelf">
-        <div class="label" style="margin-bottom:8px">Dein Regal im ORF-Archiv</div>
+        <div class="label" style="margin-bottom:10px">Dein Regal im ORF-Archiv</div>
         <div class="shelf-grid" id="m1-shelf"></div>
         <div class="plank"></div>
       </div>
@@ -320,20 +304,24 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <button class="btn" type="button" id="m1-reset">Nochmal</button>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
 <!-- MODUL 2 -->
 <section class="band module" id="kontrolle" aria-labelledby="m2-title">
-  <div class="wrap mgrid">
-    <div class="intro">
-      <h2 class="disp" id="m2-title">Kontrolle</h2>
-      <div class="statt"><i>statt</i><span class="disp old strike" id="m2-strike">wird schon stimmen<svg viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26"></path></svg></span></div>
+  <div class="wrap">
+    <div class="mhead">
+      <div>
+        <div class="eyebrow"><span class="num">02</span>Individueller Wert</div>
+        <h2 class="disp" id="m2-title">Kontrolle <span class="statt"><i>statt</i><span class="strike" id="m2-strike">wird schon stimmen<svg viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26"></path></svg></span></span></h2>
+      </div>
       <p>Vier Zeitungen, vier Schlagzeilen. Stimmt das? Entscheide selbst und sieh dann, wie eine Redaktion die Meldung prüft, bevor sie gesendet wird.</p>
     </div>
+    <div class="mbody">
     <div class="stage" id="m2-stage" style="aspect-ratio:760/600">
       <div class="stage-inner" id="m2-inner">
-        <svg aria-hidden="true" width="760" height="600" viewBox="0 0 760 600" style="position:absolute;left:0;top:0"><ellipse cx="560" cy="588" rx="70" ry="8" fill="rgba(17,17,17,.13)"></ellipse><path d="M0 589 H760" stroke="#111111" stroke-width="2.5"></path></svg>
+        <svg aria-hidden="true" width="760" height="600" viewBox="0 0 760 600" style="position:absolute;left:0;top:0"><path d="M0 589 H760" stroke="#111111" stroke-width="2"></path></svg>
         <div class="paper back" style="left:62px;top:58px;transform:rotate(3deg)"></div>
         <div class="paper front" style="left:50px;top:40px;transform:rotate(-3deg)">
           <div class="toplines"><span></span><span></span></div>
@@ -346,20 +334,19 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
               <path d="M0 4 H150 M0 18 H150 M0 32 H150 M0 46 H120 M0 60 H150 M0 74 H150 M0 88 H132 M0 102 H150 M0 116 H150 M0 130 H96" stroke="#111111" stroke-width="2.5"></path>
             </svg>
             <svg aria-hidden="true" width="180" height="150" viewBox="0 0 180 150" style="display:block">
-              <rect x="1.25" y="1.25" width="177.5" height="147.5" fill="#F6C2C8" stroke="#111111" stroke-width="2.5"></rect>
+              <rect x="1.25" y="1.25" width="177.5" height="147.5" fill="#F2F1EE" stroke="#111111" stroke-width="2.5"></rect>
               <path d="M1 112 Q 50 92 100 104 T 179 96 V149 H1 Z" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
               <path d="M24 112 V74 H62 V110 M43 74 V58 M116 104 V66 L136 50 L156 66 V100" fill="none" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
               <path d="M30 84 H56 M30 94 H56 M124 76 H148 M124 86 H148" stroke="#111111" stroke-width="2"></path>
               <circle cx="150" cy="30" r="14" fill="#E2001A" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></circle>
             </svg>
           </div>
-          <div class="splat" id="m2-splat"></div>
           <div class="stamp disp" id="m2-stamp"></div>
         </div>
         <div id="m2-fig" class="breathe" style="position:absolute;left:408px;top:157px;width:280px"></div>
       </div>
     </div>
-    <div class="ui">
+    <div class="ui panel">
       <div class="row"><div class="progress" id="m2-progress"></div><span class="count" id="m2-count" aria-live="polite">Zeitung 1 von 4</span></div>
       <div class="ask" id="m2-ask">
         <div class="row">
@@ -373,7 +360,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <div class="disp you" id="m2-you"></div>
         <p class="fb" id="m2-fb"></p>
         <hr>
-        <div class="disp" style="font-size:24px;margin-top:10px">So wurde geprüft</div>
+        <div class="disp" style="font-size:20px;margin-top:10px">So wurde geprüft</div>
         <ol class="steps" id="m2-steps"></ol>
         <button class="btn small" type="button" id="m2-next" style="margin-top:20px"></button>
       </div>
@@ -383,32 +370,33 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <button class="btn" type="button" id="m2-reset">Nochmal</button>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
 <!-- MODUL 3 -->
 <section class="band module" id="abgabe" aria-labelledby="m3-title">
-  <div class="wrap mgrid">
-    <div class="intro">
-      <h2 class="disp" id="m3-title" style="font-size:clamp(44px,5.6vw,76px)">Haushalts&shy;abgabe</h2>
-      <div class="statt"><i>statt</i><span class="disp old strike" id="m3-strike">Abo<svg viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26"></path></svg></span></div>
+  <div class="wrap">
+    <div class="mhead">
+      <div>
+        <div class="eyebrow"><span class="num">03</span>Unternehmenswert</div>
+        <h2 class="disp" id="m3-title">Haushaltsabgabe <span class="statt"><i>statt</i><span class="strike" id="m3-strike">Abo<svg viewBox="0 0 600 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 34 C 90 24, 170 40, 260 30 S 430 22, 520 34 S 580 30, 598 26"></path></svg></span></span></h2>
+      </div>
       <p>Was bekommt man eigentlich für 50 Cent am Tag? Zieh die Münze in den Schlitz und sieh selbst.</p>
     </div>
+    <div class="mbody">
     <div class="stage" id="m3-stage" style="aspect-ratio:760/640;touch-action:none">
       <div class="stage-inner" id="m3-inner">
-        <svg aria-hidden="true" width="760" height="640" viewBox="0 0 760 640" style="position:absolute;left:0;top:0"><ellipse cx="380" cy="632" rx="168" ry="9" fill="rgba(17,17,17,.13)"></ellipse><ellipse cx="690" cy="632" rx="62" ry="7" fill="rgba(17,17,17,.13)"></ellipse><path d="M0 633 H760" stroke="#111111" stroke-width="2.5"></path></svg>
+        <svg aria-hidden="true" width="760" height="640" viewBox="0 0 760 640" style="position:absolute;left:0;top:0"><path d="M0 633 H760" stroke="#111111" stroke-width="2"></path></svg>
         <svg id="m3-tv" aria-hidden="true" width="300" height="308" viewBox="0 0 360 370" style="position:absolute;left:230px;top:300px;overflow:visible">
-          <defs><clipPath id="tvbody"><rect x="4" y="44" width="352" height="262" rx="26"></rect></clipPath></defs>
           <path d="M262 46 L244 8 M292 46 L316 12" stroke="#111111" stroke-width="4" stroke-linecap="round"></path>
           <circle cx="244" cy="7" r="6" fill="#111111"></circle><circle cx="317" cy="11" r="6" fill="#111111"></circle>
           <path d="M80 306 L64 366 M280 306 L296 366" stroke="#111111" stroke-width="6" stroke-linecap="round"></path>
           <path d="M4 58 L-14 72 V292 L4 304 Z" fill="#E2001A" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></path>
-          <rect x="4" y="44" width="352" height="262" rx="26" fill="#E4E4E4"></rect>
-          <g clip-path="url(#tvbody)"><rect x="0" y="278" width="360" height="30" fill="#CBCBCB"></rect><path d="M4 44 H356 V58 Q180 50 4 58 Z" fill="#F2F2F2"></path></g>
-          <rect x="4" y="44" width="352" height="262" rx="26" fill="none" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></rect>
+          <rect x="4" y="44" width="352" height="262" rx="26" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></rect>
           <rect x="128" y="4" width="104" height="44" rx="6" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></rect>
           <rect id="m3-slot" x="150" y="16" width="60" height="11" rx="5.5" fill="#111111"></rect>
-          <text x="180" y="41" text-anchor="middle" fill="#111111" style="font-family:Archivo,sans-serif;font-size:10px;font-weight:900;font-stretch:75%;letter-spacing:1px">50 CENT</text>
+          <text x="180" y="41" text-anchor="middle" fill="#111111" style="font-family:Archivo,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px">50 CENT</text>
           <rect x="28" y="70" width="220" height="210" rx="20" fill="#111111"></rect>
           <path d="M276 96 H322 M276 110 H322 M276 124 H322 M276 138 H322 M276 152 H322" stroke="#111111" stroke-width="4" stroke-linecap="round"></path>
           <circle cx="299" cy="204" r="16" fill="#FFFFFF" stroke="#111111" stroke-width="2.5" stroke-linejoin="round"></circle><path d="M290 213 L308 195" stroke="#111111" stroke-width="3"></path>
@@ -419,10 +407,10 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <div id="m3-chips"></div>
         <div id="m3-fig" class="breathe" style="position:absolute;left:548px;top:201px;width:280px"></div>
         <div class="coin" id="m3-coin" aria-hidden="true"><div class="face"><b>50</b><small>CENT</small></div></div>
-        <div id="m3-hint" style="position:absolute;left:480px;top:282px;font-size:15px;font-weight:700;font-style:italic;transform:rotate(-4deg)">Zieh mich zum Schlitz</div>
+        <div id="m3-hint" class="hint" style="left:470px;top:282px">Zieh mich zum Schlitz</div>
       </div>
     </div>
-    <div class="ui">
+    <div class="ui panel">
       <div class="row" id="m3-ask">
         <button class="btn small" type="button" id="m3-insert">Münze einwerfen</button>
         <span class="count">oder die Münze mit der Maus ziehen</span>
@@ -432,6 +420,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
         <p>Kein Abo, keine Paywall. Für alle in Österreich. [ZAHL] Stunden Programm pro Tag.</p>
         <button class="btn" type="button" id="m3-reset">Nochmal</button>
       </div>
+    </div>
     </div>
   </div>
 </section>
@@ -537,7 +526,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       '<rect x="52" y="76" width="56" height="32" fill="#FFFFFF" ' + S + '/>' +
       T(80, 94, 14, 900, '1995', INK, 'middle') + T(80, 103, 7, 800, 'EU-BEITRITT', INK, 'middle') +
       '<rect x="60" y="56" width="40" height="12" fill="' + RED + '" ' + S + '/>' +
-      '<circle cx="80" cy="34" r="24" fill="url(#htk)" ' + S + '/>' +
+      '<circle cx="80" cy="34" r="24" fill="' + GREY + '" ' + S + '/>' +
       '</g>',
     record:
       '<circle cx="80" cy="72" r="56" fill="' + INK + '"/>' +
@@ -551,59 +540,24 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const iconSVG = (t, w, h) => '<svg aria-hidden="true" width="' + w + '" height="' + h + '" viewBox="0 0 160 140" style="display:block;overflow:visible;margin:0 auto">' + ICONS[t] + '</svg>';
   const MOTION = '<svg aria-hidden="true" width="150" height="22" viewBox="0 0 150 22" style="display:block"><path d="M66 3 V19 M75 0 V22 M84 5 V17" stroke="#111111" stroke-width="1.8" stroke-linecap="round"/></svg>';
 
-  /* Figur – nachgebaut nach dem Referenz-Sheet (referenz/archiv_figur.webp).
-     viewBox 280 × 440, Körpermitte x 140, Boden y 432. Profil-Posen blicken nach rechts, FIG_MIRROR dreht sie um.
-     Gezeichnet in drei Lagen, damit an Schulter, Hüfte und Knie keine Endstücke zu sehen sind:
-     1. Kontur aller Körpermassen (Rumpf, hintere Gliedmaßen, Kopf) liegt HINTER den Flächen und umfährt nur die Silhouette,
-     2. Flächen mit Schattierung; vordere Arme und Beine bekommen eigene Tuschekanten, die zum Gelenk spitz auslaufen,
-     3. Innenlinien obenauf (Saum, Lichtkanten, Wangen). */
+  /* Figur im flachen Linienstil: gleichmäßiger Strich, flache Füllungen in Schwarz, Weiß und Rot, keine Schattierung,
+     lange schlanke Proportionen. viewBox 280 × 440, Körpermitte x 140, Boden y 432. Profil-Posen blicken nach rechts.
+     Gliedmaßen sind Schläuche: ein breiter schwarzer Strich mit runden Enden, darüber der farbige Strich. An Knien gibt es
+     deshalb keine Nähte, Schulter- und Hüftenden liegen unter dem Pullover. */
   const FW = 280, GROUND = 432, CX = 140, OUT = 2.5;
   const LN = 'stroke="' + INK + '" stroke-width="' + OUT + '" stroke-linejoin="round" stroke-linecap="round"';
-  const SHADE_RED = '#B3001A', SHADE_WHITE = '#E6E0E1';
   const f1 = v => v.toFixed(1);
-  const poly = pts => 'M' + pts.map(q => f1(q[0]) + ' ' + f1(q[1])).join(' L') + ' Z';
   const at = (x, y, r) => 'translate(' + f1(x) + ' ' + f1(y) + ')' + (r ? ' rotate(' + f1(r) + ')' : '');
+  const pathOf = pts => 'M' + pts.map(q => f1(q[0]) + ' ' + f1(q[1])).join(' L');
 
-  /* Mittellinie in n Proben; w = Breite, s = 0 am Gelenk bis 1 am freien Ende, (nx, ny) = Normale */
-  function samples(pts, ws, n){
-    const len = [];
-    let total = 0;
-    for (let i = 1; i < pts.length; i++){ const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); len.push(l); total += l; }
-    const out = [];
-    for (let j = 0; j < n; j++){
-      let d = total * j / (n - 1), i = 0;
-      while (i < len.length - 1 && d > len[i]){ d -= len[i]; i++; }
-      const t = len[i] ? Math.min(1, d / len[i]) : 0;
-      out.push({ x: pts[i][0] + (pts[i + 1][0] - pts[i][0]) * t, y: pts[i][1] + (pts[i + 1][1] - pts[i][1]) * t, w: ws[i] + (ws[i + 1] - ws[i]) * t, s: j / (n - 1) });
-    }
-    out.forEach((p, j) => {
-      const a = out[Math.max(0, j - 3)], b = out[Math.min(n - 1, j + 3)], dx = b.x - a.x, dy = b.y - a.y, l = Math.hypot(dx, dy) || 1;
-      p.nx = -dy / l; p.ny = dx / l;
-    });
-    return out;
+  /* Schlauch: Kontur + Füllung in einem, cap = 'round' | 'butt' */
+  function tube(pts, w, fill){
+    const d = pathOf(pts);
+    return '<path d="' + d + '" fill="none" stroke="' + INK + '" stroke-width="' + (w + 2 * OUT) + '" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="' + d + '" fill="none" stroke="' + fill + '" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"/>';
   }
-  /* Band zwischen zwei Abständen a(p), b(p) von der Mittellinie */
-  const strip = (sm, a, b) => poly(sm.map(p => [p.x + p.nx * a(p), p.y + p.ny * a(p)]).concat(sm.map(p => [p.x + p.nx * b(p), p.y + p.ny * b(p)]).reverse()));
-  const ramp = (s, t) => Math.min(1, s / t);
-  const limbFill = sm => strip(sm, p => p.w / 2, p => -p.w / 2);
-  /* Schattenseite als Streifen, der zum Gelenk hin auf null ausläuft */
-  const limbShade = (sm, side, k) => strip(sm, p => side * p.w / 2, p => side * (p.w / 2 - k * p.w * ramp(p.s, .55)));
-  /* Tuschekanten beider Seiten, spitz zum Gelenk, plus Abschluss am freien Ende */
-  function inkEdges(sm){
-    const e = side => strip(sm, p => side * p.w / 2 + OUT / 2 * ramp(p.s, .35), p => side * p.w / 2 - OUT / 2 * ramp(p.s, .35));
-    const q = sm[sm.length - 1];
-    return '<path d="' + e(1) + ' ' + e(-1) + '" fill="' + INK + '"/>' +
-      '<path d="M' + f1(q.x + q.nx * q.w / 2) + ' ' + f1(q.y + q.ny * q.w / 2) + ' L' + f1(q.x - q.nx * q.w / 2) + ' ' + f1(q.y - q.ny * q.w / 2) + '" ' + LN + '/>';
-  }
-
-  /* Ein Körper aus Teilen. mass: Teil der Silhouette (Kontur liegt dahinter); sonst ein vorderes Teil mit eigener Kante.
-     shade/shadeFill: Schattenfläche im selben Koordinatensystem, t: Transformation, extra: SVG direkt nach der Fläche */
-  function drawBody(parts, lines){
-    const tr = p => p.t ? ' transform="' + p.t + '"' : '';
-    return parts.filter(p => p.mass).map(p => '<path' + tr(p) + ' d="' + p.d + '" fill="' + INK + '" stroke="' + INK + '" stroke-width="' + 2 * OUT + '" stroke-linejoin="round"/>').join('') +
-      parts.map(p => '<path' + tr(p) + ' d="' + p.d + '" fill="' + p.fill + '"/>' + (p.shade ? '<path' + tr(p) + ' d="' + p.shade + '" fill="' + p.shadeFill + '"/>' : '') + (p.extra || '')).join('') +
-      (lines || []).join('');
-  }
+  /* roter Deckel ohne Kontur über dem Schulterende eines Arms, der vor dem Rumpf liegt */
+  const shoulderCap = (p, w) => '<circle cx="' + f1(p[0]) + '" cy="' + f1(p[1]) + '" r="' + f1(w / 2 + OUT + 1.2) + '" fill="' + RED + '"/>';
 
   /* Locken: Ellipse mit nach außen gewölbten Bögen */
   function curls(cx, cy, rx, ry, n, b, a0, a1){
@@ -613,56 +567,39 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     for (let i = 1; i <= n; i++) d += ' Q' + pt(a0 + (a1 - a0) * (i - .5) / n, 2 * b) + ' ' + pt(a0 + (a1 - a0) * i / n, 0);
     return d + ' Z';
   }
-  /* Haaransatz: Locken über den Kopf, Rückweg als weiche Kurve durchs Gesicht */
-  function hairline(cx, cy, rx, ry, n, b, a0, a1, qx, qy){
-    const d = curls(cx, cy, rx, ry, n, b, a0, a1).slice(0, -2);
-    const r = a0 * Math.PI / 180;
-    return d + ' Q' + qx + ' ' + qy + ' ' + f1(cx + rx * Math.cos(r)) + ' ' + f1(cy + ry * Math.sin(r)) + ' Z';
-  }
-  const HAIR_LIGHT = 'fill="none" stroke="#4E4E4E" stroke-width="2" stroke-linecap="round"';
-  const blush = (x, y) => '<ellipse cx="' + x + '" cy="' + y + '" rx="4.5" ry="3" fill="' + TINT + '"/>';
-  const eye = (x, y) => '<ellipse class="eye" cx="' + x + '" cy="' + y + '" rx="1.9" ry="2.3" fill="' + INK + '"/>';
+  const hair = d => '<path d="' + d + '" fill="' + INK + '" ' + LN + '/>';
+  const eye = (x, y) => '<circle class="eye" cx="' + x + '" cy="' + y + '" r="2.1" fill="' + INK + '"/>';
+  const FACE_SIDE = 'M-7 -21 C8 -25 19 -15 18 -4 L23 2 L17 5 C17 14 10 22 -2 21 C-12 20 -15 10 -14 -6 Z';
 
   /* Kopf im Profil (blickt nach rechts); swing: Locken schwingen beim Gehen nach */
-  function headSide(hx, hy, tilt, swing){
-    const t = at(hx, hy, tilt), sw = swing || 0;
-    return {
-      parts: [
-        { mass: true, t, d: curls(-14, 10 + sw, 24, 30, 13, 3.5), fill: INK },
-        { mass: true, t, d: 'M-6 -20 Q8 -27 15 -16 Q18 -10 17 -5 L23 0 L17 3 Q18 8 15 11 Q14 17 8 20 Q1 22 -6 18 Z', fill: '#FFFFFF' },
-        { mass: true, t, d: hairline(-5, -4, 18, 20, 8, 3, 300, 150, 1, 4), fill: INK },
-        /* Stirnlocken bis knapp über das Auge */
-        { mass: true, t, d: curls(5, -18, 13, 7.5, 7, 2.6), fill: INK }
-      ],
-      lines: ['<g transform="' + t + '">' + blush(8, 9) + eye(11, -5) +
-        '<path d="M-30 ' + (2 + sw) + ' q4 -7 11 -5 M-27 ' + (24 + sw) + ' q5 -5 11 -2 M-6 -24 q6 -4 12 -1" ' + HAIR_LIGHT + '/></g>']
-    };
-  }
+  const headSide = (hx, hy, tilt, swing) => {
+    const sw = swing || 0;
+    return '<g transform="' + at(hx, hy, tilt) + '">' +
+      hair(curls(-11, 4 + sw, 23, 26, 12, 3.2)) +
+      '<path d="' + FACE_SIDE + '" fill="#FFFFFF" ' + LN + '/>' +
+      hair(curls(0, -17, 15, 7, 6, 2.6, 180, 360) .replace(' Z', ' Q14 -10 8 -8 Q-4 -9 -15 -12 Z')) +
+      eye(10, -5) + '<path d="M11 10 q4 2 7 -1" fill="none" ' + LN + '/>' +
+      '</g>';
+  };
   /* Kopf von vorn */
-  function headFront(hx, hy){
-    const t = at(hx, hy);
-    return {
-      parts: [
-        { mass: true, t, d: curls(0, 8, 34, 32, 16, 3.5), fill: INK },
-        { mass: true, t, d: curls(-25, 30, 14, 16, 7, 3), fill: INK },
-        { mass: true, t, d: curls(24, 28, 13, 14, 6, 3), fill: INK },
-        { mass: true, t, d: 'M-15 4 A15 20 0 1 0 15 4 A15 20 0 1 0 -15 4 Z', fill: '#FFFFFF' },
-        { mass: true, t, d: hairline(0, -6, 17, 14, 7, 2.5, 190, 350, 0, -8), fill: INK }
-      ],
-      lines: ['<g transform="' + t + '">' + blush(-8, 11) + blush(8, 11) + eye(-6, 3) + eye(6, 3) +
-        '<path d="M-26 -10 q5 -7 12 -6 M-36 18 q3 -6 9 -6 M14 -16 q7 -2 11 4" ' + HAIR_LIGHT + '/></g>']
-    };
-  }
+  const headFront = (hx, hy) =>
+    '<g transform="' + at(hx, hy) + '">' +
+    hair(curls(0, 6, 31, 29, 15, 3.4)) +
+    '<ellipse cx="0" cy="4" rx="15" ry="19" fill="#FFFFFF" ' + LN + '/>' +
+    hair(curls(0, -8, 16, 11, 7, 2.4, 190, 350) .replace(' Z', ' Q10 -11 0 -9 Q-10 -11 -15.8 -9.9 Z')) +
+    eye(-5.5, 3) + eye(5.5, 3) + '<path d="M-4 12 q4 3 8 0" fill="none" ' + LN + '/>' +
+    '</g>';
+  const neck = (x, y0, y1) => tube([[x, y0], [x, y1]], 12, '#FFFFFF');
 
   /* Beine: Hüfte → Knie (IK, Knie zeigt nach vorn) → Knöchel; der Stiefel dreht um den Knöchel */
-  const THIGH = 60, SHIN = 60;
-  const SHOE = [[-16, 15], [34, 15]];
-  const BOOT = 'M-14 -4 Q-17 4 -16 10 Q-16 15 -11 15 L30 15 Q35 15 34 9 Q32 1 18 -2 L10 -6 Q0 -8 -14 -4 Z';
+  const THIGH = 62, SHIN = 62, LEG_W = 24;
+  const SHOE = [[-16, 14], [32, 14]];
+  const BOOT = 'M-13 -5 Q-17 -5 -17 0 V9 Q-17 14 -12 14 H27 Q33 14 32 8 Q31 1 20 -2 L11 -5 Z';
   function plantY(rot){
     const r = rot * Math.PI / 180;
     return GROUND - Math.max(...SHOE.map(p => p[0] * Math.sin(r) + p[1] * Math.cos(r)));
   }
-  function leg(hip, ank, rot, near){
+  function leg(hip, ank, rot){
     let dx = ank[0] - hip[0], dy = ank[1] - hip[1], d = Math.hypot(dx, dy);
     const L = THIGH + SHIN - .5;
     if (d > L){ ank = [hip[0] + dx * L / d, hip[1] + dy * L / d]; dx = ank[0] - hip[0]; dy = ank[1] - hip[1]; d = L; }
@@ -670,61 +607,44 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     const ux = dx / d, uy = dy / d;
     let px = -uy, py = ux; if (px < 0){ px = -px; py = -py; }
     const knee = [hip[0] + ux * along + px * off, hip[1] + uy * along + py * off];
-    const sm = samples([hip, knee, ank], [36, 33, 36], 28), t = at(ank[0], ank[1], rot);
-    return {
-      parts: [
-        { mass: !near, t, d: BOOT, fill: INK, extra: (near ? '<path transform="' + t + '" d="' + BOOT + '" fill="none" ' + LN + '/>' : '') +
-          '<path transform="' + t + '" d="M15 2 Q25 3 29 8" fill="none" stroke="#5C5C5C" stroke-width="2.2" stroke-linecap="round"/>' },
-        { mass: !near, d: limbFill(sm), fill: '#FFFFFF', shade: limbShade(sm, -1, .3), shadeFill: SHADE_WHITE, extra: near ? inkEdges(sm) : '' }
-      ]
-    };
+    return tube([hip, knee, ank], LEG_W, '#FFFFFF') +
+      '<g transform="' + at(ank[0], ank[1], rot) + '"><path d="' + BOOT + '" fill="' + INK + '" ' + LN + '/><path d="M-14 9 H29" stroke="#FFFFFF" stroke-width="2"/></g>';
   }
-  /* Ärmel von der Schulter zum Handgelenk */
-  function sleeve(sh, wr, near){
-    const sm = samples([sh, wr], [28, 22], 14);
-    return { mass: !near, d: limbFill(sm), fill: RED, shade: limbShade(sm, 1, .34), shadeFill: SHADE_RED, extra: near ? inkEdges(sm) : '' };
-  }
+  const ARM_W = 19;
+  /* Hand mit drei Fingerbögen und Daumen; r = 0: Finger zeigen nach oben */
   const hand = (x, y, r) =>
-    '<path d="M-10 10 C-12 2 -12 -6 -6 -10 C-4 -4 -2 -2 0 -4 C2 -10 8 -12 11 -6 C13 0 12 6 10 10 Z" fill="#FFFFFF" ' + LN + ' transform="' + at(x, y, r) + '"/>';
-  /* Hüftstück zwischen Pullover-Saum und Beinen */
-  /* Hüftstück zwischen Pullover-Saum und Beinen; die Seiten laufen in die Außenkanten der Beine über */
-  const pelvis = (bx, hy) => ({ mass: true, d: 'M' + (bx - 25) + ' 284 H' + (bx + 25) + ' L' + (bx + 21) + ' ' + (hy + 6) + ' H' + (bx - 21) + ' Z', fill: '#FFFFFF' });
-  /* Pullover im Profil: Schultern bei y 206, Saum bei y 292; die Schattenseite bleibt rechts vom vorderen Schulteransatz */
-  const SWEATER = 'M-28 206 Q0 197 28 207 L35 291 Q0 297 -37 292 Z';
-  const sweater = (bx, dy) => ({ mass: true, t: at(bx, dy || 0), d: SWEATER, fill: RED, shade: 'M17 202.8 Q23 204.5 28 207 L35 291 Q27 293.6 19 295 Z', shadeFill: SHADE_RED });
-  const hem = (bx, dy) => '<path transform="' + at(bx, dy || 0) + '" d="M35 291 Q0 297 -37 292" fill="none" ' + LN + '/>';
+    '<path transform="' + at(x, y, r) + '" d="M-9 4 V-8 Q-9 -13 -5 -13 Q-5 -18 -1 -18 Q3 -18 3 -13 Q3 -18 7 -18 Q11 -18 11 -13 Q14 -13 14 -8 V4 Q14 8 10 8 H-5 Q-9 8 -9 4 Z M-9 -6 Q-15 -8 -15 -2 Q-15 3 -9 2" fill="#FFFFFF" ' + LN + '/>';
+  /* Pullover im Profil: Schultern bei y 204, Saum bei y 300 */
+  const SWEATER = 'M-25 204 Q0 195 25 204 L30 300 H-30 Z';
+  const sweater = (bx, dy) => '<path transform="' + at(bx, dy || 0) + '" d="' + SWEATER + '" fill="' + RED + '" ' + LN + '/>';
 
   /* Archivkarton, Front zur Betrachterin; flap: die Seitenlaschen wippen beim Gehen */
   const BOX_F = { l: 60, r: 220, t: 46, b: 126 };
   const box = (dy, tilt, flap) => {
     const fl = flap || 0;
     return '<g transform="translate(0 ' + f1(dy) + ') rotate(' + f1(tilt) + ' 140 86)">' +
-      '<path d="M60 46 L68 22 H213 L220 46 Z" fill="#C9C9C9" ' + LN + '/>' +
-      '<path d="M68 22 H213 L215 30 H67 Z" fill="#A9A9A9"/>' +
+      '<path d="M60 46 L68 22 H213 L220 46 Z" fill="#E4E4E2" ' + LN + '/>' +
       '<path d="M60 46 L22 ' + f1(41 + fl) + ' L50 ' + f1(25 + fl) + ' L68 22 Z" fill="#FFFFFF" ' + LN + '/>' +
-      '<path d="M220 46 L257 ' + f1(39 - fl) + ' L234 ' + f1(21 - fl) + ' L213 22 Z" fill="#E9E9E9" ' + LN + '/>' +
-      '<path d="M220 46 L229 40 V119 L220 126 Z" fill="#CFCFCF" ' + LN + '/>' +
-      '<path d="M60 46 H220 V126 H60 Z" fill="#FFFFFF"/><path d="M60 46 H220 V54 H60 Z M196 54 H220 V126 H196 Z" fill="#F1EFEF"/>' +
-      '<path d="M60 46 H220 V126 H60 Z" fill="none" ' + LN + '/>' +
-      '<rect x="124" y="58" width="32" height="11" rx="5.5" fill="' + INK + '"/>' +
-      '<text x="140" y="112" text-anchor="middle" textLength="106" lengthAdjust="spacingAndGlyphs" fill="' + INK + '" style="font-family:Archivo,sans-serif;font-size:34px;font-weight:900;font-stretch:62%">ARCHIV</text>' +
+      '<path d="M220 46 L257 ' + f1(39 - fl) + ' L234 ' + f1(21 - fl) + ' L213 22 Z" fill="#FFFFFF" ' + LN + '/>' +
+      '<path d="M220 46 L229 40 V119 L220 126 Z" fill="#E4E4E2" ' + LN + '/>' +
+      '<rect x="60" y="46" width="160" height="80" fill="#FFFFFF" ' + LN + '/>' +
+      '<rect x="124" y="58" width="32" height="10" rx="5" fill="' + INK + '"/>' +
+      '<text x="140" y="110" text-anchor="middle" fill="' + INK + '" style="font-family:Archivo,sans-serif;font-size:30px;font-weight:800;letter-spacing:.02em">ARCHIV</text>' +
       '</g>';
   };
   const boxHands = (dy, tilt) => {
     const r = tilt * Math.PI / 180, rot = (x, y) => [140 + (x - 140) * Math.cos(r) - (y - 86) * Math.sin(r), 86 + (x - 140) * Math.sin(r) + (y - 86) * Math.cos(r) + dy];
-    return [rot(72, 130), rot(208, 130)];
+    return [rot(72, 128), rot(208, 128)];
   };
-  const groundShadow = (cx, rx) => '<ellipse cx="' + cx + '" cy="' + (GROUND - 1) + '" rx="' + f1(rx) + '" ry="7" fill="rgba(17,17,17,.13)"/>';
   const wrapFig = (s, cls) => '<svg aria-hidden="true"' + (cls ? ' class="' + cls + '"' : '') + ' width="' + FW + '" height="440" viewBox="0 0 ' + FW + ' 440" style="display:block;overflow:visible">' + s + '</svg>';
   const FIG_MIRROR = s => '<g transform="translate(' + FW + ' 0) scale(-1 1)">' + s + '</g>';
-  const merge = list => { list = list.filter(Boolean); return { parts: [].concat(...list.map(x => x.parts || [x])), lines: [].concat(...list.map(x => x.lines || [])) }; };
 
   /* Gehen mit Karton: Kontakt, Tief, Passieren, Hoch (Knöchel-x relativ zur Körpermitte, rot > 0 = Ferse hoch) */
   const WALK_POSES = [
-    { hy: 304, bob: 2,  tilt: -2, flap: 3,  far: [-46, 26],  near: [48, -14] },
-    { hy: 310, bob: 6,  tilt: 1,  flap: -2, far: [-44, 40],  near: [22, 0] },
-    { hy: 298, bob: -1, tilt: -1, flap: 2,  far: [-16, 392, 30], near: [2, 0] },
-    { hy: 294, bob: -4, tilt: 2,  flap: -3, far: [-16, 12],  near: [34, 392, -8] }
+    { hy: 302, bob: 2,  tilt: -2, flap: 3,  far: [-44, 26],  near: [46, -14] },
+    { hy: 307, bob: 6,  tilt: 1,  flap: -2, far: [-42, 40],  near: [22, 0] },
+    { hy: 298, bob: -1, tilt: -1, flap: 2,  far: [-16, 394, 30], near: [2, 0] },
+    { hy: 295, bob: -4, tilt: 2,  flap: -3, far: [-16, 12],  near: [32, 394, -8] }
   ];
   /* dir 1 = nach rechts, -1 = nach links: nur der Körper wird gespiegelt, der Karton zeigt immer seine Front */
   function walkFig(p, dir){
@@ -734,71 +654,57 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     const [hl, hr] = boxHands(p.bob, tilt);
     const body = h => dir > 0 ? h : [FW - h[0], h[1]];
     const back = body(dir > 0 ? hl : hr), front = body(dir > 0 ? hr : hl);
-    const b = merge([
-      leg([bx - 4, p.hy], ank(p.far), rot(p.far), false),
-      pelvis(bx, p.hy),
-      leg([bx + 4, p.hy], ank(p.near), rot(p.near), true),
-      sleeve([bx - 12, 218 + p.bob], [back[0] + 2, back[1] + 8], false),
-      sweater(bx, p.bob),
-      sleeve([bx + 2, 218 + p.bob], [front[0] - 2, front[1] + 8], true),
-      headSide(bx + 2, 172 + p.bob, -8 + p.bob * .8, -p.bob * .7)
-    ]);
-    b.lines.unshift(hem(bx, p.bob));
-    const figure = groundShadow(bx, 52 - p.bob) + drawBody(b.parts, b.lines);
+    const figure =
+      leg([bx - 4, p.hy], ank(p.far), rot(p.far)) +
+      leg([bx + 4, p.hy], ank(p.near), rot(p.near)) +
+      neck(bx + 2, 180 + p.bob, 210 + p.bob) +
+      tube([[bx - 12, 214 + p.bob], [back[0] + 2, back[1] + 6]], ARM_W, RED) +
+      tube([[bx + 6, 214 + p.bob], [front[0] - 2, front[1] + 6]], ARM_W, RED) +
+      sweater(bx, p.bob) +
+      headSide(bx + 2, 160 + p.bob, -6 + p.bob * .8, -p.bob * .7);
     return (dir > 0 ? figure : FIG_MIRROR(figure)) +
       box(p.bob, tilt, p.flap) + hand(hl[0], hl[1], -4 + tilt) + hand(hr[0], hr[1], 4 + tilt);
   }
   /* von vorn: die Beine stehen, der Oberkörper mit Karton atmet (CSS-Klasse idle-up) */
   function frontFig(){
     const [hl, hr] = boxHands(0, 0);
-    const lower = merge([
-      { mass: true, d: 'M108 413 Q108 403 118 403 H131 Q141 403 141 413 V432 H108 Z', fill: INK },
-      { mass: true, d: 'M139 413 Q139 403 149 403 H162 Q172 403 172 413 V432 H139 Z', fill: INK },
-      { mass: true, d: 'M110 286 H170 L168 412 H142 L140 318 L138 412 H112 Z', fill: '#FFFFFF', shade: 'M156 286 H170 L168 412 H156 Z', shadeFill: SHADE_WHITE }
-    ]);
-    const seam = samples([[140, 312], [140, 410]], [0, 0], 10);
-    lower.lines.push('<path d="' + strip(seam, p => OUT / 2 * ramp(p.s, .4), p => -OUT / 2 * ramp(p.s, .4)) + '" fill="' + INK + '"/>');
-    const upper = merge([
-      sleeve([118, 220], [hl[0] + 2, hl[1] + 8], false),
-      sleeve([162, 220], [hr[0] - 2, hr[1] + 8], false),
-      { mass: true, d: 'M110 208 Q140 198 170 208 L176 290 Q140 296 104 290 Z', fill: RED, shade: 'M152 201.5 Q162 204 170 208 L176 290 Q166 293 154 294.5 Z', shadeFill: SHADE_RED },
-      headFront(140, 170)
-    ]);
-    return groundShadow(140, 50) + drawBody(lower.parts, lower.lines) +
-      '<g class="idle-up">' + drawBody(upper.parts, upper.lines) + box(0, 0, 0) + hand(hl[0], hl[1], -4) + hand(hr[0], hr[1], 4) + '</g>';
+    const boot = x => '<path d="M' + (x - 13) + ' 408 Q' + (x - 13) + ' 404 ' + (x - 9) + ' 404 H' + (x + 9) + ' Q' + (x + 13) + ' 404 ' + (x + 13) + ' 408 V428 Q' + (x + 13) + ' 432 ' + (x + 9) + ' 432 H' + (x - 9) + ' Q' + (x - 13) + ' 432 ' + (x - 13) + ' 428 Z" fill="' + INK + '" ' + LN + '/>';
+    const lower = tube([[128, 300], [128, 412]], LEG_W, '#FFFFFF') + tube([[152, 300], [152, 412]], LEG_W, '#FFFFFF') + boot(128) + boot(152);
+    const upper =
+      neck(140, 180, 210) +
+      tube([[124, 214], [hl[0] + 2, hl[1] + 6]], ARM_W, RED) + tube([[156, 214], [hr[0] - 2, hr[1] + 6]], ARM_W, RED) +
+      '<path d="M112 204 Q140 195 168 204 L172 300 H108 Z" fill="' + RED + '" ' + LN + '/>' +
+      headFront(140, 160) +
+      box(0, 0, 0) + hand(hl[0], hl[1], -4) + hand(hr[0], hr[1], 4);
+    return lower + '<g class="idle-up">' + upper + '</g>';
   }
   /* stehend im Profil, ohne Karton.
      near/far: Handgelenk des vorderen/hinteren Arms (far weglassen = hinter dem Körper), *Rot: Drehung der Hand,
      props: SVG im selben Koordinatensystem, sway: Grad, um die der vordere Arm samt props pendelt */
   function standFig(o){
-    const bx = CX;
-    const b = merge([
-      leg([bx - 4, 298], [bx - 8, plantY(0)], 0, false),
-      pelvis(bx, 298),
-      leg([bx + 4, 298], [bx + 12, plantY(0)], 0, true),
-      o.far ? sleeve([bx - 12, 218], o.far, false) : null,
-      sweater(bx),
-      headSide(bx + 2, 172, o.tilt || 0)
-    ]);
-    b.lines.unshift(hem(bx));
-    const swing = o.sway && !reduce ? '<animateTransform attributeName="transform" type="rotate" values="0 142 218;' + o.sway + ' 142 218;0 142 218" dur="3.4s" repeatCount="indefinite"/>' : '';
-    const near = sleeve([bx + 2, 218], o.near, true);
-    return groundShadow(bx, 46) + drawBody(b.parts, b.lines) +
+    const bx = CX, sh = [bx + 6, 214];
+    const swing = o.sway && !reduce ? '<animateTransform attributeName="transform" type="rotate" values="0 ' + sh[0] + ' ' + sh[1] + ';' + o.sway + ' ' + sh[0] + ' ' + sh[1] + ';0 ' + sh[0] + ' ' + sh[1] + '" dur="3.4s" repeatCount="indefinite"/>' : '';
+    return leg([bx - 4, 300], [bx - 10, plantY(0)], 0) +
+      leg([bx + 4, 300], [bx + 10, plantY(0)], 0) +
+      neck(bx + 2, 180, 210) +
+      (o.far ? tube([[bx - 12, 214], o.far], ARM_W, RED) : '') +
+      sweater(bx) +
       (o.far ? hand(o.far[0] + 4 * Math.sign(o.far[0] - bx), o.far[1] - 6, o.farRot || 0) : '') +
-      '<g>' + swing + drawBody([near]) + (o.props || '') + hand(o.near[0] + 4, o.near[1] - 6, o.nearRot || 0) + '</g>';
+      headSide(bx + 2, 160, o.tilt || 0) +
+      '<g>' + swing + tube([sh, o.near], ARM_W, RED) + shoulderCap(sh, ARM_W) + (o.props || '') + hand(o.near[0] + 4, o.near[1] - 6, o.nearRot || 0) + '</g>';
   }
 
   const FIG = { f: wrapFig(frontFig()) };
   WALK_POSES.forEach((p, i) => { FIG['r' + i] = wrapFig(walkFig(p, 1)); FIG['l' + i] = wrapFig(walkFig(p, -1)); });
   const LENS =
-    '<path d="M229 119 L214 142" stroke="' + INK + '" stroke-width="16" stroke-linecap="round"/><path d="M229 119 L214 142" stroke="' + RED + '" stroke-width="10" stroke-linecap="round"/>' +
-    '<circle cx="256" cy="92" r="38" fill="rgba(246,194,200,0.55)" stroke="' + INK + '" stroke-width="5"/>' +
-    '<path d="M234 82 Q240 64 258 60" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round">' +
-    (reduce ? '' : '<animate attributeName="opacity" values="1;.25;1" dur="2.6s" repeatCount="indefinite"/>') + '</path>';
+    '<path d="M229 119 L214 142" stroke="' + INK + '" stroke-width="14" stroke-linecap="round"/><path d="M229 119 L214 142" stroke="' + RED + '" stroke-width="9" stroke-linecap="round"/>' +
+    '<circle cx="256" cy="92" r="38" fill="rgba(255,255,255,0.7)" stroke="' + INK + '" stroke-width="' + OUT + '"/>' +
+    '<path d="M234 82 Q240 64 258 60" fill="none" stroke="' + INK + '" stroke-width="2" stroke-linecap="round" opacity=".35">' +
+    (reduce ? '' : '<animate attributeName="opacity" values=".35;.1;.35" dur="2.6s" repeatCount="indefinite"/>') + '</path>';
   const FIG_LOOK = wrapFig(FIG_MIRROR(standFig({ near: [212, 150], nearRot: 30, props: LENS, sway: -5 })));
   const FIG_COIN = wrapFig(FIG_MIRROR(standFig({ near: [238, 204], sway: 2 })));
   /* ohne Münze: Arm locker gesenkt; nach dem Einwurf: beide Arme hoch */
-  const FIG_WAIT = wrapFig(FIG_MIRROR(standFig({ near: [170, 292], nearRot: 160, tilt: -6 })));
+  const FIG_WAIT = wrapFig(FIG_MIRROR(standFig({ near: [170, 296], nearRot: 160, tilt: -6 })));
   const FIG_CHEER = wrapFig(FIG_MIRROR(standFig({ near: [214, 150], nearRot: 30, far: [94, 158], farRot: -30, tilt: -10 })));
 
   const MOMENTS = [
@@ -850,7 +756,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   }
   function burst(x, y){
     let rays = '';
-    for (let k = 0; k < 10; k++) rays += '<i style="--a:' + (k * 36 + 8) + 'deg;animation-delay:' + (k % 2) * .04 + 's"></i>';
+    for (let k = 0; k < 8; k++) rays += '<i style="--a:' + (k * 45 + 10) + 'deg;animation-delay:' + (k % 2) * .04 + 's"></i>';
     fx('burst', x, y, rays, 700);
   }
   function catchFx(it){
@@ -873,7 +779,6 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
       stepT += dt;
       if (stepT > 0.11){
         stepT = 0; stepI = (stepI + 1) % WALK_POSES.length;
-        if (stepI === 0 || stepI === 2) fx('puff', 0, 536, '', 520, { '--x': (curX + FW / 2 - Math.sign(dx) * 44) + 'px', '--dx': (-Math.sign(dx) * 18) + 'px' });
       }
       setPose((dx > 0 ? 'r' : 'l') + stepI);
     } else {
@@ -1007,7 +912,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
   const m2 = {
     stage: document.getElementById('m2-stage'), inner: document.getElementById('m2-inner'),
     head: document.getElementById('m2-head'), num: document.getElementById('m2-num'), stamp: document.getElementById('m2-stamp'),
-    splat: document.getElementById('m2-splat'), paper: document.querySelector('#m2-inner .paper.front'),
+    paper: document.querySelector('#m2-inner .paper.front'),
     progress: document.getElementById('m2-progress'), count: document.getElementById('m2-count'),
     ask: document.getElementById('m2-ask'), check: document.getElementById('m2-check'),
     you: document.getElementById('m2-you'), fb: document.getElementById('m2-fb'), steps: document.getElementById('m2-steps'),
@@ -1029,7 +934,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     m2.done.hidden = !finished;
     m2.next.hidden = finished;
     m2.strike.classList.toggle('on', finished);
-    if (!revealed){ m2.stamp.classList.remove('show'); m2.splat.classList.remove('show'); }
+    if (!revealed){ m2.stamp.classList.remove('show'); }
   }
   function pick(choice){
     const c = CASES[idx];
@@ -1044,9 +949,9 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset
     m2.steps.innerHTML = c.steps.map((s, i) => '<li style="animation-delay:' + (0.25 + i * 0.25) + 's"><span class="n">' + (i + 1) + '</span><div><b>' + s[0] + '</b><span class="d">' + s[1] + '</span></div></li>').join('');
     m2.next.innerHTML = (idx < CASES.length - 1 ? 'Nächste Zeitung' : 'Abschließen') + ' &#8594;';
     m2.stamp.textContent = c.verdict;
-    m2.stamp.classList.remove('show'); m2.splat.classList.remove('show'); m2.paper.classList.remove('thud');
+    m2.stamp.classList.remove('show'); m2.paper.classList.remove('thud');
     void m2.stamp.offsetWidth;
-    m2.stamp.classList.add('show'); m2.splat.classList.add('show');
+    m2.stamp.classList.add('show');
     setTimeout(() => { m2.paper.classList.add('thud'); hop(m2.fig.firstElementChild); }, reduce ? 0 : 200);
     render2();
     m2.next.focus({ preventScroll: true });

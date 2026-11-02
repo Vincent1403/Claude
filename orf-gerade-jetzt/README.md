@@ -17,7 +17,7 @@ daraus (Stand 28.10.2026):
 
 ```
 web/index.html        Website-Prototyp, läuft direkt im Browser (eine Datei, nur Google Fonts extern)
-web/referenz/         Referenz-Sheet der Figur; die Figur in index.html ist danach als SVG nachgebaut
+web/referenz/         Referenz-Sheet der Figur (Posen); der Zeichenstil in index.html folgt inzwischen flachen Linienfiguren
 print/src/*.dc.html   Doppelseiten-Quellen aus dem Design-Canvas (2× A4 = 1588 × 1123 px)
 print/build.py        macht daraus eigenständige Seiten: print/spreads/*.html + print/index.html (Übersicht)
 design-canvas/        Original-Quellen der Web-Module aus dem Canvas (brauchen dessen Runtime, nur als Referenz) + canvas.json
@@ -79,13 +79,15 @@ durchstreicht, wofür der ORF nicht stehen will.
 3. **Haushaltsabgabe statt Abo:** 50-Cent-Münze in den Fernseher ziehen; daraus wachsen
    zwölf Angebote (ZIB, Bundesland heute, Ö1, FM4, ORF III, ÖGS …).
 
-**Look der Module:** plastischer Vektor-Stil. Zweiton-Schattierung (Licht von links oben),
-weiche Bodenschatten, Squash und Funken beim Fangen, Staubwölkchen beim Gehen, pendelnde
-Archivstücke mit wachsendem Schatten, Stempel mit Farbspritzern und Wumms, Fernseher, der
-beim Einwurf ruckelt und aufflackert, rotierende Münze, die beim Ziehen kippt, und ein
-Schlitz, der aufleuchtet, wenn sie nah ist. Wien (Stephansdom, Riesenrad) steht blass im
-Hintergrund und wandert leicht gegen die Figur. Knöpfe sind dicke Vektor-Knöpfe, die beim
-Drücken einsinken; die Zeitungen fliegen beim Weiterblättern vom Stapel. Alles ruht bei
+**Look der Module:** flacher Linienstil, minimal und verspielt. Gleichmäßiger 2,5-px-Strich, flache
+Füllungen in Schwarz, Weiß und ORF-Rot, keine Schattierung, lange schlanke Proportionen (Vorbild:
+Figuren wie in der Referenz unter `web/referenz/`). Bühnen sind flache, helle Flächen mit runden Ecken,
+die Bedienung sitzt daneben in einer Karte mit dünnem Rahmen, Knöpfe sind Pillen. Bewegung bleibt
+sparsam: Squash und ein paar Punkte beim Fangen, ein Etikett pro gefangenem Moment, Zeitungen, die beim
+Weiterblättern vom Stapel fliegen, Stempel mit Wumms, Fernseher, der beim Einwurf ruckelt und
+aufflackert, Münze, die beim Ziehen kippt, Schlitz, der aufleuchtet, wenn sie nah ist, blinzelnde
+Augen, atmender Oberkörper, Jubel nach dem Einwurf. Wien (Stephansdom, Riesenrad) steht als
+Linienzeichnung im Hintergrund und wandert leicht gegen die Figur. Alles ruht bei
 `prefers-reduced-motion`.
 
 ## Gestaltung
