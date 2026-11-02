@@ -54,6 +54,7 @@ const LOGO_SINK = 6;       // how far the "20" sits down into the base (the "0" 
 const PLEXI_THICK = 16;    // acrylic panel thickness
 const PLEXI_MARGIN = 16;   // solid acrylic around the circle (left / right / top)
 const PLEXI_RATIO = 918 / 660; // panel height / width, from the sketch
+const PLEXI_TINT = 0x44483c; // acrylic tint colour
 const PLEXI_SINK = 10;     // panel slotted into the base
 const BASE_H = 70;         // base height
 const BASE_PAD = 25;       // base overhang beyond the piece, left/right
@@ -111,7 +112,9 @@ scene.add(key);
 const bronze = new THREE.MeshStandardMaterial({ color: 0xc8b4a0, metalness: 1, roughness: 0.2 });
 const acrylic = new THREE.MeshPhysicalMaterial({
   color: 0xffffff, metalness: 0, roughness: 0, transmission: 1, thickness: PLEXI_THICK,
-  ior: 1.49, attenuationColor: new THREE.Color(0x9fd6cb), attenuationDistance: 45, // acrylic edge tint
+  // Tinted acrylic: light passing through the panel's thickness is filtered by PLEXI_TINT,
+  // so the face reads as roughly #44483c against the grey backdrop and edges go darker.
+  ior: 1.49, attenuationColor: new THREE.Color(PLEXI_TINT), attenuationDistance: 22,
   specularIntensity: 0.6,
 });
 const baseMat = new THREE.MeshPhysicalMaterial({ color: 0x141414, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.08 });
