@@ -390,7 +390,7 @@ def('prinzip','p-klar','Klar','Pro Moment ein Fokus. Tag, Headline und Pill komm
  return t=>{tg(t-.2,3.9);tx(t-1.0,3.8);pl(t-1.9,3.9)}}});
 def('prinzip','p-freundlich','Freundlich','Weich beschleunigen, ruhig ankommen. Nach dem Reveal zoomt das Bild sanft weiter, so bleibt es auch beim Halten in Bewegung.',{dur:4.2,bg:'bg-sand',build(st,h){
  const K=kachel(st,'r',h,'');K.style.overflow='hidden';const ph=photo(K,'img/kian.webp');ph.style.cssText+=';position:absolute;inset:0;background-size:cover;background-position:40% 50%';
- const hl=headline(st,'r',h,.5,['Mehr','für dich.']);
+ const hl=headline(st,'r',h,.5,['Mehr für','deinen','Alltag.']);
  return t=>{K.set(.5*eFlow(seg(t,.2,1.0)));tf(ph,{s:pushIn(t,.6,4.2)});hl(t-.8,3.4)}}});
 def('prinzip','p-federnd','Federnd','Ein kleiner Sprung mit echter Physik, gezielt als Akzent eingesetzt.',{dur:3.6,bg:'bg-orange',build(st){
  const L=logo(st,34,50,H/2,'var(--wine)');return t=>drawLogo(L,t,{pre:.15})}});
@@ -429,35 +429,35 @@ function headline(st,side,h,f,lines,o={}){const size=side==='b'?11:6.6;
 const STEP=[[.25,'25 / 75','Die Kachel ragt ein Viertel ins Bild. Viel Raum für Headline und Bild.'],[.5,'50 / 50','Halb Kachel, halb Hintergrund. Die ausgewogene Standardstufe.',1],[.75,'75 / 25','Die Kachel trägt den Inhalt, oben oder links bleibt ein schmaler Rand.']];
 STEP.forEach(([f,name,desc,std])=>{
  def('kb','kb-'+f*100,name,desc,{ratio:'9/16',badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
-  const K=kachel(st,'b',h);const hl=f<.75?headline(st,'b',h,f,['Mehr','für dich.']):textBlock(st,['Mehr','für dich.'],{size:11,x:7,top:h*(1-f)+10});
+  const K=kachel(st,'b',h);const hl=f<.75?headline(st,'b',h,f,['Mehr aus','dem Moment.']):textBlock(st,['Mehr aus','dem Moment.'],{size:11,x:7,top:h*(1-f)+10});
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}});
  def('kr','kr-'+f*100,name,desc,{badge:std?'std':0,dur:3.6,bg:'bg-lilac',build(st,h){
-  const K=kachel(st,'r',h);const hl=f<.75?headline(st,'r',h,f,['Mehr','für dich.']):textBlock(st,['Mehr','für dich.'],{size:6.6,x:100*(1-f)+6,right:4});
+  const K=kachel(st,'r',h);const hl=f<.75?headline(st,'r',h,f,['Mehr','entdecken.']):textBlock(st,['Mehr','entdecken.'],{size:6.6,x:100*(1-f)+6,right:4});
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}})});
 
 def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stufe ins Bild, dann kommt die Headline.',{badge:'std',dur:3.6,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr','für dich.']);const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:57,y:h-13});
+ const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr für','deinen','Alltag.']);const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:57,y:h-13});
  return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));hl(t-.9,3.2);pl(t-1.4,1.85)}}});
 def('trans','tr-step','Stufe wechseln','Die Kachel wandert von Stufe zu Stufe, 25, 50, 75 %. Bei 75 % ist kein Platz für die Headline: Sie geht vorher ab und kommt erst zurück, wenn die Kachel wieder kleiner ist.',{dur:7,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h);const tx=textBlock(st,['Mehr','für dich.'],{color:'var(--wine)',size:6.6,x:7,right:55});
+ const K=kachel(st,'r',h);const tx=textBlock(st,['Mehr aus','jedem','Einkauf.'],{color:'var(--wine)',size:6.6,x:7,right:55});
  return t=>{const f=t<1.1?.25*eFlow(seg(t,.3,1.1)):.25+.25*eMorph(seg(t,1.9,2.6))+.25*eMorph(seg(t,3.6,4.3))-.5*eMorph(seg(t,5.2,5.9));K.set(f);
   if(t<5.6)tx(t-1.0,2.3);else tx(t-5.9)}}});
 def('trans','tr-full','Kachel wird Vollbild','Erst geht der Text ab, dann wächst die Kachel aus der Stufe über das ganze Bild. Die Rundung verlässt es über den Rand. Für neue Kapitel.',{dur:5.4,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h);const a=headline(st,'r',h,.5,['Mehr','für dich.']);const b=textBlock(st,['Alles in','einer App.'],{size:6.6});
+ const K=kachel(st,'r',h);const a=headline(st,'r',h,.5,['Mehr von','dem, was','zählt.']);const b=textBlock(st,['Alles in','einer App.'],{size:6.6});
  return t=>{K.set(t<2.8?.5*eFlow(seg(t,.2,.9)):lerp(.5,1+KR(h)/100+.02,eMorph(seg(t,2.8,3.5))));a(t-.8,1.6);b(t-3.35,9)}}});
 def('trans','tr-rainbow','Rainbow','Hellorange, Orange und Burgund schieben sich dicht nacheinander von der Seite über das Bild.',{badge:'acc',dur:3.8,bg:'bg-lilac',build(st,h){
- const a=headline(st,'r',h,0,['Mehr','für dich.']);const ks=['bg-lor','bg-orange','bg-wine'].map(c=>kachel(st,'r',h,c));const b=textBlock(st,['Alles in','einer App.'],{size:6.6,align:'center'});
+ const a=headline(st,'r',h,0,['Mehr aus','dem Moment.']);const ks=['bg-lor','bg-orange','bg-wine'].map(c=>kachel(st,'r',h,c));const b=textBlock(st,['Alles in','einer App.'],{size:6.6,align:'center'});
  return t=>{a(t-.1,1.0);ks.forEach((k,i)=>k.set(lerp(0,1+KR(h)/100+.03,eMorph(seg(t,1.0+i*.14,1.8+i*.14)))));b(t-2.15,9)}}});
 def('trans','tr-photo','Kachel mit Bild','Die Kachel maskiert ein Foto. Nach dem Reveal zoomt das Bild kontinuierlich sanft hinein, damit nichts stillsteht.',{dur:4,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h,'');const ph=innerPhoto(K,'img/tamara.webp','40% 50%');const hl=headline(st,'r',h,.5,['Mehr','für dich.']);
+ const K=kachel(st,'r',h,'');const ph=innerPhoto(K,'img/tamara.webp','40% 50%');const hl=headline(st,'r',h,.5,['Mehr','entdecken.']);
  return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));tf(ph,{s:pushIn(t,.8,4)});hl(t-.9,3.3)}}});
 def('trans','tr-out','Vollbild wird Kachel','Die volle Fläche zieht sich auf eine Stufe zurück und gibt den Hintergrund frei. Umkehrung von Vollbild.',{dur:3.8,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h);const a=textBlock(st,['Mehr','für dich.'],{size:6.6});const b=headline(st,'r',h,.5,['Alles in','einer App.']);
+ const K=kachel(st,'r',h);const a=textBlock(st,['Mehr für','deinen Alltag.'],{size:6.6});const b=headline(st,'r',h,.5,['Alles in','einer App.']);
  return t=>{K.set(lerp(1+KR(h)/100+.03,.5,eMorph(seg(t,1.3,2.0))));a(t-.1,1.05);b(t-2.0,9)}}});
 
 /* Layout-Morphs */
 def('morph','mo-swap','Bildwechsel in der Kachel','Die Kachel bleibt stehen, die Bilder darin wechseln. Das neue schiebt sich mit Flow hinein, das alte weicht etwas langsamer. Jedes Bild zoomt sanft, solange es steht.',{dur:6,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h,'');K.style.overflow='hidden';K.set(.5);const hl=headline(st,'r',h,.5,['Mehr','für dich.']);
+ const K=kachel(st,'r',h,'');K.style.overflow='hidden';K.set(.5);const hl=headline(st,'r',h,.5,['Mehr aus','jedem','Einkauf.']);
  const imgs=['img/kian.webp','img/tamara.webp','img/see.webp'].map(src=>{const e=photo(K,src);e.style.cssText+=';position:absolute;inset:0;background-size:cover;background-position:45% 50%';return e});
  return t=>{hl(t-.2,9);const a=eFlow(seg(t,1.6,2.4)),b=eFlow(seg(t,3.6,4.4)),c=eFlow(seg(t,5.4,5.95));
   tf(imgs[0],{x:-a*25,s:pushIn(t,0,2.4)});tf(imgs[1],{x:(1-a)*52-b*25,s:pushIn(t,2.0,4.4)});tf(imgs[2],{x:(1-b)*52,s:pushIn(t,4.0,6)});imgs[1].style.zIndex=1;imgs[2].style.zIndex=2;
