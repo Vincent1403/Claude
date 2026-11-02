@@ -3,13 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>20 Logo 3D</title>
+<title>20 Trophy 3D</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #c4c4c4; overflow: hidden; font-family: system-ui, sans-serif; }
-  canvas { display: block; }
-  #ui { position: fixed; right: 16px; bottom: 16px; display: flex; gap: 8px; }
-  #ui button { padding: 8px 12px; border: 0; border-radius: 6px; background: #222; color: #fff; cursor: pointer; font-size: 13px; }
-  body.render #ui { display: none; }
+  :root { --bg: #c4c4c4; --btn: #222; --btn-fg: #fff; --btn-on: #fff; --btn-on-fg: #222; }
+  html, body { margin: 0; height: 100%; background: var(--bg); overflow: hidden; font-family: system-ui, sans-serif; }
+  canvas { display: block; touch-action: none; }
+  .bar { position: fixed; display: flex; gap: 8px; flex-wrap: wrap; }
+  #versions { left: 16px; top: 16px; }
+  #ui { right: 16px; bottom: 16px; }
+  .bar button { padding: 8px 12px; border: 0; border-radius: 6px; background: var(--btn); color: var(--btn-fg); cursor: pointer; font-size: 13px; }
+  #versions button[aria-pressed="true"] { background: var(--btn-on); color: var(--btn-on-fg); box-shadow: inset 0 0 0 2px var(--btn); }
+  body.render .bar { display: none; }
 </style>
 <script type="importmap">
 { "imports": {
@@ -19,7 +23,11 @@
 </script>
 </head>
 <body>
-<div id="ui">
+<div id="versions" class="bar">
+  <button data-v="bronze">Bronze</button>
+  <button data-v="plexi">Plexiglass</button>
+</div>
+<div id="ui" class="bar">
   <button id="glb">Download GLB</button>
   <button id="stl">Download STL</button>
   <button id="png">Download PNG</button>
@@ -30,18 +38,29 @@ import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 
-// Source: 20.svg (viewBox 420.57 x 203.79)
-const SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420.57 203.79">
+// Source: 20.svg (viewBox 420.57 x 203.79). Flipped here so +y is up and the
+// extruded geometry keeps correct winding (no negative scale on the meshes).
+const SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420.57 203.79"><g transform="scale(1,-1)">
 <path d="M316.39.04c-56.01,0-101.41,45.63-101.41,101.91,0,42.97,26.85,81.33,67.12,95.87,8-10.03,14.6-21.14,19.58-33,5.64-13.46,9.18-27.73,10.49-42.28.86-9.45.82-18.96-.13-28.39l-52.6,52.71c-3.65-27.44,15.21-52.78,42.46-56.98v-.21h-66.01c16.73-21.99,47.89-26.5,70.11-10.13.06-.04.11-.09.15-.15l-46.71-46.87c27.56-3.71,52.93,15.62,56.81,43.29h.22c3.88-27.67,29.25-47,56.81-43.29l-46.67,46.91.15.17c22.22-16.38,53.4-11.9,70.13,10.11h-66.05v.21c27.22,4.2,46.09,29.51,42.46,56.94l-50.48-50.67c5.83,24.81,5.73,50.65-.28,75.42-2.7,11.03-6.54,21.76-11.45,32,1.74,0,3.5.13,5.28.13,55.99,1.52,102.62-42.82,104.14-99.09C422.07,48.42,377.9,1.57,321.92.04c-1.84-.06-3.67-.06-5.51,0h-.02Z"/>
 <path d="M77.64,149.17l117.37.96v48.91L0,197.97v-13.71c0-11.67,2.35-22.69,6.99-32.76,4.33-9.4,10.76-18.18,19.1-26.08,7.62-7.22,17.06-13.92,28.05-19.92,9.97-5.44,21.54-10.47,34.41-14.97l.12-.04.13-.04c21.11-6.4,50.22-13.19,50.22-22.55,0-2.28-.95-4.27-2.89-6.08-2.62-2.44-6.94-4.37-12.49-5.57-6.96-1.51-15.73-1.9-26.07-1.16-13.5.97-26.8,3.92-39.78,7.93-27.43,8.47-49.76,23.58-49.76,23.58v-53.64l4.05-2.44C40.41,13.47,53.34,5.69,98.11,5.69c16.34,0,30.04,1.11,41.88,3.38,12.33,2.37,22.27,5.93,30.38,10.89,8.36,5.11,14.69,11.78,18.82,19.81,2.04,3.98,3.59,8.38,4.59,13.07.97,4.56,1.47,9.54,1.47,14.81,0,7.06-.12,13.93-1.58,20.34-1.66,7.29-4.96,13.38-10.09,18.61-5.47,5.58-13.26,10.45-23.84,14.88-10.7,4.49-24.57,8.69-42.41,12.84-18.68,4.38-30.25,8.27-36.42,12.26-1.36.88-2.41,1.72-3.27,2.59Z"/>
-</svg>`;
+</g></svg>`;
 
-const DEPTH = 40;          // extrusion depth in SVG units (logo is ~204 units tall)
-const COLOR = 0xc8b4a0;    // bronze
+// All sizes in SVG units (the logo is ~204 units tall).
+const BRONZE_DEPTH = 40;   // extrusion of the "20"
+const LOGO_SINK = 6;       // how far the "20" sits down into the base (the "0" hangs ~5 below the "2")
+const PLEXI_THICK = 16;    // acrylic panel thickness
+const PLEXI_MARGIN = 16;   // solid acrylic around the circle (left / right / top)
+const PLEXI_RATIO = 918 / 660; // panel height / width, from the sketch
+const PLEXI_SINK = 10;     // panel slotted into the base
+const BASE_H = 70;         // base height
+const BASE_PAD = 25;       // base overhang beyond the piece, left/right
+const BASE_D = 120;        // base depth (front to back)
 
-const renderMode = new URLSearchParams(location.search).has('render');
+const params = new URLSearchParams(location.search);
+const renderMode = params.has('render');
 if (renderMode) document.body.classList.add('render');
 // Downloads don't work inside an embedded viewer; hide the buttons there.
 if (window.self !== window.top) document.getElementById('ui').style.display = 'none';
@@ -56,7 +75,7 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xc4c4c4);
 
-// Studio-ish environment for the metal reflections: warm brown top, dark band, cool blue streaks.
+// Studio-ish environment for reflections: warm top, dark band, cool blue streaks.
 function makeEnv() {
   const c = document.createElement('canvas');
   c.width = 1024; c.height = 512;
@@ -71,7 +90,6 @@ function makeEnv() {
   grad.addColorStop(0.66, '#6c543e');
   grad.addColorStop(1.00, '#2e2620');
   g.fillStyle = grad; g.fillRect(0, 0, 1024, 512);
-  // soft light panels
   g.filter = 'blur(18px)';
   g.fillStyle = '#ffe2c0'; g.fillRect(380, 40, 260, 90);
   g.fillStyle = '#b8cdf0'; g.fillRect(80, 230, 200, 40);
@@ -85,40 +103,94 @@ function makeEnv() {
   return env;
 }
 scene.environment = makeEnv();
-
 const key = new THREE.DirectionalLight(0xfff0e0, 1.2);
 key.position.set(-1, 2, 3);
 scene.add(key);
 
-// Build the extruded logo
-const data = new SVGLoader().parse(SVG);
-const material = new THREE.MeshStandardMaterial({ color: COLOR, metalness: 1, roughness: 0.2 });
-const logo = new THREE.Group();
-for (const path of data.paths) {
-  for (const shape of SVGLoader.createShapes(path)) {
-    const geo = new THREE.ExtrudeGeometry(shape, {
-      depth: DEPTH, curveSegments: 64, bevelEnabled: false,
-    });
-    // ExtrudeGeometry shades every side strip flat, which bands the curved walls.
-    // Smooth normals across shallow angles; keep real corners (> 30°) and the 90° face/wall edges crisp.
-    logo.add(new THREE.Mesh(toCreasedNormals(geo, THREE.MathUtils.degToRad(30)), material));
-  }
-}
-logo.scale.set(1, -1, 1); // SVG y points down
-// center it
-const box = new THREE.Box3().setFromObject(logo);
-const center = box.getCenter(new THREE.Vector3());
-logo.position.sub(center);
-const pivot = new THREE.Group();
-pivot.add(logo);
-pivot.rotation.set(0.12, 0.62, 0); // turned so the left side faces the camera, like the reference
-scene.add(pivot);
+// ---- materials ----
+const bronze = new THREE.MeshStandardMaterial({ color: 0xc8b4a0, metalness: 1, roughness: 0.2 });
+const acrylic = new THREE.MeshPhysicalMaterial({
+  color: 0xffffff, metalness: 0, roughness: 0, transmission: 1, thickness: PLEXI_THICK,
+  ior: 1.49, attenuationColor: new THREE.Color(0x9fd6cb), attenuationDistance: 45, // acrylic edge tint
+  specularIntensity: 0.6,
+});
+const baseMat = new THREE.MeshPhysicalMaterial({ color: 0x141414, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.08 });
 
-const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 1, 5000);
-camera.position.set(0, 90, 1250);
+// ---- geometry helpers ----
+const svgPaths = new SVGLoader().parse(SVG).paths; // [0] = "0" with palm, [1] = "2"
+const extrude = (shape, depth) => {
+  const geo = new THREE.ExtrudeGeometry(shape, { depth, curveSegments: 64, bevelEnabled: false });
+  geo.translate(0, 0, -depth / 2); // centered front-to-back
+  // Smooth the curved walls, keep real corners (> 30°) and face/wall edges crisp.
+  return toCreasedNormals(geo, THREE.MathUtils.degToRad(30));
+};
+const zeroShapes = SVGLoader.createShapes(svgPaths[0]);
+const zeroBox = new THREE.Box2();
+zeroShapes.forEach(s => s.getPoints(64).forEach(p => zeroBox.expandByPoint(p)));
+
+function makeBase(width) {
+  const geo = new RoundedBoxGeometry(width, BASE_H, BASE_D, 3, 3);
+  const m = new THREE.Mesh(geo, baseMat);
+  m.position.y = -BASE_H / 2; // top of the base at y = 0
+  m.name = 'base';
+  return m;
+}
+
+// Version 1: bronze "20" set into the base
+function buildBronze() {
+  const piece = new THREE.Group();
+  for (const p of svgPaths) for (const s of SVGLoader.createShapes(p)) piece.add(new THREE.Mesh(extrude(s, BRONZE_DEPTH), bronze));
+  const b = new THREE.Box3().setFromObject(piece);
+  piece.position.set(-(b.min.x + b.max.x) / 2, -b.min.y - LOGO_SINK, 0);
+  piece.name = 'logo';
+  const g = new THREE.Group();
+  g.add(piece, makeBase(b.max.x - b.min.x + 2 * BASE_PAD));
+  return g;
+}
+
+// Version 2: acrylic panel; the "0" outline (disc minus palm) is cut out, the palm stays solid
+function buildPlexi() {
+  const x0 = zeroBox.min.x - PLEXI_MARGIN, x1 = zeroBox.max.x + PLEXI_MARGIN;
+  const y1 = zeroBox.max.y + PLEXI_MARGIN, y0 = y1 - (x1 - x0) * PLEXI_RATIO;
+  const panel = new THREE.Shape().moveTo(x0, y0).lineTo(x1, y0).lineTo(x1, y1).lineTo(x0, y1).closePath();
+  panel.holes.push(...zeroShapes);
+  const mesh = new THREE.Mesh(extrude(panel, PLEXI_THICK), acrylic);
+  mesh.position.set(-(x0 + x1) / 2, -y0 - PLEXI_SINK, 0);
+  mesh.name = 'panel';
+  const g = new THREE.Group();
+  g.add(mesh, makeBase(x1 - x0 + 2 * BASE_PAD));
+  window.plexiOutline = { x0, x1, y0, y1 };
+  return g;
+}
+
+const versions = { bronze: buildBronze(), plexi: buildPlexi() };
+let current = null;
+
+const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 1, 10000);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.target.set(110, 0, 0); // logo sits slightly left of center, like the reference
+
+function frame(obj) {
+  const sphere = new THREE.Box3().setFromObject(obj).getBoundingSphere(new THREE.Sphere());
+  const vfov = THREE.MathUtils.degToRad(camera.fov);
+  const fit = Math.min(vfov, 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect));
+  const dist = sphere.radius / Math.sin(fit / 2) * 1.05;
+  const dir = new THREE.Vector3(-0.55, 0.32, 1).normalize(); // front-left, slightly above
+  controls.target.copy(sphere.center);
+  camera.position.copy(sphere.center).addScaledVector(dir, dist);
+  controls.update();
+}
+
+function setVersion(v) {
+  if (!versions[v]) v = 'bronze';
+  if (current) scene.remove(current.obj);
+  current = { name: v, obj: versions[v] };
+  scene.add(current.obj);
+  frame(current.obj);
+  document.querySelectorAll('#versions button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+}
+document.querySelectorAll('#versions button').forEach(b => b.onclick = () => setVersion(b.dataset.v));
+setVersion(params.get('v') || 'bronze');
 
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
@@ -132,27 +204,23 @@ addEventListener('resize', () => {
   renderer.render(scene, camera);
 })();
 
-// Exports (model in its unrotated, centered pose; units = SVG units)
-function exportRoot() {
-  const root = new THREE.Group();
-  const clone = logo.clone();
-  root.add(clone);
-  root.updateMatrixWorld(true);
-  return root;
-}
+// ---- exports (units = SVG units, y up, base top at y = 0) ----
 function download(blob, name) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = name; a.click();
 }
+const exportRoot = () => { current.obj.updateMatrixWorld(true); return current.obj; };
 window.exportGLB = () => new Promise((res, rej) =>
   new GLTFExporter().parse(exportRoot(), r => res(new Uint8Array(r)), rej, { binary: true }));
 window.exportSTL = () => new STLExporter().parse(exportRoot(), { binary: true });
+window.setVersion = setVersion;
 window.camera = camera; window.controls = controls;
 window.ready = true;
 
-document.getElementById('glb').onclick = async () => download(new Blob([await exportGLB()]), '20.glb');
-document.getElementById('stl').onclick = () => download(new Blob([exportSTL()]), '20.stl');
-document.getElementById('png').onclick = () => renderer.domElement.toBlob(b => download(b, '20.png'));
+const fileBase = () => `trophy-${current.name === 'plexi' ? 'plexiglass' : 'bronze'}`;
+document.getElementById('glb').onclick = async () => download(new Blob([await exportGLB()]), fileBase() + '.glb');
+document.getElementById('stl').onclick = () => download(new Blob([exportSTL()]), fileBase() + '.stl');
+document.getElementById('png').onclick = () => renderer.domElement.toBlob(b => download(b, fileBase() + '.png'));
 </script>
 </body>
 </html>
