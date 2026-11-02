@@ -10,4 +10,6 @@ Rebuild a stroke version (needs Node + Playwright, Python with numpy, scipy, sci
     node tools/render.js original/ORF-02.svg /tmp/ORF-02.png 12
     python3 tools/centerline.py /tmp/ORF-02.png 12 272.65 253.43 stroke/ORF-02.svg round
 
+Use a scale that makes the render about 3000-3500 px wide (12 for the ~270-unit files, 4 for ORF-06).
+
 The last argument is the line join: `round` for the characters, `miter` for the box (ORF-04).
