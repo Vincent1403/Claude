@@ -13,6 +13,8 @@
   #ui { right: 16px; bottom: 16px; }
   .bar button { padding: 8px 12px; border: 0; border-radius: 6px; background: var(--btn); color: var(--btn-fg); cursor: pointer; font-size: 13px; }
   #versions button[aria-pressed="true"] { background: var(--btn-on); color: var(--btn-on-fg); box-shadow: inset 0 0 0 2px var(--btn); }
+  .bar button[hidden] { display: none; }
+  #versions .sep { margin-left: 12px; }
   body.render .bar { display: none; }
 </style>
 <script type="importmap">
@@ -26,6 +28,7 @@
 <div id="versions" class="bar">
   <button data-v="bronze">Bronze</button>
   <button data-v="plexi">Plexiglass</button>
+  <button id="baseToggle" class="sep" aria-pressed="true" hidden>Base: on</button>
 </div>
 <div id="ui" class="bar">
   <button id="glb">Download GLB</button>
@@ -184,15 +187,27 @@ function frame(obj) {
   controls.update();
 }
 
+// Plexiglass only: show / hide the base
+const plexiBase = versions.plexi.getObjectByName('base');
+const baseBtn = document.getElementById('baseToggle');
+function setBase(on) {
+  plexiBase.visible = on;
+  baseBtn.setAttribute('aria-pressed', String(on));
+  baseBtn.textContent = on ? 'Base: on' : 'Base: off';
+}
+baseBtn.onclick = () => setBase(!plexiBase.visible);
+setBase(params.get('base') !== '0');
+
 function setVersion(v) {
   if (!versions[v]) v = 'bronze';
+  baseBtn.hidden = v !== 'plexi';
   if (current) scene.remove(current.obj);
   current = { name: v, obj: versions[v] };
   scene.add(current.obj);
   frame(current.obj);
-  document.querySelectorAll('#versions button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+  document.querySelectorAll('#versions button[data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
 }
-document.querySelectorAll('#versions button').forEach(b => b.onclick = () => setVersion(b.dataset.v));
+document.querySelectorAll('#versions button[data-v]').forEach(b => b.onclick = () => setVersion(b.dataset.v));
 setVersion(params.get('v') || 'bronze');
 
 addEventListener('resize', () => {
@@ -212,15 +227,23 @@ function download(blob, name) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = name; a.click();
 }
-const exportRoot = () => { current.obj.updateMatrixWorld(true); return current.obj; };
+// Only visible parts are exported (the STL exporter would otherwise include a hidden base).
+const exportRoot = () => {
+  const root = new THREE.Group();
+  current.obj.children.forEach(c => { if (c.visible) root.add(c.clone()); });
+  root.updateMatrixWorld(true);
+  return root;
+};
 window.exportGLB = () => new Promise((res, rej) =>
   new GLTFExporter().parse(exportRoot(), r => res(new Uint8Array(r)), rej, { binary: true }));
 window.exportSTL = () => new STLExporter().parse(exportRoot(), { binary: true });
-window.setVersion = setVersion;
+window.setVersion = setVersion; window.setBase = setBase;
 window.camera = camera; window.controls = controls;
 window.ready = true;
 
-const fileBase = () => `trophy-${current.name === 'plexi' ? 'plexiglass' : 'bronze'}`;
+const fileBase = () => current.name === 'plexi'
+  ? (plexiBase.visible ? 'trophy-plexiglass' : 'trophy-plexiglass-nobase')
+  : 'trophy-bronze';
 document.getElementById('glb').onclick = async () => download(new Blob([await exportGLB()]), fileBase() + '.glb');
 document.getElementById('stl').onclick = () => download(new Blob([exportSTL()]), fileBase() + '.stl');
 document.getElementById('png').onclick = () => renderer.domElement.toBlob(b => download(b, fileBase() + '.png'));
