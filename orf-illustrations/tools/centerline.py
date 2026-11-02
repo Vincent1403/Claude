@@ -8,12 +8,27 @@ from skimage import measure
 
 png, S, VW, VH, out = sys.argv[1], float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), sys.argv[5]
 JOIN = sys.argv[6] if len(sys.argv) > 6 else 'round'
+V2 = len(sys.argv) > 7 and sys.argv[7] == 'v2'   # solid black shapes kept as fills, smarter spur pruning
 im = np.array(Image.open(png).convert('RGBA')).astype(float) / 255
 a = im[..., 3]; lum = im[..., :3] @ [.299, .587, .114]
 black = (a > .5) & (lum < .5)
 white = (a > .5) & (lum >= .5)
 black = remove_small_objects(black, 30)
 black = remove_small_holes(black, 60)
+solids = []
+if V2:
+    from skimage.morphology import convex_hull_image
+    d0 = ndi.distance_transform_edt(black); s0 = skeletonize(black)
+    hw = np.median(d0[s0])                     # typical half line width (px)
+    bl, nb_ = ndi.label(black, structure=np.ones((3, 3)))
+    for i, sl_ in enumerate(ndi.find_objects(bl), 1):
+        m = bl[sl_] == i
+        h_, w_ = m.shape
+        if max(h_, w_) > 10 * hw or min(h_, w_) / max(h_, w_) < 0.45: continue
+        if d0[sl_][m].max() < 1.25 * hw: continue          # plain dash, keep as a stroke
+        if ndi.label(~np.pad(m, 1))[1] > 1: continue        # has a hole: it is an outline
+        if m.sum() / convex_hull_image(m).sum() < 0.4: continue
+        solids.append((sl_, m)); black[sl_][m] = False
 dist = ndi.distance_transform_edt(black)
 sk = skeletonize(black)
 H, W = sk.shape
@@ -88,7 +103,12 @@ for _ in range(4):
         if u != v and (deg[u] == 1) != (deg[v] == 1):
             j = v if deg[u] == 1 else u
             wj = 2 * dist[int(round(pos[j][1])), int(round(pos[j][0]))]
-            if plen(p) < 1.6 * wj: continue
+            if V2:
+                k = u if deg[u] == 1 else v
+                tip = dist[int(round(pos[k][1])), int(round(pos[k][0]))]
+                if plen(p) < 2.0 * wj and tip < 0.3 * wj: continue   # corner stub: tip runs into the edge
+                if plen(p) < 0.6 * wj: continue
+            elif plen(p) < 1.6 * wj: continue
         keep.append(e)
     edges = keep
     changed = True
@@ -194,17 +214,26 @@ for i, s_ in enumerate(sl, 1):
             q = q[:-1] if np.allclose(q[0], q[-1]) else q
             d += 'M' + 'L'.join(f'{f(U(x))},{f(U(y))}' for x, y in q) + 'Z'
     if d: fills.append((m.sum(), d))
+for sl_, m in solids:
+    y0, x0 = sl_[0].start, sl_[1].start
+    for c in measure.find_contours(np.pad(m, 1).astype(float), 0.5):
+        pts = np.stack([c[:, 1] + x0 - 1, c[:, 0] + y0 - 1], 1)
+        q = rdp(smooth(pts, True, 0.8), 0.8)
+        if len(q) >= 4:
+            q = q[:-1] if np.allclose(q[0], q[-1]) else q
+            fills.append((m.sum(), 'M' + 'L'.join(f'{f(U(x))},{f(U(y))}' for x, y in q) + 'Z', '#000'))
+fills = [t if len(t) == 3 else (t[0], t[1], '#fff') for t in fills]
 fills.sort(key=lambda t: -t[0])
 
 # ---- write
 rnd = lambda w: f(round(w * 20) / 20)
 out_s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {f(VW)} {f(VH)}">',
          '  <g id="fills" fill="#fff" fill-rule="evenodd">']
-out_s += [f'    <path d="{d}"/>' for _, d in fills]
+out_s += [f'    <path d="{d}"/>' if c == '#fff' else f'    <path fill="{c}" d="{d}"/>' for _, d, c in fills]
 out_s += ['  </g>', f'  <g id="lines" fill="none" stroke="#000" stroke-width="{rnd(wmed)}" stroke-linecap="round" stroke-linejoin="{JOIN}">']
 for w, d, _ in strokes:
     attr = '' if rnd(w) == rnd(wmed) else f' stroke-width="{rnd(w)}"'
     out_s.append(f'    <path d="{d}"{attr}/>')
 out_s += ['  </g>', '</svg>']
 open(out, 'w').write('\n'.join(out_s) + '\n')
-print(f'{out}: {len(fills)} fills, {len(strokes)} strokes, base width {wmed:.2f}, widths {np.percentile(ws,[5,25,50,75,95]).round(2)}')
+print(f'{out}: {len(fills)} fills ({len(solids)} solid), {len(strokes)} strokes, base width {wmed:.2f}, widths {np.percentile(ws,[5,25,50,75,95]).round(2)}')

@@ -13,3 +13,7 @@ Rebuild a stroke version (needs Node + Playwright, Python with numpy, scipy, sci
 Use a scale that makes the render about 3000-3500 px wide (12 for the ~270-unit files, 4 for ORF-06).
 
 The last argument is the line join: `round` for the characters, `miter` for the box (ORF-04).
+
+Add `v2` as an eighth argument to keep solid black shapes (like the stars on ORF-07) as black
+filled shapes, and to prune only the corner stubs of the trace instead of every short line end.
+ORF-07 was traced with `v2`; ORF-02 to ORF-06 without it.
