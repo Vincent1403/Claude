@@ -432,10 +432,10 @@ STEP.forEach(([f,name,desc,std])=>{
   return t=>{K.set(f*eFlow(seg(t,.3,1.1)));hl(t-(f<.75?.2:1.0),3.1)}}})});
 
 def('trans','tr-in','Einschieben','Die Kachel schiebt sich mit Flow bis zur Stufe ins Bild, dann kommt die Headline.',{dur:3.6,bg:'bg-lilac',build(st,h){
- const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr für','deinen','Alltag.']);const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:57,y:h-13});
+ const K=kachel(st,'r',h);const hl=headline(st,'r',h,.5,['Mehr für','deinen','Alltag.']);const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:57,y:40});
  return t=>{K.set(.5*eFlow(seg(t,.3,1.1)));hl(t-.9,3.2);pl(t-1.4,1.85)}}});
 def('trans','mo-split','Fläche teilt sich','Aus einer Fläche wird ein Banner: Ein Foto-Panel schiebt sich hinein und zoomt danach sanft weiter.',{dur:4,bg:'bg-orange',build(st){
- const tx=textBlock(st,['Mehr aus','dem Moment.'],{color:'var(--wine)',size:6.2,x:8});const P=mk(st,'c');const Pi=innerPhoto(P,'img/kian.webp');const pl=pillBuild(st,'Jetzt entdecken',{size:3.2,x:8,y:40});
+ const tx=textBlock(st,['Mehr aus','dem Moment.'],{color:'var(--wine)',size:6.2,x:8});const P=mk(st,'c');const Pi=innerPhoto(P,'img/kian.webp');const pl=pillBuild(st,'Jetzt entdecken',{size:3.4,x:8,y:40});
  return t=>{tx(t-.2,9);const p=eMorph(seg(t,1.0,1.8));box(P,lerp(102,52,p),0,50,H,0);P.style.borderRadius=`${lerp(0,3.4,p)}cqw 0 0 ${lerp(0,3.4,p)}cqw`;tf(Pi,{s:pushIn(t,1.8,4)});pl(t-1.7)}}});
 def('trans','tr-full','Kachel wird Vollbild','Erst geht der Text ab, dann wächst die Kachel aus der Stufe über das ganze Bild. Die Rundung verlässt es über den Rand. Für neue Kapitel.',{dur:5.4,bg:'bg-lilac',build(st,h){
  const K=kachel(st,'r',h);const a=headline(st,'r',h,.5,['Mehr von','dem, was','zählt.']);const b=textBlock(st,['Alles in','einer App.'],{size:6.6});
