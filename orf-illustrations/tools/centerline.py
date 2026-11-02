@@ -189,8 +189,10 @@ for i, s_ in enumerate(sl, 1):
     for c in cs:
         if len(c) < 8: continue
         pts = np.stack([c[:, 1] + x0 - 1, c[:, 0] + y0 - 1], 1)
-        q = rdp(smooth(pts, True, 2.0), 3.0)
-        if len(q) >= 3: d += bez(q, True)
+        q = rdp(smooth(pts, True, 0.8), 1.5)
+        if len(q) >= 4:
+            q = q[:-1] if np.allclose(q[0], q[-1]) else q
+            d += 'M' + 'L'.join(f'{f(U(x))},{f(U(y))}' for x, y in q) + 'Z'
     if d: fills.append((m.sum(), d))
 fills.sort(key=lambda t: -t[0])
 
