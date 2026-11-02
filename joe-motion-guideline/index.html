@@ -510,12 +510,6 @@ def('elem','el-ring','Fortschrittsring','Der Ring füllt sich im jö-Verlauf, di
   num.textContent=Math.round(TARGET*p);
   tf(num,{y:(1-eIn(seg(t,.45,.9)))*12-eOut(seg(t,3.9,4.12))*12});
   tf(W,{s:t<.7?ePop(seg(t,.05,.5)):(t>2.7?1+.04*(1-spring(t-2.7)):1),o:1-eOut(seg(t,4.05,4.3))})}}});
-def('elem','el-plus','Ös-Gutschrift','Die Pill poppt mit Überschwinger auf und steigt danach ganz langsam nach oben, wie eine Gutschrift, die davonschwebt.',{dur:4.4,bg:'bg-beige',build(st){
- const P=mk(st,'c','','position:absolute;display:flex;align-items:center;gap:0;padding:0 4.6cqw;height:13cqw;border-radius:999px;background:var(--jg);box-shadow:0 2.2cqw 5cqw rgba(110,25,10,.35);color:#fff;font-weight:900;font-size:7.6cqw;letter-spacing:-.02em;white-space:nowrap');
- mk(P,'','+ 25','position:static');const ob=osBadge(P,15);ob.style.margin='-1cqw 0 -1cqw -1.6cqw';ob.style.cssText+=';position:static;background:transparent';
- P.style.left='50%';P.style.top=(H/2-6.5)+'cqw';P.style.marginLeft='0';
- return t=>{P.style.translate='-50% 0';
-  const a=t-.35;tf(P,{s:a<0?0:ePop(seg(a,0,.5)),y:-9*seg(t,.85,4.2),o:1-eOut(seg(t,3.75,4.15))})}}});
 def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkante herein und hängt an ihr. Die Ös-Pill baut sich auf wie der Pill-Button.',{dur:3.8,bg:'bg-lilac',build(st){
  const L=mk(st,'');box(L,8.8,7,82.4,42.6,5);L.style.border='.12cqw solid var(--ink)';L.style.overflow='hidden';
  const T=mk(L,'bg-wine c','<div style="position:absolute;left:0;right:0;top:1.8cqw;text-align:center;color:#fff;font-weight:700;font-size:1.8cqw">Rabatt</div><div style="position:absolute;left:0;right:0;top:3.6cqw;text-align:center;color:#fff;font-weight:800;font-size:5.2cqw;letter-spacing:-.02em">5 €</div>');
@@ -526,9 +520,6 @@ def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkan
  return t=>{const a=eIn(seg(t,.4,1.0)),b=eOut(seg(t,3.2,3.5));tf(T,{y:-21*(1-a)-21*b});
   tf(P,{s:ePop(seg(t,1.0,1.42))});const e=eFlow(seg(t,1.35,1.95));P.style.left=lerp(10.36,1.2,e)+'cqw';
   tf(num,{y:(1-eIn(seg(t,1.7,2.15)))*2.4,o:seg(t,1.7,1.85)})}}});
-def('elem','el-push','Push-Nachricht','Die Nachricht fällt mit der jö-Feder von oben ins Bild und federt aus, steht kurz und geht schneller wieder, als sie kam.',{dur:3.8,bg:'bg-lilac',build(st){
- const P=mk(st,'push c','<div class="ic"><svg></svg></div><div><small>jö · jetzt</small><b>Neuer Deal bei Hirter</b><span>-25 % mit deinen Ös.</span></div>');staticLogo(P.querySelector('svg'));P.style.left='14cqw';P.style.right='14cqw';P.style.top='18cqw';
- return t=>{const q=t-.4,a=q<0?0:1-Math.exp(-q/.11)*Math.cos(Math.PI*q/.22),/* Feder mit ca. 13 % Überschwinger, damit die Karte nicht zu weit nach unten schießt */b=eOut(seg(t,2.9,3.2));tf(P,{y:(1-a)*-48+b*-48,/* Einflug mit jö-Feder */o:seg(t,.4,.5)})/* ganz aus dem Bild, inklusive Schatten */}}});
 
 /* Timing: Kurven */
 function curveScene(f,dur,col,lbl){return {dur:3,bg:'bg-white',build(st){
