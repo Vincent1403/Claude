@@ -8,7 +8,8 @@ from skimage import measure
 
 png, S, VW, VH, out = sys.argv[1], float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), sys.argv[5]
 JOIN = sys.argv[6] if len(sys.argv) > 6 else 'round'
-V2 = len(sys.argv) > 7 and sys.argv[7] == 'v2'   # solid black shapes kept as fills, smarter spur pruning
+V2 = len(sys.argv) > 7 and sys.argv[7] in ('v2', 'v3')   # solid black shapes kept as fills, smarter spur pruning
+V3 = len(sys.argv) > 7 and sys.argv[7] == 'v3'           # also: every thick black part becomes a solid shape, drawn on top
 im = np.array(Image.open(png).convert('RGBA')).astype(float) / 255
 a = im[..., 3]; lum = im[..., :3] @ [.299, .587, .114]
 black = (a > .5) & (lum < .5)
@@ -29,6 +30,18 @@ if V2:
         if ndi.label(~np.pad(m, 1))[1] > 1: continue        # has a hole: it is an outline
         if m.sum() / convex_hull_image(m).sum() < 0.4: continue
         solids.append((sl_, m)); black[sl_][m] = False
+solidmask = np.zeros_like(black)
+if V3:
+    for sl_, m in solids: solidmask[sl_] |= m
+    solids = []
+    r_ = 1.4 * hw
+    core = ndi.distance_transform_edt(black) > r_
+    opened = ndi.distance_transform_edt(~core) <= r_                 # morphological opening: parts thicker than ~2.8 half widths
+    near = ndi.distance_transform_edt(~opened) <= 0.6 * hw
+    solidmask |= black & near
+    solidmask = remove_small_objects(solidmask, int(40 * hw * hw))       # smaller blobs are just thick line corners
+    black &= ~solidmask
+    black = remove_small_objects(black, int(3 * hw * hw))            # slivers left at the corners of solid shapes
 dist = ndi.distance_transform_edt(black)
 sk = skeletonize(black)
 H, W = sk.shape
@@ -201,12 +214,14 @@ wl = np.where(keep[wl], wl, 0)
 BG = nw + 1
 outside = remove_small_objects(a <= .5, 200)   # ignore see-through specks where two black shapes of the original meet
 lab0 = wl.copy(); lab0[outside] = BG
+SOLID = nw + 2
+if V3: lab0[solidmask & ~outside] = SOLID
 iy, ix = ndi.distance_transform_edt(lab0 == 0, return_distances=False, return_indices=True)
 owner = lab0[iy, ix]; del iy, ix
 fills = []
 sl = ndi.find_objects(owner)
 for i, s_ in enumerate(sl, 1):
-    if s_ is None or i == BG or not keep[i]: continue
+    if s_ is None or i > nw or not keep[i]: continue
     y0, y1 = s_[0].start, s_[0].stop
     x0, x1 = s_[1].start, s_[1].stop
     m = wl[y0:y1, x0:x1] == i
@@ -235,6 +250,20 @@ for sl_, m in solids:
             fills.append((m.sum(), 'M' + 'L'.join(f'{f(U(x))},{f(U(y))}' for x, y in q) + 'Z', '#000'))
 fills = [t if len(t) == 3 else (t[0], t[1], '#fff') for t in fills]
 fills.sort(key=lambda t: -t[0])
+if V3:   # solid shapes go last, on top of the white areas, largest first
+    sl2, ns = ndi.label(solidmask)
+    tops = []
+    for i, s_ in enumerate(ndi.find_objects(sl2), 1):
+        m = np.pad(sl2[s_] == i, 1); y0, x0 = s_[0].start, s_[1].start
+        d = ''
+        for c in measure.find_contours(m.astype(float), 0.5):
+            pts = np.stack([c[:, 1] + x0 - 1, c[:, 0] + y0 - 1], 1)
+            q = rdp(smooth(pts, True, 1.2), 0.9)
+            if len(q) >= 4:
+                q = q[:-1] if np.allclose(q[0], q[-1]) else q
+                d += 'M' + 'L'.join(f'{f(U(x))},{f(U(y))}' for x, y in q) + 'Z'
+        if d: tops.append((int(m.sum()), d, '#000'))
+    tops.sort(key=lambda t: -t[0]); fills += tops; solids = tops
 
 # ---- write
 rnd = lambda w: f(round(w * 20) / 20)
