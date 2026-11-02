@@ -42,6 +42,8 @@ const COLOR = 0xc8b4a0;    // bronze
 
 const renderMode = new URLSearchParams(location.search).has('render');
 if (renderMode) document.body.classList.add('render');
+// Downloads don't work inside an embedded viewer; hide the buttons there.
+if (window.self !== window.top) document.getElementById('ui').style.display = 'none';
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(renderMode ? 1 : Math.min(devicePixelRatio, 2));
