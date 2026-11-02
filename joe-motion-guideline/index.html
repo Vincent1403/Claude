@@ -456,14 +456,14 @@ def('morph','mo-stack','Kacheln stapeln','Oben steht die Headline auf dem Hinter
  return t=>{hl(t-.15);L.forEach((k,i)=>k.set(k.f*eFlow(seg(t,.6+i*.7,1.4+i*.7))))}}});
 def('morph','mo-flip','Karte dreht sich','Vorderseite Produkt, Rückseite Rabatt: Die Karte dreht sich mit der Flip-Kurve und wird dabei schmaler. Auf jeder Seite baut sich die Pill auf wie der Pill-Button.',{dur:5.4,bg:'bg-lilac',build(st){
  st.style.perspective='120cqw';const K=mk(st,'c');K.style.transformStyle='preserve-3d';const CH=31,R=5.4;
- const f=mk(K,'fill bg-orange');f.style.borderRadius=R+'cqw';f.style.overflow='hidden';
+ const f=mk(K,'fill bg-orange');f.style.borderRadius='5.15cqw';/* 2,15 Pill-Radius + 3 Abstand */f.style.overflow='hidden';
  mk(f,'','Hirter<br>Privat<br>Pils','position:absolute;left:3.6cqw;top:3.4cqw;color:var(--wine);font-weight:700;font-size:4.6cqw;line-height:1.02;letter-spacing:-.02em');
  const bt=mk(f,'');bt.style.cssText='position:absolute;right:2.4cqw;top:2.6cqw;width:17cqw;height:26cqw;background:url(img/hirter.webp) center/contain no-repeat';
- const fp=pill(f,'Jetzt entdecken',{size:2.0});fp.style.cssText+=';position:absolute;left:3cqw;top:22.6cqw';const ft=fp.lastChild;ft.style.display='inline-block';let fW=0;
- const b=mk(K,'fill bg-wine');b.style.borderRadius=R+'cqw';b.style.overflow='hidden';
+ const fp=pill(f,'Jetzt entdecken',{size:2.0});fp.style.cssText+=';position:absolute;left:3cqw;top:23.7cqw';const ft=fp.lastChild;ft.style.display='inline-block';let fW=0;
+ const b=mk(K,'fill bg-wine');b.style.borderRadius='5.47cqw';/* 3,87 Pill-Radius + 1,6 Abstand */b.style.overflow='hidden';
  mk(b,'','Rabatt','position:absolute;left:0;right:0;top:3.4cqw;text-align:center;color:#fff;font-weight:700;font-size:2.6cqw');
  mk(b,'','5 €','position:absolute;left:0;right:0;top:6.4cqw;text-align:center;color:#fff;font-weight:800;font-size:8cqw;letter-spacing:-.02em');
- const bp=pill(b,'250',{size:3.6,badge:'os',badgeFirst:false});bp.style.cssText+=';position:absolute;top:20.6cqw;justify-content:flex-end;font-weight:800;transform-origin:calc(100% - 3.87cqw) 50%;padding-left:0';const bn=bp.firstChild;bn.style.cssText+=';position:absolute;left:0;width:16.8cqw;text-align:center;display:inline-block';/* mittig im weißen Feld links vom Badge */
+ const bp=pill(b,'250',{size:3.6,badge:'os',badgeFirst:false});bp.style.cssText+=';position:absolute;top:21.66cqw;justify-content:flex-end;font-weight:800;transform-origin:calc(100% - 3.87cqw) 50%;padding-left:0';const bn=bp.firstChild;bn.style.cssText+=';position:absolute;left:0;width:16.8cqw;text-align:center;display:inline-block';/* mittig im weißen Feld links vom Badge */
  const BW=27,bHc=3.6*2.15;
  return t=>{
   if(!fW&&st.clientWidth){fp.style.width='auto';fW=fp.offsetWidth/st.clientWidth*100}
@@ -513,8 +513,8 @@ def('elem','el-ring','Fortschrittsring','Der Ring füllt sich im jö-Verlauf, di
 def('elem','el-discount','Rabatt-Tag','Der Tag fährt von oben aus der Layoutkante herein und hängt an ihr. Die Ös-Pill baut sich auf wie der Pill-Button.',{dur:3.8,bg:'bg-lilac',build(st){
  const L=mk(st,'');box(L,8.8,7,82.4,42.6,5);L.style.border='.12cqw solid var(--ink)';L.style.overflow='hidden';
  const T=mk(L,'bg-wine c','<div style="position:absolute;left:0;right:0;top:1.8cqw;text-align:center;color:#fff;font-weight:700;font-size:1.8cqw">Rabatt</div><div style="position:absolute;left:0;right:0;top:3.6cqw;text-align:center;color:#fff;font-weight:800;font-size:5.2cqw;letter-spacing:-.02em">5 €</div>');
- T.style.cssText+=';position:absolute;left:57cqw;top:-.2cqw;width:17.8cqw;height:20.4cqw;border-radius:0 0 3.4cqw 3.4cqw';
- const P=pill(T,'250',{size:2.9,badge:'os',badgeFirst:false});P.style.position='absolute';P.style.left='1.2cqw';P.style.right='1.2cqw';P.style.top='12.2cqw';P.style.justifyContent='space-between';P.style.paddingLeft='2.4cqw';P.style.fontWeight='800';
+ T.style.cssText+=';position:absolute;left:57cqw;top:-.2cqw;width:17.8cqw;height:19.64cqw;border-radius:0 0 4.32cqw 4.32cqw';/* Radius = Pill-Radius + Abstand: Ecken laufen konzentrisch */
+ const P=pill(T,'250',{size:2.9,badge:'os',badgeFirst:false});P.style.position='absolute';P.style.left='1.2cqw';P.style.right='1.2cqw';P.style.top='12.2cqw';/* unten ebenfalls 1,2 Abstand */P.style.justifyContent='space-between';P.style.paddingLeft='2.4cqw';P.style.fontWeight='800';
  const num=P.firstChild,ob=P.lastChild;num.style.cssText+=';position:absolute;left:0;width:9.75cqw;text-align:center;display:inline-block';/* mittig im weißen Feld links vom Badge */P.style.justifyContent='flex-end';P.style.transformOrigin='calc(100% - 3.12cqw) 50%';P.style.paddingLeft='0';
  /* Ring um das Badge ist überall gleich breit (0,2 × Größe), damit die Kreise zentriert ineinander sitzen. Wie der Pill-Button: Ös-Punkt poppt, die Pill zieht sich nach links auf, dann steigt die Zahl */
  return t=>{const a=eIn(seg(t,.4,1.0)),b=eOut(seg(t,3.2,3.5));tf(T,{y:-21*(1-a)-21*b});
