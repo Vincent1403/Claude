@@ -54,7 +54,7 @@ const SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420.57 203.79"
 // All sizes in SVG units (the logo is ~204 units tall).
 const BRONZE_DEPTH = 40;   // extrusion of the "20"
 const LOGO_SINK = 6;       // how far the "20" sits down into the base (the "0" hangs ~5 below the "2")
-const PLEXI_THICK = 16;    // acrylic panel thickness
+const PLEXI_THICK = 8;     // acrylic panel thickness (~5 mm at a 20 cm tall panel)
 const PLEXI_MARGIN = 16;   // solid acrylic around the circle (left / right / top)
 const PLEXI_RATIO = 918 / 660; // panel height / width, from the sketch
 const PLEXI_TINT = 0x44483c; // acrylic tint colour
@@ -117,7 +117,7 @@ const acrylic = new THREE.MeshPhysicalMaterial({
   color: 0xffffff, metalness: 0, roughness: 0, transmission: 1, thickness: PLEXI_THICK,
   // Tinted acrylic: light passing through the panel's thickness is filtered by PLEXI_TINT,
   // so the face reads as roughly #44483c against the grey backdrop and edges go darker.
-  ior: 1.49, attenuationColor: new THREE.Color(PLEXI_TINT), attenuationDistance: 22,
+  ior: 1.49, attenuationColor: new THREE.Color(PLEXI_TINT), attenuationDistance: PLEXI_THICK * 1.375, // keeps the face at ~#44483c for any thickness
   specularIntensity: 0.6,
 });
 const baseMat = new THREE.MeshPhysicalMaterial({ color: 0x141414, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.08 });
