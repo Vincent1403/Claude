@@ -30,6 +30,7 @@ import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 
 // Source: 20.svg (viewBox 420.57 x 203.79)
 const SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420.57 203.79">
@@ -96,10 +97,11 @@ const logo = new THREE.Group();
 for (const path of data.paths) {
   for (const shape of SVGLoader.createShapes(path)) {
     const geo = new THREE.ExtrudeGeometry(shape, {
-      depth: DEPTH, curveSegments: 24,
-      bevelEnabled: true, bevelThickness: 0.6, bevelSize: 0.6, bevelSegments: 2,
+      depth: DEPTH, curveSegments: 64, bevelEnabled: false,
     });
-    logo.add(new THREE.Mesh(geo, material));
+    // ExtrudeGeometry shades every side strip flat, which bands the curved walls.
+    // Smooth normals across shallow angles; keep real corners (> 30°) and the 90° face/wall edges crisp.
+    logo.add(new THREE.Mesh(toCreasedNormals(geo, THREE.MathUtils.degToRad(30)), material));
   }
 }
 logo.scale.set(1, -1, 1); // SVG y points down
@@ -145,6 +147,7 @@ function download(blob, name) {
 window.exportGLB = () => new Promise((res, rej) =>
   new GLTFExporter().parse(exportRoot(), r => res(new Uint8Array(r)), rej, { binary: true }));
 window.exportSTL = () => new STLExporter().parse(exportRoot(), { binary: true });
+window.camera = camera; window.controls = controls;
 window.ready = true;
 
 document.getElementById('glb').onclick = async () => download(new Blob([await exportGLB()]), '20.glb');
