@@ -193,17 +193,28 @@ wmed = float(np.average(ws, weights=lens))
 # ---- fills
 white = remove_small_objects(white, 40)
 wl, nw = ndi.label(white)
-r = wmed * S / 2
+area = ndi.sum(white, wl, range(1, nw + 1))
+keep = np.concatenate([[False], area >= 60])
+wl = np.where(keep[wl], wl, 0)
+# every pixel inside the drawing goes to its nearest white area (the transparent outside is one more
+# "area"), so neighbouring fills meet in the middle of each line, however thick the black is there
+BG = nw + 1
+outside = remove_small_objects(a <= .5, 200)   # ignore see-through specks where two black shapes of the original meet
+lab0 = wl.copy(); lab0[outside] = BG
+iy, ix = ndi.distance_transform_edt(lab0 == 0, return_distances=False, return_indices=True)
+owner = lab0[iy, ix]; del iy, ix
 fills = []
-sl = ndi.find_objects(wl)
-pad = int(r) + 4
+sl = ndi.find_objects(owner)
 for i, s_ in enumerate(sl, 1):
-    y0, y1 = max(s_[0].start - pad, 0), min(s_[0].stop + pad, H)
-    x0, x1 = max(s_[1].start - pad, 0), min(s_[1].stop + pad, W)
+    if s_ is None or i == BG or not keep[i]: continue
+    y0, y1 = s_[0].start, s_[0].stop
+    x0, x1 = s_[1].start, s_[1].stop
     m = wl[y0:y1, x0:x1] == i
-    if m.sum() < 60: continue
-    grown = ndi.distance_transform_edt(~m) <= r
-    grown = np.pad(grown, 1)
+    y0, y1, x0, x1 = max(y0 - 5, 0), min(y1 + 5, H), max(x0 - 5, 0), min(x1 + 5, W)
+    m = wl[y0:y1, x0:x1] == i
+    own = owner[y0:y1, x0:x1]
+    # overlap neighbouring fills by 4 px so no hairline seam opens between them (never into the outside)
+    grown = np.pad(ndi.binary_dilation(own == i, iterations=4) & (own != BG), 1)
     cs = measure.find_contours(grown.astype(float), 0.5)
     d = ''
     for c in cs:
