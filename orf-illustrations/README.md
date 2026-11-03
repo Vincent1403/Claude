@@ -20,7 +20,7 @@ ORF-07 to ORF-09 were traced with `v2` (ORF-09 with `miter` joins); ORF-02 to OR
 
 ## Pictures (PNG, JPG, WebP)
 
-ORF-10 and ORF-11 came in as WebP pictures. `tools/prep.py` turns a black-on-white picture into
+ORF-10 to ORF-12 came in as WebP pictures. `tools/prep.py` turns a black-on-white picture into
 the transparent black/white image the tracer expects (it enlarges it, smooths compression noise and
 removes the white around the drawing). Then trace with `v3`, which also keeps every part of the
 black that is much thicker than a line (letters, shadows) as a solid black shape on top:
