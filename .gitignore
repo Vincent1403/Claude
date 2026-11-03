@@ -1,3 +1,4 @@
 joe-strategiefilm/index.html
 joe-strategiefilm/*.mp4
 .claude/skills/develop-web-game/scripts/node_modules/
+__pycache__/
