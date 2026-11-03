@@ -17,7 +17,8 @@ daraus (Stand 28.10.2026):
 
 ```
 web/index.html        Website-Prototyp, läuft direkt im Browser (eine Datei, nur Google Fonts extern)
-web/referenz/         Referenz-Sheet der Figur (Posen); der Zeichenstil in index.html folgt inzwischen flachen Linienfiguren
+web/build_assets.py   färbt die Bibliotheks-SVGs ein und bettet sie in index.html ein (nach Änderungen an der Bibliothek ausführen)
+web/referenz/         library/: SVGs aus der ORF-Illustrationsbibliothek; archiv_figur.webp: früheres Posen-Sheet
 print/src/*.dc.html   Doppelseiten-Quellen aus dem Design-Canvas (2× A4 = 1588 × 1123 px)
 print/build.py        macht daraus eigenständige Seiten: print/spreads/*.html + print/index.html (Übersicht)
 design-canvas/        Original-Quellen der Web-Module aus dem Canvas (brauchen dessen Runtime, nur als Referenz) + canvas.json
@@ -79,16 +80,15 @@ durchstreicht, wofür der ORF nicht stehen will.
 3. **Haushaltsabgabe statt Abo:** 50-Cent-Münze in den Fernseher ziehen; daraus wachsen
    zwölf Angebote (ZIB, Bundesland heute, Ö1, FM4, ORF III, ÖGS …).
 
-**Look der Module:** flacher Linienstil, minimal und verspielt. Gleichmäßiger 2,5-px-Strich, flache
-Füllungen in Schwarz, Weiß und ORF-Rot, keine Schattierung, lange schlanke Proportionen (Vorbild:
-Figuren wie in der Referenz unter `web/referenz/`). Bühnen sind flache, helle Flächen mit runden Ecken,
-die Bedienung sitzt daneben in einer Karte mit dünnem Rahmen, Knöpfe sind Pillen. Bewegung bleibt
-sparsam: Squash und ein paar Punkte beim Fangen, ein Etikett pro gefangenem Moment, Zeitungen, die beim
-Weiterblättern vom Stapel fliegen, Stempel mit Wumms, Fernseher, der beim Einwurf ruckelt und
-aufflackert, Münze, die beim Ziehen kippt, Schlitz, der aufleuchtet, wenn sie nah ist, blinzelnde
-Augen, atmender Oberkörper, Jubel nach dem Einwurf. Wien (Stephansdom, Riesenrad) steht als
-Linienzeichnung im Hintergrund und wandert leicht gegen die Figur. Alles ruht bei
-`prefers-reduced-motion`.
+**Look der Module:** Neo-Brutalismus nach dem Sketch. Grid-Papier, riesige schwarze Archivo-Versalien
+(breit, 900), volle rote Bänder, die nach unten ins Papier auslaufen, Eyebrow-Pills, rosa Headlines auf Rot,
+dicke Konturen, harte schwarze Schlagschatten. Figuren und Objekte kommen aus der ORF-Illustrationsbibliothek
+(`web/referenz/library/`, Linienzeichnungen mit getrennten Füllflächen) und werden per CSS-Klassen eingefärbt:
+Haut, blaue Hose, Schuhe mit Orange-Verlauf, weiße Handschuhe, Rot, Creme, Verlauf auf Block und Cursor.
+`web/build_assets.py` ordnet jeder Füllfläche eine Rolle zu und bettet die SVGs in `index.html` ein.
+Erinnern: Archiv-Figur fängt Akten-Karten, Kontrolle: Lupen-Figur prüft Eilmeldungen, Haushaltsabgabe: Münze
+in die Boombox-Figur. Hover-Tilt auf den Hero-Objekten, Scroll-Reveal, Hüpfer, Squash, Stempel, Tanz nach
+dem Einwurf. Alles ruht bei `prefers-reduced-motion`.
 
 ## Gestaltung
 
