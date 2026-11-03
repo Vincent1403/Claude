@@ -20,7 +20,7 @@ ORF-07 to ORF-09 were traced with `v2` (ORF-09 with `miter` joins); ORF-02 to OR
 
 ## Pictures (PNG, JPG, WebP)
 
-ORF-10 to ORF-12 came in as WebP pictures. `tools/prep.py` turns a black-on-white picture into
+ORF-10 to ORF-13 came in as WebP pictures. `tools/prep.py` turns a black-on-white picture into
 the transparent black/white image the tracer expects (it enlarges it, smooths compression noise and
 removes the white around the drawing). Then trace with `v3`, which also keeps every part of the
 black that is much thicker than a line (letters, shadows) as a solid black shape on top:
@@ -29,3 +29,10 @@ black that is much thicker than a line (letters, shadows) as a solid black shape
     python3 tools/centerline.py /tmp/ORF-11.png 2 1754 1280 stroke/ORF-11.svg round v3
 
 For a picture the scale is the enlargement factor and the size is the picture's own size in pixels.
+
+Only dark grey to black counts as ink, so coloured parts of a picture (ORF-13's orange-pink side
+panel and pink dial needle) become white areas, not lines. For a drawing on grid paper whose paper
+colour matches the drawing (ORF-13), add `grid`: enclosed areas that show the blue grid lines, like
+the opening under a handle, are then treated as background:
+
+    python3 tools/prep.py original/ORF-13.webp /tmp/ORF-13.png 1.75 grid
