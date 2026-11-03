@@ -1,19 +1,22 @@
 """Turn a black-line picture (png/jpg/webp) into the RGBA image centerline.py expects:
 black ink, white areas, transparent outside.
 
-usage: python3 prep.py in.img out.png scale [grid]
+usage: python3 prep.py in.img out.png scale [grid] [bg:x,y;x,y...]
 
 Ink is anything dark in all three colour channels, so coloured parts (a gradient panel, a pink
 needle, blue grid lines) are never taken for lines. Everything not ink that touches the edge of the
 picture is outside. With `grid`, an enclosed area that shows blue grid lines (such as the opening
 under a handle) is outside too, for drawings on grid paper whose paper colour matches the drawing.
+With `bg:x,y;...` (pixel positions in the original picture) the enclosed areas at those points are
+outside too, for gaps that have exactly the drawing's colour (between the legs of a tripod).
 """
 import sys, numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
 from skimage.morphology import remove_small_objects, remove_small_holes
 src, out, S = sys.argv[1], sys.argv[2], float(sys.argv[3])
-GRID = len(sys.argv) > 4 and sys.argv[4] == 'grid'
+GRID = 'grid' in sys.argv[4:]
+SEEDS = [tuple(float(v) for v in p.split(',')) for a in sys.argv[4:] if a.startswith('bg:') for p in a[3:].split(';') if p]
 im = Image.open(src).convert('RGB')
 im = im.resize((round(im.width * S), round(im.height * S)), Image.LANCZOS)
 rgb = np.asarray(im, float) / 255
@@ -25,6 +28,10 @@ if GRID:
     blue = (rgb[..., 2] - np.maximum(rgb[..., 0], rgb[..., 1]) > 0.25) & ~ink
     counts = ndi.sum(blue, lab, range(1, n + 1))
     border |= {i + 1 for i, c in enumerate(counts) if c > 40 * S * S}
+for x, y in SEEDS:
+    l = lab[int(round(y * S)), int(round(x * S))]
+    if l: border.add(l)
+    else: print('bg point', (x, y), 'is on a line, ignored')
 outside = np.isin(lab, list(border))
 rgba = np.zeros(ink.shape + (4,), np.uint8)
 rgba[~outside] = (255, 255, 255, 255); rgba[ink] = (0, 0, 0, 255)
