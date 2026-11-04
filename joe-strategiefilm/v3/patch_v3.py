@@ -1171,13 +1171,13 @@ s = s.replace(_FIT, _FIT + "\n" + HALF_JS, 1)
 s = s.replace("</style>", "svg.oesg{overflow:visible!important} /* Kunde: Ös-Zeichen nie am eigenen Rahmen abschneiden */\n</style>", 1)
 if GRAD_NEU:
     NG = [(0, "#FFA238"), (30, "#FF790E"), (55, "#FF4C08"), (75, "#E82A0D"), (90, "#C90032"), (100, "#A90043")]
-    NG_CSS = "linear-gradient(to bottom right," + ",".join(f"{c} {o}%" for o, c in NG) + ")"
+    NG_CSS = "linear-gradient(to bottom left," + ",".join(f"{c} {o}%" for o, c in NG) + ")"   # Kunde: gespiegelt – hell oben rechts, dunkel unten links
     NG_STOPS = "".join(f'<stop offset="{o / 100:g}" stop-color="{c}"/>' for o, c in NG)
     _n0 = len(s)
     # Haupt-Verlauf (Hintergründe in ~30 Szenen), Editor-Palette, Farbabgriff für Pills, SVG-Stops (Logos, Ringe)
     s, n = re.subn(r"const JG_CSS=`radial-gradient\(128\.6% 191\.1% at -18\.4% 123\.6%,\$\{JGRAD[^`]*`", "const JG_CSS='" + NG_CSS + "'", s); assert n == 1
     s, n = re.subn(r"const JGRAD=\[\[0,'#5c3048'\][^;]*;", "const JGRAD=[" + ",".join(f"[{o},'{c}']" for o, c in NG) + "];", s); assert n == 1
-    s, n = re.subn(r"const jgAt=\(x,y\)=>\{const t=Math\.hypot\([^;]*;", "const jgAt=(x,y)=>{const t=Math.max(0,Math.min(100,(x*1080+y*1920)/(2*1920*1080)*100));", s); assert n == 1   # linear „to bottom right“
+    s, n = re.subn(r"const jgAt=\(x,y\)=>\{const t=Math\.hypot\([^;]*;", "const jgAt=(x,y)=>{const t=Math.max(0,Math.min(100,((1920-x)*1080+y*1920)/(2*1920*1080)*100));", s); assert n == 1   # linear „to bottom left“
     s, n = re.subn(r"const JG_VIS=JGRAD\.filter\([^;]*;", "const JG_VIS=JGRAD.map(g=>[g[0],g[1]]);", s); assert n == 1
     # CSS-Verläufe: Story-Karten, App-UI, Deals, Box-Widgets, jö-Kreise, Tafel-Hintergründe
     _CSS = [r"radial-gradient\(45% 70% at 0% 100%,#b23336 0%,rgba\(178,51,54,0\) 100%\),\s*linear-gradient\(95deg,#c4382b[^)]*\)",
@@ -1191,15 +1191,15 @@ if GRAD_NEU:
             r"radial-gradient\(52% 52% at 8% 76%,#b14c3f[^)]*\)[^,]*,radial-gradient\(48% 42% at 98% 4%,#f3cfa6[^)]*\)[^,]*,linear-gradient\(0deg,#dd5d26 0%,#e86d2c 40%,#ef9c5e 100%\)"]
     for _r in _CSS:
         s, n = re.subn(_r, NG_CSS, s); assert n >= 1, _r
-    # SVG-Verläufe mit Rot-Orange-Stops (jö-Logos, Ringe, Icons, App-Icon): Richtung „to bottom right“, neue Stops
+    # SVG-Verläufe mit Rot-Orange-Stops (jö-Logos, Ringe, Icons, App-Icon): Richtung „to bottom left“, neue Stops
     _RO = ("#c0233a", "#c21f35", "#c8202f", "#d62319", "#A83041", "#ff7a00", "${JG_VIS")
     def _svg(m):
         a, body = m.group(1), m.group(2)
         if not any(c in body for c in _RO): return m.group(0)
         if 'gradientUnits="userSpaceOnUse"' in a:
-            a = re.sub(r'x1="[^"]*" y1="[^"]*" x2="[^"]*" y2="[^"]*"', 'x1="0" y1="0" x2="200" y2="200"', a)
+            a = re.sub(r'x1="[^"]*" y1="[^"]*" x2="[^"]*" y2="[^"]*"', 'x1="200" y1="0" x2="0" y2="200"', a)
         else:
-            a = re.sub(r'x1="[^"]*" y1="[^"]*" x2="[^"]*" y2="[^"]*"', 'x1="0" y1="0" x2="1" y2="1"', a)
+            a = re.sub(r'x1="[^"]*" y1="[^"]*" x2="[^"]*" y2="[^"]*"', 'x1="1" y1="0" x2="0" y2="1"', a)
         if "${JG_VIS" not in body: body = NG_STOPS
         return f"<linearGradient{a}>{body}</linearGradient>"
     s, n = re.subn(r"<linearGradient([^>]*)>(.*?)</linearGradient>", _svg, s, flags=re.S)

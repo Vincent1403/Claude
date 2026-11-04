@@ -1,5 +1,5 @@
 """Färbt die jö-Logos mit eingebranntem Rot-Orange-Verlauf (weißer Kreis + Verlaufs-Glyphe) auf den neuen Verlauf um.
-Neuer Verlauf: linear-gradient(to bottom right, #FFA238 0%, #FF790E 30%, #FF4C08 55%, #E82A0D 75%, #C90032 90%, #A90043 100%)
+Neuer Verlauf: linear-gradient(to bottom left, #FFA238 0%, #FF790E 30%, #FF4C08 55%, #E82A0D 75%, #C90032 90%, #A90043 100%)
 über die Bounding-Box der Glyphe. Form/Kanten: Kern = volle Deckung, Kantenpixel anteilig (gegen Weiß gemischt)."""
 import sys, numpy as np
 from PIL import Image
@@ -24,7 +24,7 @@ def recolor(src, dst, xmax=None):
     a *= nd.binary_dilation(M, iterations=3)                         # nur Glyphe + ihre Kante
     ys, xs = np.where(M); x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max(); w, h = x1 - x0, y1 - y0
     H, W = A.shape; yy, xx = np.mgrid[0:H, 0:W]
-    t = np.clip(((xx - x0) * h + (yy - y0) * w) / (2 * w * h), 0, 1)   # CSS „to bottom right“: Ecken oben rechts/unten links gleich
+    t = np.clip(((x1 - xx) * h + (yy - y0) * w) / (2 * w * h), 0, 1)   # CSS „to bottom left“ (Kunde: gespiegelt – hell oben rechts, dunkel unten links)
     g = grad(t)
     out = rgb.copy(); sel = a > 0
     out[sel] = (255 * (1 - a[sel, None]) + g[sel] * a[sel, None])
