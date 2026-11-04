@@ -9,7 +9,7 @@ def hx(c): return np.array([int(c[i:i + 2], 16) for i in (1, 3, 5)], float)
 def grad(t):
     P = np.array([s[0] / 100 for s in STOPS]); C = np.array([hx(s[1]) for s in STOPS])
     return np.stack([np.interp(t, P, C[:, k]) for k in range(3)], -1)
-def recolor(src, dst, xmax=None):
+def recolor(src, dst, xmax=None, rev=False):
     v = np.asarray(Image.open(src).convert('RGBA'), float); rgb, A = v[..., :3], v[..., 3]
     d = 255 - rgb.min(-1) * 0 - rgb[..., 1:3].mean(-1)            # Abstand zu Weiß über G und B (R ist in der Glyphe fast immer 255)
     M = (d > 25) & (A > 200)          # Kreisrand (halbtransparent) gehört nicht zur Glyphe
@@ -25,11 +25,13 @@ def recolor(src, dst, xmax=None):
     ys, xs = np.where(M); x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max(); w, h = x1 - x0, y1 - y0
     H, W = A.shape; yy, xx = np.mgrid[0:H, 0:W]
     t = np.clip(((x1 - xx) * h + (yy - y0) * w) / (2 * w * h), 0, 1)   # CSS „to bottom left“ (Kunde: gespiegelt – hell oben rechts, dunkel unten links)
+    if rev: t = 1 - t                                               # umgekehrt: dunkel oben rechts, hell unten links
     g = grad(t)
     out = rgb.copy(); sel = a > 0
     out[sel] = (255 * (1 - a[sel, None]) + g[sel] * a[sel, None])
     Image.fromarray(np.dstack([np.clip(out, 0, 255), A]).astype('uint8'), 'RGBA').save(dst, 'WEBP', quality=92)
 if __name__ == '__main__':
-    for s_, d_, xm in (('endc_icon_verlauf.webp', 'verlauf_neu/endc_icon_verlauf_neu.webp', None), ('jo_verlauf.webp', 'verlauf_neu/jo_verlauf_neu.webp', None),
-                       ('partner_logos/josport_weiss.webp', 'verlauf_neu/josport_weiss_neu.webp', 280), ('partner_logos/joreisen_weiss.webp', 'verlauf_neu/joreisen_weiss_neu.webp', 280)):
-        recolor(s_, d_, xm); print('ok', d_)
+    # Kunde: großes jö am Schluss (1:55) + jö im App-Icon davor (nahtloser Übergang) umgekehrt – dunkel oben rechts, hell unten links
+    for s_, d_, xm, rv in (('endc_icon_verlauf.webp', 'verlauf_neu/endc_icon_verlauf_neu.webp', None, True), ('jo_verlauf.webp', 'verlauf_neu/jo_verlauf_neu.webp', None, True),
+                           ('partner_logos/josport_weiss.webp', 'verlauf_neu/josport_weiss_neu.webp', 280, False), ('partner_logos/joreisen_weiss.webp', 'verlauf_neu/joreisen_weiss_neu.webp', 280, False)):
+        recolor(s_, d_, xm, rv); print('ok', d_)
