@@ -1139,10 +1139,13 @@ _zs = f"CLV.style.transform=`scale(${{Math.min({1 + _zm},{_z0}+{_zk}*t).toFixed(
 rep("im.src='ooh/kian_mid.webp';im.alt='';", "im.src='ooh/kian_mid.webp';im.alt='';im.id='clKM';")
 rep("Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return}", _zs + "Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return}")
 rep("Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});", "Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});" + _zs)
-s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon_verlauf.webp").read_bytes()).decode())   # Kunde: großes jö mit Farbverlauf (vorher endc_icon.webp)
-s = s.replace("__GRADJO__", "data:image/webp;base64," + base64.b64encode((here / "jo_verlauf.webp").read_bytes()).decode())
+# Kunde (04.11.): alle Rot-Orange-Verläufe → neuer Verlauf; GRAD_NEU = False stellt den alten Stand wieder her (Commit 32a1deb, Artefakt „Stand vor neuem Verlauf“)
+GRAD_NEU = True
+_VN = (lambda alt, neu: here / "verlauf_neu" / neu if GRAD_NEU else here / alt)   # umgefärbte Logos: verlauf_neu/logo_umfaerben.py
+s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode(_VN("endc_icon_verlauf.webp", "endc_icon_verlauf_neu.webp").read_bytes()).decode())   # Kunde: großes jö mit Farbverlauf (vorher endc_icon.webp)
+s = s.replace("__GRADJO__", "data:image/webp;base64," + base64.b64encode(_VN("jo_verlauf.webp", "jo_verlauf_neu.webp").read_bytes()).decode())
 s = s.replace("__ECICON_OLD__", "data:image/webp;base64," + base64.b64encode((here / "endc_icon.webp").read_bytes()).decode())
-for _ph, _fn in (("__EPJS__", "josport_weiss"), ("__EPJR__", "joreisen_weiss")): s = s.replace(_ph, "data:image/webp;base64," + base64.b64encode((here / "partner_logos" / (_fn + ".webp")).read_bytes()).decode())
+for _ph, _fn in (("__EPJS__", "josport_weiss"), ("__EPJR__", "joreisen_weiss")): s = s.replace(_ph, "data:image/webp;base64," + base64.b64encode(_VN("partner_logos/" + _fn + ".webp", _fn + "_neu.webp").read_bytes()).decode())
 # Kunde: Schalter „Vorschau ½“ – die Vorschau wird mit halber Auflösung gerastert und hochskaliert (flüssiger beim Ansehen);
 # Export (stage.html) und Timing bleiben unberührt, die Einstellung merkt sich der Browser
 HALF_JS = """(function(){if(window.__videoMeta)return;
@@ -1166,6 +1169,41 @@ _FIT = "function fit(){$('stage').style.transform=`scale(${$('vp').clientWidth/1
 assert s.count(_FIT) == 1
 s = s.replace(_FIT, _FIT + "\n" + HALF_JS, 1)
 s = s.replace("</style>", "svg.oesg{overflow:visible!important} /* Kunde: Ös-Zeichen nie am eigenen Rahmen abschneiden */\n</style>", 1)
+if GRAD_NEU:
+    NG = [(0, "#FFA238"), (30, "#FF790E"), (55, "#FF4C08"), (75, "#E82A0D"), (90, "#C90032"), (100, "#A90043")]
+    NG_CSS = "linear-gradient(to bottom right," + ",".join(f"{c} {o}%" for o, c in NG) + ")"
+    NG_STOPS = "".join(f'<stop offset="{o / 100:g}" stop-color="{c}"/>' for o, c in NG)
+    _n0 = len(s)
+    # Haupt-Verlauf (Hintergründe in ~30 Szenen), Editor-Palette, Farbabgriff für Pills, SVG-Stops (Logos, Ringe)
+    s, n = re.subn(r"const JG_CSS=`radial-gradient\(128\.6% 191\.1% at -18\.4% 123\.6%,\$\{JGRAD[^`]*`", "const JG_CSS='" + NG_CSS + "'", s); assert n == 1
+    s, n = re.subn(r"const JGRAD=\[\[0,'#5c3048'\][^;]*;", "const JGRAD=[" + ",".join(f"[{o},'{c}']" for o, c in NG) + "];", s); assert n == 1
+    s, n = re.subn(r"const jgAt=\(x,y\)=>\{const t=Math\.hypot\([^;]*;", "const jgAt=(x,y)=>{const t=Math.max(0,Math.min(100,(x*1080+y*1920)/(2*1920*1080)*100));", s); assert n == 1   # linear „to bottom right“
+    s, n = re.subn(r"const JG_VIS=JGRAD\.filter\([^;]*;", "const JG_VIS=JGRAD.map(g=>[g[0],g[1]]);", s); assert n == 1
+    # CSS-Verläufe: Story-Karten, App-UI, Deals, Box-Widgets, jö-Kreise, Tafel-Hintergründe
+    _CSS = [r"radial-gradient\(45% 70% at 0% 100%,#b23336 0%,rgba\(178,51,54,0\) 100%\),\s*linear-gradient\(95deg,#c4382b[^)]*\)",
+            r"radial-gradient\(45% 60% at 70% 58%,#ff3500[^;]*?linear-gradient\(295deg,#ff6a00[^)]*\)",
+            r"linear-gradient\(62deg,#c21f35 0%,#ea2b0b 42%[^)]*\)", r"linear-gradient\(225deg,#ff7024 0%,#f2481a 32%[^)]*\)", r"linear-gradient\(62deg,#c21f35 0%,#ea2b0b 38%[^)]*\)",
+            r"radial-gradient\(farthest-corner at 0% 100%,#c0233a 0%,#ee2a06 50%,#ff7024 100%\)", r"linear-gradient\(225deg,#ff7024,#ee2a06 50%,#c0233a\)",
+            r"radial-gradient\(60% 45% at 0% 100%,#be2536 0%,rgba\(190,37,54,0\) 100%\),linear-gradient\(98deg,#d62319[^)]*\)", r"linear-gradient\(31deg,#b32d2e[^)]*\)",
+            r"radial-gradient\(85% 120% at 0% 100%,rgba\(192,32,58,\.95\) 0%,rgba\(192,32,58,0\) 48%\),radial-gradient\(90% 95% at 100% 0%,#ff7024 0%,rgba\(255,112,36,0\) 62%\),#ee2a06",
+            r"linear-gradient\(135deg,#c8263a 0%,#e8481c 50%,#f5913f 100%\)",
+            r"radial-gradient\(70% 70% at 8% 92%,#b5473a[^)]*\)[^,]*,radial-gradient\(60% 60% at 92% 5%,#f6c08e[^)]*\)[^,]*,linear-gradient\(340deg,#e45d1f,#ec7a33 60%,#f0a060\)",
+            r"radial-gradient\(52% 52% at 8% 76%,#b14c3f[^)]*\)[^,]*,radial-gradient\(48% 42% at 98% 4%,#f3cfa6[^)]*\)[^,]*,linear-gradient\(0deg,#dd5d26 0%,#e86d2c 40%,#ef9c5e 100%\)"]
+    for _r in _CSS:
+        s, n = re.subn(_r, NG_CSS, s); assert n >= 1, _r
+    # SVG-Verläufe mit Rot-Orange-Stops (jö-Logos, Ringe, Icons, App-Icon): Richtung „to bottom right“, neue Stops
+    _RO = ("#c0233a", "#c21f35", "#c8202f", "#d62319", "#A83041", "#ff7a00", "${JG_VIS")
+    def _svg(m):
+        a, body = m.group(1), m.group(2)
+        if not any(c in body for c in _RO): return m.group(0)
+        if 'gradientUnits="userSpaceOnUse"' in a:
+            a = re.sub(r'x1="[^"]*" y1="[^"]*" x2="[^"]*" y2="[^"]*"', 'x1="0" y1="0" x2="200" y2="200"', a)
+        else:
+            a = re.sub(r'x1="[^"]*" y1="[^"]*" x2="[^"]*" y2="[^"]*"', 'x1="0" y1="0" x2="1" y2="1"', a)
+        if "${JG_VIS" not in body: body = NG_STOPS
+        return f"<linearGradient{a}>{body}</linearGradient>"
+    s, n = re.subn(r"<linearGradient([^>]*)>(.*?)</linearGradient>", _svg, s, flags=re.S)
+    print("GRAD_NEU: Verläufe ersetzt, SVG-Verläufe geprüft:", n)
 (here / "index.html").write_text(s, encoding="utf-8")
 # Player-Version zum Teilen: nur das Video, ohne Timeline, Header und Infos
 _pc = """<style id="playerOnly">
