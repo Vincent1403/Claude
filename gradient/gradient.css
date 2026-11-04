@@ -1,0 +1,13 @@
+/* Warm orange -> raspberry gradient, upper-left to lower-right */
+.warm-gradient {
+  background-color: #FF4C08; /* fallback */
+  background-image: linear-gradient(
+    to bottom right,
+    #FFA238 0%,   /* light peach-orange */
+    #FF790E 30%,  /* vivid warm orange */
+    #FF4C08 55%,  /* saturated orange-red */
+    #E82A0D 75%,  /* deep warm red */
+    #C90032 90%,  /* crimson red */
+    #A90043 100%  /* raspberry-magenta */
+  );
+}
