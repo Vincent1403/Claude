@@ -7,9 +7,11 @@ wooden "Topo" block in `../index.html` (the `TOPO` constant).
 python analyze.py topo-pattern.webp out                              # contour lines -> bands between them
 python height.py out                                                 # bands -> elevation (closed loops = summits)
 python carve.py topo-pattern.webp out/elev.npy out/carve.json 250 470 -2   # crop x, crop width, carve floor
+python carve.py topo-pattern.webp out/elev.npy out/cert.json 150 758 -2 0.35  # A4 crop (1 : 1.414), logo 35% wide
 ```
 
-Needs numpy, scipy, scikit-image, pillow. Paste `out/carve.json` into `TOPO` in `index.html`.
+Needs numpy, scipy, scikit-image, pillow. Paste `out/carve.json` into `TOPO` (upright block) and
+`out/cert.json` into `CERT` (A4 certificate, 210 x 297 x 10 mm) in `index.html`.
 
 - Elevation is inferred, since the pattern's lines carry no heights: nested closed loops are hills
   (inner = higher) and the ground drops one level per line crossed moving away from the summits.
