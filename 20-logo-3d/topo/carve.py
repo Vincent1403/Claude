@@ -13,13 +13,15 @@
 #     --surface Z0 --down N --up N : relief both ways instead. Contour level Z0 is the surface,
 #     higher ground is raised up to N steps, lower ground carved down to N steps (FLOOR unused).
 #     --no-markers : leave out the crosses / squares.
+#     --ease PX    : instead of flattening a hard rectangle for the logo, let the terrain ease into
+#                    it (one level per PX px of distance), so contours curve around it smoothly.
 import sys, json, numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
 from skimage import measure
 args = [a for a in sys.argv[1:]]
 opts = {}
-for name in ('--surface', '--down', '--up'):
+for name in ('--surface', '--down', '--up', '--ease'):
     if name in args:
         i = args.index(name); opts[name] = int(args[i + 1]); del args[i:i + 2]
 no_markers = '--no-markers' in args
@@ -42,7 +44,22 @@ ly0 = h - my - lh
 zone = (slice(ly0 - 14, h - my + 14), slice(mx - 14, mx + lw + 14))
 vals, counts = np.unique(r[zone], return_counts=True)
 logo_k = int(vals[counts.argmax()])
-r[zone] = logo_k
+if '--ease' in opts:
+    # Ease the terrain into the flat zone instead of cutting it off at the rectangle: at distance d
+    # (px) from the zone the relief may differ from the logo level by at most d / RAMP levels, so
+    # contours that would cross the zone bend around it in smooth, rounded curves.
+    # The flat zone is a squircle (|x/a|^4 + |y/b|^4 <= 1) just enclosing the rectangle, so the
+    # curves around it have no straight runs.
+    ramp = opts['--ease']
+    (ys, xs) = zone
+    cy, cx = (ys.start + ys.stop) / 2, (xs.start + xs.stop) / 2
+    a_, b_ = (xs.stop - xs.start) / 2 * 2 ** 0.25, (ys.stop - ys.start) / 2 * 2 ** 0.25
+    yy, xx = np.mgrid[0:r.shape[0], 0:r.shape[1]]
+    inzone = ((xx - cx) / a_) ** 4 + ((yy - cy) / b_) ** 4 <= 1
+    d = ndi.distance_transform_edt(~inzone)
+    r = np.clip(r, np.ceil(logo_k - d / ramp), np.floor(logo_k + d / ramp)).astype(int)
+else:
+    r[zone] = logo_k
 kmin, kmax = int(r.min()), int(r.max())
 slabs = []
 for k in range(kmin + 1, kmax + 1):
