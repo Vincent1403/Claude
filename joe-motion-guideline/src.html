@@ -38,7 +38,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* Inhalt */
 main{margin-left:var(--nav);padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px));padding-block:24px 120px}
 .wrap{max-width:1240px}
-section{padding-top:72px;scroll-margin-top:16px;display:grid;gap:22px}
+section{padding-top:72px;scroll-margin-top:60px;display:grid;gap:22px}
 h1{font-size:clamp(3.4rem,8.5vw,7rem);font-weight:900;letter-spacing:-.045em;line-height:.92}
 h2{font-size:clamp(2.6rem,6vw,5.2rem);font-weight:900;letter-spacing:-.045em;line-height:.95}
 .lede{font-size:clamp(1.05rem,1.5vw,1.28rem);line-height:1.45;max-width:58ch}
@@ -120,6 +120,21 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 .rules span{font-size:.92rem;color:var(--muted)}
 .kg-b{background:linear-gradient(to bottom right,#b2333a 0%,#dc4220 42%,#e45a28 66%,#ec7b39 100%)}
 .kg-r{background:linear-gradient(to top right,#b2333a 0%,#dc4220 42%,#e45a28 66%,#ec7b39 100%)}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:25;background:var(--page);display:flex;gap:28px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.tabs button{appearance:none;border:0;background:none;padding:14px 0 12px;font-size:1rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--wine)}
+.swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.sw{display:grid;gap:10px;margin:0}
+.sw .chip{aspect-ratio:4/3;border-radius:18px}
+.sw figcaption{display:grid;gap:1px;font-size:.9rem}
+.sw figcaption b{font-size:1.02rem}
+.sw figcaption span{color:var(--muted);font-family:var(--mono);font-size:.8rem}
+.specimen{display:grid;gap:26px}
+.spec-row{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;align-items:baseline;border-top:1px solid var(--line);padding-top:18px}
+.spec-row .meta{font-size:.85rem;color:var(--muted);display:grid;gap:2px}
+.spec-row .meta b{color:var(--ink);font-size:.95rem}
+.stage.still{cursor:default}
 .open{margin:0;padding-left:20px;display:grid;gap:8px;max-width:64ch}
 
 @media (max-width:980px){
@@ -129,7 +144,10 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  .mnav a{white-space:nowrap;text-decoration:none;font-size:.88rem;padding:5px 11px;border-radius:999px;color:var(--muted)}
  .mnav a.on{background:var(--sand);color:var(--ink);font-weight:700}
  main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
- section{scroll-margin-top:60px}
+ section{scroll-margin-top:110px}
+ .mnav{top:calc(env(safe-area-inset-top,0px) + 50px)}
+ .swatches{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .spec-row{grid-template-columns:minmax(0,1fr);gap:6px}
  .grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
  .grid.g3.keep{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
@@ -144,8 +162,8 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 </style>
 
 <nav class="nav" aria-label="Kapitel">
- <a class="brand" href="#start"><svg viewBox="0 0 271.15 182.86" aria-hidden="true" data-static></svg><span class="pill">Motion Guide</span></a>
- <div>
+ <a class="brand" href="#start"><svg viewBox="0 0 271.15 182.86" aria-hidden="true" data-static></svg><span class="pill" id="guideName">Motion Guide</span></a>
+ <div data-for="motion">
   <div class="lab">Motion</div>
   <ul>
    <li><a class="it" href="#prinzipien">Prinzipien</a></li>
@@ -158,13 +176,32 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
    <li><a class="it" href="#fehlgebrauch">Fehlgebrauch</a></li>
   </ul>
  </div>
+ <div data-for="statisch" hidden>
+  <div class="lab">Statisch</div>
+  <ul>
+   <li><a class="it" href="#s-logo">Logo</a></li>
+   <li><a class="it" href="#s-farbe">Farbe</a></li>
+   <li><a class="it" href="#s-typo">Typografie</a></li>
+   <li><a class="it" href="#s-kachel">Die Kachel</a></li>
+   <li><a class="it" href="#s-elemente">Elemente</a></li>
+   <li><a class="it" href="#s-layouts">Layouts</a></li>
+  </ul>
+ </div>
  <div class="ver">Entwurf v0.4 · Oktober 2026</div>
 </nav>
-<nav class="mnav" aria-label="Kapitel">
+<nav class="mnav" aria-label="Kapitel" data-for="motion">
  <a href="#prinzipien">Prinzipien</a><a href="#logo">Logo</a><a href="#typografie">Typografie</a><a href="#kachel">Kachel</a><a href="#layout">Layout</a><a href="#elemente">Elemente</a><a href="#timing">Timing</a><a href="#fehlgebrauch">Fehlgebrauch</a>
+</nav>
+<nav class="mnav" aria-label="Kapitel" data-for="statisch" hidden>
+ <a href="#s-logo">Logo</a><a href="#s-farbe">Farbe</a><a href="#s-typo">Typografie</a><a href="#s-kachel">Kachel</a><a href="#s-elemente">Elemente</a><a href="#s-layouts">Layouts</a>
 </nav>
 
 <main><div class="wrap">
+ <div class="tabs" role="tablist" aria-label="Guide">
+  <button type="button" role="tab" id="tab-motion" aria-controls="page-motion" aria-selected="true" data-tab="motion">Motion</button>
+  <button type="button" role="tab" id="tab-statisch" aria-controls="page-statisch" aria-selected="false" data-tab="statisch">Statisch</button>
+ </div>
+ <div id="page-motion" role="tabpanel" aria-labelledby="tab-motion" data-page="motion">
 
  <section id="start" style="padding-top:20px">
   <h1>Motion</h1>
@@ -266,6 +303,68 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
   <div class="grid" data-group="miss"></div>
  </section>
 
+ </div>
+ <div id="page-statisch" role="tabpanel" aria-labelledby="tab-statisch" data-page="statisch" hidden>
+
+ <section id="s-start" style="padding-top:20px">
+  <h1>Statisch</h1>
+  <p class="lede">Die stillen Bausteine der Marke: Logo, Farben, Schrift, die Kachel und die Elemente, so wie sie auf Plakaten, Bannern und Screens stehen. Jedes Motion-Beispiel endet in einem dieser Zustände.</p>
+ </section>
+
+ <section id="s-logo">
+  <h2>Logo</h2>
+  <p class="lede">Das Logo steht in Burgund auf hellem Grund und in Weiß auf Burgund oder dem jö-Verlauf. Als runde Variante sitzt es weiß im Kreis.</p>
+  <div class="grid" data-group="st-logo"></div>
+ </section>
+
+ <section id="s-farbe">
+  <h2>Farbe</h2>
+  <p class="lede">Burgund trägt Schrift und Logo, Orange und der Verlauf setzen die Energie, die hellen Töne geben Ruhe und Raum.</p>
+  <div class="swatches">
+   <figure class="sw"><div class="chip" style="background:var(--wine)"></div><figcaption><b>Burgund</b><span>#5B0F0C</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--red)"></div><figcaption><b>Rot</b><span>#E8371A</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--orange)"></div><figcaption><b>Orange</b><span>#F9781E</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--lorange)"></div><figcaption><b>Hellorange</b><span>#FFB37C</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--jg)"></div><figcaption><b>jö-Verlauf</b><span>Burgund → Rot → Orange</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--lilac)"></div><figcaption><b>Flieder</b><span>#EBE8EE</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--beige)"></div><figcaption><b>Beige</b><span>#F4F1EA</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:#fff;box-shadow:inset 0 0 0 1px var(--line)"></div><figcaption><b>Weiß</b><span>#FFFFFF</span></figcaption></figure>
+  </div>
+ </section>
+
+ <section id="s-typo">
+  <h2>Typografie</h2>
+  <p class="lede">Satoshi für alles. Headlines kräftig und eng, Fließtext ruhig. Ein Wort darf hervorgehoben werden, nie ein ganzer Satz.</p>
+  <div class="specimen">
+   <div class="spec-row"><div class="meta"><b>Headline</b><span>Satoshi Extra Bold · −3 % Laufweite</span></div><div style="font-weight:800;font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.03em;line-height:1.02;color:var(--wine)">Mehr aus dem Moment.</div></div>
+   <div class="spec-row"><div class="meta"><b>Subline</b><span>Satoshi Bold</span></div><div style="font-weight:700;font-size:1.6rem;letter-spacing:-.01em;color:var(--ink)">Alles in einer App.</div></div>
+   <div class="spec-row"><div class="meta"><b>Fließtext</b><span>Satoshi Regular</span></div><div style="font-size:1.05rem;max-width:56ch;color:var(--ink)">Sammle Ös bei über 30 Partnern und löse sie ein, wann es für dich passt. Mehr von dem, was zählt.</div></div>
+   <div class="spec-row"><div class="meta"><b>Zahlen</b><span>Satoshi Extra Bold · Tabellenziffern</span></div><div style="font-weight:800;font-size:2.4rem;color:var(--wine);font-variant-numeric:tabular-nums">500 · 83 · 5 €</div></div>
+  </div>
+ </section>
+
+ <section id="s-kachel">
+  <h2>Die Kachel</h2>
+  <p class="lede">Die Kachel ist immer angeschnitten: von unten im Hochformat, von der Seite im Querformat. Sie ragt 25, 50 oder 75 % ins Bild, nur die inneren Ecken sind gerundet.</p>
+  <h3 class="sub">Hochformat</h3>
+  <div class="grid g3 keep" data-group="st-kb"></div>
+  <h3 class="sub">Querformat</h3>
+  <div class="grid g3" data-group="st-kr"></div>
+ </section>
+
+ <section id="s-elemente">
+  <h2>Elemente</h2>
+  <p class="lede">Pill-Button, Tag, Ös-Pill, Fortschrittsring und Rabatt-Tag im fertigen Zustand. Eckenradien laufen konzentrisch: Außenradius gleich Pill-Radius plus Abstand.</p>
+  <div class="grid" data-group="st-elem"></div>
+ </section>
+
+ <section id="s-layouts">
+  <h2>Layouts</h2>
+  <p class="lede">So greifen die Bausteine ineinander: Headline auf dem Hintergrund, Kachel oder Foto im Anschnitt, Pill-Button als Abschluss.</p>
+  <div class="grid" data-group="st-layout"></div>
+ </section>
+
+ </div>
 </div></main>
 
 <script>
@@ -422,7 +521,7 @@ function kachel(p,side,h,cls){const e=mk(p,'c '+(cls||'kg-'+side));e.style.posit
 /* Text oberhalb (Hochformat) oder links (Querformat) der Kachel */
 function headline(st,side,h,f,lines,o={}){const size=side==='b'?11:6.6;
  return textBlock(st,lines,{color:'var(--wine)',size,x:7,right:side==='r'?100*f+5:7,top:side==='b'?10:undefined,...o})}
-const STEP=[[.25,'25 / 75','Die Kachel ragt ein Viertel ins Bild. Viel Raum für Headline und Bild.'],[.5,'50 / 50','Halb Kachel, halb Hintergrund. Die ausgewogene Standardstufe.',1],[.75,'75 / 25','Die Kachel trägt den Inhalt, oben oder links bleibt ein schmaler Rand.']];
+const STEP=[[.25,'25 / 75','Die Kachel ragt ein Viertel ins Bild. Viel Raum für Headline und Bild.'],[.5,'50 / 50','Halb Kachel, halb Hintergrund. Ausgewogen zwischen Bild und Text.',1],[.75,'75 / 25','Die Kachel trägt den Inhalt, oben oder links bleibt ein schmaler Rand.']];
 STEP.forEach(([f,name,desc,std])=>{
  def('kb','kb-'+f*100,name,desc,{ratio:'9/16',dur:3.6,bg:'bg-lilac',build(st,h){
   const K=kachel(st,'b',h);const hl=f<.75?headline(st,'b',h,f,['Mehr aus','dem Moment.']):textBlock(st,['Mehr aus','dem Moment.'],{size:11,x:7,top:h*(1-f)+10});
@@ -608,10 +707,21 @@ def('hero','hero','','',{dur:9.6,bg:'bg-white',build(st){
    const tg=target[c.lab.textContent];c.link.style.opacity=live&&tg?seg(t,c.a,c.a+.15)*(1-seg(t,c.b+.15,c.b+.3)):0;if(tg){c.link.setAttribute('x1',c.x+x);c.link.setAttribute('y1',c.y+y);c.link.setAttribute('x2',tg[0]);c.link.setAttribute('y2',tg[1])}});
   tf(pt,{y:(1-eIn(seg(q,.9,1.35)))*PH*.8,o:q>=.9?1:0})}}});/* Text steigt aus der Unterkante der Pill */
 
+/* Statische Seite: eigene Logo-Zustände und Endzustände der Motion-Szenen */
+def('st-logo','st-logo-wine','Burgund auf Weiß','Die Standardversion auf hellem Grund.',{still:true,bg:'bg-white',build(st){const L=logo(st,30,50,H/2,'var(--wine)');return t=>logoDone(L)}});
+def('st-logo','st-logo-grad','Weiß auf Verlauf','Auf dem jö-Verlauf steht das Logo immer weiß.',{still:true,bg:'bg-jg',build(st){const L=logo(st,30,50,H/2,'#fff');return t=>logoDone(L)}});
+def('st-logo','st-logo-burg','Weiß auf Burgund','Für dunkle, ruhige Flächen.',{still:true,bg:'bg-wine',build(st){const L=logo(st,30,50,H/2,'#fff');return t=>logoDone(L)}});
+def('st-logo','st-logo-circle','Im Kreis','Weiß im Verlaufskreis, für Profilbilder und kleine Flächen.',{still:true,bg:'bg-beige',build(st){const T=mk(st,'bg-jg');T.style.cssText+=';position:absolute;border-radius:50%';rect(T,50,H/2,30,30);const L=logo(st,19.5,50,H/2+.3,'#fff');return t=>logoDone(L)}});
+const STILL=[['st-kb','kb-25'],['st-kb','kb-50'],['st-kb','kb-75'],['st-kr','kr-25'],['st-kr','kr-50'],['st-kr','kr-75'],
+ ['st-elem','el-pill','Pill-Button','jö-Punkt im weißen Ring, Pill auf Textlänge.'],['st-elem','el-tags','Tag','Icon und Wort, eng gesetzt.'],['st-elem','el-count','Ös-Pill','Zahl in Burgund, Ös-Wortmarke im Badge.'],['st-elem','el-ring','Fortschrittsring','Verlauf entlang des Bogens, Zahl in der Mitte.'],['st-elem','el-discount','Rabatt-Tag','Hängt an der Layoutkante, Radien konzentrisch.'],
+ ['st-layout','mo-split','Banner','Fläche mit Headline und Pill, Foto als Panel.'],['st-layout','tr-in','Kachel mit Headline','Headline auf dem Hintergrund, Kachel angeschnitten.'],['st-layout','mo-flip','Rabattkarte','Burgunde Karte mit Ös-Pill.']];
+const STILL_REST={'mo-flip':4.6,'el-count':3.6};
+STILL.forEach(([g,id,name,desc])=>{const o=SC.find(x=>x.id===id&&!x.still);SC.push({...o,g,still:true,rest:STILL_REST[id]??o.rest,name:name??o.name,desc:desc??o.desc,badge:0})});
 /* ---------- Kacheln aufbauen ---------- */
 const stages=[];
 function mount(stEl,sc){stEl.classList.add(sc.bg||'bg-white');if(sc.ratio)stEl.style.aspectRatio=sc.ratio;const draw=sc.build(stEl,sc.ratio?100/eval(sc.ratio.replace(' ','')):H);if(sc.x)mk(stEl,'x','✕');
- const o={el:stEl,sc,draw,t0:performance.now(),on:false};stages.push(o);const rest=sc.rest??(sc.loop?0:sc.dur*.72);draw(rest);o.rest=rest;
+ const o={el:stEl,sc,draw,t0:performance.now(),on:false,still:!!sc.still};stages.push(o);const rest=sc.rest??(sc.loop?0:sc.dur*.72);draw(rest);o.rest=rest;
+ if(sc.still){stEl.classList.add('still');return o}/* statische Seite: Endzustand, keine Animation */
  stEl.tabIndex=0;stEl.setAttribute('role','button');stEl.setAttribute('aria-label',(sc.name||'Beispiel')+' neu abspielen');
  const restart=()=>{o.t0=performance.now();if(RM)playOnce(o)};stEl.addEventListener('click',restart);stEl.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();restart()}});return o}
 document.querySelectorAll('[data-group]').forEach(g=>{SC.filter(s=>s.g===g.dataset.group).forEach(sc=>{
@@ -624,7 +734,7 @@ staticLogo(document.querySelector('[data-static]'));
 function playOnce(o){const t0=performance.now();const go=n=>{const t=(n-t0)/1000;o.draw(Math.min(t,o.sc.dur));if(t<o.sc.dur)requestAnimationFrame(go);else o.draw(o.rest)};requestAnimationFrame(go)}
 if(!RM){
  const io=new IntersectionObserver(es=>es.forEach(e=>{const o=stages.find(s=>s.el===e.target);if(!o)return;if(e.isIntersecting&&!o.on){o.on=true;o.t0=performance.now()}else if(!e.isIntersecting)o.on=false}),{threshold:.2});
- stages.forEach(o=>io.observe(o.el));
+ stages.forEach(o=>{if(!o.still)io.observe(o.el)});
  /* Ein Fehler in einer Szene darf die anderen nicht anhalten: nächsten Frame zuerst anmelden, jede Szene einzeln absichern */
  const tick=n=>{requestAnimationFrame(tick);stages.forEach(o=>{if(!o.on||o.dead)return;try{o.draw(((n-o.t0)/1000)%o.sc.dur)}catch(e){o.dead=true;console.error('Szene '+o.sc.id,e)}})};requestAnimationFrame(tick)}
 
@@ -635,8 +745,21 @@ document.getElementById('curveRows').addEventListener('click',ev=>{const b=ev.ta
  const fb=()=>{const r=document.createRange();r.selectNodeContents(b.previousElementSibling);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Markiert'};
  try{navigator.clipboard.writeText(b.dataset.copy).then(()=>{b.textContent='Kopiert';setTimeout(()=>b.textContent='Kopieren',1400)},fb)}catch(e){fb()}});
 
+/* Reiter Motion / Statisch: per Klick oder #statisch bzw. #s-… im Link */
+function showPage(name,scroll){document.querySelectorAll('[data-page]').forEach(e=>e.hidden=e.dataset.page!==name);
+ document.querySelectorAll('[data-for]').forEach(e=>e.hidden=e.dataset.for!==name);
+ document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===name));
+ document.getElementById('guideName').textContent=name==='statisch'?'Static Guide':'Motion Guide';
+ /* Endzustände neu zeichnen, sobald die Seite sichtbar ist (vorher fehlen die Maße) */
+ if(name==='statisch')requestAnimationFrame(()=>stages.forEach(o=>{if(o.still)try{o.draw(o.rest)}catch(e){}}));
+ if(scroll)window.scrollTo({top:0})}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{showPage(b.dataset.tab,true);try{history.replaceState(null,'',b.dataset.tab==='statisch'?'#statisch':'#start')}catch(e){}}));
+const pageOf=h=>/^#(statisch|s-)/.test(h)?'statisch':'motion';
+showPage(pageOf(location.hash));
+addEventListener('hashchange',()=>{const p=pageOf(location.hash);if(!document.getElementById('page-'+p).hidden)return;showPage(p);const t=document.querySelector(location.hash);t&&t.scrollIntoView()});
+
 /* Navigation: aktives Kapitel */
-const links=[...document.querySelectorAll('.nav a.it,.mnav a')];
+const links=[...document.querySelectorAll('.nav a.it,.mnav a')];/* beide Seiten */
 const nio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'});
 document.querySelectorAll('section[id]').forEach(s=>nio.observe(s));
 </script>
