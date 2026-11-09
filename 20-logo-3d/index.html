@@ -75,6 +75,7 @@ const CERT_STEP = 1;       // depth of each carved terrace (6 terraces -> 6 mm d
 const CERT_TILT = 10;      // stand: board leans back this many degrees...
 const CERT_WEDGE_H = 30;   // ...against a full-width wooden wedge this high up the back of the board
 const CERT_WEDGE_L = 50;   // ...and this long on the ground behind it
+const CERT_STAND_COLOR = 0x3a3a3a; // stand: dark grey
 
 const params = new URLSearchParams(location.search);
 const renderMode = params.has('render');
@@ -358,7 +359,7 @@ function buildCert() {
   for (let i = 0; i < uv.array.length; i++) uv.array[i] *= CERT.w / CERT_W;
   geo.rotateY(Math.PI / 2);                      // profile x -> behind the board, extrusion -> across its width
   geo.translate(-CERT_W / 2, 0, 0);
-  const wedge = new THREE.Mesh(geo, board.getObjectByName('body').material[2]);   // natural wood
+  const wedge = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: CERT_STAND_COLOR, roughness: 0.55, envMapIntensity: 0.4 }));
   wedge.castShadow = wedge.receiveShadow = true;
   wedge.name = 'base';
   const g = new THREE.Group();
