@@ -68,6 +68,7 @@ const TOPO_W = 200;        // topo block: face width (height follows the pattern
 const TOPO_D = 80;         // topo block depth, front to back
 const TOPO_STEP = 7;       // depth of each carved terrace (and of the engravings)
 // Certificate: the same carving on a thin A4 board, in millimetres
+const TOPO_DEEPEST = 0x7a4a2a; // wood tint at the deepest terrace (surface = natural wood)
 const CERT_W = 210;        // A4 width (height 297 follows the 1 : 1.414 crop)
 const CERT_D = 10;         // board thickness
 const CERT_STEP = 1;       // depth of each carved terrace (6 terraces -> 6 mm deep, 4 mm left behind)
@@ -233,23 +234,56 @@ const engrave = (shapes, pts) => {
   if (host) host.holes.push(new THREE.Path(pts));
   return !!host;
 };
+// Sort a non-indexed ExtrudeGeometry's triangles into material groups: pick(a, b, c, isCap) gives
+// each triangle's material index (isCap = front/back face rather than side wall).
+function regroup(geo, pick) {
+  const pos = geo.attributes.position, n = pos.count / 3;
+  const cap = new Uint8Array(n);
+  for (const gr of geo.groups) if (gr.materialIndex === 0) cap.fill(1, gr.start / 3, (gr.start + gr.count) / 3);
+  const v = i => new THREE.Vector3().fromBufferAttribute(pos, i);
+  const ids = Array.from({ length: n }, (_, i) => pick(v(3 * i), v(3 * i + 1), v(3 * i + 2), cap[i] === 1));
+  const order = [...ids.keys()].sort((a, b) => ids[a] - ids[b]);
+  for (const name of Object.keys(geo.attributes)) {
+    const src = geo.attributes[name], k = src.itemSize * 3, out = new src.array.constructor(src.array.length);
+    order.forEach((tri, i) => out.set(src.array.subarray(tri * k, tri * k + k), i * k));
+    geo.setAttribute(name, new THREE.BufferAttribute(out, src.itemSize));
+  }
+  geo.clearGroups();
+  order.forEach((tri, i) => {
+    const last = geo.groups[geo.groups.length - 1];
+    if (last && last.materialIndex === ids[tri]) last.count += 3; else geo.addGroup(i * 3, 3, ids[tri]);
+  });
+}
+
 // Carved wooden board from topo/carve.py data: face width W, thickness D, terrace depth STEP.
 function buildTopo(TOPO, W, Dw, STEP) {
   const s = W / TOPO.w;                 // crop px -> units; geometry is built in px, then scaled
   const t = STEP / s, D = Dw / s, L = TOPO.levels.length;
   const tex = woodTexture(TOPO);
-  const wood = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, envMapIntensity: 0.5 });
-  const floor = j => new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, envMapIntensity: 0.5,
-    color: new THREE.Color(1, 1, 1).multiplyScalar(1 - 0.085 * j) }); // deeper terraces darker
+  // Wood shade by carving depth x (0 = surface ... L = deepest floor): every terrace a step darker
+  // and warmer. Step walls take the shade halfway between the two terraces they join.
+  const shades = new Map();
+  const shade = x => {
+    if (!shades.has(x)) shades.set(x, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, envMapIntensity: 0.5,
+      color: new THREE.Color(0xffffff).lerp(new THREE.Color(TOPO_DEEPEST), x / L) }));
+    return shades.get(x);
+  };
+  const wood = shade(0);                // natural wood: surface, outer edges, back
   const burnt = new THREE.MeshStandardMaterial({ color: 0x4a2a14, roughness: 0.9, envMapIntensity: 0.3 });
   const burns = [];   // laser-burnt floors of the engravings: [points, layer j]
   const g = new THREE.Group();
-  const add = (shapes, z0, depth, capMat, name) => {
+  // mats = [front face, inner step walls, back face + outer edges]
+  const add = (shapes, z0, depth, mats, name) => {
     for (const sh of shapes) {
       const geo = new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false, UVGenerator: woodUV });
+      regroup(geo, (a, b, c, isCap) => {
+        if (isCap) return a.z < depth / 2 ? 2 : 0;
+        const edge = (k, v) => [a, b, c].every(p => Math.abs(p[k] - v) < 0.6);
+        return edge('x', 0) || edge('x', TOPO.w) || edge('y', 0) || edge('y', TOPO.h) ? 2 : 1;
+      });
       geo.translate(-TOPO.w / 2, 0, z0);
       geo.scale(s, s, s);
-      const m = new THREE.Mesh(toCreasedNormals(geo, THREE.MathUtils.degToRad(30)), [capMat, wood]);
+      const m = new THREE.Mesh(toCreasedNormals(geo, THREE.MathUtils.degToRad(30)), mats);
       m.castShadow = m.receiveShadow = true;
       m.name = name;
       g.add(m);
@@ -257,7 +291,7 @@ function buildTopo(TOPO, W, Dw, STEP) {
   };
   const { w, h } = TOPO;
   const rect = new THREE.Shape().moveTo(0, 0).lineTo(w, 0).lineTo(w, h).lineTo(0, h).closePath();
-  add([rect], -D / 2, D - L * t, floor(L), 'body');
+  add([rect], -D / 2, D - L * t, [shade(L), wood, wood], 'body');
   const layers = TOPO.levels.map(({ d }) => new SVGLoader()
     .parse(`<svg xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="${d}"/></svg>`)
     .paths.flatMap(p => SVGLoader.createShapes(p)));
@@ -276,9 +310,9 @@ function buildTopo(TOPO, W, Dw, STEP) {
     const pts = local.map(([x, y]) => new THREE.Vector2(m.x + x, m.y + y));
     if (engrave(layers[m.j], pts)) burns.push([pts, m.j]);
   }
-  layers.forEach((shapes, j) => add(shapes, D / 2 - (j + 1) * t, t, floor(j), 'layer-' + j));
+  layers.forEach((shapes, j) => add(shapes, D / 2 - (j + 1) * t, t, [shade(j), shade(j + 0.5), wood], 'layer-' + j));
   const burnT = Math.min(0.3, STEP * 0.3) / s;    // burnt floor: 0.3 units thick (less for very shallow steps)
-  for (const [pts, j] of burns) add([new THREE.Shape(pts)], D / 2 - (j + 1) * t, burnT, burnt, 'engraving');
+  for (const [pts, j] of burns) add([new THREE.Shape(pts)], D / 2 - (j + 1) * t, burnT, [burnt, burnt, burnt], 'engraving');
   return g;
 }
 
