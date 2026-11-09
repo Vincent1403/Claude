@@ -10,10 +10,13 @@ from skimage import measure
 img_path, elev_path, out = sys.argv[1:4]
 x0, w, zf = int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6])
 logo_frac = float(sys.argv[7]) if len(sys.argv) > 7 else 0.55   # logo width / face width
+logo_aspect = float(sys.argv[8]) if len(sys.argv) > 8 else 2.064  # logo width / height
+margin = float(sys.argv[9]) if len(sys.argv) > 9 else None      # logo margin (x and y) / face width
 Z = np.load(elev_path); H = Z.shape[0]; h = H
 c = np.clip(Z[:, x0:x0+w] - zf, 0, None)
 # logo zone (y down here): logo_frac of width, 8% left margin, 10% bottom margin; forced flat
-lw = int(w * logo_frac); lh = int(lw / 2.064); mx = int(w * 0.08); my = int(w * 0.10)
+lw = int(w * logo_frac); lh = int(lw / logo_aspect)
+mx, my = (int(w * margin),) * 2 if margin else (int(w * 0.08), int(w * 0.10))
 ly0 = h - my - lh
 c[ly0-14:h-my+14, mx-14:mx+lw+14] = 0
 L = int(c.max())
@@ -64,4 +67,4 @@ for i, sl in enumerate(ndi.find_objects(lab), 1):
         markers.append({'type': kind, 'x': round(best[0], 1), 'y': round(h - best[1], 1), 's': s_, 'j': best[2]})
 print('w', w, 'h', h, 'depth levels', L, 'markers', [(m['type'], m['s']) for m in markers])
 json.dump({'w': w, 'h': h, 'levels': levels, 'markers': markers,
-           'logo': {'x': mx, 'y': my, 'w': lw}}, open(out, 'w'), separators=(',', ':'))
+           'logo': {'x': mx, 'y': my, 'w': lw, 'h': lh}}, open(out, 'w'), separators=(',', ':'))
