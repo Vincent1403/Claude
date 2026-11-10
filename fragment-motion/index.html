@@ -95,6 +95,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 .btn:hover{border-color:var(--muted)}
 .btn[aria-pressed="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
 .btn.play{min-width:76px}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--surface); font-weight:600}
+.btn:disabled{opacity:.6; cursor:default}
 .seg{display:flex; gap:0}
 .seg .btn{border-radius:0; margin-left:-1px; font-family:var(--mono); font-size:12px; padding:7px 10px}
 .seg .btn:first-child{margin-left:0; border-radius:2px 0 0 2px}
@@ -172,6 +174,13 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           </div>
         </div>
         <p class="hint">Angle and Offset place the gradient. Swing and Pulse set how far it moves. Set either Speed to 0 to hold that layer still.</p>
+        <div class="group" id="export" hidden>
+          <p class="label">Export</p>
+          <div class="btn-row">
+            <button class="btn primary" id="export-btn" type="button">Export 5 s MP4</button>
+          </div>
+          <p class="hint" id="export-info" aria-live="polite">1080 × 1350 · 30 fps · starts at the frame on stage</p>
+        </div>
       </div>
     </aside>
   </section>
@@ -192,6 +201,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   </section>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.2/build/mp4-muxer.js"></script>
 <script>
 (() => {
   'use strict';
@@ -443,7 +453,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const $ = id => document.getElementById(id);
   const stage = $('stage'), cv = $('cv');
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const st = { cur: 0, playing: !reduced, speed: 1, fold: 1, edges: false,
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 1, edges: false, ar: '0.8',
                gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true };
 
   const thumbs = $('thumbs'), thumbCv = [];
@@ -509,12 +519,105 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const b = e.target.closest('button[data-ar]'); if (!b) return;
     [...$('formats').children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
     stage.style.setProperty('--ar', b.dataset.ar);
+    st.ar = b.dataset.ar;
     sizeStage();
+    if (!exporting) exportIdle();
   });
+
+  /* ---------- MP4 export: render 5 s frame by frame, encode with WebCodecs ---------- */
+  const SIZES = { '0.8': [1080, 1350], '1': [1080, 1080], '0.5625': [1080, 1920], '1.7778': [1920, 1080] };
+  const CLIP_S = 5, FPS = 30;
+  const exBox = $('export'), exBtn = $('export-btn'), exInfo = $('export-info');
+  let downloads = null, exporting = false;
+  function exportSize() { return SIZES[st.ar] || SIZES['0.8']; }
+  function exportIdle() {
+    const [w, h] = exportSize();
+    exInfo.textContent = w + ' × ' + h + ' · ' + FPS + ' fps · starts at the frame on stage';
+  }
+  async function pickCodec(w, h) {
+    const tries = [['avc', 'avc1.640028'], ['avc', 'avc1.4d0028'], ['avc', 'avc1.42e028'], ['vp9', 'vp09.00.40.08']];
+    for (const [mux, codec] of tries) {
+      const cfg = { codec, width: w, height: h, bitrate: 14e6, framerate: FPS };
+      try {
+        const r = await VideoEncoder.isConfigSupported(cfg);
+        if (r && r.supported) return { mux, cfg };
+      } catch (e) { /* try the next profile */ }
+    }
+    return null;
+  }
+  async function exportClip() {
+    if (exporting || !downloads) return;
+    exporting = true; exBtn.disabled = true;
+    const [w, h] = exportSize(), vis = VIS[st.cur];
+    try {
+      const pick = await pickCodec(w, h);
+      if (!pick) throw { code: 'no_encoder' };
+      const muxer = new Mp4Muxer.Muxer({
+        target: new Mp4Muxer.ArrayBufferTarget(),
+        video: { codec: pick.mux, width: w, height: h, frameRate: FPS },
+        fastStart: 'in-memory'
+      });
+      let encErr = null;
+      const enc = new VideoEncoder({
+        output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+        error: e => { encErr = e; }
+      });
+      enc.configure(pick.cfg);
+      const off = document.createElement('canvas'); off.width = w; off.height = h;
+      const cssW = stage.getBoundingClientRect().width || w;
+      const o = { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse,
+                  edges: st.edges, dpr: w / cssW, TG: 0 };
+      const T0 = st.T, G0 = st.TG, total = CLIP_S * FPS;
+      for (let i = 0; i < total; i++) {
+        if (encErr) throw encErr;
+        o.TG = G0 + i / FPS * st.gspeed;
+        render(off, vis, T0 + i / FPS * st.speed, o);
+        const vf = new VideoFrame(off, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
+        enc.encode(vf, { keyFrame: i % FPS === 0 });
+        vf.close();
+        if (i % 3 === 0 || enc.encodeQueueSize > 3) {
+          exBtn.textContent = 'Rendering ' + Math.round(i / total * 100) + '%';
+          do { await new Promise(r => setTimeout(r, 0)); } while (enc.encodeQueueSize > 3 && !encErr);
+        }
+      }
+      await enc.flush(); enc.close();
+      if (encErr) throw encErr;
+      muxer.finalize();
+      const blob = new Blob([muxer.target.buffer], { type: 'video/mp4' });
+      exBtn.textContent = 'Confirm the save';
+      await downloads.save({ filename: 'fragment-motion-' + vis.id + '-' + w + 'x' + h + '.mp4', data: blob });
+      const mb = (blob.size / 1048576).toFixed(1) + ' MB';
+      exInfo.textContent = pick.mux === 'avc'
+        ? 'Saved a ' + CLIP_S + ' s clip, ' + w + ' × ' + h + ', ' + mb + '.'
+        : 'Saved, ' + mb + '. This browser has no H.264 encoder, so the clip is VP9 inside an MP4 and may not open in every app.';
+    } catch (e) {
+      const code = e && e.code;
+      if (code === 'declined') exInfo.textContent = 'Save cancelled. Export again when you want the file.';
+      else if (code === 'rate_limited') exInfo.textContent = 'A save prompt is already open. Try again in a moment.';
+      else if (code === 'no_encoder') exInfo.textContent = 'This browser cannot encode video here. Try current Chrome, Edge or Safari.';
+      else if (code === 'too_large') exInfo.textContent = 'The clip is too large to save in this app.';
+      else if (typeof code === 'string') exInfo.textContent = 'Saving files is not available in this view.';
+      else exInfo.textContent = 'Encoding failed: ' + ((e && e.message) || 'unknown error') + '.';
+    } finally {
+      exporting = false; exBtn.disabled = false; exBtn.textContent = 'Export ' + CLIP_S + ' s MP4'; st.dirty = true;
+    }
+  }
+  exBtn.addEventListener('click', exportClip);
+  if (window.claude && typeof window.claude.use === 'function') {
+    window.claude.use('downloads').then(d => {
+      if (!d) return;
+      downloads = d; exBox.hidden = false;
+      if (!('VideoEncoder' in window) || !window.Mp4Muxer) {
+        exBtn.disabled = true;
+        exInfo.textContent = 'MP4 export needs a browser with WebCodecs, such as current Chrome, Edge or Safari.';
+      } else exportIdle();
+    }).catch(() => {});
+  }
 
   let last = performance.now(), frame = 0;
   function tick(now) {
     const dt = Math.min((now - last) / 1000, 0.1); last = now; frame++;
+    if (exporting) { requestAnimationFrame(tick); return; }
     if (st.playing) { st.T += dt * st.speed; st.TG += dt * st.gspeed; }
     if (st.playing || st.dirty) {
       const vis = VIS[st.cur];
