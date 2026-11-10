@@ -1,0 +1,523 @@
+<title>Fragment Motion</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+/* Layout: one large stage holding the animated visual, beside a narrow rail of
+   live thumbnails and motion controls. The rail drops under the stage on phones. */
+:root{
+  --bg:#f3f2f6;
+  --surface:#ffffff;
+  --fg:#16131f;
+  --muted:#6b6779;
+  --line:#dbd8e4;
+  --accent:#d95200;
+  --stage:#00001b;
+  --display:"Instrument Serif","Iowan Old Style","Times New Roman",serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"DM Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b0a17; --surface:#15132a; --fg:#eeebf7; --muted:#9c97b2;
+    --line:#2b2845; --accent:#ff8a3d; --stage:#00001b; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b0a17; --surface:#15132a; --fg:#eeebf7; --muted:#9c97b2;
+  --line:#2b2845; --accent:#ff8a3d; --stage:#00001b; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg);
+  font-family:var(--body); font-size:15px; line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:28px 56px;
+}
+.wrap{max-width:1180px; margin-inline:auto; display:flex; flex-direction:column; gap:28px}
+
+.head{display:flex; flex-wrap:wrap; align-items:flex-end; gap:8px 40px}
+.head h1{
+  font-family:var(--display); font-weight:400; font-style:italic;
+  font-size:clamp(40px, 6vw, 64px); line-height:.95; letter-spacing:-.01em; margin:0;
+  text-wrap:balance;
+}
+.head p{margin:0; max-width:58ch; color:var(--muted); min-width:0; flex:1 1 320px}
+
+.work{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:32px; align-items:start}
+.stage-col{display:flex; flex-direction:column; gap:10px; min-width:0}
+.desk{background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:24px; display:flex; justify-content:center}
+.stage{
+  --ar:0.8;
+  width:min(100%, calc(min(74vh, 720px) * var(--ar)));
+  aspect-ratio:var(--ar); max-width:100%;
+  background:var(--stage); position:relative; overflow:hidden;
+  touch-action:pan-y; cursor:crosshair;
+}
+.stage canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+.readout{
+  display:flex; flex-wrap:wrap; gap:4px 18px;
+  font-family:var(--mono); font-size:12px; color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.readout b{font-weight:500; color:var(--fg)}
+
+.rail{display:flex; flex-direction:column; gap:22px; min-width:0}
+.label{
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--muted); margin:0 0 8px;
+}
+.thumbs{display:flex; flex-direction:column; gap:2px}
+.thumb{
+  display:grid; grid-template-columns:60px minmax(0,1fr); gap:12px; align-items:center;
+  position:relative; padding:6px; border:1px solid transparent; background:none; color:inherit;
+  font:inherit; text-align:left; cursor:pointer; border-radius:2px;
+}
+.thumb canvas{width:60px; height:60px; display:block; background:var(--stage)}
+.thumb .t-name{display:block; font-weight:600; font-size:14px; line-height:1.25}
+.thumb .t-meta{display:block; font-family:var(--mono); font-size:11px; color:var(--muted); line-height:1.35}
+.thumb:hover{border-color:var(--line)}
+.thumb[aria-pressed="true"]{background:var(--surface); border-color:var(--line)}
+.thumb[aria-pressed="true"] .t-name{color:var(--accent)}
+
+.controls{display:flex; flex-direction:column; gap:14px; padding-top:18px; border-top:1px solid var(--line)}
+.row{display:grid; grid-template-columns:52px minmax(0,1fr) 44px; gap:10px; align-items:center}
+.row label{font-size:13px; font-weight:500}
+.row output{font-family:var(--mono); font-size:12px; color:var(--muted); text-align:right; font-variant-numeric:tabular-nums}
+input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:0}
+.btn-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.btn{
+  font:inherit; font-size:13px; font-weight:500; color:var(--fg);
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:7px 12px; cursor:pointer; min-width:0;
+}
+.btn:hover{border-color:var(--muted)}
+.btn[aria-pressed="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+.btn.play{min-width:76px}
+.seg{display:flex; gap:0}
+.seg .btn{border-radius:0; margin-left:-1px; font-family:var(--mono); font-size:12px; padding:7px 10px}
+.seg .btn:first-child{margin-left:0; border-radius:2px 0 0 2px}
+.seg .btn:last-child{border-radius:0 2px 2px 0}
+.hint{margin:0; font-size:12.5px; color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.notes{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:28px; padding-top:24px; border-top:1px solid var(--line)}
+.notes h2{font-family:var(--display); font-weight:400; font-size:26px; line-height:1.1; margin:0 0 6px}
+.notes p{margin:0; color:var(--muted); max-width:42ch}
+
+@media (max-width: 860px){
+  .work{grid-template-columns:minmax(0,1fr); gap:22px}
+  .stage{width:min(100%, calc(min(66vh, 620px) * var(--ar)))}
+  .desk{padding:0; border:0; background:none}
+  .thumbs{display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:6px}
+  .thumb{grid-template-columns:minmax(0,1fr); padding:3px; gap:0}
+  .thumb canvas{width:100%; height:auto; aspect-ratio:1}
+  .thumb .t-text{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)}
+  .thumb[aria-pressed="true"]{border-color:var(--accent)}
+  .notes{grid-template-columns:minmax(0,1fr); gap:20px}
+}
+</style>
+
+<main class="wrap">
+  <header class="head">
+    <h1>Fragment Motion</h1>
+    <p>The five gradient-fragment visuals from the Figma page, rebuilt as live geometry. Each fragment still carries the whole gradient, fitted to its own bounding box. The motion comes from moving the folds and turning the light behind them.</p>
+  </header>
+
+  <section class="work">
+    <div class="stage-col">
+      <div class="desk">
+        <div class="stage" id="stage"><canvas id="cv" aria-label="Animated gradient-fragment visual"></canvas></div>
+      </div>
+      <div class="readout" aria-live="off">
+        <span><b id="ro-name">Pleated disc</b></span>
+        <span><span id="ro-n">0</span> fragments drawn</span>
+        <span>light <span id="ro-l">0</span>°</span>
+      </div>
+    </div>
+
+    <aside class="rail">
+      <div>
+        <p class="label">Visuals</p>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+
+      <div class="controls">
+        <div class="btn-row">
+          <button class="btn play" id="play" type="button">Pause</button>
+          <button class="btn" id="edges" type="button" aria-pressed="false">Hairlines</button>
+        </div>
+        <div class="row"><label for="speed">Speed</label><input id="speed" type="range" min="0" max="2.5" step="0.05" value="1"><output id="speed-o" for="speed">1.0×</output></div>
+        <div class="row"><label for="fold">Fold</label><input id="fold" type="range" min="0" max="2" step="0.05" value="1"><output id="fold-o" for="fold">100%</output></div>
+        <div class="row"><label for="light">Light</label><input id="light" type="range" min="0" max="2" step="0.05" value="1"><output id="light-o" for="light">100%</output></div>
+        <div>
+          <p class="label">Format</p>
+          <div class="seg" id="formats">
+            <button class="btn" type="button" data-ar="0.8" aria-pressed="true">4:5</button>
+            <button class="btn" type="button" data-ar="1" aria-pressed="false">1:1</button>
+            <button class="btn" type="button" data-ar="0.5625" aria-pressed="false">9:16</button>
+            <button class="btn" type="button" data-ar="1.7778" aria-pressed="false">16:9</button>
+          </div>
+        </div>
+        <p class="hint">Move the pointer across the stage to steer the light yourself.</p>
+      </div>
+    </aside>
+  </section>
+
+  <section class="notes">
+    <div>
+      <h2>Fit</h2>
+      <p>Every fragment is filled with the full gradient, stretched to its own bounding box. That is how the vectors are filled in the Figma file, and the rule is recomputed on every frame.</p>
+    </div>
+    <div>
+      <h2>Fold</h2>
+      <p>The geometry travels. The disc's rings grow outward by a factor of √2 and loop without a seam, rays sweep around their focus, chevron bands slide down the weave. As a fragment changes shape, its gradient re-fits.</p>
+    </div>
+    <div>
+      <h2>Light</h2>
+      <p>The box each gradient is fitted to turns slowly, as if the lamp behind the membrane were moving, and a soft pulse runs across the fragments.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  'use strict';
+  const PI = Math.PI;
+  const frac = x => x - Math.floor(x);
+
+  /* ---------- polygon clipping (Sutherland-Hodgman against a rect) ---------- */
+  function clipEdge(p, axis, bound, keepLess) {
+    const out = [], n = p.length;
+    if (!n) return out;
+    let ax = p[n - 2], ay = p[n - 1];
+    let av = axis ? ay : ax;
+    let ain = keepLess ? av <= bound : av >= bound;
+    for (let i = 0; i < n; i += 2) {
+      const bx = p[i], by = p[i + 1], bv = axis ? by : bx;
+      const bin = keepLess ? bv <= bound : bv >= bound;
+      if (bin !== ain) {
+        const t = (bound - av) / (bv - av);
+        out.push(ax + (bx - ax) * t, ay + (by - ay) * t);
+      }
+      if (bin) out.push(bx, by);
+      ax = bx; ay = by; av = bv; ain = bin;
+    }
+    return out;
+  }
+  function clipRect(p, x0, y0, x1, y1) {
+    p = clipEdge(p, 0, x0, false);
+    p = clipEdge(p, 0, x1, true);
+    p = clipEdge(p, 1, y0, false);
+    return clipEdge(p, 1, y1, true);
+  }
+  function visible(p, vp) {
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    for (let i = 0; i < p.length; i += 2) {
+      if (p[i] < x0) x0 = p[i]; if (p[i] > x1) x1 = p[i];
+      if (p[i + 1] < y0) y0 = p[i + 1]; if (p[i + 1] > y1) y1 = p[i + 1];
+    }
+    return x1 >= vp[0] && x0 <= vp[0] + vp[2] && y1 >= vp[1] && y0 <= vp[1] + vp[3];
+  }
+
+  /* ---------- the five visuals, in Figma page coordinates ---------- */
+
+  // Pleated disc: concentric zigzag rings, each ring sqrt(2) larger than the last, 48 pleats.
+  function buildDisc(T, fold, vp, out) {
+    const cx = 277.5, cy = 663.5, N = 48, R0 = 126.4, th0 = 4.05 * PI / 180;
+    const s = frac(T * 0.05), rot = T * 0.016;
+    const dx = Math.max(vp[0] - cx, 0, cx - (vp[0] + vp[2]));
+    const dy = Math.max(vp[1] - cy, 0, cy - (vp[1] + vp[3]));
+    const rmin = Math.max(Math.hypot(dx, dy), 12);
+    const rmax = Math.hypot(Math.max(Math.abs(vp[0] - cx), Math.abs(vp[0] + vp[2] - cx)),
+                            Math.max(Math.abs(vp[1] - cy), Math.abs(vp[1] + vp[3] - cy)));
+    const k0 = Math.floor(2 * Math.log2(rmin / R0) - s) - 1;
+    const k1 = Math.ceil(2 * Math.log2(rmax / R0) - s) + 1;
+    let prev = null;
+    for (let k = k0; k <= k1; k++) {
+      const q = k + s, R = R0 * Math.pow(2, q / 2);
+      const tw = fold * 0.042 * Math.sin(T * 0.45 - q * 1.15);
+      const vf = 1 + 0.058 * (1 + fold * 0.6 * Math.sin(T * 0.6 - q * 1.7));
+      const z = new Array(4 * N + 2);
+      for (let j = 0; j <= 2 * N; j++) {
+        const a = th0 + rot + tw + j * PI / N, r = (j & 1) ? R * vf : R;
+        z[2 * j] = cx + r * Math.cos(a); z[2 * j + 1] = cy + r * Math.sin(a);
+      }
+      if (prev) {
+        for (let j = 0; j < 2 * N; j++) {
+          const i = 2 * j;
+          const p = [prev[i], prev[i + 1], prev[i + 2], prev[i + 3], z[i + 2], z[i + 3], z[i], z[i + 1]];
+          if (visible(p, vp)) out.push({ p, s: 0 });
+        }
+      }
+      prev = z;
+    }
+  }
+
+  // Chevron weave: bands between zigzag lines that shear a little with every step.
+  const CH = [[9.6, 291.3, -0.06, 9.29], [30.7, 312.2, 0.06, 9.47], [87.3, 277.4, -0.92, 9.8],
+              [128, 310.5, -1.21, 9.56], [194.6, 272.6, -2.49, 10.13]];
+  function chevLine(q, T, fold) {
+    const p = [0, 0];
+    for (let j = 0; j < 5; j++) {
+      const c = CH[j];
+      p.push(c[0] + c[2] * q + fold * 2.4 * Math.sin(T * 0.5 + j * 1.9 + q * 0.22),
+             c[1] + c[3] * q + fold * 2.8 * Math.sin(T * 0.37 + j * 2.3 - q * 0.3));
+    }
+    p[0] = p[2] - 30; p[1] = p[3] + 44.8;          // zigzag continues past the left edge
+    p.push(p[10] + 60, p[11] + 57);                // and past the right edge
+    return p;
+  }
+  function buildChevron(T, fold, vp, out) {
+    const s = frac(T * 0.11);
+    let top = chevLine(-4 + s, T, fold);
+    for (let i = -4; i < 24; i++) {
+      const bot = chevLine(i + 1 + s, T, fold);
+      const poly = top.slice();
+      for (let j = bot.length - 2; j >= 0; j -= 2) poly.push(bot[j], bot[j + 1]);
+      const p = clipEdge(clipEdge(poly, 0, 0, false), 0, 192.65, true);
+      if (p.length >= 6 && visible(p, vp)) out.push({ p, s: 0 });
+      top = bot;
+    }
+  }
+
+  // Twin fans: two families of rays from foci just outside opposite corners.
+  function buildFans(T, fold, vp, out) {
+    const ox = 9.2, oy = 213, W = 188.6, H = 106;
+    const f1x = W, f1y = H + 6.5 + fold * 3 * Math.sin(T * 0.31);
+    const f2x = -9.3 + fold * 3 * Math.sin(T * 0.27 + 1), f2y = -4.6 + fold * 2 * Math.cos(T * 0.23);
+    const fr = frac(T * 0.14);
+    const xTop = f2x + (0 - f2y) / (f1y - f2y) * (f1x - f2x);
+    const xBot = f2x + (H - f2y) / (f1y - f2y) * (f1x - f2x);
+    const push = (fx, fy, ax, ay, bx, by) => {
+      const k = 3;
+      let p = [fx, fy, fx + (ax - fx) * k, fy + (ay - fy) * k, fx + (bx - fx) * k, fy + (by - fy) * k];
+      p = clipRect(p, 0, 0, W, H);
+      if (p.length < 6) return;
+      for (let i = 0; i < p.length; i += 2) { p[i] += ox; p[i + 1] += oy; }
+      if (visible(p, vp)) out.push({ p, s: 0 });
+    };
+    // fan from the lower-right focus to the top edge
+    let ax = f2x, ay = f2y;
+    for (let i = 0; ; i++) {
+      const x = xTop + (i + fr) * 16.53, end = x >= W;
+      push(f1x, f1y, ax, ay, end ? W : x, 0);
+      if (end) break;
+      ax = x; ay = 0;
+    }
+    // fan from the upper-left focus to the bottom edge
+    ax = f1x; ay = f1y;
+    for (let i = 0; ; i++) {
+      const x = xBot - (i + fr) * 16.25, end = x <= f2x;
+      push(f2x, f2y, ax, ay, end ? f2x : x, H);
+      if (end) break;
+      ax = x; ay = H;
+    }
+  }
+
+  // Corner burst: rays from the lower-left corner through evenly spaced points on the opposite diagonal.
+  function buildBurst(T, fold, vp, out) {
+    const ox = 9, oy = 0, W = 177, H = 174.8, n = 21;
+    const fr = frac(T * 0.1);
+    const warp = f => f + fold * 0.016 * Math.sin(PI * f) * Math.sin(4 * PI * f + T * 0.5);
+    let fa = 0;
+    for (let i = 0; i <= n; i++) {
+      const fb = i === n ? 1 : warp((i + fr) / n);
+      const k = 2.4;
+      let p = [0, H, fa * W * k, H + (fa * H - H) * k, fb * W * k, H + (fb * H - H) * k];
+      p = clipRect(p, 0, 0, W, H);
+      if (p.length >= 6) {
+        for (let j = 0; j < p.length; j += 2) { p[j] += ox; p[j + 1] += oy; }
+        if (visible(p, vp)) out.push({ p, s: 0 });
+      }
+      fa = fb;
+    }
+  }
+
+  // Folded crown: seven quads sharing sixteen corners, in two colourways.
+  const CV = { A: [100.8, 597.25], B: [156.2, 626.2], C: [172.4, 659.4], D: [115.2, 631.7], E: [95.05, 604.4],
+               F: [148.8, 681.2], G: [79.2, 603.05], H: [98.35, 663.6], I: [74.05, 611.85], J: [84.1, 698.65],
+               K: [63.1, 608.75], L: [41.1, 644.05], M: [40.85, 679.95], N: [60.95, 628], O: [44.5, 620.9], Q: [7.4, 648.7] };
+  const CQ = ['ABCD', 'OQMN', 'LMNK', 'KLJI', 'GIJH', 'EGHF', 'AEFB'];
+  function buildCrown(T, fold, vp, out, aspect) {
+    const wide = aspect >= 1.25;
+    const offs = wide ? [[0, 0], [195, -17]] : [[0, 0], [0, 150]];
+    for (let c = 0; c < 2; c++) {
+      const tt = T + c * 2.1;
+      for (const q of CQ) {
+        const p = [];
+        for (const ch of q) {
+          const v = CV[ch], depth = (v[1] - 597) / 100;
+          const sx = 1 + 0.07 * fold * Math.sin(tt * 0.5) * (0.4 + depth);
+          p.push(92 + (v[0] - 92) * sx + offs[c][0],
+                 v[1] + fold * 3.2 * depth * Math.sin(tt * 0.8 + v[0] * 0.035) + offs[c][1]);
+        }
+        out.push({ p, s: c });
+      }
+    }
+  }
+
+  const NAVY = [[0, '#00001b'], [0.28, '#ff6600'], [0.54, '#ff8f4e'], [0.74, '#f4d4f4'], [0.95, '#b78aff']];
+  const VIS = [
+    { id: 'disc', name: 'Pleated disc', meta: '282 quads · navy, orange, violet', fit: 'cover',
+      view: [6, 452, 174, 117], stops: [NAVY], coef: [-0.16, -1.01, 1.07], phi: 0, lg: 0.42, wave: 0.07, build: buildDisc },
+    { id: 'chevron', name: 'Chevron weave', meta: '18 bands · maroon, mint, orange', fit: 'cover',
+      view: [9, 331, 148, 106], stops: [[[0.058, '#4e172b'], [0.303, '#c3f4ef'], [0.495, '#da4d01'], [0.837, '#4e172b'], [0.938, '#9979ff']]],
+      coef: [1.15, 0.44, -0.18], phi: 0, lg: 0.1, wave: 0.045, build: buildChevron },
+    { id: 'fans', name: 'Twin fans', meta: '23 wedges · red to green', fit: 'cover',
+      view: [9.2, 213, 188.6, 106], stops: [[[0, '#ff3e23'], [0.32, '#b264a4'], [0.63, '#86302e'], [1, '#00ce89']]],
+      coef: [1, 0, 0], phi: 0, lg: 0.22, wave: 0.06, build: buildFans },
+    { id: 'burst', name: 'Corner burst', meta: '21 wedges · colours sampled', fit: 'cover',
+      view: [9, 0, 177, 174.8], stops: [[[0, '#20add5'], [0.3, '#0d68b6'], [0.65, '#86d7de'], [0.97, '#d86e32']]],
+      coef: [0.5, -0.5, 0.5], phi: 0, lg: 0.26, wave: 0.06, build: buildBurst },
+    { id: 'crown', name: 'Folded crown', meta: '7 quads · two colourways', fit: 'contain',
+      layout: a => a >= 1.25 ? [-22, 544, 418, 182] : [-22, 560, 222, 314],
+      stops: [[[0.12, '#dac0ff'], [0.846, '#ff6a2d']], [[0.12, '#dac0ff'], [0.846, '#0a8b6b']]],
+      coef: [1.35, 0, -0.23], phi: -0.397, lg: 0.5, wave: 0.07, build: buildCrown }
+  ];
+
+  /* ---------- renderer: fit the gradient to each fragment's box, then fill ---------- */
+  function paint(ctx, P, stops, coef, phi, wave, T, shift, lw, edges) {
+    const n = P.length;
+    const cs = Math.cos(phi), sn = Math.sin(phi);
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    for (let i = 0; i < n; i += 2) {
+      const px = P[i] * cs + P[i + 1] * sn, py = -P[i] * sn + P[i + 1] * cs;
+      if (px < x0) x0 = px; if (px > x1) x1 = px;
+      if (py < y0) y0 = py; if (py > y1) y1 = py;
+    }
+    const a = coef[0] / Math.max(x1 - x0, 1e-3), c = coef[1] / Math.max(y1 - y0, 1e-3);
+    const e = coef[2] + shift + wave * Math.sin(T * 0.9 - ((x0 + x1) * 0.018 + (y0 + y1) * 0.011));
+    const k = e - a * x0 - c * y0;
+    const gx = a * cs - c * sn, gy = a * sn + c * cs, g2 = gx * gx + gy * gy;
+    if (g2 < 1e-12) return;
+    const sx = -k * gx / g2, sy = -k * gy / g2;
+    const g = ctx.createLinearGradient(sx, sy, sx + gx / g2, sy + gy / g2);
+    for (let i = 0; i < stops.length; i++) g.addColorStop(stops[i][0], stops[i][1]);
+    ctx.beginPath();
+    ctx.moveTo(P[0], P[1]);
+    for (let i = 2; i < n; i += 2) ctx.lineTo(P[i], P[i + 1]);
+    ctx.closePath();
+    ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = edges ? 'rgba(255,255,255,0.72)' : g;
+    ctx.lineWidth = lw; ctx.stroke();
+  }
+
+  const polys = [];
+  function render(cv, vis, T, o) {
+    const ctx = cv.getContext('2d'), w = cv.width, h = cv.height;
+    if (!w || !h) return 0;
+    const aspect = w / h;
+    const view = vis.layout ? vis.layout(aspect) : vis.view;
+    const sc = vis.fit === 'contain' ? Math.min(w / view[2], h / view[3]) : Math.max(w / view[2], h / view[3]);
+    const mx = view[0] + view[2] / 2, my = view[1] + view[3] / 2;
+    const vp = [mx - w / sc / 2, my - h / sc / 2, w / sc, h / sc];
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#00001b'; ctx.fillRect(0, 0, w, h);
+    ctx.setTransform(sc, 0, 0, sc, w / 2 - mx * sc, h / 2 - my * sc);
+    ctx.lineJoin = 'round';
+    polys.length = 0;
+    vis.build(T, o.fold, vp, polys, aspect);
+    const phi = vis.phi + o.light * vis.lg * Math.sin(T * 0.21) + o.steer;
+    const lw = (o.edges ? 1.1 : 0.9) * (o.dpr || 1) / sc;
+    for (let i = 0; i < polys.length; i++) {
+      const f = polys[i];
+      paint(ctx, f.p, vis.stops[f.s], vis.coef, phi, o.light * vis.wave, T, o.shift, lw, o.edges);
+    }
+    return polys.length;
+  }
+
+  /* ---------- page wiring ---------- */
+  const $ = id => document.getElementById(id);
+  const stage = $('stage'), cv = $('cv');
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 1, light: 1, edges: false,
+               steer: 0, steerTo: 0, shift: 0, shiftTo: 0, T: 0, dirty: true };
+
+  const thumbs = $('thumbs'), thumbCv = [];
+  VIS.forEach((v, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'thumb';
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.setAttribute('aria-label', v.name);
+    const c = document.createElement('canvas'); c.width = 120; c.height = 120;
+    const t = document.createElement('span'); t.className = 't-text';
+    const nm = document.createElement('span'); nm.className = 't-name'; nm.textContent = v.name;
+    const mt = document.createElement('span'); mt.className = 't-meta'; mt.textContent = v.meta;
+    t.append(nm, mt); b.append(c, t);
+    b.addEventListener('click', () => select(i));
+    thumbs.append(b); thumbCv.push(c);
+  });
+  function select(i) {
+    st.cur = i; st.dirty = true;
+    [...thumbs.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i ? 'true' : 'false'));
+    $('ro-name').textContent = VIS[i].name;
+  }
+
+  function sizeStage() {
+    const r = stage.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+    st.dpr = dpr; st.dirty = true;
+  }
+  if ('ResizeObserver' in window) new ResizeObserver(sizeStage).observe(stage);
+  window.addEventListener('resize', sizeStage);
+  sizeStage();
+
+  const playBtn = $('play');
+  function setPlaying(p) { st.playing = p; playBtn.textContent = p ? 'Pause' : 'Play'; }
+  setPlaying(st.playing);
+  playBtn.addEventListener('click', () => setPlaying(!st.playing));
+  $('edges').addEventListener('click', e => {
+    st.edges = !st.edges; e.currentTarget.setAttribute('aria-pressed', String(st.edges)); st.dirty = true;
+  });
+  const bind = (id, key, fmt) => {
+    const el = $(id), out = $(id + '-o');
+    const upd = () => { st[key] = parseFloat(el.value); out.textContent = fmt(st[key]); st.dirty = true; };
+    el.addEventListener('input', upd); upd();
+  };
+  bind('speed', 'speed', v => v.toFixed(1) + '×');
+  bind('fold', 'fold', v => Math.round(v * 100) + '%');
+  bind('light', 'light', v => Math.round(v * 100) + '%');
+  $('formats').addEventListener('click', e => {
+    const b = e.target.closest('button[data-ar]'); if (!b) return;
+    [...$('formats').children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    stage.style.setProperty('--ar', b.dataset.ar);
+    sizeStage();
+  });
+  stage.addEventListener('pointermove', e => {
+    const r = stage.getBoundingClientRect();
+    st.steerTo = ((e.clientX - r.left) / r.width - 0.5) * 1.1;
+    st.shiftTo = -((e.clientY - r.top) / r.height - 0.5) * 0.28;
+  });
+  const release = () => { st.steerTo = 0; st.shiftTo = 0; };
+  stage.addEventListener('pointerleave', release);
+  stage.addEventListener('pointercancel', release);
+
+  let last = performance.now(), frame = 0;
+  function tick(now) {
+    const dt = Math.min((now - last) / 1000, 0.1); last = now; frame++;
+    if (st.playing) st.T += dt * st.speed;
+    const ease = 1 - Math.exp(-dt * 5);
+    const moving = Math.abs(st.steerTo - st.steer) > 1e-4 || Math.abs(st.shiftTo - st.shift) > 1e-4;
+    st.steer += (st.steerTo - st.steer) * ease;
+    st.shift += (st.shiftTo - st.shift) * ease;
+    if (st.playing || st.dirty || moving) {
+      const vis = VIS[st.cur];
+      const n = render(cv, vis, st.T, st);
+      if (frame % 6 === 0 || st.dirty) {
+        $('ro-n').textContent = n;
+        const deg = (st.light * vis.lg * Math.sin(st.T * 0.21) + st.steer) * 180 / PI;
+        $('ro-l').textContent = (deg >= 0 ? '+' : '−') + Math.abs(deg).toFixed(0);
+      }
+      if (st.dirty || frame % 2 === 0) {
+        const o = { fold: st.fold, light: st.light, steer: 0, shift: 0, edges: false, dpr: 1 };
+        for (let i = 0; i < VIS.length; i++) render(thumbCv[i], VIS[i], st.T, o);
+      }
+      st.dirty = false;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
