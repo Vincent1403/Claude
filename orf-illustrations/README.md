@@ -44,3 +44,10 @@ legs), mark it with `bg:` and its position in the original picture, in pixels:
 
 A picture with a see-through background (ORF-15) is put on white first, and every area that is
 mostly see-through counts as background, enclosed or not, so no `bg:` points are needed for it.
+
+## Drawn, not traced
+
+ORF-16 (the Austrian flag) was drawn for the set in code by `tools/flag.py`, in the same structure
+as the traced files, so it has no original. Run it from a folder that has a `trace/` subfolder:
+
+    python3 tools/flag.py      # writes trace/ORF-16-stroke.svg
