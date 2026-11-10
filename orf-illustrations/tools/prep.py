@@ -9,6 +9,8 @@ picture is outside. With `grid`, an enclosed area that shows blue grid lines (su
 under a handle) is outside too, for drawings on grid paper whose paper colour matches the drawing.
 With `bg:x,y;...` (pixel positions in the original picture) the enclosed areas at those points are
 outside too, for gaps that have exactly the drawing's colour (between the legs of a tripod).
+A picture with a see-through background is put on white first, and every area that is mostly
+see-through is outside, enclosed or not.
 """
 import sys, numpy as np
 from PIL import Image
@@ -17,7 +19,16 @@ from skimage.morphology import remove_small_objects, remove_small_holes
 src, out, S = sys.argv[1], sys.argv[2], float(sys.argv[3])
 GRID = 'grid' in sys.argv[4:]
 SEEDS = [tuple(float(v) for v in p.split(',')) for a in sys.argv[4:] if a.startswith('bg:') for p in a[3:].split(';') if p]
-im = Image.open(src).convert('RGB')
+src_im = Image.open(src)
+alpha = None
+if src_im.mode in ('RGBA', 'LA', 'PA') or 'transparency' in src_im.info:
+    rgba_in = src_im.convert('RGBA')
+    on_white = Image.new('RGBA', rgba_in.size, (255, 255, 255, 255)); on_white.alpha_composite(rgba_in)
+    alpha = np.asarray(rgba_in.getchannel('A').resize((round(src_im.width * S), round(src_im.height * S)), Image.BILINEAR)) < 128
+    if not alpha.any(): alpha = None
+    im = on_white.convert('RGB')
+else:
+    im = src_im.convert('RGB')
 im = im.resize((round(im.width * S), round(im.height * S)), Image.LANCZOS)
 rgb = np.asarray(im, float) / 255
 dark = ndi.gaussian_filter(rgb.max(axis=2), 0.6 * S)        # brightest channel: low only for black/grey
@@ -28,6 +39,9 @@ if GRID:
     blue = (rgb[..., 2] - np.maximum(rgb[..., 0], rgb[..., 1]) > 0.25) & ~ink
     counts = ndi.sum(blue, lab, range(1, n + 1))
     border |= {i + 1 for i, c in enumerate(counts) if c > 40 * S * S}
+if alpha is not None:
+    see = ndi.sum(alpha & ~ink, lab, range(1, n + 1)); size = ndi.sum(~ink, lab, range(1, n + 1))
+    border |= {i + 1 for i in range(n) if see[i] > 0.5 * size[i]}
 for x, y in SEEDS:
     l = lab[int(round(y * S)), int(round(x * S))]
     if l: border.add(l)

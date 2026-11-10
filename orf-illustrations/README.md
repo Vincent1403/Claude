@@ -20,7 +20,7 @@ ORF-07 to ORF-09 were traced with `v2` (ORF-09 with `miter` joins); ORF-02 to OR
 
 ## Pictures (PNG, JPG, WebP)
 
-ORF-10 to ORF-14 came in as WebP pictures. `tools/prep.py` turns a black-on-white picture into
+ORF-10 to ORF-15 came in as WebP pictures. `tools/prep.py` turns a black-on-white picture into
 the transparent black/white image the tracer expects (it enlarges it, smooths compression noise and
 removes the white around the drawing). Then trace with `v3`, which also keeps every part of the
 black that is much thicker than a line (letters, shadows) as a solid black shape on top:
@@ -41,3 +41,6 @@ When an enclosed gap has exactly the drawing's own colour (ORF-14: the triangles
 legs), mark it with `bg:` and its position in the original picture, in pixels:
 
     python3 tools/prep.py original/ORF-14.webp /tmp/ORF-14.png 2.5 "bg:740,740;846,738"
+
+A picture with a see-through background (ORF-15) is put on white first, and every area that is
+mostly see-through counts as background, enclosed or not, so no `bg:` points are needed for it.
