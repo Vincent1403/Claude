@@ -13,6 +13,7 @@
  --nav:260px;
 }
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{background:var(--page);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;font-weight:450;-webkit-font-smoothing:antialiased}
 p{margin:0}
@@ -120,10 +121,36 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 .rules span{font-size:.92rem;color:var(--muted)}
 .kg-b{background:linear-gradient(to bottom right,#b2333a 0%,#dc4220 42%,#e45a28 66%,#ec7b39 100%)}
 .kg-r{background:linear-gradient(to top right,#b2333a 0%,#dc4220 42%,#e45a28 66%,#ec7b39 100%)}
-.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:25;background:var(--page);display:flex;gap:28px;border-bottom:1px solid var(--line);margin-bottom:8px}
-.tabs button{appearance:none;border:0;background:none;padding:14px 0 12px;font-size:1rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
-.tabs button:hover{color:var(--ink)}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--wine)}
+.bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(190px,1fr));gap:12px;margin-top:10px;
+ grid-template-areas:"logo farbe farbe typo" "logo kachel bild motion" "elem lay bild motion"}
+.bento a{position:relative;overflow:hidden;border-radius:20px;padding:20px 22px;text-decoration:none;container-type:inline-size;transition:transform .35s cubic-bezier(.34,1.45,.64,1)}
+.bento a:hover{transform:scale(1.015)}
+.bento a b{position:relative;z-index:2;font-size:clamp(1.3rem,2.2vw,1.9rem);font-weight:700;letter-spacing:-.02em}
+.b-art{position:absolute;pointer-events:none}
+.b-logo{grid-area:logo;background:var(--wine)}.b-logo b{color:var(--lorange)}
+.b-logo .lg{right:9%;bottom:9%;width:62%;color:#fff;overflow:visible}
+.b-farbe{grid-area:farbe;background:var(--orange)}.b-farbe b{color:var(--wine)}
+.b-farbe .sq{right:22px;bottom:20px;display:grid;grid-template-columns:repeat(2,clamp(30px,11cqw,52px));grid-template-rows:repeat(2,clamp(30px,11cqw,52px))}
+.b-farbe .sq i:nth-child(1){grid-area:1/1}.b-farbe .sq i:nth-child(2){grid-area:1/2;opacity:0}.b-farbe .sq i:nth-child(3){grid-area:2/2}.b-farbe .sq i:nth-child(4){display:none}
+.b-farbe .sq i{border-radius:12px}
+.b-typo{grid-area:typo;background:var(--lorange)}.b-typo b{color:var(--wine)}
+.b-typo .aa{right:16px;bottom:-.12em;font-size:44cqw;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--wine)}
+.b-kachel{grid-area:kachel;background:var(--lilac)}.b-kachel b{color:var(--wine)}
+.b-kachel .kt{left:0;right:0;bottom:0;height:52%;border-radius:12cqw 12cqw 0 0}
+.b-bild{grid-area:bild;background:url(img/tamara.webp) 38% 50%/cover}.b-bild::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(40,10,5,.45),rgba(40,10,5,0) 45%)}
+.b-bild b{color:#fff}
+.b-elem{grid-area:elem;background:var(--beige)}.b-elem b{color:var(--wine)}
+.b-elem .bp{left:22px;right:22px;bottom:22px;height:44px;border-radius:999px;background:#fff;box-shadow:0 6px 18px rgba(91,15,12,.08)}
+.b-elem .bp::before{content:"";position:absolute;left:5px;top:5px;width:34px;height:34px;border-radius:50%;background:var(--jg)}
+.b-elem .bp::after{content:"";position:absolute;left:52px;top:17px;width:45%;height:10px;border-radius:5px;background:var(--wine);opacity:.85}
+.b-lay{grid-area:lay;background:var(--red)}.b-lay b{color:#fff}
+.b-lay .wf{left:22px;right:22px;bottom:22px;height:44%;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.b-lay .wf i{border-radius:10px;background:rgba(255,255,255,.28)}.b-lay .wf i:nth-child(1){grid-row:1/3;background:rgba(255,255,255,.9)}.b-lay .wf i:nth-child(3){background:var(--wine)}
+.b-motion{grid-area:motion;background:var(--jg)}.b-motion b{color:#fff}
+.b-motion .bz{left:12%;right:10%;bottom:8%;width:78%;height:auto;overflow:visible}
+.bz path{stroke:rgba(255,255,255,.75);stroke-width:2.5}.bz path.cv{stroke:#fff;stroke-width:3.5}.bz circle{fill:#fff}.bz circle.mv{fill:var(--wine);stroke:#fff;stroke-width:3}
+.subnav{list-style:none;margin:4px 0 6px 12px;padding:0;display:grid;gap:0}
+.subnav a.it{font-size:.85rem}
 .swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
 .sw{display:grid;gap:10px;margin:0}
 .sw .chip{aspect-ratio:4/3;border-radius:18px}
@@ -145,8 +172,9 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  .mnav a.on{background:var(--sand);color:var(--ink);font-weight:700}
  main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
  section{scroll-margin-top:110px}
- .mnav{top:calc(env(safe-area-inset-top,0px) + 50px)}
+
  .swatches{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .bento{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:170px;grid-template-areas:"logo farbe" "logo typo" "kachel bild" "elem bild" "lay motion" "lay motion"}
  .spec-row{grid-template-columns:minmax(0,1fr);gap:6px}
  .grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
  .grid.g3.keep{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -158,52 +186,60 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  .rules{grid-template-columns:minmax(0,1fr)}
  .stage{border-radius:14px;clip-path:inset(0 round 14px)}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bz circle.mv{display:none}.bento a{transition:none}}
 </style>
 
-<nav class="nav" aria-label="Kapitel">
- <a class="brand" href="#start"><svg viewBox="0 0 271.15 182.86" aria-hidden="true" data-static></svg><span class="pill" id="guideName">Motion Guide</span></a>
- <div data-for="motion">
-  <div class="lab">Motion</div>
+<nav class="nav" aria-label="Kategorien">
+ <a class="brand" href="#home"><svg viewBox="0 0 271.15 182.86" aria-hidden="true" data-static></svg><span class="pill">Brand Guide</span></a>
+ <div>
+  <div class="lab">Kategorien</div>
   <ul>
-   <li><a class="it" href="#prinzipien">Prinzipien</a></li>
-   <li><a class="it" href="#logo">Logo</a></li>
-   <li><a class="it" href="#typografie">Typografie</a></li>
-   <li><a class="it" href="#kachel">Die Kachel</a></li>
-   <li><a class="it" href="#layout">Layout-Morphs</a></li>
-   <li><a class="it" href="#elemente">Elemente</a></li>
-   <li><a class="it" href="#timing">Timing</a></li>
-   <li><a class="it" href="#fehlgebrauch">Fehlgebrauch</a></li>
-  </ul>
- </div>
- <div data-for="statisch" hidden>
-  <div class="lab">Statisch</div>
-  <ul>
+   <li><a class="it" href="#home">Übersicht</a></li>
    <li><a class="it" href="#s-logo">Logo</a></li>
    <li><a class="it" href="#s-farbe">Farbe</a></li>
    <li><a class="it" href="#s-typo">Typografie</a></li>
    <li><a class="it" href="#s-kachel">Die Kachel</a></li>
+   <li><a class="it" href="#s-bild">Bildsprache</a></li>
    <li><a class="it" href="#s-elemente">Elemente</a></li>
    <li><a class="it" href="#s-layouts">Layouts</a></li>
+   <li><a class="it" href="#motion">Motion</a>
+    <ul class="subnav" data-for="motion" hidden>
+     <li><a class="it" href="#prinzipien">Prinzipien</a></li>
+     <li><a class="it" href="#logo">Logo</a></li>
+     <li><a class="it" href="#typografie">Typografie</a></li>
+     <li><a class="it" href="#kachel">Die Kachel</a></li>
+     <li><a class="it" href="#layout">Layout-Morphs</a></li>
+     <li><a class="it" href="#elemente">Elemente</a></li>
+     <li><a class="it" href="#timing">Timing</a></li>
+     <li><a class="it" href="#fehlgebrauch">Fehlgebrauch</a></li>
+    </ul>
+   </li>
   </ul>
  </div>
- <div class="ver">Entwurf v0.4 · Oktober 2026</div>
+ <div class="ver">Entwurf · November 2026</div>
 </nav>
-<nav class="mnav" aria-label="Kapitel" data-for="motion">
- <a href="#prinzipien">Prinzipien</a><a href="#logo">Logo</a><a href="#typografie">Typografie</a><a href="#kachel">Kachel</a><a href="#layout">Layout</a><a href="#elemente">Elemente</a><a href="#timing">Timing</a><a href="#fehlgebrauch">Fehlgebrauch</a>
-</nav>
-<nav class="mnav" aria-label="Kapitel" data-for="statisch" hidden>
- <a href="#s-logo">Logo</a><a href="#s-farbe">Farbe</a><a href="#s-typo">Typografie</a><a href="#s-kachel">Kachel</a><a href="#s-elemente">Elemente</a><a href="#s-layouts">Layouts</a>
+<nav class="mnav" aria-label="Kategorien">
+ <a href="#home">Übersicht</a><a href="#s-logo">Logo</a><a href="#s-farbe">Farbe</a><a href="#s-typo">Typografie</a><a href="#s-kachel">Kachel</a><a href="#s-bild">Bildsprache</a><a href="#s-elemente">Elemente</a><a href="#s-layouts">Layouts</a><a href="#motion">Motion</a>
 </nav>
 
 <main><div class="wrap">
- <div class="tabs" role="tablist" aria-label="Guide">
-  <button type="button" role="tab" id="tab-motion" aria-controls="page-motion" aria-selected="true" data-tab="motion">Motion</button>
-  <button type="button" role="tab" id="tab-statisch" aria-controls="page-statisch" aria-selected="false" data-tab="statisch">Statisch</button>
- </div>
- <div id="page-motion" role="tabpanel" aria-labelledby="tab-motion" data-page="motion">
+ <section id="home" data-page="home" style="padding-top:20px">
+  <h1>Brand Guide</h1>
+  <p class="lede">Die Bausteine der Marke jö an einem Ort: Logo, Farbe, Schrift, die Kachel, Bildsprache, Elemente, Layouts und Motion. Wähle eine Kategorie.</p>
+  <nav class="bento" aria-label="Kategorien">
+   <a class="b-logo" href="#s-logo"><b>Logo</b><svg class="b-art lg" viewBox="0 0 271.15 182.86" aria-hidden="true" data-static></svg></a>
+   <a class="b-farbe" href="#s-farbe"><b>Farbe</b><span class="b-art sq" aria-hidden="true"><i style="background:var(--wine)"></i><i style="background:var(--red)"></i><i style="background:var(--lorange)"></i><i style="background:var(--beige)"></i></span></a>
+   <a class="b-typo" href="#s-typo"><b>Typografie</b><span class="b-art aa" aria-hidden="true">Aa</span></a>
+   <a class="b-kachel" href="#s-kachel"><b>Die Kachel</b><span class="b-art kt kg-b" aria-hidden="true"></span></a>
+   <a class="b-bild" href="#s-bild"><b>Bildsprache</b></a>
+   <a class="b-elem" href="#s-elemente"><b>Elemente</b><span class="b-art bp" aria-hidden="true"></span></a>
+   <a class="b-lay" href="#s-layouts"><b>Layouts</b><span class="b-art wf" aria-hidden="true"><i></i><i></i><i></i></span></a>
+   <a class="b-motion" href="#motion"><b>Motion</b><svg class="b-art bz" viewBox="0 0 200 240" aria-hidden="true"><path d="M20 210 L70 210" /><path d="M130 30 L180 30" /><path class="cv" d="M20 210 C70 210 130 30 180 30" fill="none"/><circle cx="20" cy="210" r="7"/><circle cx="70" cy="210" r="7"/><circle cx="130" cy="30" r="7"/><circle cx="180" cy="30" r="7"/><circle class="mv" r="9"><animateMotion dur="2.4s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.6;1" calcMode="spline" keySplines=".65 0 .35 1;0 0 1 1" path="M20 210 C70 210 130 30 180 30"/></circle></svg></a>
+  </nav>
+ </section>
+ <div id="page-motion" data-page="motion" hidden>
 
- <section id="start" style="padding-top:20px">
+ <section id="motion" style="padding-top:20px">
   <h1>Motion</h1>
   <p class="lede">Bewegung bei jö ist freundlich, klar und hat einen kleinen Sprung. Sie kommt aus dem Logo: Linien, die sich in einem Zug zeichnen, und drei Punkte, die landen und nachfedern. Ihre Form ist die Kachel: eine Fläche im jö-Verlauf, die von unten oder von der Seite ins Bild ragt.</p>
   <div class="stage hero" data-scene="hero" aria-label="Logo-Konstruktion: Raster und Hilfslinien, das jö-Logo zeichnet sich, schiebt zur Seite und die Pill Motion Guide baut sich auf"></div>
@@ -304,21 +340,14 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  </section>
 
  </div>
- <div id="page-statisch" role="tabpanel" aria-labelledby="tab-statisch" data-page="statisch" hidden>
-
- <section id="s-start" style="padding-top:20px">
-  <h1>Statisch</h1>
-  <p class="lede">Die stillen Bausteine der Marke: Logo, Farben, Schrift, die Kachel und die Elemente, so wie sie auf Plakaten, Bannern und Screens stehen. Jedes Motion-Beispiel endet in einem dieser Zustände.</p>
- </section>
-
- <section id="s-logo">
-  <h2>Logo</h2>
+ <section id="s-logo" data-page="s-logo" class="cat" hidden>
+  <h1>Logo</h1>
   <p class="lede">Das Logo steht in Burgund auf hellem Grund und in Weiß auf Burgund oder dem jö-Verlauf. Als runde Variante sitzt es weiß im Kreis.</p>
   <div class="grid" data-group="st-logo"></div>
  </section>
 
- <section id="s-farbe">
-  <h2>Farbe</h2>
+ <section id="s-farbe" data-page="s-farbe" class="cat" hidden>
+  <h1>Farbe</h1>
   <p class="lede">Burgund trägt Schrift und Logo, Orange und der Verlauf setzen die Energie, die hellen Töne geben Ruhe und Raum.</p>
   <div class="swatches">
    <figure class="sw"><div class="chip" style="background:var(--wine)"></div><figcaption><b>Burgund</b><span>#5B0F0C</span></figcaption></figure>
@@ -332,8 +361,8 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
   </div>
  </section>
 
- <section id="s-typo">
-  <h2>Typografie</h2>
+ <section id="s-typo" data-page="s-typo" class="cat" hidden>
+  <h1>Typografie</h1>
   <p class="lede">Satoshi für alles. Headlines kräftig und eng, Fließtext ruhig. Ein Wort darf hervorgehoben werden, nie ein ganzer Satz.</p>
   <div class="specimen">
    <div class="spec-row"><div class="meta"><b>Headline</b><span>Satoshi Extra Bold · −3 % Laufweite</span></div><div style="font-weight:800;font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.03em;line-height:1.02;color:var(--wine)">Mehr aus dem Moment.</div></div>
@@ -343,8 +372,8 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
   </div>
  </section>
 
- <section id="s-kachel">
-  <h2>Die Kachel</h2>
+ <section id="s-kachel" data-page="s-kachel" class="cat" hidden>
+  <h1>Die Kachel</h1>
   <p class="lede">Die Kachel ist immer angeschnitten: von unten im Hochformat, von der Seite im Querformat. Sie ragt 25, 50 oder 75 % ins Bild, nur die inneren Ecken sind gerundet.</p>
   <h3 class="sub">Hochformat</h3>
   <div class="grid g3 keep" data-group="st-kb"></div>
@@ -352,19 +381,24 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
   <div class="grid g3" data-group="st-kr"></div>
  </section>
 
- <section id="s-elemente">
-  <h2>Elemente</h2>
+ <section id="s-bild" data-page="s-bild" class="cat" hidden>
+  <h1>Bildsprache</h1>
+  <p class="lede">Echte Menschen in echten Alltagsmomenten: zuhause, beim Einkaufen, draußen. Warmes Licht, natürliche Farben, nichts Gestelltes. Fotos stehen vollflächig, in der Kachel oder als Freisteller vor dem Verlauf.</p>
+  <div class="grid" data-group="st-bild"></div>
+ </section>
+
+ <section id="s-elemente" data-page="s-elemente" class="cat" hidden>
+  <h1>Elemente</h1>
   <p class="lede">Pill-Button, Tag, Ös-Pill, Fortschrittsring und Rabatt-Tag im fertigen Zustand. Eckenradien laufen konzentrisch: Außenradius gleich Pill-Radius plus Abstand.</p>
   <div class="grid" data-group="st-elem"></div>
  </section>
 
- <section id="s-layouts">
-  <h2>Layouts</h2>
+ <section id="s-layouts" data-page="s-layouts" class="cat" hidden>
+  <h1>Layouts</h1>
   <p class="lede">So greifen die Bausteine ineinander: Headline auf dem Hintergrund, Kachel oder Foto im Anschnitt, Pill-Button als Abschluss.</p>
   <div class="grid" data-group="st-layout"></div>
  </section>
 
- </div>
 </div></main>
 
 <script>
@@ -712,6 +746,10 @@ def('st-logo','st-logo-wine','Burgund auf Weiß','Die Standardversion auf hellem
 def('st-logo','st-logo-grad','Weiß auf Verlauf','Auf dem jö-Verlauf steht das Logo immer weiß.',{still:true,bg:'bg-jg',build(st){const L=logo(st,30,50,H/2,'#fff');return t=>logoDone(L)}});
 def('st-logo','st-logo-burg','Weiß auf Burgund','Für dunkle, ruhige Flächen.',{still:true,bg:'bg-wine',build(st){const L=logo(st,30,50,H/2,'#fff');return t=>logoDone(L)}});
 def('st-logo','st-logo-circle','Im Kreis','Weiß im Verlaufskreis, für Profilbilder und kleine Flächen.',{still:true,bg:'bg-beige',build(st){const T=mk(st,'bg-jg');T.style.cssText+=';position:absolute;border-radius:50%';rect(T,50,H/2,30,30);const L=logo(st,19.5,50,H/2+.3,'#fff');return t=>logoDone(L)}});
+def('st-bild','st-bild-home','Zuhause','Alltag statt Studio: Menschen, die gerade etwas mit jö erleben.',{still:true,bg:'bg-white',build(st){const ph=photo(st,'img/kian.webp');box(ph,0,0,100,H);ph.style.backgroundSize='cover';return t=>{}}});
+def('st-bild','st-bild-shop','Beim Einkaufen','Der Moment an der Kasse, nah und warm.',{still:true,bg:'bg-white',build(st){const ph=photo(st,'img/tamara.webp');box(ph,0,0,100,H);ph.style.backgroundSize='cover';return t=>{}}});
+def('st-bild','st-bild-out','Draußen','Weite, Licht und Bewegung für Sport- und Freizeitthemen.',{still:true,bg:'bg-white',build(st){const ph=photo(st,'img/see.webp');box(ph,0,0,100,H);ph.style.backgroundSize='cover';return t=>{}}});
+def('st-bild','st-bild-cut','Freisteller','Die Person tritt groß vor den Verlauf der Kachel.',{still:true,bg:'bg-lilac',build(st,h){const K=kachel(st,'r',h);K.set(.5);const fr=mk(st,'');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,46,4,58,h*1.08);return t=>{}}});
 const STILL=[['st-kb','kb-25'],['st-kb','kb-50'],['st-kb','kb-75'],['st-kr','kr-25'],['st-kr','kr-50'],['st-kr','kr-75'],
  ['st-elem','el-pill','Pill-Button','jö-Punkt im weißen Ring, Pill auf Textlänge.'],['st-elem','el-tags','Tag','Icon und Wort, eng gesetzt.'],['st-elem','el-count','Ös-Pill','Zahl in Burgund, Ös-Wortmarke im Badge.'],['st-elem','el-ring','Fortschrittsring','Verlauf entlang des Bogens, Zahl in der Mitte.'],['st-elem','el-discount','Rabatt-Tag','Hängt an der Layoutkante, Radien konzentrisch.'],
  ['st-layout','mo-split','Banner','Fläche mit Headline und Pill, Foto als Panel.'],['st-layout','tr-in','Kachel mit Headline','Headline auf dem Hintergrund, Kachel angeschnitten.'],['st-layout','mo-flip','Rabattkarte','Burgunde Karte mit Ös-Pill.']];
@@ -728,7 +766,7 @@ document.querySelectorAll('[data-group]').forEach(g=>{SC.filter(s=>s.g===g.datas
  const f=document.createElement('figure');f.className='ex';const st=document.createElement('div');st.className='stage';f.appendChild(st);
  const cap=document.createElement('figcaption');cap.innerHTML=`<b>${sc.name}${sc.badge==='std'?' <span class="badge std">Standard</span>':sc.badge==='acc'?' <span class="badge acc">Akzent</span>':sc.badge==='sf'?' <span class="badge sf">Sonderfall</span>':''}${sc.x?' <span class="badge no">Nicht so</span>':''}</b><span>${sc.desc}</span>`;f.appendChild(cap);g.appendChild(f);mount(st,sc)})});
 mount(document.querySelector('[data-scene="hero"]'),SC.find(s=>s.id==='hero'));
-staticLogo(document.querySelector('[data-static]'));
+document.querySelectorAll('[data-static]').forEach(svg=>staticLogo(svg));
 
 /* Nur sichtbare Bühnen laufen; bei reduzierter Bewegung erst nach Klick, einmal */
 function playOnce(o){const t0=performance.now();const go=n=>{const t=(n-t0)/1000;o.draw(Math.min(t,o.sc.dur));if(t<o.sc.dur)requestAnimationFrame(go);else o.draw(o.rest)};requestAnimationFrame(go)}
@@ -745,21 +783,21 @@ document.getElementById('curveRows').addEventListener('click',ev=>{const b=ev.ta
  const fb=()=>{const r=document.createRange();r.selectNodeContents(b.previousElementSibling);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Markiert'};
  try{navigator.clipboard.writeText(b.dataset.copy).then(()=>{b.textContent='Kopiert';setTimeout(()=>b.textContent='Kopieren',1400)},fb)}catch(e){fb()}});
 
-/* Reiter Motion / Statisch: per Klick oder #statisch bzw. #s-… im Link */
-function showPage(name,scroll){document.querySelectorAll('[data-page]').forEach(e=>e.hidden=e.dataset.page!==name);
- document.querySelectorAll('[data-for]').forEach(e=>e.hidden=e.dataset.for!==name);
- document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===name));
- document.getElementById('guideName').textContent=name==='statisch'?'Static Guide':'Motion Guide';
- /* Endzustände neu zeichnen, sobald die Seite sichtbar ist (vorher fehlen die Maße) */
- if(name==='statisch')requestAnimationFrame(()=>stages.forEach(o=>{if(o.still)try{o.draw(o.rest)}catch(e){}}));
- if(scroll)window.scrollTo({top:0})}
-document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{showPage(b.dataset.tab,true);try{history.replaceState(null,'',b.dataset.tab==='statisch'?'#statisch':'#start')}catch(e){}}));
-const pageOf=h=>/^#(statisch|s-)/.test(h)?'statisch':'motion';
-showPage(pageOf(location.hash));
-addEventListener('hashchange',()=>{const p=pageOf(location.hash);if(!document.getElementById('page-'+p).hidden)return;showPage(p);const t=document.querySelector(location.hash);t&&t.scrollIntoView()});
+/* Seiten: Übersicht (Bento), eine Seite je Kategorie, Motion mit Unterkapiteln. Gesteuert über den #-Teil der Adresse */
+const MOTION_IDS=['motion',...[...document.querySelectorAll('#page-motion section[id]')].map(e=>e.id)];
+const pageOf=h=>{const id=(h||'').slice(1);if(MOTION_IDS.includes(id))return 'motion';if(document.querySelector(`[data-page="${id}"]`))return id;return 'home'};
+let current='';
+function route(){const id=location.hash.slice(1),pg=pageOf(location.hash),changed=pg!==current;current=pg;
+ document.querySelectorAll('[data-page]').forEach(e=>e.hidden=e.dataset.page!==pg);
+ document.querySelectorAll('[data-for]').forEach(e=>e.hidden=e.dataset.for!==pg);
+ document.querySelectorAll('.nav a.it,.mnav a').forEach(a=>{const h=a.getAttribute('href').slice(1);if(pageOf('#'+h)!=='motion'||h==='motion')a.classList.toggle('on',pageOf('#'+h)===pg&&(pg!=='motion'||h==='motion'))});
+ /* Endzustände neu zeichnen, sobald ihre Seite sichtbar ist (vorher fehlen die Maße) */
+ requestAnimationFrame(()=>stages.forEach(o=>{if(o.still&&!o.el.closest('[hidden]'))try{o.draw(o.rest)}catch(e){}}));
+ if(pg==='motion'&&id!=='motion'&&id){const t=document.getElementById(id);t&&requestAnimationFrame(()=>t.scrollIntoView())}else if(changed||!id)window.scrollTo({top:0})}
+addEventListener('hashchange',route);route();
 
-/* Navigation: aktives Kapitel */
-const links=[...document.querySelectorAll('.nav a.it,.mnav a')];/* beide Seiten */
+/* Navigation: aktives Unterkapitel in Motion */
+const links=[...document.querySelectorAll('.subnav a.it')];
 const nio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'});
-document.querySelectorAll('section[id]').forEach(s=>nio.observe(s));
+document.querySelectorAll('#page-motion section[id]').forEach(s=>nio.observe(s));
 </script>
