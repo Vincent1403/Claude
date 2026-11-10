@@ -149,8 +149,8 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 .b-motion{grid-area:motion;background:var(--jg)}.b-motion b{color:#fff}
 .b-motion .bz{left:12%;right:10%;bottom:8%;width:78%;height:auto;overflow:visible}
 .bz path{stroke:rgba(255,255,255,.75);stroke-width:2.5}.bz path.cv{stroke:#fff;stroke-width:3.5}.bz circle{fill:#fff}.bz circle.mv{fill:var(--wine);stroke:#fff;stroke-width:3}
-.subnav{list-style:none;margin:4px 0 6px 12px;padding:0;display:grid;gap:0}
-.subnav a.it{font-size:.85rem}
+.nav .subnav{list-style:none;margin:4px 0 8px 22px;padding:0;display:grid;gap:0}
+.nav .subnav a.it{font-size:.85rem}
 .swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
 .sw{display:grid;gap:10px;margin:0}
 .sw .chip{aspect-ratio:4/3;border-radius:18px}
@@ -203,7 +203,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
    <li><a class="it" href="#s-elemente">Elemente</a></li>
    <li><a class="it" href="#s-layouts">Layouts</a></li>
    <li><a class="it" href="#motion">Motion</a>
-    <ul class="subnav" data-for="motion" hidden>
+    <ul class="subnav" hidden>
      <li><a class="it" href="#prinzipien">Prinzipien</a></li>
      <li><a class="it" href="#logo">Logo</a></li>
      <li><a class="it" href="#typografie">Typografie</a></li>
@@ -237,7 +237,67 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
    <a class="b-motion" href="#motion"><b>Motion</b><svg class="b-art bz" viewBox="0 0 200 240" aria-hidden="true"><path d="M20 210 L70 210" /><path d="M130 30 L180 30" /><path class="cv" d="M20 210 C70 210 130 30 180 30" fill="none"/><circle cx="20" cy="210" r="7"/><circle cx="70" cy="210" r="7"/><circle cx="130" cy="30" r="7"/><circle cx="180" cy="30" r="7"/><circle class="mv" r="9"><animateMotion dur="2.4s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.6;1" calcMode="spline" keySplines=".65 0 .35 1;0 0 1 1" path="M20 210 C70 210 130 30 180 30"/></circle></svg></a>
   </nav>
  </section>
- <div id="page-motion" data-page="motion" hidden>
+ <div id="guide" data-page="guide" hidden>
+ <section id="s-logo" class="cat">
+  <h1>Logo</h1>
+  <p class="lede">Das Logo steht in Burgund auf hellem Grund und in Weiß auf Burgund oder dem jö-Verlauf. Als runde Variante sitzt es weiß im Kreis.</p>
+  <div class="grid" data-group="st-logo"></div>
+ </section>
+
+ <section id="s-farbe" class="cat">
+  <h1>Farbe</h1>
+  <p class="lede">Burgund trägt Schrift und Logo, Orange und der Verlauf setzen die Energie, die hellen Töne geben Ruhe und Raum.</p>
+  <div class="swatches">
+   <figure class="sw"><div class="chip" style="background:var(--wine)"></div><figcaption><b>Burgund</b><span>#5B0F0C</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--red)"></div><figcaption><b>Rot</b><span>#E8371A</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--orange)"></div><figcaption><b>Orange</b><span>#F9781E</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--lorange)"></div><figcaption><b>Hellorange</b><span>#FFB37C</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--jg)"></div><figcaption><b>jö-Verlauf</b><span>Burgund → Rot → Orange</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--lilac)"></div><figcaption><b>Flieder</b><span>#EBE8EE</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:var(--beige)"></div><figcaption><b>Beige</b><span>#F4F1EA</span></figcaption></figure>
+   <figure class="sw"><div class="chip" style="background:#fff;box-shadow:inset 0 0 0 1px var(--line)"></div><figcaption><b>Weiß</b><span>#FFFFFF</span></figcaption></figure>
+  </div>
+ </section>
+
+ <section id="s-typo" class="cat">
+  <h1>Typografie</h1>
+  <p class="lede">Satoshi für alles. Headlines kräftig und eng, Fließtext ruhig. Ein Wort darf hervorgehoben werden, nie ein ganzer Satz.</p>
+  <div class="specimen">
+   <div class="spec-row"><div class="meta"><b>Headline</b><span>Satoshi Extra Bold · −3 % Laufweite</span></div><div style="font-weight:800;font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.03em;line-height:1.02;color:var(--wine)">Mehr aus dem Moment.</div></div>
+   <div class="spec-row"><div class="meta"><b>Subline</b><span>Satoshi Bold</span></div><div style="font-weight:700;font-size:1.6rem;letter-spacing:-.01em;color:var(--ink)">Alles in einer App.</div></div>
+   <div class="spec-row"><div class="meta"><b>Fließtext</b><span>Satoshi Regular</span></div><div style="font-size:1.05rem;max-width:56ch;color:var(--ink)">Sammle Ös bei über 30 Partnern und löse sie ein, wann es für dich passt. Mehr von dem, was zählt.</div></div>
+   <div class="spec-row"><div class="meta"><b>Zahlen</b><span>Satoshi Extra Bold · Tabellenziffern</span></div><div style="font-weight:800;font-size:2.4rem;color:var(--wine);font-variant-numeric:tabular-nums">500 · 83 · 5 €</div></div>
+  </div>
+ </section>
+
+ <section id="s-kachel" class="cat">
+  <h1>Die Kachel</h1>
+  <p class="lede">Die Kachel ist immer angeschnitten: von unten im Hochformat, von der Seite im Querformat. Sie ragt 25, 50 oder 75 % ins Bild, nur die inneren Ecken sind gerundet.</p>
+  <h3 class="sub">Hochformat</h3>
+  <div class="grid g3 keep" data-group="st-kb"></div>
+  <h3 class="sub">Querformat</h3>
+  <div class="grid g3" data-group="st-kr"></div>
+ </section>
+
+ <section id="s-bild" class="cat">
+  <h1>Bildsprache</h1>
+  <p class="lede">Echte Menschen in echten Alltagsmomenten: zuhause, beim Einkaufen, draußen. Warmes Licht, natürliche Farben, nichts Gestelltes. Fotos stehen vollflächig, in der Kachel oder als Freisteller vor dem Verlauf.</p>
+  <div class="grid" data-group="st-bild"></div>
+ </section>
+
+ <section id="s-elemente" class="cat">
+  <h1>Elemente</h1>
+  <p class="lede">Pill-Button, Tag, Ös-Pill, Fortschrittsring und Rabatt-Tag im fertigen Zustand. Eckenradien laufen konzentrisch: Außenradius gleich Pill-Radius plus Abstand.</p>
+  <div class="grid" data-group="st-elem"></div>
+ </section>
+
+ <section id="s-layouts" class="cat">
+  <h1>Layouts</h1>
+  <p class="lede">So greifen die Bausteine ineinander: Headline auf dem Hintergrund, Kachel oder Foto im Anschnitt, Pill-Button als Abschluss.</p>
+  <div class="grid" data-group="st-layout"></div>
+ </section>
+
+ <div id="page-motion">
 
  <section id="motion" style="padding-top:20px">
   <h1>Motion</h1>
@@ -340,65 +400,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  </section>
 
  </div>
- <section id="s-logo" data-page="s-logo" class="cat" hidden>
-  <h1>Logo</h1>
-  <p class="lede">Das Logo steht in Burgund auf hellem Grund und in Weiß auf Burgund oder dem jö-Verlauf. Als runde Variante sitzt es weiß im Kreis.</p>
-  <div class="grid" data-group="st-logo"></div>
- </section>
-
- <section id="s-farbe" data-page="s-farbe" class="cat" hidden>
-  <h1>Farbe</h1>
-  <p class="lede">Burgund trägt Schrift und Logo, Orange und der Verlauf setzen die Energie, die hellen Töne geben Ruhe und Raum.</p>
-  <div class="swatches">
-   <figure class="sw"><div class="chip" style="background:var(--wine)"></div><figcaption><b>Burgund</b><span>#5B0F0C</span></figcaption></figure>
-   <figure class="sw"><div class="chip" style="background:var(--red)"></div><figcaption><b>Rot</b><span>#E8371A</span></figcaption></figure>
-   <figure class="sw"><div class="chip" style="background:var(--orange)"></div><figcaption><b>Orange</b><span>#F9781E</span></figcaption></figure>
-   <figure class="sw"><div class="chip" style="background:var(--lorange)"></div><figcaption><b>Hellorange</b><span>#FFB37C</span></figcaption></figure>
-   <figure class="sw"><div class="chip" style="background:var(--jg)"></div><figcaption><b>jö-Verlauf</b><span>Burgund → Rot → Orange</span></figcaption></figure>
-   <figure class="sw"><div class="chip" style="background:var(--lilac)"></div><figcaption><b>Flieder</b><span>#EBE8EE</span></figcaption></figure>
-   <figure class="sw"><div class="chip" style="background:var(--beige)"></div><figcaption><b>Beige</b><span>#F4F1EA</span></figcaption></figure>
-   <figure class="sw"><div class="chip" style="background:#fff;box-shadow:inset 0 0 0 1px var(--line)"></div><figcaption><b>Weiß</b><span>#FFFFFF</span></figcaption></figure>
-  </div>
- </section>
-
- <section id="s-typo" data-page="s-typo" class="cat" hidden>
-  <h1>Typografie</h1>
-  <p class="lede">Satoshi für alles. Headlines kräftig und eng, Fließtext ruhig. Ein Wort darf hervorgehoben werden, nie ein ganzer Satz.</p>
-  <div class="specimen">
-   <div class="spec-row"><div class="meta"><b>Headline</b><span>Satoshi Extra Bold · −3 % Laufweite</span></div><div style="font-weight:800;font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.03em;line-height:1.02;color:var(--wine)">Mehr aus dem Moment.</div></div>
-   <div class="spec-row"><div class="meta"><b>Subline</b><span>Satoshi Bold</span></div><div style="font-weight:700;font-size:1.6rem;letter-spacing:-.01em;color:var(--ink)">Alles in einer App.</div></div>
-   <div class="spec-row"><div class="meta"><b>Fließtext</b><span>Satoshi Regular</span></div><div style="font-size:1.05rem;max-width:56ch;color:var(--ink)">Sammle Ös bei über 30 Partnern und löse sie ein, wann es für dich passt. Mehr von dem, was zählt.</div></div>
-   <div class="spec-row"><div class="meta"><b>Zahlen</b><span>Satoshi Extra Bold · Tabellenziffern</span></div><div style="font-weight:800;font-size:2.4rem;color:var(--wine);font-variant-numeric:tabular-nums">500 · 83 · 5 €</div></div>
-  </div>
- </section>
-
- <section id="s-kachel" data-page="s-kachel" class="cat" hidden>
-  <h1>Die Kachel</h1>
-  <p class="lede">Die Kachel ist immer angeschnitten: von unten im Hochformat, von der Seite im Querformat. Sie ragt 25, 50 oder 75 % ins Bild, nur die inneren Ecken sind gerundet.</p>
-  <h3 class="sub">Hochformat</h3>
-  <div class="grid g3 keep" data-group="st-kb"></div>
-  <h3 class="sub">Querformat</h3>
-  <div class="grid g3" data-group="st-kr"></div>
- </section>
-
- <section id="s-bild" data-page="s-bild" class="cat" hidden>
-  <h1>Bildsprache</h1>
-  <p class="lede">Echte Menschen in echten Alltagsmomenten: zuhause, beim Einkaufen, draußen. Warmes Licht, natürliche Farben, nichts Gestelltes. Fotos stehen vollflächig, in der Kachel oder als Freisteller vor dem Verlauf.</p>
-  <div class="grid" data-group="st-bild"></div>
- </section>
-
- <section id="s-elemente" data-page="s-elemente" class="cat" hidden>
-  <h1>Elemente</h1>
-  <p class="lede">Pill-Button, Tag, Ös-Pill, Fortschrittsring und Rabatt-Tag im fertigen Zustand. Eckenradien laufen konzentrisch: Außenradius gleich Pill-Radius plus Abstand.</p>
-  <div class="grid" data-group="st-elem"></div>
- </section>
-
- <section id="s-layouts" data-page="s-layouts" class="cat" hidden>
-  <h1>Layouts</h1>
-  <p class="lede">So greifen die Bausteine ineinander: Headline auf dem Hintergrund, Kachel oder Foto im Anschnitt, Pill-Button als Abschluss.</p>
-  <div class="grid" data-group="st-layout"></div>
- </section>
-
+ </div>
 </div></main>
 
 <script>
@@ -783,21 +785,18 @@ document.getElementById('curveRows').addEventListener('click',ev=>{const b=ev.ta
  const fb=()=>{const r=document.createRange();r.selectNodeContents(b.previousElementSibling);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Markiert'};
  try{navigator.clipboard.writeText(b.dataset.copy).then(()=>{b.textContent='Kopiert';setTimeout(()=>b.textContent='Kopieren',1400)},fb)}catch(e){fb()}});
 
-/* Seiten: Übersicht (Bento), eine Seite je Kategorie, Motion mit Unterkapiteln. Gesteuert über den #-Teil der Adresse */
-const MOTION_IDS=['motion',...[...document.querySelectorAll('#page-motion section[id]')].map(e=>e.id)];
-const pageOf=h=>{const id=(h||'').slice(1);if(MOTION_IDS.includes(id))return 'motion';if(document.querySelector(`[data-page="${id}"]`))return id;return 'home'};
-let current='';
-function route(){const id=location.hash.slice(1),pg=pageOf(location.hash),changed=pg!==current;current=pg;
- document.querySelectorAll('[data-page]').forEach(e=>e.hidden=e.dataset.page!==pg);
- document.querySelectorAll('[data-for]').forEach(e=>e.hidden=e.dataset.for!==pg);
- document.querySelectorAll('.nav a.it,.mnav a').forEach(a=>{const h=a.getAttribute('href').slice(1);if(pageOf('#'+h)!=='motion'||h==='motion')a.classList.toggle('on',pageOf('#'+h)===pg&&(pg!=='motion'||h==='motion'))});
- /* Endzustände neu zeichnen, sobald ihre Seite sichtbar ist (vorher fehlen die Maße) */
- requestAnimationFrame(()=>stages.forEach(o=>{if(o.still&&!o.el.closest('[hidden]'))try{o.draw(o.rest)}catch(e){}}));
- if(pg==='motion'&&id!=='motion'&&id){const t=document.getElementById(id);t&&requestAnimationFrame(()=>t.scrollIntoView())}else if(changed||!id)window.scrollTo({top:0})}
+/* Zwei Ansichten: Übersicht (Bento) und der Guide als ein durchgehender Scroll (statische Kapitel, dann Motion) */
+const guide=document.getElementById('guide'),homeEl=document.getElementById('home');
+const navLinks=[...document.querySelectorAll('.nav a.it,.mnav a')],subnav=document.querySelector('.subnav'),subLinks=[...subnav.querySelectorAll('a.it')];
+function setActive(cat,sub){navLinks.forEach(a=>{const h=a.getAttribute('href').slice(1);a.classList.toggle('on',a.closest('.subnav')?h===sub:h===cat)});subnav.hidden=cat!=='motion'}
+function route(){const id=location.hash.slice(1),isGuide=!!id&&id!=='home'&&!!document.getElementById(id)&&guide.contains(document.getElementById(id));
+ homeEl.hidden=isGuide;guide.hidden=!isGuide;
+ if(!isGuide){setActive('home');window.scrollTo({top:0});return}
+ requestAnimationFrame(()=>{stages.forEach(o=>{if(o.still)try{o.draw(o.rest)}catch(e){}});document.getElementById(id).scrollIntoView()})}
 addEventListener('hashchange',route);route();
 
-/* Navigation: aktives Unterkapitel in Motion */
-const links=[...document.querySelectorAll('.subnav a.it')];
-const nio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'});
-document.querySelectorAll('#page-motion section[id]').forEach(s=>nio.observe(s));
+/* Aktives Kapitel beim Scrollen; Motion-Unterkapitel klappen auf, sobald Motion erreicht ist */
+const nio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting||guide.hidden)return;const sec=e.target,inMotion=sec.closest('#page-motion');
+ setActive(inMotion?'motion':sec.id,inMotion&&sec.id!=='motion'?sec.id:'')}),{rootMargin:'-40% 0px -55% 0px'});
+guide.querySelectorAll('section[id]').forEach(s=>nio.observe(s));
 </script>
