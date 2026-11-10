@@ -149,6 +149,10 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 .b-motion{grid-area:motion;background:var(--jg)}.b-motion b{color:#fff}
 .b-motion .bz{left:12%;right:10%;bottom:8%;width:78%;height:auto;overflow:visible}
 .bz path{stroke:rgba(255,255,255,.75);stroke-width:2.5}.bz path.cv{stroke:#fff;stroke-width:3.5}.bz circle{fill:#fff}.bz circle.mv{fill:var(--wine);stroke:#fff;stroke-width:3}
+.modes{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:25;display:inline-flex;gap:4px;padding:4px;margin:4px 0 8px;border-radius:999px;background:var(--page);box-shadow:inset 0 0 0 1px var(--line)}
+.modes a{height:38px;padding:0 18px;border-radius:999px;display:inline-flex;align-items:center;font-weight:700;font-size:.9rem;letter-spacing:.01em;color:var(--muted);text-decoration:none;transition:color .2s}
+.modes a:hover{color:var(--ink)}
+.modes a[aria-current="true"]{background:var(--jg);color:#fff}
 .nav .subnav{list-style:none;margin:4px 0 8px 22px;padding:0;display:grid;gap:0}
 .nav .subnav a.it{font-size:.85rem}
 .swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
@@ -174,6 +178,7 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  section{scroll-margin-top:110px}
 
  .swatches{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .modes{position:static;margin-top:16px}
  .bento{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:170px;grid-template-areas:"logo farbe" "logo typo" "kachel bild" "elem bild" "lay motion" "lay motion"}
  .spec-row{grid-template-columns:minmax(0,1fr);gap:6px}
  .grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -190,8 +195,8 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 </style>
 
 <nav class="nav" aria-label="Kategorien">
- <a class="brand" href="#home"><svg viewBox="0 0 271.15 182.86" aria-hidden="true" data-static></svg><span class="pill">Brand Guide</span></a>
- <div>
+ <a class="brand" href="#home"><svg viewBox="0 0 271.15 182.86" aria-hidden="true" data-static></svg></a>
+ <div data-mode="brand">
   <div class="lab">Kategorien</div>
   <ul>
    <li><a class="it" href="#home">Übersicht</a></li>
@@ -216,13 +221,26 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
    </li>
   </ul>
  </div>
+ <div data-mode="partner" hidden>
+  <div class="lab">Partner</div>
+  <ul>
+   <li><a class="it" href="#partner">Übersicht</a></li>
+   <li><a class="it" href="#p-angebote">Angebote</a></li>
+   <li><a class="it" href="#p-oes">Ös sammeln</a></li>
+   <li><a class="it" href="#p-banner">Banner</a></li>
+  </ul>
+ </div>
  <div class="ver">Entwurf · November 2026</div>
 </nav>
-<nav class="mnav" aria-label="Kategorien">
+<nav class="mnav" aria-label="Kategorien" data-mode="brand">
  <a href="#home">Übersicht</a><a href="#s-logo">Logo</a><a href="#s-farbe">Farbe</a><a href="#s-typo">Typografie</a><a href="#s-kachel">Kachel</a><a href="#s-bild">Bildsprache</a><a href="#s-elemente">Elemente</a><a href="#s-layouts">Layouts</a><a href="#motion">Motion</a>
+</nav>
+<nav class="mnav" aria-label="Partner" data-mode="partner" hidden>
+ <a href="#partner">Übersicht</a><a href="#p-angebote">Angebote</a><a href="#p-oes">Ös sammeln</a><a href="#p-banner">Banner</a>
 </nav>
 
 <main><div class="wrap">
+ <div class="modes" role="group" aria-label="Bereich"><a href="#home" data-mode-link="brand" aria-current="true">Brand Guide</a><a href="#partner" data-mode-link="partner">Partner</a></div>
  <section id="home" data-page="home" style="padding-top:20px">
   <h1>Brand Guide</h1>
   <p class="lede">Die Bausteine der Marke jö an einem Ort: Logo, Farbe, Schrift, die Kachel, Bildsprache, Elemente, Layouts und Motion. Wähle eine Kategorie.</p>
@@ -400,6 +418,27 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
  </section>
 
  </div>
+ </div>
+ <div id="partner-view" hidden>
+ <section id="partner" style="padding-top:20px">
+  <h1>Partner</h1>
+  <p class="lede">Alles, was Partner für ihre jö-Kommunikation brauchen: Angebote mit Ös, Sammelaktionen und Banner. Die Bausteine kommen aus dem Brand Guide und verhalten sich genauso.</p>
+ </section>
+ <section id="p-angebote">
+  <h2>Angebote</h2>
+  <p class="lede">Rabatte und Deals stehen auf Burgund, der Preis in Ös sitzt immer in der Ös-Pill.</p>
+  <div class="grid" data-group="pt-angebot"></div>
+ </section>
+ <section id="p-oes">
+  <h2>Ös sammeln</h2>
+  <p class="lede">Gesammelte Ös und Fortschritt zählen von 0 hoch. Die Zahl steht in Burgund.</p>
+  <div class="grid" data-group="pt-oes"></div>
+ </section>
+ <section id="p-banner">
+  <h2>Banner</h2>
+  <p class="lede">Headline auf der Fläche, Foto als Panel, Pill-Button als Abschluss.</p>
+  <div class="grid" data-group="pt-banner"></div>
+ </section>
  </div>
 </div></main>
 
@@ -752,7 +791,7 @@ def('st-bild','st-bild-home','Zuhause','Alltag statt Studio: Menschen, die gerad
 def('st-bild','st-bild-shop','Beim Einkaufen','Der Moment an der Kasse, nah und warm.',{still:true,bg:'bg-white',build(st){const ph=photo(st,'img/tamara.webp');box(ph,0,0,100,H);ph.style.backgroundSize='cover';return t=>{}}});
 def('st-bild','st-bild-out','Draußen','Weite, Licht und Bewegung für Sport- und Freizeitthemen.',{still:true,bg:'bg-white',build(st){const ph=photo(st,'img/see.webp');box(ph,0,0,100,H);ph.style.backgroundSize='cover';return t=>{}}});
 def('st-bild','st-bild-cut','Freisteller','Die Person tritt groß vor den Verlauf der Kachel.',{still:true,bg:'bg-lilac',build(st,h){const K=kachel(st,'r',h);K.set(.5);const fr=mk(st,'');fr.style.cssText+=';position:absolute;background:url(img/frau.webp) center bottom/contain no-repeat';box(fr,46,4,58,h*1.08);return t=>{}}});
-const STILL=[['st-kb','kb-25'],['st-kb','kb-50'],['st-kb','kb-75'],['st-kr','kr-25'],['st-kr','kr-50'],['st-kr','kr-75'],
+const STILL=[['pt-angebot','el-discount','Rabatt-Tag','Hängt an der Layoutkante, Preis in der Ös-Pill.'],['pt-angebot','mo-flip','Rabattkarte','Burgunde Karte mit Ös-Pill.'],['pt-oes','el-count','Ös-Pill','Zählt von 0 bis zum Wert.'],['pt-oes','el-ring','Fortschrittsring','Zeigt den Fortschritt einer Sammelaktion.'],['pt-banner','mo-split','Banner','Fläche mit Headline und Pill, Foto als Panel.'],['pt-banner','tr-in','Kachel mit Headline','Headline auf dem Hintergrund, Kachel angeschnitten.'],['st-kb','kb-25'],['st-kb','kb-50'],['st-kb','kb-75'],['st-kr','kr-25'],['st-kr','kr-50'],['st-kr','kr-75'],
  ['st-elem','el-pill','Pill-Button','jö-Punkt im weißen Ring, Pill auf Textlänge.'],['st-elem','el-tags','Tag','Icon und Wort, eng gesetzt.'],['st-elem','el-count','Ös-Pill','Zahl in Burgund, Ös-Wortmarke im Badge.'],['st-elem','el-ring','Fortschrittsring','Verlauf entlang des Bogens, Zahl in der Mitte.'],['st-elem','el-discount','Rabatt-Tag','Hängt an der Layoutkante, Radien konzentrisch.'],
  ['st-layout','mo-split','Banner','Fläche mit Headline und Pill, Foto als Panel.'],['st-layout','tr-in','Kachel mit Headline','Headline auf dem Hintergrund, Kachel angeschnitten.'],['st-layout','mo-flip','Rabattkarte','Burgunde Karte mit Ös-Pill.']];
 const STILL_REST={'mo-flip':4.6,'el-count':3.6};
@@ -786,11 +825,13 @@ document.getElementById('curveRows').addEventListener('click',ev=>{const b=ev.ta
  try{navigator.clipboard.writeText(b.dataset.copy).then(()=>{b.textContent='Kopiert';setTimeout(()=>b.textContent='Kopieren',1400)},fb)}catch(e){fb()}});
 
 /* Zwei Ansichten: Übersicht (Bento) und der Guide als ein durchgehender Scroll (statische Kapitel, dann Motion) */
-const guide=document.getElementById('guide'),homeEl=document.getElementById('home');
+const guide=document.getElementById('guide'),homeEl=document.getElementById('home'),partnerEl=document.getElementById('partner-view');
 const navLinks=[...document.querySelectorAll('.nav a.it,.mnav a')],subnav=document.querySelector('.subnav'),subLinks=[...subnav.querySelectorAll('a.it')];
 function setActive(cat,sub){navLinks.forEach(a=>{const h=a.getAttribute('href').slice(1);a.classList.toggle('on',a.closest('.subnav')?h===sub:h===cat)});subnav.hidden=cat!=='motion'}
-function route(){const id=location.hash.slice(1),isGuide=!!id&&id!=='home'&&!!document.getElementById(id)&&guide.contains(document.getElementById(id));
- homeEl.hidden=isGuide;guide.hidden=!isGuide;
+function setMode(m){document.querySelectorAll('[data-mode]').forEach(e=>e.hidden=e.dataset.mode!==m);document.querySelectorAll('[data-mode-link]').forEach(a=>a.setAttribute('aria-current',a.dataset.modeLink===m))}
+function route(){const id=location.hash.slice(1),el=id&&document.getElementById(id),isPartner=!!el&&partnerEl.contains(el),isGuide=!!el&&id!=='home'&&guide.contains(el);
+ setMode(isPartner?'partner':'brand');partnerEl.hidden=!isPartner;homeEl.hidden=isGuide||isPartner;guide.hidden=!isGuide;
+ if(isPartner){requestAnimationFrame(()=>{stages.forEach(o=>{if(o.still)try{o.draw(o.rest)}catch(e){}});id==='partner'?window.scrollTo({top:0}):el.scrollIntoView()});setActive(id);return}
  if(!isGuide){setActive('home');window.scrollTo({top:0});return}
  requestAnimationFrame(()=>{stages.forEach(o=>{if(o.still)try{o.draw(o.rest)}catch(e){}});document.getElementById(id).scrollIntoView()})}
 addEventListener('hashchange',route);route();
@@ -799,4 +840,7 @@ addEventListener('hashchange',route);route();
 const nio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting||guide.hidden)return;const sec=e.target,inMotion=sec.closest('#page-motion');
  setActive(inMotion?'motion':sec.id,inMotion&&sec.id!=='motion'?sec.id:'')}),{rootMargin:'-40% 0px -55% 0px'});
 guide.querySelectorAll('section[id]').forEach(s=>nio.observe(s));
+const pio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!partnerEl.hidden)setActive(scrollY<80?'partner':e.target.id)}),{rootMargin:'-40% 0px -55% 0px'});
+partnerEl.querySelectorAll('section[id]').forEach(s=>pio.observe(s));
+addEventListener('scroll',()=>{if(!partnerEl.hidden&&scrollY<80)setActive('partner')},{passive:true});
 </script>
