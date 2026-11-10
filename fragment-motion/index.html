@@ -52,7 +52,6 @@ body{
   width:min(100%, calc(min(74vh, 720px) * var(--ar)));
   aspect-ratio:var(--ar); max-width:100%;
   background:var(--stage); position:relative; overflow:hidden;
-  touch-action:pan-y; cursor:crosshair;
 }
 .stage canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
 .readout{
@@ -86,6 +85,8 @@ body{
 .row output{font-family:var(--mono); font-size:12px; color:var(--muted); text-align:right; font-variant-numeric:tabular-nums}
 input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:0}
 .btn-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.group{display:flex; flex-direction:column; gap:10px}
+.group .label{margin:0}
 .btn{
   font:inherit; font-size:13px; font-weight:500; color:var(--fg);
   background:var(--surface); border:1px solid var(--line); border-radius:2px;
@@ -146,10 +147,21 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <div class="btn-row">
           <button class="btn play" id="play" type="button">Pause</button>
           <button class="btn" id="edges" type="button" aria-pressed="false">Hairlines</button>
+          <button class="btn" id="reset" type="button">Reset</button>
         </div>
-        <div class="row"><label for="speed">Speed</label><input id="speed" type="range" min="0" max="2.5" step="0.05" value="1"><output id="speed-o" for="speed">1.0×</output></div>
-        <div class="row"><label for="fold">Fold</label><input id="fold" type="range" min="0" max="2" step="0.05" value="1"><output id="fold-o" for="fold">100%</output></div>
-        <div class="row"><label for="light">Light</label><input id="light" type="range" min="0" max="2" step="0.05" value="1"><output id="light-o" for="light">100%</output></div>
+        <div class="group">
+          <p class="label">Geometry</p>
+          <div class="row"><label for="speed">Speed</label><input id="speed" type="range" min="0" max="2.5" step="0.05" value="1"><output id="speed-o" for="speed">1.0×</output></div>
+          <div class="row"><label for="fold">Fold</label><input id="fold" type="range" min="0" max="2" step="0.05" value="1"><output id="fold-o" for="fold">100%</output></div>
+        </div>
+        <div class="group">
+          <p class="label">Gradient</p>
+          <div class="row"><label for="gspeed">Speed</label><input id="gspeed" type="range" min="0" max="4" step="0.05" value="1"><output id="gspeed-o" for="gspeed">1.0×</output></div>
+          <div class="row"><label for="angle">Angle</label><input id="angle" type="range" min="-90" max="90" step="1" value="0"><output id="angle-o" for="angle">0°</output></div>
+          <div class="row"><label for="swing">Swing</label><input id="swing" type="range" min="0" max="3" step="0.05" value="1"><output id="swing-o" for="swing">100%</output></div>
+          <div class="row"><label for="offset">Offset</label><input id="offset" type="range" min="-50" max="50" step="1" value="0"><output id="offset-o" for="offset">0%</output></div>
+          <div class="row"><label for="pulse">Pulse</label><input id="pulse" type="range" min="0" max="3" step="0.05" value="1"><output id="pulse-o" for="pulse">100%</output></div>
+        </div>
         <div>
           <p class="label">Format</p>
           <div class="seg" id="formats">
@@ -159,7 +171,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
             <button class="btn" type="button" data-ar="1.7778" aria-pressed="false">16:9</button>
           </div>
         </div>
-        <p class="hint">Move the pointer across the stage to steer the light yourself.</p>
+        <p class="hint">Angle and Offset place the gradient. Swing and Pulse set how far it moves. Set either Speed to 0 to hold that layer still.</p>
       </div>
     </aside>
   </section>
@@ -175,7 +187,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     </div>
     <div>
       <h2>Light</h2>
-      <p>The box each gradient is fitted to turns slowly, as if the lamp behind the membrane were moving, and a soft pulse runs across the fragments.</p>
+      <p>The box each gradient is fitted to turns slowly, as if the lamp behind the membrane were moving, and a soft pulse runs across the fragments. The Gradient settings decide how far and how fast; the pointer does nothing.</p>
     </div>
   </section>
 </main>
@@ -418,11 +430,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     ctx.lineJoin = 'round';
     polys.length = 0;
     vis.build(T, o.fold, vp, polys, aspect);
-    const phi = vis.phi + o.light * vis.lg * Math.sin(T * 0.21) + o.steer;
+    const phi = vis.phi + o.angle + o.swing * vis.lg * Math.sin(o.TG * 0.21);
     const lw = (o.edges ? 1.1 : 0.9) * (o.dpr || 1) / sc;
     for (let i = 0; i < polys.length; i++) {
       const f = polys[i];
-      paint(ctx, f.p, vis.stops[f.s], vis.coef, phi, o.light * vis.wave, T, o.shift, lw, o.edges);
+      paint(ctx, f.p, vis.stops[f.s], vis.coef, phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
     }
     return polys.length;
   }
@@ -431,8 +443,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const $ = id => document.getElementById(id);
   const stage = $('stage'), cv = $('cv');
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const st = { cur: 0, playing: !reduced, speed: 1, fold: 1, light: 1, edges: false,
-               steer: 0, steerTo: 0, shift: 0, shiftTo: 0, T: 0, dirty: true };
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 1, edges: false,
+               gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true };
 
   const thumbs = $('thumbs'), thumbCv = [];
   VIS.forEach((v, i) => {
@@ -471,47 +483,49 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   $('edges').addEventListener('click', e => {
     st.edges = !st.edges; e.currentTarget.setAttribute('aria-pressed', String(st.edges)); st.dirty = true;
   });
-  const bind = (id, key, fmt) => {
+  const bind = (id, fmt, conv) => {
     const el = $(id), out = $(id + '-o');
-    const upd = () => { st[key] = parseFloat(el.value); out.textContent = fmt(st[key]); st.dirty = true; };
+    const upd = () => {
+      const v = parseFloat(el.value);
+      st[id] = conv ? conv(v) : v; out.textContent = fmt(v); st.dirty = true;
+    };
     el.addEventListener('input', upd); upd();
   };
-  bind('speed', 'speed', v => v.toFixed(1) + '×');
-  bind('fold', 'fold', v => Math.round(v * 100) + '%');
-  bind('light', 'light', v => Math.round(v * 100) + '%');
+  const pct = v => Math.round(v * 100) + '%';
+  const signed = (v, unit) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + unit;
+  bind('speed', v => v.toFixed(1) + '×');
+  bind('fold', pct);
+  bind('gspeed', v => v.toFixed(1) + '×');
+  bind('angle', v => signed(v, '°'), v => v * PI / 180);
+  bind('swing', pct);
+  bind('offset', v => signed(v, '%'), v => v / 100);
+  bind('pulse', pct);
+  $('reset').addEventListener('click', () => {
+    document.querySelectorAll('.controls input[type="range"]').forEach(el => {
+      el.value = el.defaultValue; el.dispatchEvent(new Event('input'));
+    });
+  });
   $('formats').addEventListener('click', e => {
     const b = e.target.closest('button[data-ar]'); if (!b) return;
     [...$('formats').children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
     stage.style.setProperty('--ar', b.dataset.ar);
     sizeStage();
   });
-  stage.addEventListener('pointermove', e => {
-    const r = stage.getBoundingClientRect();
-    st.steerTo = ((e.clientX - r.left) / r.width - 0.5) * 1.1;
-    st.shiftTo = -((e.clientY - r.top) / r.height - 0.5) * 0.28;
-  });
-  const release = () => { st.steerTo = 0; st.shiftTo = 0; };
-  stage.addEventListener('pointerleave', release);
-  stage.addEventListener('pointercancel', release);
 
   let last = performance.now(), frame = 0;
   function tick(now) {
     const dt = Math.min((now - last) / 1000, 0.1); last = now; frame++;
-    if (st.playing) st.T += dt * st.speed;
-    const ease = 1 - Math.exp(-dt * 5);
-    const moving = Math.abs(st.steerTo - st.steer) > 1e-4 || Math.abs(st.shiftTo - st.shift) > 1e-4;
-    st.steer += (st.steerTo - st.steer) * ease;
-    st.shift += (st.shiftTo - st.shift) * ease;
-    if (st.playing || st.dirty || moving) {
+    if (st.playing) { st.T += dt * st.speed; st.TG += dt * st.gspeed; }
+    if (st.playing || st.dirty) {
       const vis = VIS[st.cur];
       const n = render(cv, vis, st.T, st);
       if (frame % 6 === 0 || st.dirty) {
         $('ro-n').textContent = n;
-        const deg = (st.light * vis.lg * Math.sin(st.T * 0.21) + st.steer) * 180 / PI;
+        const deg = (st.angle + st.swing * vis.lg * Math.sin(st.TG * 0.21)) * 180 / PI;
         $('ro-l').textContent = (deg >= 0 ? '+' : '−') + Math.abs(deg).toFixed(0);
       }
       if (st.dirty || frame % 2 === 0) {
-        const o = { fold: st.fold, light: st.light, steer: 0, shift: 0, edges: false, dpr: 1 };
+        const o = { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse, TG: st.TG, edges: false, dpr: 1 };
         for (let i = 0; i < VIS.length; i++) render(thumbCv[i], VIS[i], st.T, o);
       }
       st.dirty = false;
