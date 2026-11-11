@@ -481,38 +481,64 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
   }
 
-  // Fluted rows: pleats extruded up and to the right, each ending in a rounded cap, stacked in rows
-  // that fill the whole frame. Each pleat has a lit face, a shaded face and its cap.
+  // Fluted rows: pleats as prisms with a drop-shaped section (round bottom, pointed ridge on top),
+  // all receding toward one vanishing point above and to the right. Each prism shows a lit left face,
+  // a shaded right face and its front cap; upper rows sit on top of the lower rows' prisms.
+  function hull(pts) {
+    const P = [];
+    for (let i = 0; i < pts.length; i += 2) P.push([pts[i], pts[i + 1]]);
+    P.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    const lo = [], up = [];
+    for (const p of P) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); }
+    for (let i = P.length - 1; i >= 0; i--) { const p = P[i]; while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); }
+    lo.pop(); up.pop();
+    const out = [];
+    for (const p of lo.concat(up)) out.push(p[0], p[1]);
+    return out;
+  }
   function buildFlute(T, E, vp, out) {
-    const w0 = 30, h0 = 23, ex = 58, ey = -88, rx = 26, ry = 48, SEG = 14;
-    const s = frac(T * 0.07);
-    const k0 = Math.floor((vp[1] - h0 * 2) / ry - s) - 1;
-    const k1 = Math.ceil((vp[1] + vp[3] - ey + h0) / ry - s) + 1;
-    for (let k = k1; k >= k0; k--) {                 // tiers stack upward: lower rows first, upper rows on top
-      const q = k + s, f = fol(T, q * 0.8, E);
-      const w = w0 * (1 - 0.5 * f), hw = w * 0.58, h = h0 * (1 + 0.35 * f);
-      const ek = 1 + 0.25 * f, exk = ex * ek, eyk = ey * ek;
-      const bx = q * rx, by = q * ry;
-      const sag = x => 7 * Math.sin(x / 70 + q * 0.9) + E.A * 4 * Math.sin(T * FOLD_W + x / 45);
-      const i0 = Math.floor((vp[0] - exk - w - bx) / w) - 1, i1 = Math.ceil((vp[0] + vp[2] + w - bx) / w) + 1;
-      const faces = [], caps = [];
-      for (let i = i1; i >= i0; i--) {                // right to left, so left pleats sit in front
-        const cx = bx + (i + 0.5) * w, cy = by + sag(cx);
-        // the tube's outline: front profile up to where it turns away from the viewer, then the same profile set back by e
-        const P = t => [cx - hw * Math.cos(t), cy + h * Math.sin(t)];
-        const ts = Math.atan2(h * exk, hw * eyk) + (eyk < 0 ? 0 : PI);     // tangent point, on the right half
-        const tube = [], cap = [];
-        for (let m = 0; m <= SEG; m++) { const q2 = P(ts * m / SEG); tube.push(q2[0], q2[1]); }
-        for (let m = 0; m <= SEG; m++) { const q2 = P(ts + (PI - ts) * m / SEG); tube.push(q2[0] + exk, q2[1] + eyk); }
-        tube.push(cx - hw + exk, cy + eyk);
-        for (let m = 0; m <= 2 * SEG; m++) { const q2 = P(PI * m / (2 * SEG)); cap.push(q2[0], q2[1]); }
-        // shading runs across the tube, from its upper-left edge to the edge where it turns away
-        const tp = P(ts), nl = Math.hypot(exk, eyk), nx = -eyk / nl, ny = exk / nl;
-        const d = (tp[0] - (cx - hw)) * nx + (tp[1] - cy) * ny;
-        if (visible(tube, vp)) faces.push({ p: tube, s: 0, g: [cx - hw, cy, cx - hw + nx * d, cy + ny * d] });
-        if (visible(cap, vp)) caps.push({ p: cap, s: 2, g: [cx - hw, cy, cx + hw, cy + h * 0.6] });
+    const VX = vp[0] + vp[2] * 0.74, VY = vp[1] - vp[3] * 0.5;
+    const rho = 0.78, sb = 0.6, W = 27, SEG = 22, TILT = -0.35, sagW = vp[2] * 0.55, cxs = vp[0] + vp[2] / 2;
+    const Dy0 = vp[1] + vp[3] + 20 - VY;
+    const s = frac(T * 0.06);
+    const qmax = Math.log(Math.max(vp[1] - VY - 6, 4) / Dy0) / Math.log(rho);
+    const back = (x, y) => [VX + (x - VX) * sb, VY + (y - VY) * sb];
+    for (let k = -4; k <= Math.ceil(qmax) + 2; k++) {        // bottom rows first, upper rows on top
+      const q = k - s, dy = Dy0 * Math.pow(rho, q), sc = Math.pow(dy / Dy0, 0.55);
+      const f = fol(T, q * 0.8, E);
+      const P = W * sc * (1 - 0.38 * f), r = P * 0.53, a = r * (1.4 + 0.9 * f);
+      const yRow = VY + dy, al = Math.acos(r / a);
+      const iMin = Math.floor((vp[0] - (VX - vp[0]) * 0.6 - VX) / P) - 1;
+      const iMax = Math.ceil((vp[0] + vp[2] + 3 * r - VX) / P) + 1;
+      const idx = [];
+      for (let i = iMin; i <= iMax; i++) idx.push(i);
+      idx.sort((m, n) => Math.abs(n + 0.5) - Math.abs(m + 0.5));   // farthest from the vanishing point first
+      const bodies = [], caps = [];
+      for (const i of idx) {
+        const x = VX + (i + 0.5) * P, y = yRow + 10 * sc * Math.cos((x - cxs) / sagW);
+        // the section is tilted with its prism: the ridge points along the prism's direction turned by TILT,
+        // which opens up the lit left face as in the reference
+        const sw = Math.atan2(VY - y, VX - x) + TILT, ux = Math.cos(sw), uy = Math.sin(sw), vx = -uy, vy = ux;
+        const at = phi => [x + r * (Math.cos(phi) * ux + Math.sin(phi) * vx), y + r * (Math.cos(phi) * uy + Math.sin(phi) * vy)];
+        const A = [x + a * ux, y + a * uy], TL = at(al), TR = at(-al);
+        const front = [A[0], A[1]];
+        for (let m = 0; m <= SEG; m++) { const pt = at(-al - (2 * PI - 2 * al) * m / SEG); front.push(pt[0], pt[1]); }
+        const all = front.slice();
+        for (let m = 0; m < front.length; m += 2) { const b = back(front[m], front[m + 1]); all.push(b[0], b[1]); }
+        const Ab = back(A[0], A[1]), TLb = back(TL[0], TL[1]), TRb = back(TR[0], TR[1]);
+        const body = hull(all);
+        if (!visible(body, vp)) continue;
+        // axis across the prism: normal to its length
+        const lx = Ab[0] - A[0], ly = Ab[1] - A[1], ll = Math.hypot(lx, ly) || 1, nx = -ly / ll, ny = lx / ll;
+        const across = (p1, p2) => { const d = (p2[0] - p1[0]) * nx + (p2[1] - p1[1]) * ny; return [p1[0], p1[1], p1[0] + nx * d, p1[1] + ny * d]; };
+        bodies.push({ p: body, s: 3, g: across(TL, TR) });
+        bodies.push({ p: [A[0], A[1], TL[0], TL[1], TLb[0], TLb[1], Ab[0], Ab[1]], s: 0,
+                      g: [(A[0] + TL[0]) / 2, (A[1] + TL[1]) / 2, (Ab[0] + TLb[0]) / 2, (Ab[1] + TLb[1]) / 2] });
+        bodies.push({ p: [A[0], A[1], TR[0], TR[1], TRb[0], TRb[1], Ab[0], Ab[1]], s: 1, g: across(A, TR) });
+        caps.push({ p: front, s: 2, g: [A[0], A[1], x - r * ux, y - r * uy] });
       }
-      for (const x of faces) out.push(x);
+      for (const x of bodies) out.push(x);
       for (const x of caps) out.push(x);
     }
   }
@@ -560,9 +586,10 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const WEAVE = [[0.058, '#4e172b'], [0.303, '#c3f4ef'], [0.495, '#da4d01'], [0.837, '#4e172b'], [0.938, '#9979ff']];
   const REDGREEN = [[0, '#ff3e23'], [0.32, '#b264a4'], [0.63, '#86302e'], [1, '#00ce89']];
   const FLUTE = [
-    [[0, '#a77aff'], [0.28, '#ecdcff'], [0.6, '#ff6a14'], [0.86, '#c23c04'], [1, '#2c0911']],
-    [[0, '#ff6a14'], [0.5, '#e24a06'], [1, '#2e0a12']],
-    [[0, '#c4a0ff'], [0.2, '#ff7a2a'], [0.62, '#f25400'], [1, '#3a0d14']]
+    [[0, '#b597ff'], [0.2, '#e7d8fc'], [0.4, '#ff7a2a'], [0.58, '#ff5a00'], [0.78, '#8a2208'], [1, '#3a0d14']],
+    [[0, '#2e0a12'], [0.45, '#c23c04'], [1, '#ff7426']],
+    [[0, '#3a0d14'], [0.16, '#8a2208'], [0.38, '#ff5a00'], [0.62, '#ff8a4a'], [0.85, '#f3c3b8'], [1, '#d8c6f2']],
+    [[0, '#ff6a14'], [0.6, '#c23c04'], [1, '#2e0a12']]
   ];
   const VIS = [
     { id: 'disc', name: 'Pleated disc', meta: 'Figma', fit: 'cover',
@@ -589,7 +616,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       ord: (x, y, vp) => clamp01(0.8 * (y - vp[1]) / vp[3] + 0.4 * Math.abs(x - vp[0] - vp[2] / 2) / vp[2]) },
     { id: 'flute', name: 'Fluted rows', meta: 'round · new', fit: 'cover',
       view: [-100, -80, 200, 160], stops: FLUTE, coef: [1, 0, 0], phi: 0, lg: 0.25, wave: 0.05, build: buildFlute,
-      ord: (x, y, vp) => clamp01(0.55 * (x - vp[0]) / vp[2] + 0.45 * (y - vp[1]) / vp[3]) },
+      ord: (x, y, vp) => clamp01(0.7 * (1 - (y - vp[1]) / vp[3]) + 0.3 * (x - vp[0]) / vp[2]) },
     { id: 'iris', name: 'Swirl iris', meta: 'round · new', fit: 'cover',
       view: [-80, -60, 160, 120], stops: [REDGREEN], coef: [0.75, 0.6, -0.15], phi: 0, lg: 0.4, wave: 0.07, build: buildIris,
       ord: ordRadial(0, 0, 0.65, (dx, dy) => frac(Math.atan2(dy, dx) / TAU + 0.5)) }
