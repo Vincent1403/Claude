@@ -154,6 +154,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           <p class="label">Geometry</p>
           <div class="row"><label for="speed">Speed</label><input id="speed" type="range" min="0" max="2.5" step="0.05" value="1"><output id="speed-o" for="speed">1.0×</output></div>
           <div class="row"><label for="fold">Fold</label><input id="fold" type="range" min="0" max="1" step="0.05" value="0.8"><output id="fold-o" for="fold">80%</output></div>
+          <div class="row"><label for="zoom">Zoom</label><input id="zoom" type="range" min="0.4" max="3" step="0.05" value="1"><output id="zoom-o" for="zoom">1.0×</output></div>
         </div>
         <div class="group">
           <p class="label">Build</p>
@@ -319,9 +320,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     return p;
   }
   function buildChevron(T, E, vp, out) {
-    const s = frac(T * 0.11), i1 = E.bc > 0.01 ? 80 : 28;
-    let top = chevLine(-8 + s, T, E);
-    for (let i = -8; i < i1; i++) {
+    // rows step about 9.5 units down; cover the whole viewport (more rows while a build squeezes them)
+    const s = frac(T * 0.11), sq = 1 - 0.8 * E.bc;
+    const i0 = Math.floor((vp[1] - 331) / (9.2 * sq) - 4), i1 = Math.ceil((vp[1] + vp[3] - 260) / (9.2 * sq) + 4);
+    let top = chevLine(i0 + s, T, E);
+    for (let i = i0; i < i1; i++) {
       const bot = chevLine(i + 1 + s, T, E);
       const poly = top.slice();
       for (let j = bot.length - 2; j >= 0; j -= 2) poly.push(bot[j], bot[j + 1]);
@@ -597,12 +600,12 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       view: [6, 452, 174, 117], stops: [NAVY], coef: [-0.16, -1.01, 1.07], phi: 0, lg: 0.42, wave: 0.07, build: buildDisc,
       ord: ordRadial(277.5, 663.5, 0.8, (dx, dy) => frac(Math.atan2(dy, dx) / TAU * 6)) },
     { id: 'chevron', name: 'Chevron weave', meta: 'Figma', fit: 'cover',
-      view: [9, 331, 148, 106], stops: [WEAVE], coef: [1.15, 0.44, -0.18], phi: 0, lg: 0.1, wave: 0.045, build: buildChevron, ord: ordY },
+      view: [9, 331, 148, 106], stops: [WEAVE], coef: [1.15, 0.44, -0.18], phi: 0, lg: 0.1, wave: 0.045, build: buildChevron, ord: ordY, tile: [0, 0, 192.65, 0, false] },
     { id: 'fans', name: 'Twin fans', meta: 'Figma', fit: 'cover',
-      view: [9.2, 213, 188.6, 106], stops: [REDGREEN], coef: [1, 0, 0], phi: 0, lg: 0.22, wave: 0.06, build: buildFans, ord: ordX },
+      view: [9.2, 213, 188.6, 106], stops: [REDGREEN], coef: [1, 0, 0], phi: 0, lg: 0.22, wave: 0.06, build: buildFans, ord: ordX, tile: [9.2, 213, 188.6, 106] },
     { id: 'burst', name: 'Corner burst', meta: 'Figma', fit: 'cover',
       view: [9, 0, 177, 174.8], stops: [[[0, '#20add5'], [0.3, '#0d68b6'], [0.65, '#86d7de'], [0.97, '#d86e32']]],
-      coef: [0.5, -0.5, 0.5], phi: 0, lg: 0.26, wave: 0.06, build: buildBurst,
+      coef: [0.5, -0.5, 0.5], phi: 0, lg: 0.26, wave: 0.06, build: buildBurst, tile: [9, 0, 177, 174.8],
       ord: (x, y) => clamp01(Math.atan2(x - 9, 174.8 - y) / (PI / 2)) },
     { id: 'crown', name: 'Folded crown', meta: 'Figma', fit: 'contain',
       layout: a => a >= 1.25 ? [-22, 544, 418, 182] : [-22, 560, 222, 314],
@@ -695,7 +698,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     if (!w || !h) return 0;
     const aspect = w / h;
     const view = vis.layout ? vis.layout(aspect) : vis.view;
-    const sc = vis.fit === 'contain' ? Math.min(w / view[2], h / view[3]) : Math.max(w / view[2], h / view[3]);
+    const sc = (vis.fit === 'contain' ? Math.min(w / view[2], h / view[3]) : Math.max(w / view[2], h / view[3])) * (o.zoom || 1);
     const mx = view[0] + view[2] / 2, my = view[1] + view[3] / 2;
     const vp = [mx - w / sc / 2, my - h / sc / 2, w / sc, h / sc];
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -706,6 +709,23 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     polys.length = 0;
     ENV.A = o.fold; ENV.bc = o.bc || 0;
     vis.build(T, ENV, vp, polys, aspect);
+    // visuals drawn for a fixed area repeat it, mirrored at every edge so the seams meet, to fill a zoomed-out frame
+    if (vis.tile) {
+      const [tx, ty, tw, th, flip = true] = vis.tile, base = polys.length;
+      const i0 = Math.floor((vp[0] - tx) / tw), i1 = Math.floor((vp[0] + vp[2] - tx) / tw);
+      const j0 = th ? Math.floor((vp[1] - ty) / th) : 0, j1 = th ? Math.floor((vp[1] + vp[3] - ty) / th) : 0;
+      for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) {
+        if (!i && !j) continue;
+        for (let k = 0; k < base; k++) {
+          const src = polys[k].p, p = new Array(src.length);
+          for (let m = 0; m < src.length; m += 2) {
+            p[m] = flip && (i & 1) ? 2 * tx + tw - src[m] + i * tw : src[m] + i * tw;
+            p[m + 1] = th ? (flip && (j & 1) ? 2 * ty + th - src[m + 1] + j * th : src[m + 1] + j * th) : src[m + 1];
+          }
+          if (visible(p, vp)) polys.push({ p, s: polys[k].s, c: polys[k].c, g: polys[k].g });
+        }
+      }
+    }
     const phi = vis.phi + o.angle + o.swing * vis.lg * Math.sin(o.TG * 0.21);
     const lw = (o.edges ? 1.1 : 0.9) * (o.dpr || 1) / sc;
     const B = o.B === undefined ? 1 : o.B, win = o.win || 0.2;
@@ -732,7 +752,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const $ = id => document.getElementById(id);
   const stage = $('stage'), cv = $('cv');
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, edges: false, ar: '0.8',
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, edges: false, ar: '0.8',
                gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true,
                bmode: 'off', bt: 0, bdur: 3 };
 
@@ -745,7 +765,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   function frameOpts(bt, dpr, edges) {
     const b = buildParams(bt);
     return { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse,
-             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win };
+             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom };
   }
 
   const thumbs = $('thumbs'), thumbCv = [];
@@ -797,6 +817,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const signed = (v, unit) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + unit;
   bind('speed', v => v.toFixed(1) + '×');
   bind('fold', pct);
+  bind('zoom', v => v.toFixed(1) + '×');
   bind('bdur', v => v.toFixed(1) + ' s');
   bind('gspeed', v => v.toFixed(1) + '×');
   bind('angle', v => signed(v, '°'), v => v * PI / 180);
