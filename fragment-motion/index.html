@@ -66,7 +66,7 @@ body{
   font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
   color:var(--muted); margin:0 0 8px;
 }
-.thumbs{display:grid; grid-template-columns:repeat(8, minmax(0,1fr)); gap:4px; padding-top:8px}
+.thumbs{display:grid; grid-template-columns:repeat(9, minmax(0,1fr)); gap:4px; padding-top:8px}
 .thumb{
   display:flex; flex-direction:column; gap:6px; min-width:0;
   padding:5px; border:1px solid transparent; background:none; color:inherit;
@@ -116,7 +116,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   .work{grid-template-columns:minmax(0,1fr); gap:22px}
   .stage{width:min(100%, calc(min(66vh, 620px) * var(--ar)))}
   .desk{padding:0; border:0; background:none}
-  .thumbs{grid-template-columns:repeat(4, minmax(0,1fr))}
+  .thumbs{grid-template-columns:repeat(5, minmax(0,1fr))}
   .thumb[aria-pressed="true"]{border-color:var(--accent)}
 }
 @media (max-width: 520px){
@@ -127,7 +127,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 <main class="wrap">
   <header class="head">
     <h1>Fragment Motion</h1>
-    <p>The five gradient-fragment visuals from the Figma page, plus three round patterns drawn from the lamp's lower ring, as live geometry. Each fragment carries the whole gradient, fitted to its own bounding box. The motion comes from folding the structure open and closed and turning the light behind it.</p>
+    <p>The five gradient-fragment visuals from the Figma page, plus four round patterns drawn from the lamp's lower ring, as live geometry. Each fragment carries the whole gradient, fitted to its own bounding box. The motion comes from folding the structure open and closed and turning the light behind it.</p>
   </header>
 
   <section class="work">
@@ -208,7 +208,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     </div>
     <div>
       <h2>Round</h2>
-      <p>Lens rosette, Scallop drum and Swirl iris take the almond openings, the scalloped edge and the curved pleats from the lamp's lower ring and treat them with the same gradient rule.</p>
+      <p>Lens rosette, Scallop drum, Fluted rows and Swirl iris take the almond openings, the scalloped edge, the rounded pleat ends and the curved pleats from the lamp's lower ring and treat them with the same gradient rule.</p>
     </div>
   </section>
 </main>
@@ -481,6 +481,42 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
   }
 
+  // Fluted rows: pleats extruded up and to the right, each ending in a rounded cap, stacked in rows
+  // that fill the whole frame. Each pleat has a lit face, a shaded face and its cap.
+  function buildFlute(T, E, vp, out) {
+    const w0 = 30, h0 = 23, ex = 58, ey = -88, rx = 26, ry = 48, SEG = 14;
+    const s = frac(T * 0.07);
+    const k0 = Math.floor((vp[1] - h0 * 2) / ry - s) - 1;
+    const k1 = Math.ceil((vp[1] + vp[3] - ey + h0) / ry - s) + 1;
+    for (let k = k1; k >= k0; k--) {                 // tiers stack upward: lower rows first, upper rows on top
+      const q = k + s, f = fol(T, q * 0.8, E);
+      const w = w0 * (1 - 0.5 * f), hw = w * 0.58, h = h0 * (1 + 0.35 * f);
+      const ek = 1 + 0.25 * f, exk = ex * ek, eyk = ey * ek;
+      const bx = q * rx, by = q * ry;
+      const sag = x => 7 * Math.sin(x / 70 + q * 0.9) + E.A * 4 * Math.sin(T * FOLD_W + x / 45);
+      const i0 = Math.floor((vp[0] - exk - w - bx) / w) - 1, i1 = Math.ceil((vp[0] + vp[2] + w - bx) / w) + 1;
+      const faces = [], caps = [];
+      for (let i = i1; i >= i0; i--) {                // right to left, so left pleats sit in front
+        const cx = bx + (i + 0.5) * w, cy = by + sag(cx);
+        // the tube's outline: front profile up to where it turns away from the viewer, then the same profile set back by e
+        const P = t => [cx - hw * Math.cos(t), cy + h * Math.sin(t)];
+        const ts = Math.atan2(h * exk, hw * eyk) + (eyk < 0 ? 0 : PI);     // tangent point, on the right half
+        const tube = [], cap = [];
+        for (let m = 0; m <= SEG; m++) { const q2 = P(ts * m / SEG); tube.push(q2[0], q2[1]); }
+        for (let m = 0; m <= SEG; m++) { const q2 = P(ts + (PI - ts) * m / SEG); tube.push(q2[0] + exk, q2[1] + eyk); }
+        tube.push(cx - hw + exk, cy + eyk);
+        for (let m = 0; m <= 2 * SEG; m++) { const q2 = P(PI * m / (2 * SEG)); cap.push(q2[0], q2[1]); }
+        // shading runs across the tube, from its upper-left edge to the edge where it turns away
+        const tp = P(ts), nl = Math.hypot(exk, eyk), nx = -eyk / nl, ny = exk / nl;
+        const d = (tp[0] - (cx - hw)) * nx + (tp[1] - cy) * ny;
+        if (visible(tube, vp)) faces.push({ p: tube, s: 0, g: [cx - hw, cy, cx - hw + nx * d, cy + ny * d] });
+        if (visible(cap, vp)) caps.push({ p: cap, s: 2, g: [cx - hw, cy, cx + hw, cy + h * 0.6] });
+      }
+      for (const x of faces) out.push(x);
+      for (const x of caps) out.push(x);
+    }
+  }
+
   // Swirl iris: curved pleats on spiral fold lines with a scalloped rim, twisting shut like an aperture.
   function buildIris(T, E, vp, out) {
     const N = 14, D = TAU / N, rho = 1.5, R0 = 40, LR = Math.log(rho);
@@ -523,6 +559,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const NAVY = [[0, '#00001b'], [0.28, '#ff6600'], [0.54, '#ff8f4e'], [0.74, '#f4d4f4'], [0.95, '#b78aff']];
   const WEAVE = [[0.058, '#4e172b'], [0.303, '#c3f4ef'], [0.495, '#da4d01'], [0.837, '#4e172b'], [0.938, '#9979ff']];
   const REDGREEN = [[0, '#ff3e23'], [0.32, '#b264a4'], [0.63, '#86302e'], [1, '#00ce89']];
+  const FLUTE = [
+    [[0, '#a77aff'], [0.28, '#ecdcff'], [0.6, '#ff6a14'], [0.86, '#c23c04'], [1, '#2c0911']],
+    [[0, '#ff6a14'], [0.5, '#e24a06'], [1, '#2e0a12']],
+    [[0, '#c4a0ff'], [0.2, '#ff7a2a'], [0.62, '#f25400'], [1, '#3a0d14']]
+  ];
   const VIS = [
     { id: 'disc', name: 'Pleated disc', meta: 'Figma', fit: 'cover',
       view: [6, 452, 174, 117], stops: [NAVY], coef: [-0.16, -1.01, 1.07], phi: 0, lg: 0.42, wave: 0.07, build: buildDisc,
@@ -546,6 +587,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     { id: 'scallop', name: 'Scallop drum', meta: 'round · new', fit: 'cover',
       view: [-90, -66, 180, 132], stops: [WEAVE], coef: [0.3, 0.85, -0.08], phi: 0, lg: 0.3, wave: 0.06, build: buildScallop,
       ord: (x, y, vp) => clamp01(0.8 * (y - vp[1]) / vp[3] + 0.4 * Math.abs(x - vp[0] - vp[2] / 2) / vp[2]) },
+    { id: 'flute', name: 'Fluted rows', meta: 'round · new', fit: 'cover',
+      view: [-100, -80, 200, 160], stops: FLUTE, coef: [1, 0, 0], phi: 0, lg: 0.25, wave: 0.05, build: buildFlute,
+      ord: (x, y, vp) => clamp01(0.55 * (x - vp[0]) / vp[2] + 0.45 * (y - vp[1]) / vp[3]) },
     { id: 'iris', name: 'Swirl iris', meta: 'round · new', fit: 'cover',
       view: [-80, -60, 160, 120], stops: [REDGREEN], coef: [0.75, 0.6, -0.15], phi: 0, lg: 0.4, wave: 0.07, build: buildIris,
       ord: ordRadial(0, 0, 0.65, (dx, dy) => frac(Math.atan2(dy, dx) / TAU + 0.5)) }
@@ -575,6 +619,24 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     ctx.closePath();
     ctx.fillStyle = g; ctx.fill();
     ctx.strokeStyle = edges ? 'rgba(255,255,255,0.72)' : g;
+    ctx.lineWidth = lw; ctx.stroke();
+  }
+
+  function paintAxis(ctx, P, stops, g, phi, wave, T, shift, lw, edges) {
+    let dx = g[2] - g[0], dy = g[3] - g[1];
+    const mx = (g[0] + g[2]) / 2, my = (g[1] + g[3]) / 2;
+    const cs = Math.cos(phi), sn = Math.sin(phi);
+    const rx = dx * cs - dy * sn, ry = dx * sn + dy * cs;
+    const sh = shift + wave * Math.sin(T * 0.9 - (mx * 0.018 + my * 0.011));
+    const ox = mx - rx * (0.5 + sh), oy = my - ry * (0.5 + sh);
+    const gr = ctx.createLinearGradient(ox, oy, ox + rx, oy + ry);
+    for (let i = 0; i < stops.length; i++) gr.addColorStop(stops[i][0], stops[i][1]);
+    ctx.beginPath();
+    ctx.moveTo(P[0], P[1]);
+    for (let i = 2; i < P.length; i += 2) ctx.lineTo(P[i], P[i + 1]);
+    ctx.closePath();
+    ctx.fillStyle = gr; ctx.fill();
+    ctx.strokeStyle = edges ? 'rgba(255,255,255,0.72)' : gr;
     ctx.lineWidth = lw; ctx.stroke();
   }
 
@@ -631,7 +693,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         if (r <= 0.02) continue;
         if (r < 1) P = grow(P, vis, vp, 1 - Math.pow(1 - r, 3));
       }
-      paint(ctx, P, vis.stops[f.s], vis.coef, phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
+      if (f.g) paintAxis(ctx, P, vis.stops[f.s], f.g, phi - vis.phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
+      else paint(ctx, P, vis.stops[f.s], f.c || vis.coef, phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
       drawn++;
     }
     return drawn;
