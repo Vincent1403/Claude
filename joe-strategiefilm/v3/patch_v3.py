@@ -1140,7 +1140,7 @@ rep("im.src='ooh/kian_mid.webp';im.alt='';", "im.src='ooh/kian_mid.webp';im.alt=
 rep("Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return}", _zs + "Object.assign(ct.style,{display:'',transform:'translateX(2400px)'});return}")
 rep("Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});", "Object.assign(CLV.style,{width:iw+'px',height:ih+'px',left:'0px',top:'0px'});" + _zs)
 # Kunde (04.11.): alle Rot-Orange-Verläufe → neuer Verlauf; GRAD_NEU = False stellt den alten Stand wieder her (Commit 32a1deb, Artefakt „Stand vor neuem Verlauf“)
-GRAD_NEU = True
+GRAD_NEU = False   # 11.11.: Kunde arbeitet wieder mit dem alten Verlauf (neuer Verlauf war nur für die Präsentation)
 _VN = (lambda alt, neu: here / "verlauf_neu" / neu if GRAD_NEU else here / alt)   # umgefärbte Logos: verlauf_neu/logo_umfaerben.py
 s = s.replace("__ECICON__", "data:image/webp;base64," + base64.b64encode(_VN("endc_icon_verlauf.webp", "endc_icon_verlauf_neu.webp").read_bytes()).decode())   # Kunde: großes jö mit Farbverlauf (vorher endc_icon.webp)
 s = s.replace("__GRADJO__", "data:image/webp;base64," + base64.b64encode(_VN("jo_verlauf.webp", "jo_verlauf_neu.webp").read_bytes()).decode())
