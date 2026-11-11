@@ -2,8 +2,9 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
 <style>
-/* Layout: one large stage holding the animated visual, beside a narrow rail of
-   live thumbnails and motion controls. The rail drops under the stage on phones. */
+/* Layout: one large stage holding the animated visual with a strip of live
+   thumbnails under it, beside a narrow rail of motion controls. The rail drops
+   under the stage on phones. */
 :root{
   --bg:#f3f2f6;
   --surface:#ffffff;
@@ -42,7 +43,7 @@ body{
   font-size:clamp(40px, 6vw, 64px); line-height:.95; letter-spacing:-.01em; margin:0;
   text-wrap:balance;
 }
-.head p{margin:0; max-width:58ch; color:var(--muted); min-width:0; flex:1 1 320px}
+.head p{margin:0; max-width:60ch; color:var(--muted); min-width:0; flex:1 1 320px}
 
 .work{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:32px; align-items:start}
 .stage-col{display:flex; flex-direction:column; gap:10px; min-width:0}
@@ -61,25 +62,25 @@ body{
 }
 .readout b{font-weight:500; color:var(--fg)}
 
-.rail{display:flex; flex-direction:column; gap:22px; min-width:0}
 .label{
   font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
   color:var(--muted); margin:0 0 8px;
 }
-.thumbs{display:flex; flex-direction:column; gap:2px}
+.thumbs{display:grid; grid-template-columns:repeat(8, minmax(0,1fr)); gap:4px; padding-top:8px}
 .thumb{
-  display:grid; grid-template-columns:60px minmax(0,1fr); gap:12px; align-items:center;
-  position:relative; padding:6px; border:1px solid transparent; background:none; color:inherit;
+  display:flex; flex-direction:column; gap:6px; min-width:0;
+  padding:5px; border:1px solid transparent; background:none; color:inherit;
   font:inherit; text-align:left; cursor:pointer; border-radius:2px;
 }
-.thumb canvas{width:60px; height:60px; display:block; background:var(--stage)}
-.thumb .t-name{display:block; font-weight:600; font-size:14px; line-height:1.25}
-.thumb .t-meta{display:block; font-family:var(--mono); font-size:11px; color:var(--muted); line-height:1.35}
+.thumb canvas{width:100%; height:auto; aspect-ratio:1; display:block; background:var(--stage)}
+.thumb .t-name{display:block; font-weight:600; font-size:12px; line-height:1.2}
+.thumb .t-meta{display:block; font-family:var(--mono); font-size:10px; color:var(--muted); line-height:1.3}
 .thumb:hover{border-color:var(--line)}
 .thumb[aria-pressed="true"]{background:var(--surface); border-color:var(--line)}
 .thumb[aria-pressed="true"] .t-name{color:var(--accent)}
 
-.controls{display:flex; flex-direction:column; gap:14px; padding-top:18px; border-top:1px solid var(--line)}
+.rail{display:flex; flex-direction:column; gap:22px; min-width:0}
+.controls{display:flex; flex-direction:column; gap:16px}
 .row{display:grid; grid-template-columns:52px minmax(0,1fr) 44px; gap:10px; align-items:center}
 .row label{font-size:13px; font-weight:500}
 .row output{font-family:var(--mono); font-size:12px; color:var(--muted); text-align:right; font-variant-numeric:tabular-nums}
@@ -104,19 +105,21 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 .hint{margin:0; font-size:12.5px; color:var(--muted)}
 :focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 
-.notes{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:28px; padding-top:24px; border-top:1px solid var(--line)}
+.notes{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:28px; padding-top:24px; border-top:1px solid var(--line)}
 .notes h2{font-family:var(--display); font-weight:400; font-size:26px; line-height:1.1; margin:0 0 6px}
 .notes p{margin:0; color:var(--muted); max-width:42ch}
 
+@media (max-width: 1000px){
+  .notes{grid-template-columns:repeat(2, minmax(0,1fr))}
+}
 @media (max-width: 860px){
   .work{grid-template-columns:minmax(0,1fr); gap:22px}
   .stage{width:min(100%, calc(min(66vh, 620px) * var(--ar)))}
   .desk{padding:0; border:0; background:none}
-  .thumbs{display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:6px}
-  .thumb{grid-template-columns:minmax(0,1fr); padding:3px; gap:0}
-  .thumb canvas{width:100%; height:auto; aspect-ratio:1}
-  .thumb .t-text{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)}
+  .thumbs{grid-template-columns:repeat(4, minmax(0,1fr))}
   .thumb[aria-pressed="true"]{border-color:var(--accent)}
+}
+@media (max-width: 520px){
   .notes{grid-template-columns:minmax(0,1fr); gap:20px}
 }
 </style>
@@ -124,7 +127,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 <main class="wrap">
   <header class="head">
     <h1>Fragment Motion</h1>
-    <p>The five gradient-fragment visuals from the Figma page, rebuilt as live geometry. Each fragment still carries the whole gradient, fitted to its own bounding box. The motion comes from moving the folds and turning the light behind them.</p>
+    <p>The five gradient-fragment visuals from the Figma page, plus three round patterns drawn from the lamp's lower ring, as live geometry. Each fragment carries the whole gradient, fitted to its own bounding box. The motion comes from folding the structure open and closed and turning the light behind it.</p>
   </header>
 
   <section class="work">
@@ -137,14 +140,10 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <span><span id="ro-n">0</span> fragments drawn</span>
         <span>light <span id="ro-l">0</span>°</span>
       </div>
+      <div class="thumbs" id="thumbs"></div>
     </div>
 
     <aside class="rail">
-      <div>
-        <p class="label">Visuals</p>
-        <div class="thumbs" id="thumbs"></div>
-      </div>
-
       <div class="controls">
         <div class="btn-row">
           <button class="btn play" id="play" type="button">Pause</button>
@@ -154,7 +153,17 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <div class="group">
           <p class="label">Geometry</p>
           <div class="row"><label for="speed">Speed</label><input id="speed" type="range" min="0" max="2.5" step="0.05" value="1"><output id="speed-o" for="speed">1.0×</output></div>
-          <div class="row"><label for="fold">Fold</label><input id="fold" type="range" min="0" max="2" step="0.05" value="1"><output id="fold-o" for="fold">100%</output></div>
+          <div class="row"><label for="fold">Fold</label><input id="fold" type="range" min="0" max="1" step="0.05" value="0.8"><output id="fold-o" for="fold">80%</output></div>
+        </div>
+        <div class="group">
+          <p class="label">Build</p>
+          <div class="seg" id="bmodes">
+            <button class="btn" type="button" data-mode="off" aria-pressed="true">Off</button>
+            <button class="btn" type="button" data-mode="piece" aria-pressed="false">Piece by piece</button>
+            <button class="btn" type="button" data-mode="unfold" aria-pressed="false">Unfold</button>
+          </div>
+          <div class="row"><label for="bdur">Length</label><input id="bdur" type="range" min="1" max="5" step="0.5" value="3"><output id="bdur-o" for="bdur">3.0 s</output></div>
+          <div class="btn-row"><button class="btn" id="replay" type="button" disabled>Play build</button></div>
         </div>
         <div class="group">
           <p class="label">Gradient</p>
@@ -173,7 +182,6 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
             <button class="btn" type="button" data-ar="1.7778" aria-pressed="false">16:9</button>
           </div>
         </div>
-        <p class="hint">Angle and Offset place the gradient. Swing and Pulse set how far it moves. Set either Speed to 0 to hold that layer still.</p>
         <div class="group" id="export" hidden>
           <p class="label">Export</p>
           <div class="btn-row">
@@ -188,15 +196,19 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   <section class="notes">
     <div>
       <h2>Fit</h2>
-      <p>Every fragment is filled with the full gradient, stretched to its own bounding box. That is how the vectors are filled in the Figma file, and the rule is recomputed on every frame.</p>
+      <p>Every fragment is filled with the full gradient, stretched to its own bounding box, as in the Figma file. The Gradient settings turn and slide that fit; the pointer does nothing.</p>
     </div>
     <div>
       <h2>Fold</h2>
-      <p>The geometry travels. The disc's rings grow outward by a factor of √2 and loop without a seam, rays sweep around their focus, chevron bands slide down the weave. As a fragment changes shape, its gradient re-fits.</p>
+      <p>The structure folds shut and open once every five seconds at speed 1.0, so one clip holds one full fold. Pleats turn edge-on, fans gather to one side, lenses close to slits, scallops flatten.</p>
     </div>
     <div>
-      <h2>Light</h2>
-      <p>The box each gradient is fitted to turns slowly, as if the lamp behind the membrane were moving, and a soft pulse runs across the fragments. The Gradient settings decide how far and how fast; the pointer does nothing.</p>
+      <h2>Build</h2>
+      <p>Piece by piece adds the fragments one after another, each growing out of the one before. Unfold starts tightly folded and opens the whole structure in one move. With a build selected, exported clips start with it.</p>
+    </div>
+    <div>
+      <h2>Round</h2>
+      <p>Lens rosette, Scallop drum and Swirl iris take the almond openings, the scalloped edge and the curved pleats from the lamp's lower ring and treat them with the same gradient rule.</p>
     </div>
   </section>
 </main>
@@ -205,10 +217,17 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 <script>
 (() => {
   'use strict';
-  const PI = Math.PI;
+  const PI = Math.PI, TAU = PI * 2;
   const frac = x => x - Math.floor(x);
+  const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
 
-  /* ---------- polygon clipping (Sutherland-Hodgman against a rect) ---------- */
+  /* ---------- fold: 0 = open, 1 = folded shut; one cycle every 5 s ---------- */
+  const FOLD_W = TAU / 5;
+  function wave(T, ph) { const c = 0.5 - 0.5 * Math.cos(T * FOLD_W - ph); return c * c * (3 - 2 * c); }
+  // E.A is the fold amount from the slider, E.bc forces the structure shut while a build unfolds it.
+  function fol(T, ph, E) { const f = E.A * wave(T, ph); return f + (1 - f) * E.bc; }
+
+  /* ---------- polygon helpers ---------- */
   function clipEdge(p, axis, bound, keepLess) {
     const out = [], n = p.length;
     if (!n) return out;
@@ -241,28 +260,35 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
     return x1 >= vp[0] && x0 <= vp[0] + vp[2] && y1 >= vp[1] && y0 <= vp[1] + vp[3];
   }
-
-  /* ---------- the five visuals, in Figma page coordinates ---------- */
-
-  // Pleated disc: concentric zigzag rings, each ring sqrt(2) larger than the last, 48 pleats.
-  function buildDisc(T, fold, vp, out) {
-    const cx = 277.5, cy = 663.5, N = 48, R0 = 126.4, th0 = 4.05 * PI / 180;
-    const s = frac(T * 0.05), rot = T * 0.016;
+  // nearest and farthest distance from a centre to the viewport rectangle
+  function radii(vp, cx, cy, floor) {
     const dx = Math.max(vp[0] - cx, 0, cx - (vp[0] + vp[2]));
     const dy = Math.max(vp[1] - cy, 0, cy - (vp[1] + vp[3]));
-    const rmin = Math.max(Math.hypot(dx, dy), 12);
-    const rmax = Math.hypot(Math.max(Math.abs(vp[0] - cx), Math.abs(vp[0] + vp[2] - cx)),
-                            Math.max(Math.abs(vp[1] - cy), Math.abs(vp[1] + vp[3] - cy)));
-    const k0 = Math.floor(2 * Math.log2(rmin / R0) - s) - 1;
-    const k1 = Math.ceil(2 * Math.log2(rmax / R0) - s) + 1;
+    const fx = Math.max(Math.abs(vp[0] - cx), Math.abs(vp[0] + vp[2] - cx));
+    const fy = Math.max(Math.abs(vp[1] - cy), Math.abs(vp[1] + vp[3] - cy));
+    return [Math.max(Math.hypot(dx, dy), floor), Math.hypot(fx, fy)];
+  }
+
+  /* ---------- the five visuals from the Figma page, in page coordinates ---------- */
+
+  // Pleated disc: concentric zigzag rings, each ring sqrt(2) larger than the last, 48 pleats.
+  function buildDisc(T, E, vp, out) {
+    const cx = 277.5, cy = 663.5, N = 48, R0 = 126.4, th0 = 4.05 * PI / 180;
+    const s = frac(T * 0.05), rot = T * 0.016;
+    const rr = radii(vp, cx, cy, 12);
+    const k0 = Math.floor(2 * Math.log2(rr[0] / R0) - s) - 1;
+    const k1 = Math.ceil(2 * Math.log2(rr[1] / R0) - s) + 1;
     let prev = null;
     for (let k = k0; k <= k1; k++) {
       const q = k + s, R = R0 * Math.pow(2, q / 2);
-      const tw = fold * 0.042 * Math.sin(T * 0.45 - q * 1.15);
-      const vf = 1 + 0.058 * (1 + fold * 0.6 * Math.sin(T * 0.6 - q * 1.7));
+      const tw = E.A * 0.03 * Math.sin(T * 0.45 - q * 1.15);
       const z = new Array(4 * N + 2);
       for (let j = 0; j <= 2 * N; j++) {
-        const a = th0 + rot + tw + j * PI / N, r = (j & 1) ? R * vf : R;
+        let a = th0 + rot + tw + j * PI / N, r = R;
+        if (j & 1) {                       // valley: slides toward the next ridge and deepens as the pleat shuts
+          const f = fol(T, q * 1.3 + (j >> 1) * TAU * 3 / N, E);
+          a += 0.8 * f * PI / N; r = R * (1 + 0.058 * (1 + 2.4 * f));
+        }
         z[2 * j] = cx + r * Math.cos(a); z[2 * j + 1] = cy + r * Math.sin(a);
       }
       if (prev) {
@@ -279,22 +305,24 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   // Chevron weave: bands between zigzag lines that shear a little with every step.
   const CH = [[9.6, 291.3, -0.06, 9.29], [30.7, 312.2, 0.06, 9.47], [87.3, 277.4, -0.92, 9.8],
               [128, 310.5, -1.21, 9.56], [194.6, 272.6, -2.49, 10.13]];
-  function chevLine(q, T, fold) {
+  function chevLine(q, T, E) {
     const p = [0, 0];
+    const comp = E.A * 15 * Math.sin(q * 0.5 - T * FOLD_W);   // bands bunch up and release like an accordion
+    const sq = 1 - 0.8 * E.bc;
     for (let j = 0; j < 5; j++) {
       const c = CH[j];
-      p.push(c[0] + c[2] * q + fold * 2.4 * Math.sin(T * 0.5 + j * 1.9 + q * 0.22),
-             c[1] + c[3] * q + fold * 2.8 * Math.sin(T * 0.37 + j * 2.3 - q * 0.3));
+      const y = c[1] + c[3] * q - comp + E.A * 2 * Math.sin(T * 0.37 + j * 2.3 - q * 0.3);
+      p.push(c[0] + c[2] * q + E.A * 2.2 * Math.sin(T * 0.5 + j * 1.9 + q * 0.22), 331 + (y - 331) * sq);
     }
     p[0] = p[2] - 30; p[1] = p[3] + 44.8;          // zigzag continues past the left edge
     p.push(p[10] + 60, p[11] + 57);                // and past the right edge
     return p;
   }
-  function buildChevron(T, fold, vp, out) {
-    const s = frac(T * 0.11);
-    let top = chevLine(-4 + s, T, fold);
-    for (let i = -4; i < 24; i++) {
-      const bot = chevLine(i + 1 + s, T, fold);
+  function buildChevron(T, E, vp, out) {
+    const s = frac(T * 0.11), i1 = E.bc > 0.01 ? 80 : 28;
+    let top = chevLine(-8 + s, T, E);
+    for (let i = -8; i < i1; i++) {
+      const bot = chevLine(i + 1 + s, T, E);
       const poly = top.slice();
       for (let j = bot.length - 2; j >= 0; j -= 2) poly.push(bot[j], bot[j + 1]);
       const p = clipEdge(clipEdge(poly, 0, 0, false), 0, 192.65, true);
@@ -304,11 +332,12 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   }
 
   // Twin fans: two families of rays from foci just outside opposite corners.
-  function buildFans(T, fold, vp, out) {
-    const ox = 9.2, oy = 213, W = 188.6, H = 106;
-    const f1x = W, f1y = H + 6.5 + fold * 3 * Math.sin(T * 0.31);
-    const f2x = -9.3 + fold * 3 * Math.sin(T * 0.27 + 1), f2y = -4.6 + fold * 2 * Math.cos(T * 0.23);
+  function buildFans(T, E, vp, out) {
+    const ox = 9.2, oy = 213, W = 188.6, H = 106, n = 11;
+    const f1x = W, f1y = H + 6.5 + E.A * 3 * Math.sin(T * 0.31);
+    const f2x = -9.3 + E.A * 3 * Math.sin(T * 0.27 + 1), f2y = -4.6 + E.A * 2 * Math.cos(T * 0.23);
     const fr = frac(T * 0.14);
+    const k1 = Math.pow(5, fol(T, 0, E)), k2 = Math.pow(5, fol(T, 2.2, E));   // a shut fan gathers its rays at the seam
     const xTop = f2x + (0 - f2y) / (f1y - f2y) * (f1x - f2x);
     const xBot = f2x + (H - f2y) / (f1y - f2y) * (f1x - f2x);
     const push = (fx, fy, ax, ay, bx, by) => {
@@ -319,32 +348,29 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       for (let i = 0; i < p.length; i += 2) { p[i] += ox; p[i + 1] += oy; }
       if (visible(p, vp)) out.push({ p, s: 0 });
     };
-    // fan from the lower-right focus to the top edge
     let ax = f2x, ay = f2y;
-    for (let i = 0; ; i++) {
-      const x = xTop + (i + fr) * 16.53, end = x >= W;
-      push(f1x, f1y, ax, ay, end ? W : x, 0);
-      if (end) break;
+    for (let i = 0; i <= n; i++) {
+      const end = i === n, x = end ? W : xTop + (W - xTop) * Math.pow((i + fr) / n, k1);
+      push(f1x, f1y, ax, ay, x, 0);
       ax = x; ay = 0;
     }
-    // fan from the upper-left focus to the bottom edge
     ax = f1x; ay = f1y;
-    for (let i = 0; ; i++) {
-      const x = xBot - (i + fr) * 16.25, end = x <= f2x;
-      push(f2x, f2y, ax, ay, end ? f2x : x, H);
-      if (end) break;
+    for (let i = 0; i <= n; i++) {
+      const end = i === n, x = end ? f2x : xBot - (xBot - f2x) * Math.pow((i + fr) / n, k2);
+      push(f2x, f2y, ax, ay, x, H);
       ax = x; ay = H;
     }
   }
 
-  // Corner burst: rays from the lower-left corner through evenly spaced points on the opposite diagonal.
-  function buildBurst(T, fold, vp, out) {
+  // Corner burst: rays from the lower-left corner through points on the opposite diagonal.
+  function buildBurst(T, E, vp, out) {
     const ox = 9, oy = 0, W = 177, H = 174.8, n = 21;
     const fr = frac(T * 0.1);
-    const warp = f => f + fold * 0.016 * Math.sin(PI * f) * Math.sin(4 * PI * f + T * 0.5);
+    const g = E.A * Math.sin(T * FOLD_W);
+    const kx = Math.pow(3.2, g + (1.6 - g) * E.bc);        // the fan gathers toward one edge, then the other
     let fa = 0;
     for (let i = 0; i <= n; i++) {
-      const fb = i === n ? 1 : warp((i + fr) / n);
+      const fb = i === n ? 1 : Math.pow((i + fr) / n, kx);
       const k = 2.4;
       let p = [0, H, fa * W * k, H + (fa * H - H) * k, fb * W * k, H + (fb * H - H) * k];
       p = clipRect(p, 0, 0, W, H);
@@ -361,41 +387,164 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
                F: [148.8, 681.2], G: [79.2, 603.05], H: [98.35, 663.6], I: [74.05, 611.85], J: [84.1, 698.65],
                K: [63.1, 608.75], L: [41.1, 644.05], M: [40.85, 679.95], N: [60.95, 628], O: [44.5, 620.9], Q: [7.4, 648.7] };
   const CQ = ['ABCD', 'OQMN', 'LMNK', 'KLJI', 'GIJH', 'EGHF', 'AEFB'];
-  function buildCrown(T, fold, vp, out, aspect) {
+  function buildCrown(T, E, vp, out, aspect) {
     const wide = aspect >= 1.25;
     const offs = wide ? [[0, 0], [195, -17]] : [[0, 0], [0, 150]];
     for (let c = 0; c < 2; c++) {
-      const tt = T + c * 2.1;
+      const f = fol(T, c * 1.6, E), sx = 1 - 0.72 * f;      // squeezes shut like an accordion
       for (const q of CQ) {
         const p = [];
         for (const ch of q) {
           const v = CV[ch], depth = (v[1] - 597) / 100;
-          const sx = 1 + 0.07 * fold * Math.sin(tt * 0.5) * (0.4 + depth);
           p.push(92 + (v[0] - 92) * sx + offs[c][0],
-                 v[1] + fold * 3.2 * depth * Math.sin(tt * 0.8 + v[0] * 0.035) + offs[c][1]);
+                 v[1] + 5 * f * depth * Math.sin(v[0] * 0.09) + E.A * 2 * depth * Math.sin(T * 0.8 + v[0] * 0.035) + offs[c][1]);
         }
         out.push({ p, s: c });
       }
     }
   }
 
+  /* ---------- three round patterns drawn from the lamp's lower ring ---------- */
+
+  // Lens rosette: rings of almond openings that fan out from a centre below the frame and blink shut.
+  function buildLens(T, E, vp, out) {
+    const N = 26, D = TAU / N, rho = 1.55, R0 = 60, c = 0.06, SEG = 9, LR = Math.log(rho);
+    const s = frac(T * 0.045), rot = -PI / 2 + T * 0.012;
+    const rr = radii(vp, 0, 0, 8);
+    const k0 = Math.floor(Math.log(rr[0] / R0) / LR - s) - 1, k1 = Math.ceil(Math.log(rr[1] / R0) / LR - s);
+    for (let k = k0; k <= k1; k++) {
+      const q = k + s, Rk = R0 * Math.pow(rho, q), Rn = Rk * rho, off = rot + q * D / 2;
+      const bIn = th => Rk * (1 + c * Math.pow(Math.sin(PI * (th - off) / D), 2));
+      const bOut = th => Rn * (1 + c * Math.pow(Math.cos(PI * (th - off) / D), 2));
+      const rin = Rk, rout = Rn * (1 + c);
+      for (let i = 0; i < N; i++) {
+        const thc = off + i * D;
+        const open = 1 - 0.93 * fol(T, q * 1.4 + i * TAU * 2 / N, E);
+        const dm = open * 0.46 * D;
+        const L = [], Rr = [];
+        for (let m = 0; m <= SEG; m++) {
+          const t = m / SEG, r = rin + (rout - rin) * t, d = dm * 4 * t * (1 - t);
+          L.push(r * Math.cos(thc - d), r * Math.sin(thc - d));
+          Rr.push(r * Math.cos(thc + d), r * Math.sin(thc + d));
+        }
+        const sl = L.slice(), sr = Rr.slice();
+        for (let m = 1; m <= 4; m++) {
+          const a = D / 2 * m / 4;
+          sr.push(bOut(thc + a) * Math.cos(thc + a), bOut(thc + a) * Math.sin(thc + a));
+          sl.push(bOut(thc - a) * Math.cos(thc - a), bOut(thc - a) * Math.sin(thc - a));
+        }
+        for (let m = 4; m >= 1; m--) {
+          const a = D / 2 * m / 4;
+          sr.push(bIn(thc + a) * Math.cos(thc + a), bIn(thc + a) * Math.sin(thc + a));
+          sl.push(bIn(thc - a) * Math.cos(thc - a), bIn(thc - a) * Math.sin(thc - a));
+        }
+        // the almond between L and Rr stays open, so the dark interior shows through like the lamp's cut-outs
+        if (visible(sl, vp)) out.push({ p: sl, s: 0 });
+        if (visible(sr, vp)) out.push({ p: sr, s: 0 });
+      }
+    }
+  }
+
+  // Scallop drum: rows of scales with a cusp on top and a round rim below, wrapped around a turning cylinder.
+  function buildScallop(T, E, vp, out) {
+    const Rc = 110, P = TAU / 22, a0 = 26, bow = 14, SEG = 5, HP = PI / 2, K = 44;
+    const rot = T * 0.09;
+    const am = new Array(2 * K + 1), Y = new Array(2 * K + 1);
+    for (let k = -K; k <= K; k++) am[k + K] = a0 * (1 - 0.8 * fol(T, k * 0.9, E));   // a shut row lies flat
+    Y[K] = -am[K] * 0.5;
+    for (let k = 0; k < K; k++) Y[k + 1 + K] = Y[k + K] + am[k + K];
+    for (let k = 0; k > -K; k--) Y[k - 1 + K] = Y[k + K] - am[k - 1 + K];
+    const put = (p, u, y) => {
+      const uc = u < -HP ? -HP : u > HP ? HP : u;
+      p.push(Rc * Math.sin(uc), y - bow * (1 - Math.cos(uc)));
+    };
+    const y0 = vp[1] - 4, y1 = vp[1] + vp[3] + bow + 4;
+    for (let k = -K; k < K; k++) {
+      const ya = Y[k + K], yb = Y[k + 1 + K], aa = am[k + K], ab = am[k + 1 + K];
+      if (yb + ab < y0 || ya > y1) continue;
+      const offA = rot + k * P / 2, offB = offA + P / 2;
+      const top = u => ya + aa * Math.abs(Math.cos(PI * (u - offA) / P));
+      const bot = u => yb + ab * Math.abs(Math.cos(PI * (u - offB) / P));
+      const iA = Math.ceil((-HP - P / 2 - offB) / P), iB = Math.floor((HP + P / 2 - offB) / P);
+      for (let i = iA; i <= iB; i++) {
+        const uc = offB + i * P;
+        for (let side = -1; side <= 1; side += 2) {
+          if (side < 0 ? uc <= -HP : uc >= HP) continue;
+          const p = [];
+          for (let m = 0; m <= SEG; m++) { const u = uc + side * (P / 2) * (1 - m / SEG); put(p, u, top(u)); }
+          for (let m = SEG; m >= 0; m--) { const u = uc + side * (P / 2) * (1 - m / SEG); put(p, u, bot(u)); }
+          if (visible(p, vp)) out.push({ p, s: 0 });
+        }
+      }
+    }
+  }
+
+  // Swirl iris: curved pleats on spiral fold lines with a scalloped rim, twisting shut like an aperture.
+  function buildIris(T, E, vp, out) {
+    const N = 14, D = TAU / N, rho = 1.5, R0 = 40, SEG = 5, LR = Math.log(rho);
+    const s = frac(T * 0.05), rot = T * 0.02;
+    const f = fol(T, 0, E), cv = 0.05 + 0.1 * f;
+    const ang = (j, qq) => rot + j * D + D * (0.4 * qq + 0.9 * E.A * Math.sin(T * FOLD_W - qq * 1.1) + 1.4 * E.bc * qq);
+    const rad = (j, qq) => R0 * Math.pow(rho, qq) * ((j & 1) ? 1 + cv : 1);
+    const rr = radii(vp, 0, 0, 1.5);
+    const k0 = Math.floor(Math.log(rr[0] / R0) / LR - s) - 1, k1 = Math.ceil(Math.log(rr[1] / R0) / LR - s);
+    const edge = (p, qq, ja, jb) => {            // rim between two fold lines, bulging outward
+      const a0 = ang(ja, qq), a1 = ang(jb, qq), r0 = rad(ja, qq), r1 = rad(jb, qq);
+      for (let m = 0; m <= SEG; m++) {
+        const t = m / SEG, a = a0 + (a1 - a0) * t, r = (r0 + (r1 - r0) * t) * (1 + 0.32 * t * (1 - t));
+        p.push(r * Math.cos(a), r * Math.sin(a));
+      }
+    };
+    for (let k = k0; k <= k1; k++) {
+      const q = k + s;
+      for (let j = 0; j < N; j++) {
+        const p = [];
+        edge(p, q, j, j + 1);
+        for (let m = 1; m < SEG; m++) { const qq = q + m / SEG, r = rad(j + 1, qq), a = ang(j + 1, qq); p.push(r * Math.cos(a), r * Math.sin(a)); }
+        edge(p, q + 1, j + 1, j);
+        for (let m = SEG - 1; m >= 1; m--) { const qq = q + m / SEG, r = rad(j, qq), a = ang(j, qq); p.push(r * Math.cos(a), r * Math.sin(a)); }
+        if (visible(p, vp)) out.push({ p, s: 0 });
+      }
+    }
+  }
+
+  /* ---------- build order: where a point sits in the sequence, 0 first, 1 last ---------- */
+  const ordRadial = (cx, cy, wr, angle) => (x, y, vp) => {
+    const rr = radii(vp, cx, cy, 0), r = Math.hypot(x - cx, y - cy);
+    return wr * (r - rr[0]) / Math.max(rr[1] - rr[0], 1e-3) + (1 - wr) * angle(x - cx, y - cy);
+  };
+  const ordX = (x, y, vp) => (x - vp[0]) / vp[2];
+  const ordY = (x, y, vp) => (y - vp[1]) / vp[3];
+
   const NAVY = [[0, '#00001b'], [0.28, '#ff6600'], [0.54, '#ff8f4e'], [0.74, '#f4d4f4'], [0.95, '#b78aff']];
+  const WEAVE = [[0.058, '#4e172b'], [0.303, '#c3f4ef'], [0.495, '#da4d01'], [0.837, '#4e172b'], [0.938, '#9979ff']];
+  const REDGREEN = [[0, '#ff3e23'], [0.32, '#b264a4'], [0.63, '#86302e'], [1, '#00ce89']];
   const VIS = [
-    { id: 'disc', name: 'Pleated disc', meta: '282 quads · navy, orange, violet', fit: 'cover',
-      view: [6, 452, 174, 117], stops: [NAVY], coef: [-0.16, -1.01, 1.07], phi: 0, lg: 0.42, wave: 0.07, build: buildDisc },
-    { id: 'chevron', name: 'Chevron weave', meta: '18 bands · maroon, mint, orange', fit: 'cover',
-      view: [9, 331, 148, 106], stops: [[[0.058, '#4e172b'], [0.303, '#c3f4ef'], [0.495, '#da4d01'], [0.837, '#4e172b'], [0.938, '#9979ff']]],
-      coef: [1.15, 0.44, -0.18], phi: 0, lg: 0.1, wave: 0.045, build: buildChevron },
-    { id: 'fans', name: 'Twin fans', meta: '23 wedges · red to green', fit: 'cover',
-      view: [9.2, 213, 188.6, 106], stops: [[[0, '#ff3e23'], [0.32, '#b264a4'], [0.63, '#86302e'], [1, '#00ce89']]],
-      coef: [1, 0, 0], phi: 0, lg: 0.22, wave: 0.06, build: buildFans },
-    { id: 'burst', name: 'Corner burst', meta: '21 wedges · colours sampled', fit: 'cover',
+    { id: 'disc', name: 'Pleated disc', meta: 'Figma', fit: 'cover',
+      view: [6, 452, 174, 117], stops: [NAVY], coef: [-0.16, -1.01, 1.07], phi: 0, lg: 0.42, wave: 0.07, build: buildDisc,
+      ord: ordRadial(277.5, 663.5, 0.8, (dx, dy) => frac(Math.atan2(dy, dx) / TAU * 6)) },
+    { id: 'chevron', name: 'Chevron weave', meta: 'Figma', fit: 'cover',
+      view: [9, 331, 148, 106], stops: [WEAVE], coef: [1.15, 0.44, -0.18], phi: 0, lg: 0.1, wave: 0.045, build: buildChevron, ord: ordY },
+    { id: 'fans', name: 'Twin fans', meta: 'Figma', fit: 'cover',
+      view: [9.2, 213, 188.6, 106], stops: [REDGREEN], coef: [1, 0, 0], phi: 0, lg: 0.22, wave: 0.06, build: buildFans, ord: ordX },
+    { id: 'burst', name: 'Corner burst', meta: 'Figma', fit: 'cover',
       view: [9, 0, 177, 174.8], stops: [[[0, '#20add5'], [0.3, '#0d68b6'], [0.65, '#86d7de'], [0.97, '#d86e32']]],
-      coef: [0.5, -0.5, 0.5], phi: 0, lg: 0.26, wave: 0.06, build: buildBurst },
-    { id: 'crown', name: 'Folded crown', meta: '7 quads · two colourways', fit: 'contain',
+      coef: [0.5, -0.5, 0.5], phi: 0, lg: 0.26, wave: 0.06, build: buildBurst,
+      ord: (x, y) => clamp01(Math.atan2(x - 9, 174.8 - y) / (PI / 2)) },
+    { id: 'crown', name: 'Folded crown', meta: 'Figma', fit: 'contain',
       layout: a => a >= 1.25 ? [-22, 544, 418, 182] : [-22, 560, 222, 314],
       stops: [[[0.12, '#dac0ff'], [0.846, '#ff6a2d']], [[0.12, '#dac0ff'], [0.846, '#0a8b6b']]],
-      coef: [1.35, 0, -0.23], phi: -0.397, lg: 0.5, wave: 0.07, build: buildCrown }
+      coef: [1.35, 0, -0.23], phi: -0.397, lg: 0.5, wave: 0.07, build: buildCrown,
+      ord: (x, y, vp) => clamp01(0.5 * (x - vp[0]) / vp[2] + 0.5 * (y - vp[1]) / vp[3]) },
+    { id: 'lens', name: 'Lens rosette', meta: 'round · new', fit: 'cover',
+      view: [-105, -215, 210, 140], stops: [NAVY], coef: [-0.16, -1.01, 1.07], phi: 0, lg: 0.4, wave: 0.07, build: buildLens,
+      ord: ordRadial(0, 0, 0.75, (dx, dy) => clamp01(Math.abs(Math.atan2(dx, -dy)) / (PI / 2))) },
+    { id: 'scallop', name: 'Scallop drum', meta: 'round · new', fit: 'cover',
+      view: [-90, -66, 180, 132], stops: [WEAVE], coef: [0.3, 0.85, -0.08], phi: 0, lg: 0.3, wave: 0.06, build: buildScallop,
+      ord: (x, y, vp) => clamp01(0.8 * (y - vp[1]) / vp[3] + 0.4 * Math.abs(x - vp[0] - vp[2] / 2) / vp[2]) },
+    { id: 'iris', name: 'Swirl iris', meta: 'round · new', fit: 'cover',
+      view: [-80, -60, 160, 120], stops: [REDGREEN], coef: [0.75, 0.6, -0.15], phi: 0, lg: 0.4, wave: 0.07, build: buildIris,
+      ord: ordRadial(0, 0, 0.65, (dx, dy) => frac(Math.atan2(dy, dx) / TAU + 0.5)) }
   ];
 
   /* ---------- renderer: fit the gradient to each fragment's box, then fill ---------- */
@@ -425,7 +574,28 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     ctx.lineWidth = lw; ctx.stroke();
   }
 
-  const polys = [];
+  // A fragment that is still being built grows out of its earliest corner toward its latest one.
+  function grow(P, vis, vp, e) {
+    const n = P.length;
+    let lo = 1e9, hi = -1e9, li = 0, hj = 0;
+    for (let i = 0; i < n; i += 2) {
+      const o = vis.ord(P[i], P[i + 1], vp);
+      if (o < lo) { lo = o; li = i; }
+      if (o > hi) { hi = o; hj = i; }
+    }
+    const mx = P[li], my = P[li + 1];
+    let dx = P[hj] - mx, dy = P[hj + 1] - my;
+    const len = Math.hypot(dx, dy), Q = new Array(n);
+    if (len < 1e-6) { for (let i = 0; i < n; i += 2) { Q[i] = mx + (P[i] - mx) * e; Q[i + 1] = my + (P[i + 1] - my) * e; } return Q; }
+    dx /= len; dy /= len;
+    for (let i = 0; i < n; i += 2) {
+      const sp = ((P[i] - mx) * dx + (P[i + 1] - my) * dy) * (1 - e);
+      Q[i] = P[i] - dx * sp; Q[i + 1] = P[i + 1] - dy * sp;
+    }
+    return Q;
+  }
+
+  const polys = [], ENV = { A: 0, bc: 0 };
   function render(cv, vis, T, o) {
     const ctx = cv.getContext('2d'), w = cv.width, h = cv.height;
     if (!w || !h) return 0;
@@ -439,30 +609,55 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     ctx.setTransform(sc, 0, 0, sc, w / 2 - mx * sc, h / 2 - my * sc);
     ctx.lineJoin = 'round';
     polys.length = 0;
-    vis.build(T, o.fold, vp, polys, aspect);
+    ENV.A = o.fold; ENV.bc = o.bc || 0;
+    vis.build(T, ENV, vp, polys, aspect);
     const phi = vis.phi + o.angle + o.swing * vis.lg * Math.sin(o.TG * 0.21);
     const lw = (o.edges ? 1.1 : 0.9) * (o.dpr || 1) / sc;
+    const B = o.B === undefined ? 1 : o.B, win = o.win || 0.2;
+    let drawn = 0;
     for (let i = 0; i < polys.length; i++) {
       const f = polys[i];
-      paint(ctx, f.p, vis.stops[f.s], vis.coef, phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
+      let P = f.p;
+      if (B < 1) {
+        let cx = 0, cy = 0;
+        for (let j = 0; j < P.length; j += 2) { cx += P[j]; cy += P[j + 1]; }
+        const od = clamp01(vis.ord(cx / (P.length / 2), cy / (P.length / 2), vp));
+        const r = (B * (1 + win) - od) / win;
+        if (r <= 0.02) continue;
+        if (r < 1) P = grow(P, vis, vp, 1 - Math.pow(1 - r, 3));
+      }
+      paint(ctx, P, vis.stops[f.s], vis.coef, phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
+      drawn++;
     }
-    return polys.length;
+    return drawn;
   }
 
   /* ---------- page wiring ---------- */
   const $ = id => document.getElementById(id);
   const stage = $('stage'), cv = $('cv');
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const st = { cur: 0, playing: !reduced, speed: 1, fold: 1, edges: false, ar: '0.8',
-               gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true };
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, edges: false, ar: '0.8',
+               gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true,
+               bmode: 'off', bt: 0, bdur: 3 };
+
+  function buildParams(bt) {
+    if (st.bmode === 'off') return { B: 1, bc: 0, win: 0.2 };
+    const B = Math.min(bt / st.bdur, 1);
+    if (st.bmode === 'piece') return { B, bc: 0, win: 0.14 };
+    return { B, bc: 1 - B * B * (3 - 2 * B), win: 0.7 };
+  }
+  function frameOpts(bt, dpr, edges) {
+    const b = buildParams(bt);
+    return { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse,
+             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win };
+  }
 
   const thumbs = $('thumbs'), thumbCv = [];
   VIS.forEach((v, i) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'thumb';
     b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-    b.setAttribute('aria-label', v.name);
-    const c = document.createElement('canvas'); c.width = 120; c.height = 120;
+    const c = document.createElement('canvas'); c.width = 132; c.height = 132;
     const t = document.createElement('span'); t.className = 't-text';
     const nm = document.createElement('span'); nm.className = 't-name'; nm.textContent = v.name;
     const mt = document.createElement('span'); mt.className = 't-meta'; mt.textContent = v.meta;
@@ -474,6 +669,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     st.cur = i; st.dirty = true;
     [...thumbs.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i ? 'true' : 'false'));
     $('ro-name').textContent = VIS[i].name;
+    if (st.bmode !== 'off') st.bt = 0;
   }
 
   function sizeStage() {
@@ -505,6 +701,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const signed = (v, unit) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + unit;
   bind('speed', v => v.toFixed(1) + '×');
   bind('fold', pct);
+  bind('bdur', v => v.toFixed(1) + ' s');
   bind('gspeed', v => v.toFixed(1) + '×');
   bind('angle', v => signed(v, '°'), v => v * PI / 180);
   bind('swing', pct);
@@ -524,6 +721,18 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     if (!exporting) exportIdle();
   });
 
+  const replayBtn = $('replay');
+  function startBuild() { st.bt = 0; st.dirty = true; if (!st.playing) setPlaying(true); }
+  $('bmodes').addEventListener('click', e => {
+    const b = e.target.closest('button[data-mode]'); if (!b) return;
+    [...$('bmodes').children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    st.bmode = b.dataset.mode;
+    replayBtn.disabled = st.bmode === 'off';
+    if (st.bmode !== 'off') startBuild(); else st.dirty = true;
+    if (!exporting) exportIdle();
+  });
+  replayBtn.addEventListener('click', startBuild);
+
   /* ---------- MP4 export: render 5 s frame by frame, encode with WebCodecs ---------- */
   const SIZES = { '0.8': [1080, 1350], '1': [1080, 1080], '0.5625': [1080, 1920], '1.7778': [1920, 1080] };
   const CLIP_S = 5, FPS = 30;
@@ -532,7 +741,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   function exportSize() { return SIZES[st.ar] || SIZES['0.8']; }
   function exportIdle() {
     const [w, h] = exportSize();
-    exInfo.textContent = w + ' × ' + h + ' · ' + FPS + ' fps · starts at the frame on stage';
+    exInfo.textContent = w + ' × ' + h + ' · ' + FPS + ' fps · ' +
+      (st.bmode === 'off' ? 'starts at the frame on stage' : 'starts with the build');
   }
   async function pickCodec(w, h) {
     const tries = [['avc', 'avc1.640028'], ['avc', 'avc1.4d0028'], ['avc', 'avc1.42e028'], ['vp9', 'vp09.00.40.08']];
@@ -565,11 +775,10 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       enc.configure(pick.cfg);
       const off = document.createElement('canvas'); off.width = w; off.height = h;
       const cssW = stage.getBoundingClientRect().width || w;
-      const o = { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse,
-                  edges: st.edges, dpr: w / cssW, TG: 0 };
       const T0 = st.T, G0 = st.TG, total = CLIP_S * FPS;
       for (let i = 0; i < total; i++) {
         if (encErr) throw encErr;
+        const o = frameOpts(i / FPS, w / cssW, st.edges);
         o.TG = G0 + i / FPS * st.gspeed;
         render(off, vis, T0 + i / FPS * st.speed, o);
         const vf = new VideoFrame(off, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
@@ -585,7 +794,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       muxer.finalize();
       const blob = new Blob([muxer.target.buffer], { type: 'video/mp4' });
       exBtn.textContent = 'Confirm the save';
-      await downloads.save({ filename: 'fragment-motion-' + vis.id + '-' + w + 'x' + h + '.mp4', data: blob });
+      const tag = st.bmode === 'off' ? '' : '-' + st.bmode;
+      await downloads.save({ filename: 'fragment-motion-' + vis.id + tag + '-' + w + 'x' + h + '.mp4', data: blob });
       const mb = (blob.size / 1048576).toFixed(1) + ' MB';
       exInfo.textContent = pick.mux === 'avc'
         ? 'Saved a ' + CLIP_S + ' s clip, ' + w + ' × ' + h + ', ' + mb + '.'
@@ -618,10 +828,13 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   function tick(now) {
     const dt = Math.min((now - last) / 1000, 0.1); last = now; frame++;
     if (exporting) { requestAnimationFrame(tick); return; }
-    if (st.playing) { st.T += dt * st.speed; st.TG += dt * st.gspeed; }
+    if (st.playing) {
+      st.T += dt * st.speed; st.TG += dt * st.gspeed;
+      if (st.bmode !== 'off' && st.bt < st.bdur) st.bt += dt;
+    }
     if (st.playing || st.dirty) {
       const vis = VIS[st.cur];
-      const n = render(cv, vis, st.T, st);
+      const n = render(cv, vis, st.T, frameOpts(st.bt, st.dpr, st.edges));
       if (frame % 6 === 0 || st.dirty) {
         $('ro-n').textContent = n;
         const deg = (st.angle + st.swing * vis.lg * Math.sin(st.TG * 0.21)) * 180 / PI;
