@@ -134,8 +134,28 @@ P_PENCILS = img_data("wall_img/stifte.webp")              # colour pencil fan
 P_BUBBLE = img_data("angebot_bild.webp")                  # BIPA offer photo (bubble gum)
 P_BONUSBOX = img_data("wall_img/bipa_bonusbox.png", 1834, "PNG")  # BIPA Bonusbox cut-out
 P_CUTOUT = img_data("ooh/ubahn_frau.webp", 1200, "PNG")   # cut-out, walking with phone
-L_PAGRO = img_data("partner_logos/pagro.webp", 400, "PNG")
-L_BIPA = img_data("partner_logos/bipa.webp", 400, "PNG")
+PAGRO_RED, BIPA_PINK = "#E2001A", "#E5097F"
+
+
+def partner_circle(path, color, size=1600):
+    """Partner circle logo re-coloured for co-branding: white circle, wordmark in partner colour."""
+    im = Image.open(os.path.join(IMG, path)).convert("RGBA").resize((size, size), Image.LANCZOS)
+    r, g, b_, a = im.split()
+    lum = Image.merge("RGB", (r, g, b_)).convert("L")
+    text_mask = lum.point(lambda v: max(0, min(255, (v - 110) * 2)))   # bright = wordmark
+    out = Image.new("RGBA", im.size, (255, 255, 255, 0))
+    white = Image.new("RGBA", im.size, (255, 255, 255, 255))
+    col = Image.new("RGBA", im.size, color)
+    out = Image.composite(col, white, text_mask)
+    out.putalpha(a)
+    buf = io.BytesIO(); out.save(buf, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode(), out.size
+
+
+PARTNERS = {
+    "pagro": (partner_circle("partner_logos/pagro.webp", PAGRO_RED), PAGRO_RED),
+    "bipa": (partner_circle("partner_logos/bipa.webp", BIPA_PINK), BIPA_PINK),
+}
 
 
 def bbox_png(data):
@@ -161,15 +181,22 @@ def img(data, x, y, w=None, h=None):
     return f'<image href="{data[0]}" x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}"/>', w, h
 
 
-def lockup(x, y, h, partner, color=WHITE):
-    """jö logo + partner circle logo, separated by a thin rule. h = logo height."""
-    lw = h * LOGO_W / LOGO_H
-    gap = h * 0.38
-    out = [logo(x, y, lw, color),
-           f'<rect x="{x + lw + gap:.1f}" y="{y + h * 0.08:.1f}" width="{h * 0.025:.1f}" height="{h * 0.92:.1f}" fill="{color}" opacity=".55"/>']
-    pi, _, _ = img(partner, x + lw + gap * 2, y - h * 0.02, h * 1.04, h * 1.04)
-    out.append(pi)
-    return "".join(out)
+def lockup(x, y, d, partner, vertical=False):
+    """Co-branding: jö logo in a white circle + partner logo in a white circle, same size,
+    both logos in the partner colour (as in the jö x BIPA lockup). Returns svg; size via lockup_size()."""
+    img_p, color = PARTNERS[partner]
+    gap = d * 0.08
+    lw = d * 0.66
+    lh = lw * LOGO_H / LOGO_W
+    jx, jy = x, y
+    px, py = (x, y + d + gap) if vertical else (x + d + gap, y)
+    return (f'<circle cx="{jx + d / 2:.1f}" cy="{jy + d / 2:.1f}" r="{d / 2:.1f}" fill="{WHITE}"/>'
+            + logo(jx + (d - lw) / 2, jy + (d - lh) / 2 + d * 0.01, lw, color)
+            + f'<image href="{img_p[0]}" x="{px:.1f}" y="{py:.1f}" width="{d:.1f}" height="{d:.1f}"/>')
+
+
+def lockup_size(d, vertical=False):
+    return (d, 2 * d + d * 0.08) if vertical else (2 * d + d * 0.08, d)
 
 
 def oes_icon(cx, cy, d, bg=WINE, fg=WHITE):
@@ -212,13 +239,13 @@ def pagro_school(w, h):
     kx = w - kw
     out = [f"<defs>{gdef}</defs>", photo(P_STATIONERY[0], P_STATIONERY[1], 0, 0, w, h, (0.45, 0.5)),
            f'<path d="{kachel_path(kx, 0, kw, h, r, "right")}" fill="url(#{gid})"/>']
-    out.append(lockup(kx + pad, pad, short * 0.11, L_PAGRO))
-    t, tw, th = deal_tag(kx + pad, h * 0.3, "−15&#8239;%", short * 0.105)
+    out.append(lockup(kx + pad, pad, short * 0.15, "pagro"))
+    t, tw, th = deal_tag(kx + pad, h * 0.33, "−15&#8239;%", short * 0.105)
     out.append(t)
-    op, _, _ = oes_pill(kx + pad + tw + short * 0.03, h * 0.3 + (th - short * 0.06 * 1.9) / 2, "+100", short * 0.06)
+    op, _, _ = oes_pill(kx + pad + tw + short * 0.03, h * 0.33 + (th - short * 0.06 * 1.9) / 2, "+100", short * 0.06)
     out.append(op)
     fs = short * 0.098
-    out.append(text(kx + pad, h * 0.3 + th + fs * 1.15, ["auf Schulartikel", "bei PAGRO."], fs, WHITE, hl=(1, "PAGRO.", LORANGE)))
+    out.append(text(kx + pad, h * 0.33 + th + fs * 1.15, ["auf Schulartikel", "bei PAGRO."], fs, WHITE, hl=(1, "PAGRO.", LORANGE)))
     ps = short * 0.048
     p, _, _ = pill(kx + pad, h - pad - ps * 2.3, "In der jö App aktivieren", ps, WHITE, WINE)
     out.append(p)
@@ -232,7 +259,7 @@ def pagro_pencils(w, h):
     kw, r, pad = w * 0.5, 0.14 * short, short * 0.075
     out = [f"<defs>{gdef}</defs>", photo(P_PENCILS[0], P_PENCILS[1], 0, 0, w, h, (0.5, 0.5)),
            f'<path d="{kachel_path(0, 0, kw, h, r, "left")}" fill="url(#{gid})"/>']
-    out.append(lockup(pad, pad, short * 0.085, L_PAGRO))
+    out.append(lockup(pad, pad, short * 0.13, "pagro"))
     fs = short * 0.112
     out.append(text(pad, h * 0.4, ["3fach Ös", "auf Mal-", "sachen."], fs, WHITE, hl=(0, "3fach", LORANGE)))
     sub = short * 0.032
@@ -245,14 +272,14 @@ def pagro_pencils(w, h):
 
 
 def pagro_small(w, h):
-    """Beige, jö + PAGRO lockup, Kachel 50 % from the bottom: Hier Ös sammeln."""
+    """Burgund, jö + PAGRO circle lockup, Kachel 50 % from the bottom: Hier Ös sammeln."""
     gid, gdef = gradient(w, h)
     short = min(w, h)
     r, kh, pad = 0.14 * short, h * 0.5, w * 0.085
-    out = [f"<defs>{gdef}</defs>", f'<rect width="{w}" height="{h}" fill="{BEIGE}"/>']
-    lh = w * 0.26
-    lwid = lh * LOGO_W / LOGO_H + lh * 0.38 * 2 + lh * 1.04
-    out.append(lockup((w - lwid) / 2, (h - kh - lh) / 2, lh, L_PAGRO, WINE))
+    out = [f"<defs>{gdef}</defs>", f'<rect width="{w}" height="{h}" fill="{WINE}"/>']
+    d = w * 0.38
+    lwid, _ = lockup_size(d)
+    out.append(lockup((w - lwid) / 2, (h - kh - d) / 2, d, "pagro"))
     out.append(f'<path d="{kachel_path(0, h - kh, w, kh, r, "bottom")}" fill="url(#{gid})"/>')
     fs = w * 0.105
     out.append(text(pad, h - kh + pad * 1.2 + fs * 0.8, ["Hier bei PAGRO", "Ös sammeln."], fs, WHITE, hl=(1, "Ös", LORANGE)))
@@ -270,7 +297,7 @@ def bipa_hero(w, h):
     kw, r, pad = w * 0.47, 0.14 * short, short * 0.085
     out = [f"<defs>{gdef}</defs>", photo(P_BUBBLE[0], P_BUBBLE[1], kw - r, 0, w - kw + r, h, (0.47, 0.5)),
            f'<path d="{kachel_path(0, 0, kw, h, r, "left")}" fill="url(#{gid})"/>']
-    out.append(lockup(pad, pad, short * 0.1, L_BIPA))
+    out.append(lockup(pad, pad, short * 0.14, "bipa"))
     fs = short * 0.098
     out.append(text(pad, h * 0.4, ["250 Zusatz Ös", "auf deinen", "BIPA Einkauf."], fs, WHITE, hl=(0, "250", LORANGE)))
     sub = short * 0.032
@@ -291,9 +318,9 @@ def bipa_pennant(w, h, safe_h):
     short = min(w, h)
     pad = w * 0.11
     out = [f"<defs>{gdef}</defs>", f'<rect width="{w}" height="{h}" fill="{WINE}"/>']
-    lh = w * 0.2
-    lwid = lh * LOGO_W / LOGO_H + lh * 0.38 * 2 + lh * 1.04
-    out.append(lockup((w - lwid) / 2, h * 0.06, lh, L_BIPA))
+    d = w * 0.36
+    lwid, _ = lockup_size(d)
+    out.append(lockup((w - lwid) / 2, h * 0.05, d, "bipa"))
     fs = w * 0.14
     out.append(text(pad, h * 0.24, ["Die BIPA", "Bonusbox", "für 250 Ös."], fs, WHITE, hl=(2, "250", LORANGE)))
     kh, r = h * 0.52, 0.14 * short
