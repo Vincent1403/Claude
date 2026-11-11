@@ -244,8 +244,6 @@ def pagro_school(w, h):
     out.append(lockup(kx + pad, pad, short * 0.15, "pagro"))
     t, tw, th = deal_tag(kx + pad, h * 0.33, "−15&#8239;%", short * 0.105)
     out.append(t)
-    op, _, _ = oes_pill(kx + pad + tw + short * 0.03, h * 0.33 + (th - short * 0.06 * 1.9) / 2, "+100", short * 0.06)
-    out.append(op)
     fs = short * 0.098
     out.append(text(kx + pad, h * 0.33 + th + fs * 1.15, ["auf Schulartikel", "bei PAGRO."], fs, WHITE))
     ps = short * 0.048
