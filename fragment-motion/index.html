@@ -541,7 +541,17 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         let sweep = a1 - a0; if (sweep <= 0) sweep += 2 * PI;
         for (let m = 1; m < SEG; m++) { const t = a0 + sweep * m / SEG; cap.push(xm + R * Math.cos(t), cy + R * 0.8 * Math.sin(t)); }   // wider than tall
         cap.push(V0[0], V0[1]);
-        if (visible(cap, vp)) caps.push({ p: cap, s: 2, g: [xm + P * 0.3, A[1], xm - P * 0.3, cy + R * 0.8] });
+        if (visible(cap, vp)) {
+          // hollow pipe: the cap is a thin rim around an opening; the opening is set into the cap toward the
+          // vanishing point and shaded along that direction, dark where the pipe recedes, lighter at the near lip
+          const ccx = xm, ccy = (A[1] + cy + R * 0.8) / 2;
+          const dx = SX - ccx, dy2 = SY - ccy, dl = Math.hypot(dx, dy2) || 1, ux = dx / dl, uy = dy2 / dl;
+          const k = 0.8, ox = ux * P * 0.05, oy = uy * P * 0.05, hole = new Array(cap.length);
+          for (let m = 0; m < cap.length; m += 2) { hole[m] = ccx + (cap[m] - ccx) * k + ox; hole[m + 1] = ccy + (cap[m + 1] - ccy) * k + oy; }
+          const ext = P * 0.55;
+          caps.push({ p: cap, s: 2, g: [ccx + ux * ext, ccy + uy * ext, ccx - ux * ext, ccy - uy * ext] });
+          caps.push({ p: hole, s: 4, g: [ccx + ux * ext * 0.8, ccy + uy * ext * 0.8, ccx - ux * ext * 0.8, ccy - uy * ext * 0.8] });
+        }
       }
       for (const x of faces) out.push(x);
       for (const x of caps) out.push(x);
@@ -593,7 +603,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const FLUTE = [
     [[0, '#2e0a12'], [0.1, '#7a1e08'], [0.26, '#ff5a00'], [0.44, '#ff7a32'], [0.62, '#dcbcf2'], [0.78, '#bb9bff'], [1, '#b08eff']],
     [[0, '#bfa2ff'], [1, '#dccbfb']],
-    [[0, '#3a0d14'], [0.18, '#a8320a'], [0.4, '#ff6a14'], [0.66, '#f6a27a'], [1, '#d6c6f4']]
+    [[0, '#3a0d14'], [0.18, '#a8320a'], [0.4, '#ff6a14'], [0.66, '#f6a27a'], [1, '#d6c6f4']],
+    [],
+    [[0, '#14040a'], [0.3, '#4a1206'], [0.58, '#c23c04'], [0.82, '#ff7a32'], [1, '#f2b08a']]
   ];
   const VIS = [
     { id: 'disc', name: 'Pleated disc', meta: 'Figma', fit: 'cover',
