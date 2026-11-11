@@ -498,47 +498,49 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     return out;
   }
   function buildFlute(T, E, vp, out) {
+    // An accordion-folded sheet seen from the front edge: each pleat is a lit face and a shaded face meeting
+    // at a ridge, both receding toward one vanishing point. The front of every fold is a cap: two straight
+    // edges from the ridge down to the neighbouring valleys, closed by a round bottom.
     const VX = vp[0] + vp[2] * 0.74, VY = vp[1] - vp[3] * 0.5;
-    const rho = 0.78, sb = 0.6, W = 27, SEG = 22, TILT = -0.35, sagW = vp[2] * 0.55, cxs = vp[0] + vp[2] / 2;
-    const Dy0 = vp[1] + vp[3] + 20 - VY;
+    const rho = 0.7, W = 50, SEG = 30, sagW = vp[2] * 0.55, cxs = vp[0] + vp[2] / 2;
+    // prisms run toward their own point, lower and nearer than the rows' horizon, as in the reference
+    const SX = vp[0] + vp[2] * 1.7, SY = vp[1] - vp[3] * 1.3;
+    const Dy0 = vp[1] + vp[3] + 24 - VY;
     const s = frac(T * 0.06);
     const qmax = Math.log(Math.max(vp[1] - VY - 6, 4) / Dy0) / Math.log(rho);
-    const back = (x, y) => [VX + (x - VX) * sb, VY + (y - VY) * sb];
     for (let k = -4; k <= Math.ceil(qmax) + 2; k++) {        // bottom rows first, upper rows on top
       const q = k - s, dy = Dy0 * Math.pow(rho, q), sc = Math.pow(dy / Dy0, 0.55);
       const f = fol(T, q * 0.8, E);
-      const P = W * sc * (1 - 0.38 * f), r = P * 0.53, a = r * (1.4 + 0.9 * f);
-      const yRow = VY + dy, al = Math.acos(r / a);
-      const iMin = Math.floor((vp[0] - (VX - vp[0]) * 0.6 - VX) / P) - 1;
-      const iMax = Math.ceil((vp[0] + vp[2] + 3 * r - VX) / P) + 1;
-      const idx = [];
-      for (let i = iMin; i <= iMax; i++) idx.push(i);
-      idx.sort((m, n) => Math.abs(n + 0.5) - Math.abs(m + 0.5));   // farthest from the vanishing point first
-      const bodies = [], caps = [];
-      for (const i of idx) {
-        const x = VX + (i + 0.5) * P, y = yRow + 10 * sc * Math.cos((x - cxs) / sagW);
-        // the section is tilted with its prism: the ridge points along the prism's direction turned by TILT,
-        // which opens up the lit left face as in the reference
-        const sw = Math.atan2(VY - y, VX - x) + TILT, ux = Math.cos(sw), uy = Math.sin(sw), vx = -uy, vy = ux;
-        const at = phi => [x + r * (Math.cos(phi) * ux + Math.sin(phi) * vx), y + r * (Math.cos(phi) * uy + Math.sin(phi) * vy)];
-        const A = [x + a * ux, y + a * uy], TL = at(al), TR = at(-al);
-        const front = [A[0], A[1]];
-        for (let m = 0; m <= SEG; m++) { const pt = at(-al - (2 * PI - 2 * al) * m / SEG); front.push(pt[0], pt[1]); }
-        const all = front.slice();
-        for (let m = 0; m < front.length; m += 2) { const b = back(front[m], front[m + 1]); all.push(b[0], b[1]); }
-        const Ab = back(A[0], A[1]), TLb = back(TL[0], TL[1]), TRb = back(TR[0], TR[1]);
-        const body = hull(all);
-        if (!visible(body, vp)) continue;
-        // axis across the prism: normal to its length
+      const P = W * sc * (1 - 0.35 * f), hA = P * 0.36 * (1 + 0.9 * f), yRow = VY + dy;
+      const yNext = VY + dy * rho - P * 0.1;            // each prism ends just under the caps of the row behind
+      const iMin = Math.floor((vp[0] - (VX - vp[0]) * 0.5 - VX) / P) - 2;
+      const iMax = Math.ceil((vp[0] + vp[2] + P - VX) / P) + 1;
+      const yAt = x => yRow + 22 * sc * Math.cos((x - cxs) / sagW);
+      const faces = [], caps = [];
+      for (let i = iMin; i <= iMax; i++) {
+        const x0 = VX + i * P, x1 = x0 + P, xm = x0 + P / 2;
+        const V0 = [x0, yAt(x0)], V1 = [x1, yAt(x1)], A = [xm, yAt(xm) - hA];
+        const sb = Math.max(0.05, (yNext - SY) / (V0[1] - SY));
+        const back = p => [SX + (p[0] - SX) * sb, SY + (p[1] - SY) * sb];
+        const V0b = back(V0), V1b = back(V1), Ab = back(A);
+        const lit = [V0[0], V0[1], A[0], A[1], Ab[0], Ab[1], V0b[0], V0b[1]];
+        const shade = [A[0], A[1], V1[0], V1[1], V1b[0], V1b[1], Ab[0], Ab[1]];
+        // the wide face right of the ridge is shaded across its width: dark at the ridge, then orange,
+        // pale and lavender toward the next valley; the narrow face left of the ridge is a light sliver
         const lx = Ab[0] - A[0], ly = Ab[1] - A[1], ll = Math.hypot(lx, ly) || 1, nx = -ly / ll, ny = lx / ll;
-        const across = (p1, p2) => { const d = (p2[0] - p1[0]) * nx + (p2[1] - p1[1]) * ny; return [p1[0], p1[1], p1[0] + nx * d, p1[1] + ny * d]; };
-        bodies.push({ p: body, s: 3, g: across(TL, TR) });
-        bodies.push({ p: [A[0], A[1], TL[0], TL[1], TLb[0], TLb[1], Ab[0], Ab[1]], s: 0,
-                      g: [(A[0] + TL[0]) / 2, (A[1] + TL[1]) / 2, (Ab[0] + TLb[0]) / 2, (Ab[1] + TLb[1]) / 2] });
-        bodies.push({ p: [A[0], A[1], TR[0], TR[1], TRb[0], TRb[1], Ab[0], Ab[1]], s: 1, g: across(A, TR) });
-        caps.push({ p: front, s: 2, g: [A[0], A[1], x - r * ux, y - r * uy] });
+        const d = (V1[0] - A[0]) * nx + (V1[1] - A[1]) * ny;
+        if (visible(lit, vp)) faces.push({ p: lit, s: 1, g: [V0[0], V0[1], A[0], A[1]] });
+        if (visible(shade, vp)) faces.push({ p: shade, s: 0, g: [A[0], A[1], A[0] + nx * d, A[1] + ny * d] });
+        // round bottom: circle through both valleys, centre a little below them, so the cap bulges past the valleys
+        const cy = (V0[1] + V1[1]) / 2 + P * 0.1, R = Math.hypot(P / 2, P * 0.1);
+        const a0 = Math.atan2(V1[1] - cy, V1[0] - xm), a1 = Math.atan2(V0[1] - cy, V0[0] - xm);
+        const cap = [A[0], A[1], V1[0], V1[1]];
+        let sweep = a1 - a0; if (sweep <= 0) sweep += 2 * PI;
+        for (let m = 1; m < SEG; m++) { const t = a0 + sweep * m / SEG; cap.push(xm + R * Math.cos(t), cy + R * 0.8 * Math.sin(t)); }   // wider than tall
+        cap.push(V0[0], V0[1]);
+        if (visible(cap, vp)) caps.push({ p: cap, s: 2, g: [xm + P * 0.3, A[1], xm - P * 0.3, cy + R * 0.8] });
       }
-      for (const x of bodies) out.push(x);
+      for (const x of faces) out.push(x);
       for (const x of caps) out.push(x);
     }
   }
@@ -586,10 +588,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const WEAVE = [[0.058, '#4e172b'], [0.303, '#c3f4ef'], [0.495, '#da4d01'], [0.837, '#4e172b'], [0.938, '#9979ff']];
   const REDGREEN = [[0, '#ff3e23'], [0.32, '#b264a4'], [0.63, '#86302e'], [1, '#00ce89']];
   const FLUTE = [
-    [[0, '#b597ff'], [0.2, '#e7d8fc'], [0.4, '#ff7a2a'], [0.58, '#ff5a00'], [0.78, '#8a2208'], [1, '#3a0d14']],
-    [[0, '#2e0a12'], [0.45, '#c23c04'], [1, '#ff7426']],
-    [[0, '#3a0d14'], [0.16, '#8a2208'], [0.38, '#ff5a00'], [0.62, '#ff8a4a'], [0.85, '#f3c3b8'], [1, '#d8c6f2']],
-    [[0, '#ff6a14'], [0.6, '#c23c04'], [1, '#2e0a12']]
+    [[0, '#2e0a12'], [0.1, '#7a1e08'], [0.26, '#ff5a00'], [0.44, '#ff7a32'], [0.62, '#dcbcf2'], [0.78, '#bb9bff'], [1, '#b08eff']],
+    [[0, '#bfa2ff'], [1, '#dccbfb']],
+    [[0, '#3a0d14'], [0.18, '#a8320a'], [0.4, '#ff6a14'], [0.66, '#f6a27a'], [1, '#d6c6f4']]
   ];
   const VIS = [
     { id: 'disc', name: 'Pleated disc', meta: 'Figma', fit: 'cover',
