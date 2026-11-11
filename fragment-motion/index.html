@@ -521,7 +521,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       if (r < 2 * w0) continue;
       const f = fol(T, k * 0.8 + s * 0.8, E);
       const w = w0 * (1 - 0.3 * f), pitch = 2 * w0 * (1 - 0.3 * f), rc = 0.46 * w;
-      const back = 3.2 * w0 * (1 + 0.25 * f), peak = back + 0.8 * w0;
+      // back ends reach past the next ring in, under the solid middle of its pipes, so they are never seen
+      const back = step + 2.1 * w0, peak = back + 0.8 * w0;
       let dth = pitch / r, j0, j1;
       if (thMax - thMin >= 2 * PI - 1e-6) { const N = Math.max(3, Math.round(2 * PI / dth)); dth = 2 * PI / N; j0 = 0; j1 = N - 1; }
       else { const m = 3 * dth; j0 = Math.floor((thMin - m - rot) / dth); j1 = Math.ceil((thMax + m - rot) / dth); }
