@@ -245,7 +245,7 @@ def pagro_school(w, h):
     op, _, _ = oes_pill(kx + pad + tw + short * 0.03, h * 0.33 + (th - short * 0.06 * 1.9) / 2, "+100", short * 0.06)
     out.append(op)
     fs = short * 0.098
-    out.append(text(kx + pad, h * 0.33 + th + fs * 1.15, ["auf Schulartikel", "bei PAGRO."], fs, WHITE, hl=(1, "PAGRO.", LORANGE)))
+    out.append(text(kx + pad, h * 0.33 + th + fs * 1.15, ["auf Schulartikel", "bei PAGRO."], fs, WHITE))
     ps = short * 0.048
     p, _, _ = pill(kx + pad, h - pad - ps * 2.3, "In der jö App aktivieren", ps, WHITE, WINE)
     out.append(p)
@@ -261,7 +261,7 @@ def pagro_pencils(w, h):
            f'<path d="{kachel_path(0, 0, kw, h, r, "left")}" fill="url(#{gid})"/>']
     out.append(lockup(pad, pad, short * 0.13, "pagro"))
     fs = short * 0.112
-    out.append(text(pad, h * 0.4, ["3fach Ös", "auf Mal-", "sachen."], fs, WHITE, hl=(0, "3fach", LORANGE)))
+    out.append(text(pad, h * 0.4, ["3fach Ös", "auf Mal-", "sachen."], fs, WHITE))
     sub = short * 0.032
     out.append(text(pad, h * 0.4 + fs * 2.08 + sub * 2.3, ["Stifte, Farben, Blöcke:", "jetzt bei PAGRO dreifach", "Ös sammeln."],
                     sub, WHITE, weight=500, lh=1.3, ls=0))
@@ -282,7 +282,7 @@ def pagro_small(w, h):
     out.append(lockup((w - lwid) / 2, (h - kh - d) / 2, d, "pagro"))
     out.append(f'<path d="{kachel_path(0, h - kh, w, kh, r, "bottom")}" fill="url(#{gid})"/>')
     fs = w * 0.105
-    out.append(text(pad, h - kh + pad * 1.2 + fs * 0.8, ["Hier bei PAGRO", "Ös sammeln."], fs, WHITE, hl=(1, "Ös", LORANGE)))
+    out.append(text(pad, h - kh + pad * 1.2 + fs * 0.8, ["Hier bei PAGRO", "Ös sammeln."], fs, WHITE))
     ps = w * 0.058
     p, _, _ = pill(pad, h - pad - ps * 2.3, "jö App zeigen", ps, WHITE, WINE)
     out.append(p)
@@ -299,7 +299,7 @@ def bipa_hero(w, h):
            f'<path d="{kachel_path(0, 0, kw, h, r, "left")}" fill="url(#{gid})"/>']
     out.append(lockup(pad, pad, short * 0.14, "bipa"))
     fs = short * 0.098
-    out.append(text(pad, h * 0.4, ["250 Zusatz Ös", "auf deinen", "BIPA Einkauf."], fs, WHITE, hl=(0, "250", LORANGE)))
+    out.append(text(pad, h * 0.4, ["250 Zusatz Ös", "auf deinen", "BIPA Einkauf."], fs, WHITE))
     sub = short * 0.032
     out.append(text(pad, h * 0.4 + fs * 2.08 + sub * 2.4, ["jö App an der Kassa scannen", "und Extra-Ös sammeln."],
                     sub, WHITE, weight=500, lh=1.3, ls=0))
@@ -322,7 +322,7 @@ def bipa_pennant(w, h, safe_h):
     lwid, _ = lockup_size(d)
     out.append(lockup((w - lwid) / 2, h * 0.05, d, "bipa"))
     fs = w * 0.14
-    out.append(text(pad, h * 0.24, ["Die BIPA", "Bonusbox", "für 250 Ös."], fs, WHITE, hl=(2, "250", LORANGE)))
+    out.append(text(pad, h * 0.24, ["Die BIPA", "Bonusbox", "für 250 Ös."], fs, WHITE))
     kh, r = h * 0.52, 0.14 * short
     out.append(f'<path d="{kachel_path(0, h - kh, w, kh, r, "bottom")}" fill="url(#{gid})"/>')
     bw = w * 0.84
