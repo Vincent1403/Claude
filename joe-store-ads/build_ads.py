@@ -29,8 +29,10 @@ LOGO_W, LOGO_H = 271.15, 182.86
 FONT_B64 = base64.b64encode(open(os.path.join(HERE, "..", "joe-strategiefilm", "assets", "satoshi.woff2"), "rb").read()).decode()
 
 
-def img_data(path, max_w=2400, fmt="JPEG"):
+def img_data(path, max_w=2400, fmt="JPEG", mirror=False):
     im = Image.open(os.path.join(IMG, path))
+    if mirror:
+        im = im.transpose(Image.FLIP_LEFT_RIGHT)
     im = im.convert("RGBA" if fmt == "PNG" else "RGB")
     if im.width > max_w:
         im = im.resize((max_w, round(im.height * max_w / im.width)), Image.LANCZOS)
@@ -130,7 +132,7 @@ def photo(href, size, x, y, w, h, focus=(0.5, 0.5)):
 # ---------------------------------------------------------------- photos + partner assets
 # Offers and assets come from the jö partner film (joe-strategiefilm/v3/wall_comp.js, partner_logos/).
 P_STATIONERY = img_data("wall_img/web/pagro.webp")        # PAGRO stationery flat lay (red)
-P_PENCILS = img_data("wall_img/stifte.webp")              # colour pencil fan
+P_PENCILS = img_data("wall_img/stifte.webp", mirror=True)              # colour pencil fan
 P_BUBBLE = img_data("angebot_bild.webp")                  # BIPA offer photo (bubble gum)
 P_BONUSBOX = img_data("wall_img/bipa_bonusbox.png", 1834, "PNG")  # BIPA Bonusbox cut-out
 P_CUTOUT = img_data("ooh/ubahn_frau.webp", 1200, "PNG")   # cut-out, walking with phone
