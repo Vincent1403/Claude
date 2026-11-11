@@ -1,4 +1,4 @@
-"""jö store ads: places brand-compliant ads into the red areas of the store vector files.
+"""jö store ads (Store 1 = PAGRO, Store 2 = BIPA): places brand-compliant ads into the red areas of the store vector files.
 
 Run:  python3 build_ads.py
 Out:  Store1-ads.svg, Store2-ads.svg (same canvas / viewBox as the source vectors)
@@ -127,112 +127,189 @@ def photo(href, size, x, y, w, h, focus=(0.5, 0.5)):
             f'preserveAspectRatio="none" clip-path="url(#{c})"/>')
 
 
-# ---------------------------------------------------------------- photos
-P_FAMILY = img_data("iv_einkauf.webp")             # mother + child in supermarket
-P_CHECKOUT = img_data("ooh/tamara_f.webp")         # scanning the jö app at the till
-P_CUTOUT = img_data("ooh/ubahn_frau.webp", 1200, "PNG")  # cut-out, walking with phone
+# ---------------------------------------------------------------- photos + partner assets
+# Offers and assets come from the jö partner film (joe-strategiefilm/v3/wall_comp.js, partner_logos/).
+P_STATIONERY = img_data("wall_img/web/pagro.webp")        # PAGRO stationery flat lay (red)
+P_PENCILS = img_data("wall_img/stifte.webp")              # colour pencil fan
+P_BUBBLE = img_data("angebot_bild.webp")                  # BIPA offer photo (bubble gum)
+P_BONUSBOX = img_data("wall_img/bipa_bonusbox.png", 1834, "PNG")  # BIPA Bonusbox cut-out
+P_CUTOUT = img_data("ooh/ubahn_frau.webp", 1200, "PNG")   # cut-out, walking with phone
+L_PAGRO = img_data("partner_logos/pagro.webp", 400, "PNG")
+L_BIPA = img_data("partner_logos/bipa.webp", 400, "PNG")
 
 
-# ---------------------------------------------------------------- ad layouts (local coords, 0..w, 0..h)
-def ad_family_landscape(w, h):
-    """Photo panel left, Kachel 50 % from the right with headline, logo and pill."""
+def bbox_png(data):
+    """Crop transparent margins of a PNG data URI (cut-outs) -> (href, size)."""
+    raw = base64.b64decode(data[0].split(",", 1)[1])
+    im = Image.open(io.BytesIO(raw)).convert("RGBA")
+    a = im.getchannel("A").point(lambda v: 0 if v < 200 else v)   # drop the soft shadow plate
+    im.putalpha(a)
+    im = im.crop(a.getbbox())
+    b = io.BytesIO(); im.save(b, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode(), im.size
+
+
+P_BONUSBOX = bbox_png(P_BONUSBOX)
+
+
+def img(data, x, y, w=None, h=None):
+    iw, ih = data[1]
+    if w is None:
+        w = iw * h / ih
+    if h is None:
+        h = ih * w / iw
+    return f'<image href="{data[0]}" x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}"/>', w, h
+
+
+def lockup(x, y, h, partner, color=WHITE):
+    """jö logo + partner circle logo, separated by a thin rule. h = logo height."""
+    lw = h * LOGO_W / LOGO_H
+    gap = h * 0.38
+    out = [logo(x, y, lw, color),
+           f'<rect x="{x + lw + gap:.1f}" y="{y + h * 0.08:.1f}" width="{h * 0.025:.1f}" height="{h * 0.92:.1f}" fill="{color}" opacity=".55"/>']
+    pi, _, _ = img(partner, x + lw + gap * 2, y - h * 0.02, h * 1.04, h * 1.04)
+    out.append(pi)
+    return "".join(out)
+
+
+def oes_icon(cx, cy, d, bg=WINE, fg=WHITE):
+    """Round Ös icon: the ö of the logo, white in a Burgund circle (as in the app's Ös-Pill)."""
+    s = d * 0.62 / 183
+    gw = (271.15 - 112) * s
+    return (f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{d / 2:.1f}" fill="{bg}"/>'
+            f'<g transform="translate({cx - gw / 2 - 112 * s:.1f} {cy - 183 * s / 2:.1f}) scale({s:.5f})" fill="{fg}">'
+            f'<path d="{LP["E"]}"/><circle cx="152.94" cy="16.8" r="16.8"/><circle cx="207.17" cy="16.8" r="16.8"/></g>')
+
+
+def oes_pill(x, y, label, size, anchor="start"):
+    """Ös-Pill: white pill, value in Burgund, round Ös icon at the end."""
+    h = size * 1.9
+    tw = len(label) * size * 0.6 + size * 0.7 + h * 0.86 + size * 0.35
+    if anchor == "end":
+        x -= tw
+    d = h * 0.78
+    return (f'<rect x="{x:.1f}" y="{y:.1f}" width="{tw:.1f}" height="{h:.1f}" rx="{h / 2:.1f}" fill="{WHITE}"/>'
+            f'<text x="{x + size * 0.7:.1f}" y="{y + h / 2 + size * 0.36:.1f}" font-family="Satoshi" font-weight="800" '
+            f'font-size="{size:.1f}" fill="{WINE}">{label}</text>'
+            + oes_icon(x + tw - h / 2, y + h / 2, d)), tw, h
+
+
+def deal_tag(x, y, label, size):
+    """Rabatt-Tag: deals stand on Burgund."""
+    h = size * 1.45
+    tw = len(label.replace("&#8239;", "")) * size * 0.58 + size * 0.8
+    return (f'<rect x="{x:.1f}" y="{y:.1f}" width="{tw:.1f}" height="{h:.1f}" rx="{h * 0.22:.1f}" fill="{WINE}"/>'
+            f'<text x="{x + tw / 2:.1f}" y="{y + h / 2 + size * 0.36:.1f}" font-family="Satoshi" font-weight="800" '
+            f'font-size="{size:.1f}" letter-spacing="{-0.02 * size:.1f}" fill="{WHITE}" text-anchor="middle">{label}</text>'), tw, h
+
+
+# ---------------------------------------------------------------- PAGRO (Store 1)
+def pagro_school(w, h):
+    """Stationery photo left, Kachel 50 % from the right: -15 % + 100 Ös auf Schulartikel."""
     gid, gdef = gradient(w, h)
     short = min(w, h)
-    r = 0.14 * short
-    kw = w * 0.5
+    kw, r, pad = w * 0.5, 0.14 * short, short * 0.085
     kx = w - kw
-    pad = short * 0.09
-    out = [f"<defs>{gdef}</defs>", photo(P_FAMILY[0], P_FAMILY[1], 0, 0, w, h, (0.62, 0.4)),
+    out = [f"<defs>{gdef}</defs>", photo(P_STATIONERY[0], P_STATIONERY[1], 0, 0, w, h, (0.45, 0.5)),
            f'<path d="{kachel_path(kx, 0, kw, h, r, "right")}" fill="url(#{gid})"/>']
-    lw = kw * 0.26
-    out.append(logo(kx + pad, pad, lw, WHITE))
-    fs = short * 0.125
-    out.append(text(kx + pad, h * 0.43, ["Bei jedem", "Einkauf", "Ös sammeln."], fs, WHITE, hl=(2, "Ös", LORANGE)))
-    p, _, _ = pill(kx + pad, h - pad - short * 0.05 * 2.3, "jö App holen", short * 0.05, WHITE, WINE)
-    out.append(p)
-    return "".join(out)
-
-
-def ad_cutout_square(w, h):
-    """Full jö-Verlauf, cut-out person right, headline left, white pill."""
-    gid, gdef = gradient(w, h)
-    short = min(w, h)
-    pad = short * 0.075
-    iw, ih = P_CUTOUT[1]
-    ph = h * 0.98
-    pw = iw * ph / ih
-    out = [f"<defs>{gdef}</defs>", f'<rect width="{w}" height="{h}" fill="url(#{gid})"/>',
-           f'<image href="{P_CUTOUT[0]}" x="{w - pw - w * 0.02:.1f}" y="{h - ph + h * 0.04:.1f}" width="{pw:.1f}" height="{ph:.1f}"/>']
-    out.append(logo(pad, pad, w * 0.2, WHITE))
+    out.append(lockup(kx + pad, pad, short * 0.11, L_PAGRO))
+    t, tw, th = deal_tag(kx + pad, h * 0.3, "−15&#8239;%", short * 0.105)
+    out.append(t)
+    op, _, _ = oes_pill(kx + pad + tw + short * 0.03, h * 0.3 + (th - short * 0.06 * 1.9) / 2, "+100", short * 0.06)
+    out.append(op)
     fs = short * 0.098
-    out.append(text(pad, h * 0.48, ["Sammeln.", "Sparen.", "Freuen."], fs, WHITE, hl=(1, "Sparen.", LORANGE)))
-    sub = short * 0.035
-    out.append(text(pad, h * 0.48 + fs * 2.04 + sub * 2.2, ["Bei allen jö Partnern", "Ös sammeln und einlösen."],
-                    sub, WHITE, weight=500, lh=1.3, ls=0))
-    p, _, _ = pill(pad, h - pad - short * 0.045 * 2.3, "Jetzt jö App holen", short * 0.045, WHITE, WINE)
+    out.append(text(kx + pad, h * 0.3 + th + fs * 1.15, ["auf Schulartikel", "bei PAGRO."], fs, WHITE, hl=(1, "PAGRO.", LORANGE)))
+    ps = short * 0.048
+    p, _, _ = pill(kx + pad, h - pad - ps * 2.3, "In der jö App aktivieren", ps, WHITE, WINE)
     out.append(p)
     return "".join(out)
 
 
-def ad_portrait_small(w, h):
-    """Beige, Burgund logo, Kachel 50 % from the bottom with headline + pill."""
+def pagro_pencils(w, h):
+    """Pencil fan photo right, Kachel 50 % from the left: 3fach Ös auf Malsachen."""
     gid, gdef = gradient(w, h)
     short = min(w, h)
-    r = 0.14 * short
-    kh = h * 0.5
-    pad = w * 0.085
-    out = [f"<defs>{gdef}</defs>", f'<rect width="{w}" height="{h}" fill="{BEIGE}"/>']
-    lw = w * 0.62
-    out.append(logo((w - lw) / 2, (h - kh - lw * LOGO_H / LOGO_W) / 2, lw, WINE))
-    out.append(f'<path d="{kachel_path(0, h - kh, w, kh, r, "bottom")}" fill="url(#{gid})"/>')
-    fs = w * 0.098
-    out.append(text(pad, h - kh + pad * 1.2 + fs * 0.8, ["Ös sammeln.", "Rabatte holen."], fs, WHITE, hl=(0, "Ös", LORANGE)))
-    p, _, _ = pill(pad, h - pad - w * 0.058 * 2.3, "Mehr in der App", w * 0.058, WHITE, WINE)
-    out.append(p)
-    return "".join(out)
-
-
-def ad_checkout_hero(w, h, notch_y):
-    """Big hero: checkout photo, Kachel 50 % from the left. notch_y = height where the bottom-right notch starts."""
-    gid, gdef = gradient(w, h)
-    short = min(w, h)
-    r = 0.14 * short
-    kw = w * 0.47
-    pad = short * 0.085
-    out = [f"<defs>{gdef}</defs>", photo(P_CHECKOUT[0], P_CHECKOUT[1], 0, 0, w, h, (0.32, 0.4)),
+    kw, r, pad = w * 0.5, 0.14 * short, short * 0.075
+    out = [f"<defs>{gdef}</defs>", photo(P_PENCILS[0], P_PENCILS[1], 0, 0, w, h, (0.5, 0.5)),
            f'<path d="{kachel_path(0, 0, kw, h, r, "left")}" fill="url(#{gid})"/>']
-    out.append(logo(pad, pad, kw * 0.24, WHITE))
-    fs = short * 0.09
-    out.append(text(pad, h * 0.44, ["Einfach zeigen.", "Ös sammeln."], fs, WHITE, hl=(1, "Ös", LORANGE)))
+    out.append(lockup(pad, pad, short * 0.085, L_PAGRO))
+    fs = short * 0.112
+    out.append(text(pad, h * 0.4, ["3fach Ös", "auf Mal-", "sachen."], fs, WHITE, hl=(0, "3fach", LORANGE)))
     sub = short * 0.032
-    out.append(text(pad, h * 0.44 + fs * 1.04 + sub * 2.4,
-                    ["App an der Kassa scannen,", "Ös sammeln und bei jedem", "jö Partner einlösen."],
+    out.append(text(pad, h * 0.4 + fs * 2.08 + sub * 2.3, ["Stifte, Farben, Blöcke:", "jetzt bei PAGRO dreifach", "Ös sammeln."],
                     sub, WHITE, weight=500, lh=1.3, ls=0))
     ps = short * 0.042
-    p, _, _ = pill(pad, h - pad - ps * 2.3, "Jetzt jö App holen", ps, WHITE, WINE)
+    p, _, _ = pill(pad, h - pad - ps * 2.3, "Jetzt aktivieren", ps, WHITE, WINE)
     out.append(p)
     return "".join(out)
 
 
-def ad_pennant(w, h, safe_h):
-    """Tall pennant: Burgund with white logo + headline, Kachel 50 % from the bottom with pill."""
+def pagro_small(w, h):
+    """Beige, jö + PAGRO lockup, Kachel 50 % from the bottom: Hier Ös sammeln."""
     gid, gdef = gradient(w, h)
     short = min(w, h)
-    pad = w * 0.12
-    out = [f"<defs>{gdef}</defs>", f'<rect width="{w}" height="{h}" fill="{WINE}"/>']
-    lw = w * 0.66
-    out.append(logo((w - lw) / 2, h * 0.07, lw, WHITE))
-    fs = w * 0.155
-    out.append(text(pad, h * 0.29, ["Mehr", "vom", "Einkauf."], fs, WHITE, hl=(2, "Einkauf.", LORANGE)))
-    kh = h * 0.5
-    r = 0.14 * short
+    r, kh, pad = 0.14 * short, h * 0.5, w * 0.085
+    out = [f"<defs>{gdef}</defs>", f'<rect width="{w}" height="{h}" fill="{BEIGE}"/>']
+    lh = w * 0.26
+    lwid = lh * LOGO_W / LOGO_H + lh * 0.38 * 2 + lh * 1.04
+    out.append(lockup((w - lwid) / 2, (h - kh - lh) / 2, lh, L_PAGRO, WINE))
     out.append(f'<path d="{kachel_path(0, h - kh, w, kh, r, "bottom")}" fill="url(#{gid})"/>')
-    iw, ih = P_CUTOUT[1]
-    pw = w * 0.92
-    ph = ih * pw / iw
-    out.append(f'<image href="{P_CUTOUT[0]}" x="{(w - pw) / 2:.1f}" y="{h - kh - ph * 0.22:.1f}" width="{pw:.1f}" height="{ph:.1f}"/>')
-    ps = w * 0.062
-    p, _, _ = pill(w / 2, safe_h - pad - ps * 2.3, "jö App holen", ps, WHITE, WINE, anchor="middle")
+    fs = w * 0.105
+    out.append(text(pad, h - kh + pad * 1.2 + fs * 0.8, ["Hier bei PAGRO", "Ös sammeln."], fs, WHITE, hl=(1, "Ös", LORANGE)))
+    ps = w * 0.058
+    p, _, _ = pill(pad, h - pad - ps * 2.3, "jö App zeigen", ps, WHITE, WINE)
+    out.append(p)
+    return "".join(out)
+
+
+# ---------------------------------------------------------------- BIPA (Store 2)
+def bipa_hero(w, h):
+    """Offer photo right, Kachel from the left: 250 Zusatz Ös auf den Einkauf."""
+    gid, gdef = gradient(w, h)
+    short = min(w, h)
+    kw, r, pad = w * 0.47, 0.14 * short, short * 0.085
+    out = [f"<defs>{gdef}</defs>", photo(P_BUBBLE[0], P_BUBBLE[1], kw - r, 0, w - kw + r, h, (0.47, 0.5)),
+           f'<path d="{kachel_path(0, 0, kw, h, r, "left")}" fill="url(#{gid})"/>']
+    out.append(lockup(pad, pad, short * 0.1, L_BIPA))
+    fs = short * 0.098
+    out.append(text(pad, h * 0.4, ["250 Zusatz Ös", "auf deinen", "BIPA Einkauf."], fs, WHITE, hl=(0, "250", LORANGE)))
+    sub = short * 0.032
+    out.append(text(pad, h * 0.4 + fs * 2.08 + sub * 2.4, ["jö App an der Kassa scannen", "und Extra-Ös sammeln."],
+                    sub, WHITE, weight=500, lh=1.3, ls=0))
+    ps = short * 0.044
+    p, _, _ = pill(pad, h - pad - ps * 2.3, "Jetzt aktivieren", ps, WHITE, WINE)
+    out.append(p)
+    # Ös-Pill on the photo, like on the offer card
+    op, _, _ = oes_pill(w - short * 0.07, short * 0.07, "250", short * 0.075, anchor="end")
+    out.append(op)
+    return "".join(out)
+
+
+def bipa_pennant(w, h, safe_h):
+    """Tall pennant: Burgund with lockup + headline, Bonusbox on the Kachel, Ös-Pill, pill button."""
+    gid, gdef = gradient(w, h)
+    short = min(w, h)
+    pad = w * 0.11
+    out = [f"<defs>{gdef}</defs>", f'<rect width="{w}" height="{h}" fill="{WINE}"/>']
+    lh = w * 0.2
+    lwid = lh * LOGO_W / LOGO_H + lh * 0.38 * 2 + lh * 1.04
+    out.append(lockup((w - lwid) / 2, h * 0.06, lh, L_BIPA))
+    fs = w * 0.14
+    out.append(text(pad, h * 0.24, ["Die BIPA", "Bonusbox", "für 250 Ös."], fs, WHITE, hl=(2, "250", LORANGE)))
+    kh, r = h * 0.52, 0.14 * short
+    out.append(f'<path d="{kachel_path(0, h - kh, w, kh, r, "bottom")}" fill="url(#{gid})"/>')
+    bw = w * 0.84
+    by = h - kh - w * 0.32
+    bi, _, bh = img(P_BONUSBOX, (w - bw) / 2, by, bw)
+    out.append(bi)
+    os_ = w * 0.1
+    op, _, _ = oes_pill(w / 2 - os_ * 2.2, by + bh + w * 0.12, "250", os_)
+    out.append(op)
+    sub = w * 0.06
+    out.append(text(w / 2, by + bh + w * 0.12 + os_ * 1.9 + sub * 2.2, ["Mit deinen Ös", "einlösen und", "Neues entdecken."],
+                    sub, WHITE, weight=500, lh=1.3, ls=0, anchor="middle"))
+    ps = w * 0.058
+    p, _, _ = pill(w / 2, safe_h - pad - ps * 2.3, "Mit Ös einlösen", ps, WHITE, WINE, anchor="middle")
     out.append(p)
     return "".join(out)
 
@@ -266,12 +343,12 @@ def build(src_name, out_name, layouts):
     print("wrote", out_name, [a for a, _ in areas])
 
 
-build("Store1-vectors.svg", "Store1-ads.svg", {
-    "area-01": lambda w, h, d: ad_family_landscape(w, h),
-    "area-02": lambda w, h, d: ad_cutout_square(w, h),
-    "area-03": lambda w, h, d: ad_portrait_small(w, h),
+build("Store1-vectors.svg", "Store1-ads.svg", {      # PAGRO
+    "area-01": lambda w, h, d: pagro_school(w, h),
+    "area-02": lambda w, h, d: pagro_pencils(w, h),
+    "area-03": lambda w, h, d: pagro_small(w, h),
 })
-build("Store2-vectors.svg", "Store2-ads.svg", {
-    "area-01": lambda w, h, d: ad_checkout_hero(w, h, 8592 - 5077),
-    "area-02": lambda w, h, d: ad_pennant(w, h, 9228 - 3515),
+build("Store2-vectors.svg", "Store2-ads.svg", {      # BIPA
+    "area-01": lambda w, h, d: bipa_hero(w, h),
+    "area-02": lambda w, h, d: bipa_pennant(w, h, 9228 - 3515),
 })
