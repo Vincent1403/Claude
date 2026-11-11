@@ -155,6 +155,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           <div class="row"><label for="speed">Speed</label><input id="speed" type="range" min="0" max="2.5" step="0.05" value="1"><output id="speed-o" for="speed">1.0×</output></div>
           <div class="row"><label for="fold">Fold</label><input id="fold" type="range" min="0" max="1" step="0.05" value="0.8"><output id="fold-o" for="fold">80%</output></div>
           <div class="row"><label for="zoom">Zoom</label><input id="zoom" type="range" min="0.4" max="3" step="0.05" value="1"><output id="zoom-o" for="zoom">1.0×</output></div>
+          <div class="row"><label for="rot">Rotate</label><input id="rot" type="range" min="-180" max="180" step="1" value="0"><output id="rot-o" for="rot">0°</output></div>
         </div>
         <div class="group">
           <p class="label">Build</p>
@@ -701,10 +702,13 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const view = vis.layout ? vis.layout(aspect) : vis.view;
     const sc = (vis.fit === 'contain' ? Math.min(w / view[2], h / view[3]) : Math.max(w / view[2], h / view[3])) * (o.zoom || 1);
     const mx = view[0] + view[2] / 2, my = view[1] + view[3] / 2;
-    const vp = [mx - w / sc / 2, my - h / sc / 2, w / sc, h / sc];
+    // the whole scene can turn about the frame centre; the area to fill is the turned frame's bounding box
+    const ra = o.rot || 0, rc = Math.cos(ra), rs = Math.sin(ra);
+    const bw = (Math.abs(w * rc) + Math.abs(h * rs)) / sc, bh = (Math.abs(w * rs) + Math.abs(h * rc)) / sc;
+    const vp = [mx - bw / 2, my - bh / 2, bw, bh];
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = '#00001b'; ctx.fillRect(0, 0, w, h);
-    ctx.setTransform(sc, 0, 0, sc, w / 2 - mx * sc, h / 2 - my * sc);
+    ctx.setTransform(sc * rc, sc * rs, -sc * rs, sc * rc, w / 2 - (mx * rc - my * rs) * sc, h / 2 - (mx * rs + my * rc) * sc);
     ctx.lineJoin = 'round';
     ctx.imageSmoothingQuality = 'high';
     polys.length = 0;
@@ -753,7 +757,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const $ = id => document.getElementById(id);
   const stage = $('stage'), cv = $('cv');
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, edges: false, ar: '0.8',
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, rot: 0, edges: false, ar: '0.8',
                gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true,
                bmode: 'off', bt: 0, bdur: 3 };
 
@@ -766,7 +770,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   function frameOpts(bt, dpr, edges) {
     const b = buildParams(bt);
     return { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse,
-             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom };
+             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom, rot: st.rot };
   }
 
   const thumbs = $('thumbs'), thumbCv = [];
@@ -819,6 +823,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   bind('speed', v => v.toFixed(1) + '×');
   bind('fold', pct);
   bind('zoom', v => v.toFixed(1) + '×');
+  bind('rot', v => signed(v, '°'), v => v * PI / 180);
   bind('bdur', v => v.toFixed(1) + ' s');
   bind('gspeed', v => v.toFixed(1) + '×');
   bind('angle', v => signed(v, '°'), v => v * PI / 180);
