@@ -408,7 +408,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 
   // Lens rosette: rings of almond openings that fan out from a centre below the frame and blink shut.
   function buildLens(T, E, vp, out) {
-    const N = 26, D = TAU / N, rho = 1.55, R0 = 60, c = 0.06, SEG = 9, LR = Math.log(rho);
+    const N = 26, D = TAU / N, rho = 1.55, R0 = 60, c = 0.06, LR = Math.log(rho);
     const s = frac(T * 0.045), rot = -PI / 2 + T * 0.012;
     const rr = radii(vp, 0, 0, 8);
     const k0 = Math.floor(Math.log(rr[0] / R0) / LR - s) - 1, k1 = Math.ceil(Math.log(rr[1] / R0) / LR - s);
@@ -417,6 +417,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       const bIn = th => Rk * (1 + c * Math.pow(Math.sin(PI * (th - off) / D), 2));
       const bOut = th => Rn * (1 + c * Math.pow(Math.cos(PI * (th - off) / D), 2));
       const rin = Rk, rout = Rn * (1 + c);
+      // more points on rings that appear large on screen, so curves stay smooth when zoomed in
+      const px = (rout - rin) / vp[2], SEG = Math.max(10, Math.min(64, Math.round(px * 90))), RS = Math.max(6, Math.round(SEG * 0.6));
       for (let i = 0; i < N; i++) {
         const thc = off + i * D;
         const open = 1 - 0.93 * fol(T, q * 1.4 + i * TAU * 2 / N, E);
@@ -428,13 +430,13 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           Rr.push(r * Math.cos(thc + d), r * Math.sin(thc + d));
         }
         const sl = L.slice(), sr = Rr.slice();
-        for (let m = 1; m <= 4; m++) {
-          const a = D / 2 * m / 4;
+        for (let m = 1; m <= RS; m++) {
+          const a = D / 2 * m / RS;
           sr.push(bOut(thc + a) * Math.cos(thc + a), bOut(thc + a) * Math.sin(thc + a));
           sl.push(bOut(thc - a) * Math.cos(thc - a), bOut(thc - a) * Math.sin(thc - a));
         }
-        for (let m = 4; m >= 1; m--) {
-          const a = D / 2 * m / 4;
+        for (let m = RS; m >= 1; m--) {
+          const a = D / 2 * m / RS;
           sr.push(bIn(thc + a) * Math.cos(thc + a), bIn(thc + a) * Math.sin(thc + a));
           sl.push(bIn(thc - a) * Math.cos(thc - a), bIn(thc - a) * Math.sin(thc - a));
         }
@@ -447,7 +449,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 
   // Scallop drum: rows of scales with a cusp on top and a round rim below, wrapped around a turning cylinder.
   function buildScallop(T, E, vp, out) {
-    const Rc = 110, P = TAU / 22, a0 = 26, bow = 14, SEG = 5, HP = PI / 2, K = 44;
+    const Rc = 110, P = TAU / 22, a0 = 26, bow = 14, SEG = 16, HP = PI / 2, K = 44;
     const rot = T * 0.09;
     const am = new Array(2 * K + 1), Y = new Array(2 * K + 1);
     for (let k = -K; k <= K; k++) am[k + K] = a0 * (1 - 0.8 * fol(T, k * 0.9, E));   // a shut row lies flat
@@ -481,7 +483,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 
   // Swirl iris: curved pleats on spiral fold lines with a scalloped rim, twisting shut like an aperture.
   function buildIris(T, E, vp, out) {
-    const N = 14, D = TAU / N, rho = 1.5, R0 = 40, SEG = 5, LR = Math.log(rho);
+    const N = 14, D = TAU / N, rho = 1.5, R0 = 40, LR = Math.log(rho);
+    let SEG = 8;
     const s = frac(T * 0.05), rot = T * 0.02;
     const f = fol(T, 0, E), cv = 0.05 + 0.1 * f;
     const ang = (j, qq) => rot + j * D + D * (0.4 * qq + 0.9 * E.A * Math.sin(T * FOLD_W - qq * 1.1) + 1.4 * E.bc * qq);
@@ -497,6 +500,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     };
     for (let k = k0; k <= k1; k++) {
       const q = k + s;
+      SEG = Math.max(8, Math.min(48, Math.round(R0 * Math.pow(rho, q) / vp[2] * 60)));
       for (let j = 0; j < N; j++) {
         const p = [];
         edge(p, q, j, j + 1);
@@ -608,6 +612,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     ctx.fillStyle = '#00001b'; ctx.fillRect(0, 0, w, h);
     ctx.setTransform(sc, 0, 0, sc, w / 2 - mx * sc, h / 2 - my * sc);
     ctx.lineJoin = 'round';
+    ctx.imageSmoothingQuality = 'high';
     polys.length = 0;
     ENV.A = o.fold; ENV.bc = o.bc || 0;
     vis.build(T, ENV, vp, polys, aspect);
