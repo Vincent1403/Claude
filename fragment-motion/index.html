@@ -1090,7 +1090,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     if (b.logo > 0.001) {
       const n = LOGO_SPANS.length, lag = 0.45;              // each letter takes 1 unit; the next starts 0.45 later
       const t = clamp01(b.logo) * ((n - 1) * lag + 1);
-      ctx.setTransform(ls, 0, 0, ls, w / 2 - lw / 2, h * 0.47 - 24.5 * ls);
+      // logo alone: the letters' x-height band (0–34 of the 49-unit box) sits on the frame's middle
+      ctx.setTransform(ls, 0, 0, ls, w / 2 - lw / 2, b.solo ? h / 2 - 17 * ls : h * 0.47 - 24.5 * ls);
       LOGO_SPANS.forEach((sp, k) => {
         const e = smooth(t - k * lag);
         if (e <= 0.001) return;
@@ -1382,7 +1383,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     else if (tsOn && BLUR_OK) tiltShift(ctx, w, h, view2, ENV.ts, o.focus === undefined ? 0.6 : o.focus);
     // logo and claim, from the visual's own timeline or from the Brand setting
     const brand = vis.brandAt ? vis.brandAt(T) : null;
-    const pick = brand || (o.brand === 'logo' ? { logo: 1, claim: 0 } : o.brand === 'both' ? { logo: 1, claim: 1 } : null);
+    const pick = brand || (o.brand === 'logo' ? { logo: 1, claim: 0, solo: true } : o.brand === 'both' ? { logo: 1, claim: 1 } : null);
     let bctx = ctx;
     if (o.top) { if (o.top.width !== w || o.top.height !== h) { o.top.width = w; o.top.height = h; } bctx = o.top.getContext('2d'); bctx.setTransform(1, 0, 0, 1, 0, 0); bctx.clearRect(0, 0, w, h); }
     drawBrand(bctx, w, h, pick, logoDark(o, ENV.dark !== undefined ? ENV.dark : bg === '#ffffff'));
