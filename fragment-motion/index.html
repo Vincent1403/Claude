@@ -1013,7 +1013,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       case 'logo': {
         const at = out.length;
         figScene('blurZig', lt + 3, E, vp, out, { build: false, zoom: 1.1, dx: 0.3, dy: 0.34, ts: false });
-        ENV.logoMid = { at: Math.min(at + 3, out.length), logo: smooth((lt - 0.2) / 0.6), claim: 0 };
+        ENV.logoMid = { at: Math.min(at + 3, out.length), logo: clamp01((lt - 0.2) / 1.6), claim: 0 };
         break;
       }
       default: ENV.bg = null; ENV.dark = false; figScene('tiers', lt + 4, E, vp, out, { build: false, band, zoom: TZ(vp) });
@@ -1021,7 +1021,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     E.bm = bm;
   }
   const reelBrand = T => { const u = frac(T / REEL_LEN) * REEL_LEN;
-    return u < 23.59 ? null : { logo: smooth((u - 23.95) / 0.9), claim: smooth((u - 25.16) / 0.9) }; };
+    return u < 23.59 ? null : { logo: clamp01((u - 23.6) / 1.6), claim: clamp01((u - 25.16) / 1.3) }; };
 
   // Film: cuts between the variants, ending on the logo and claim. 15 s loop.
   const FILM = [[0, 4.5, 'derive'], [4.5, 7, 'fill'], [7, 9, 'free'], [9, 11, 'close'], [11, 15, 'end']];
@@ -1035,23 +1035,54 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     E.bm = bm;
   }
   // logo and claim: fade in over the moving background
-  const brandEnd = (T, len, at) => { const u = frac(T / len) * len, out = 1 - smooth((u - (len - 0.8)) / 0.8);
-    return { logo: smooth((u - at) / 1.2) * out, claim: smooth((u - at - 1.3) / 1.2) * out }; };
+  const brandEnd = (T, len, at) => { const u = frac(T / len) * len;
+    return { logo: clamp01((u - at) / 1.6), claim: clamp01((u - at - 1.9) / 1.3), alpha: 1 - smooth((u - (len - 0.8)) / 0.8) }; };
+  // Each letter's left and right edge in its SVG's units, found once by drawing it and reading its pixels,
+  // so letters can be revealed in reading order.
+  function letterSpans(paths, vw, vh) {
+    const k = 4, c = document.createElement('canvas'); c.width = vw * k; c.height = vh * k;
+    const g = c.getContext('2d');
+    return paths.map((p, i) => {
+      g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, c.width, c.height); g.setTransform(k, 0, 0, k, 0, 0); g.fill(p);
+      const d = g.getImageData(0, 0, c.width, c.height).data;
+      let x0 = c.width, x1 = 0;
+      for (let y = 0; y < c.height; y += 2) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 20) { if (x < x0) x0 = x; if (x > x1) x1 = x; }
+      return { i, x0: x0 / k, x1: (x1 + 1) / k };
+    }).sort((a, b) => a.x0 - b.x0);
+  }
+  let LOGO_SPANS = null, CLAIM_SPANS = null;
+  // Logo: letter by letter, each from blurred and clear to sharp, the next starting before the last has settled.
+  // Claim: typed character by character with a thin cursor. b.logo and b.claim run 0 → 1; b.alpha fades both.
   function drawBrand(ctx, w, h, b, dark) {
     if (!b || (b.logo <= 0.001 && b.claim <= 0.001)) return;
+    if (!LOGO_SPANS) { LOGO_SPANS = letterSpans(LOGO, 210, 49); CLAIM_SPANS = letterSpans(CLAIM, 123, 16); }
     const lw = Math.min(0.6 * w, 0.95 * h), ls = lw / 210, cw = lw * 0.586, cs = cw / 123;
+    const A = b.alpha === undefined ? 1 : b.alpha;
     ctx.save();
     ctx.fillStyle = dark ? '#321419' : '#ffffff';
     if (b.logo > 0.001) {
-      ctx.globalAlpha = b.logo;
-      const k = 1 + 0.04 * (1 - b.logo);
-      ctx.setTransform(ls * k, 0, 0, ls * k, w / 2 - lw * k / 2, h * 0.47 - 24.5 * ls * k);
-      for (const p of LOGO) ctx.fill(p);
+      const n = LOGO_SPANS.length, lag = 0.45;              // each letter takes 1 unit; the next starts 0.45 later
+      const t = clamp01(b.logo) * ((n - 1) * lag + 1);
+      ctx.setTransform(ls, 0, 0, ls, w / 2 - lw / 2, h * 0.47 - 24.5 * ls);
+      LOGO_SPANS.forEach((sp, k) => {
+        const e = smooth(t - k * lag);
+        if (e <= 0.001) return;
+        ctx.globalAlpha = A * e;
+        const blur = (1 - e) * 9 * ls;                     // screen pixels; gone when the letter has landed
+        ctx.filter = BLUR_OK && blur > 0.2 ? 'blur(' + blur.toFixed(2) + 'px)' : 'none';
+        ctx.fill(LOGO[sp.i]);
+      });
+      ctx.filter = 'none';
     }
     if (b.claim > 0.001) {
-      ctx.globalAlpha = b.claim;
+      const n = CLAIM_SPANS.length, shown = Math.floor(clamp01(b.claim) * n + 1e-6);
+      ctx.globalAlpha = A;
       ctx.setTransform(cs, 0, 0, cs, w / 2 - cw / 2, h * 0.84 - 8 * cs);
-      for (const p of CLAIM) ctx.fill(p);
+      for (let k = 0; k < shown; k++) ctx.fill(CLAIM[CLAIM_SPANS[k].i]);
+      if (b.claim < 1) {                                   // cursor just after the last typed character
+        const x = shown ? CLAIM_SPANS[shown - 1].x1 + 1.2 : 0;
+        ctx.fillRect(x, -0.5, 0.9, 13.5);
+      }
     }
     ctx.restore();
   }
@@ -1086,7 +1117,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('tiers', { zoomFn: TZ, band: { ang: 0.35, amp: 0.22, per: 6, reach: 0.38, r: 0.02, half: 0.12 } }), loop: BOARD_LOOP },
     { id: 's-film', name: 'Film', meta: 'scryns · 15 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
       coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, selfBuild: true, build: sceneFilm, loop: 15,
-      brandAt: T => { const u = frac(T / 15) * 15; return u < 11 ? null : { logo: smooth((u - 11.4) / 1), claim: smooth((u - 12.4) / 1) }; } },
+      brandAt: T => { const u = frac(T / 15) * 15; return u < 11 ? null : { logo: clamp01((u - 11.3) / 1.6), claim: clamp01((u - 13.0) / 1.3) }; } },
     { id: 's-derive', name: 'Element to lamp', meta: 'scryns · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
       coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, selfBuild: true, build: sceneDerive, loop: 12 },
     { id: 's-free', name: 'Free in space', meta: 'scryns · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
