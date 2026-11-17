@@ -55,6 +55,10 @@ body{
   background:var(--stage); position:relative; overflow:hidden;
 }
 .stage canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+/* live tilt-shift: the browser blurs what lies under this layer, through a gradient mask */
+.tsfx{position:absolute; inset:0; pointer-events:none; -webkit-backdrop-filter:blur(var(--b, 6px)); backdrop-filter:blur(var(--b, 6px));
+  -webkit-mask-image:var(--m); mask-image:var(--m)}
+#cvtop{pointer-events:none}
 .readout{
   display:flex; flex-wrap:wrap; gap:4px 18px;
   font-family:var(--mono); font-size:12px; color:var(--muted);
@@ -133,7 +137,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   <section class="work">
     <div class="stage-col">
       <div class="desk">
-        <div class="stage" id="stage"><canvas id="cv" aria-label="Animated gradient-fragment visual"></canvas></div>
+        <div class="stage" id="stage"><canvas id="cv" aria-label="Animated gradient-fragment visual"></canvas><div class="tsfx" id="tsfx" hidden></div><canvas id="cvtop" aria-hidden="true"></canvas></div>
       </div>
       <div class="readout" aria-live="off">
         <span><b id="ro-name">Showreel</b></span>
@@ -720,6 +724,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   // The pleat follows the single element on the "Animation" board in Figma (node 1177:2680/2682): two faces meeting
   // at a ridge, narrow toward the centre, with a notch at the outer end. Each face carries the board's gradient from
   // dark at the outer end to lavender toward the centre.
+  const BAR = 4 * 60 / 132.5;      // one bar of the soundtrack, in seconds
   const SC0 = [[0, '#321419'], [0.28, '#ff6400'], [0.42, '#f27f48'], [0.69, '#d5c6e4'], [1, '#b296ff']];
   const SC1 = [[0.16, '#321419'], [0.33, '#ff6400'], [0.5, '#f27f48'], [0.69, '#d5c6e4'], [1, '#b296ff']];
   const LOGO = ["M34.3789 17.883C34.3789 6.8343 41.9849 0.0625 50.6413 0.0625C58.0481 0.0625 63.0011 4.61564 63.2003 11.1201L55.1325 11.1201V3.25237C53.9463 2.6643 52.4251 2.4059 50.6413 2.4059C44.6923 2.4059 40.3822 8.43814 40.3822 15.9851C40.3822 23.5321 44.8281 29.3238 51.7007 29.3238C56.8529 29.3238 60.4929 25.6884 62.0141 21.9817H64.1963C62.2767 28.2902 57.8489 34.3403 49.6543 34.3403C40.4637 34.3403 34.388 27.3813 34.388 17.883H34.3789Z", "M87.5157 7.21731C85.8587 8.7766 84.4733 10.5319 83.4139 12.5546V31.3552H91.6447V33.4402L72.0683 33.4402V31.3552H76.6681V4.49077L68.2109 2.73545V0.908846L83.0789 0.908846L81.8927 10.4696H82.2911C86.2571 4.48186 91.2825 1.16724 99.4137 0V7.21731L87.5157 7.21731Z", "M167.752 31.3552V11.9665C167.752 6.89654 165.353 4.02744 161.586 4.02744C158.018 4.02744 154.36 7.63609 152.748 9.88148V31.3463H157.403L157.312 33.4313H141.828L141.919 31.3463H146.546V4.55314L141.656 2.73545V0.908846L152.957 0.908846L151.897 7.80539H152.296C154.605 3.6443 159.195 0 164.284 0C170.432 0 173.937 4.35712 173.937 11.12V31.3463H178.564V33.4313H163.08V31.3463H167.734L167.752 31.3552Z", "M184.221 30.9644V22.1165H185.742L191.093 31.1604C192.94 31.7485 194.996 32.0069 196.843 32.0069C201.144 32.0069 204.44 30.6436 204.44 26.7409C204.44 23.6223 202.394 21.9472 197.83 20.3166L194.462 19.1494C189.436 17.3941 184.882 15.2289 184.882 9.63323C184.882 4.03759 190.17 0.197266 197.776 0.197266C201.878 0.197266 205.11 1.17739 208.216 2.99509V10.9965H206.695L201.542 2.99509C200.22 2.54066 198.962 2.40701 197.776 2.40701C193.873 2.40701 190.242 3.77028 190.242 7.3522C190.242 10.4084 192.823 11.8875 197.051 13.3844L200.42 14.5517C205.11 16.1734 210 18.2762 210 23.9342C210 30.9555 204.051 34.2077 196.78 34.2077C191.093 34.2077 186.403 32.194 184.221 30.9555V30.9644Z", "M0.00905478 30.9644L0.00905478 22.1165H1.53026L6.88163 31.1604C8.72881 31.7485 10.7842 32.0069 12.6314 32.0069C16.9324 32.0069 20.2284 30.6436 20.2284 26.7409C20.2284 23.6223 18.182 21.9472 13.6184 20.3166L10.25 19.1494C5.23366 17.3852 0.670053 15.22 0.670053 9.62432C0.670053 4.02868 5.95804 0.197266 13.555 0.197266C17.6568 0.197266 20.8894 1.17739 23.9952 2.99509V10.9965H22.474L17.3218 2.99509C15.9998 2.54066 14.7412 2.40701 13.555 2.40701C9.65239 2.40701 6.02143 3.77028 6.02143 7.3522C6.02143 10.4084 8.60204 11.8875 12.8306 13.3844L16.199 14.5517C20.8894 16.1734 25.7789 18.2762 25.7789 23.9342C25.7789 30.9555 19.83 34.2077 12.559 34.2077C6.87258 34.2077 2.1822 32.194 0 30.9555L0.00905478 30.9644Z", "M104.439 0.90918L118.981 0.90918V2.99418L111.973 2.99418L122.485 26.6064L133.46 2.99418L126.786 2.99418V0.90918L136.565 0.90918V2.60213L118.193 41.041C116.147 45.4605 110.786 48.4543 103.986 48.6503L103.986 41.6291H115.16L118.927 33.4316L104.439 2.60213V0.90918Z"].map(d => new Path2D(d));
@@ -949,9 +954,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const P = E.P === undefined ? 0.5 : E.P;
     const V = (x, y) => {
       const xn = (x - fx0) / fw;
-      const grow = easeBack((b0 - 0.1 - 0.75 * xn) / 0.6);
+      const grow = easeOut((b0 - 0.05 - 0.6 * xn) / 0.75);
       let X = fx0 + (x - fx0) * acc, Y = yb + (y - yb) * grow;
-      const wv = Math.sin(TAU * lt / 3.2 - xn * 3.6), wv2 = Math.sin(TAU * lt / 5.3 + xn * 2.1);
+      const wv = Math.sin(TAU * lt / (2 * BAR) - xn * 3.6), wv2 = Math.sin(TAU * lt / (3 * BAR) + xn * 2.1);   // pulses on two and three bars
       Y += (y - ycm) * 0.07 * P * wv;
       X += (y - ycm) * 0.05 * P * wv2;
       return [vcx + (X - bcx) * sc, vcy + (Y - bcy) * sc];
@@ -967,7 +972,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     });
     // tilt-shift: sharp across the figure's right part, blurring toward its left, and the sharp band drifts
     if (F.blur && opt.ts !== false) {
-      const drift = 0.16 * Math.sin(TAU * lt / 7) * (opt.tsMove === false ? 0 : 1);
+      const drift = 0.16 * Math.sin(TAU * lt / (4 * BAR)) * (opt.tsMove === false ? 0 : 1);
       const xs = bx + bw * (F.blur.sharp + drift), xf = bx + bw * (F.blur.full + drift);
       const A = V(xs, bcy), B = V(xf, bcy);
       ENV.ts = { ax: A[0], ay: A[1], bx: B[0], by: B[1], r: F.blur.r * sc, one: true };
@@ -990,18 +995,19 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 
   // The showreel, after the board's script: build-up on white, from element to lamp, cuts between full-bleed
   // fans and pleats free in space, the logo with pleats over it, and the end screen with logo and claim. 30 s.
+  // cuts on the soundtrack (132.5 BPM): onto a downbeat, the calm stretch, the glitch rolls, the last roll for the logo
   const REEL = [
-    [0, 6, 'blurZig'], [6, 11, 'derive'], [11, 14.5, 'close'], [14.5, 18.5, 'tiers'],
-    [18.5, 22, 'zig'], [22, 25.5, 'logo'], [25.5, 30, 'end']];
+    [0, 6.47, 'blurZig'], [6.47, 11.0, 'derive'], [11.0, 14.41, 'close'], [14.41, 17.1, 'tiers'],
+    [17.1, 20.24, 'zig'], [20.24, 23.59, 'logo'], [23.59, 30, 'end']];
   const REEL_LEN = 30;
   function sceneReel(T, E, vp, out) {
     const u = frac(T / REEL_LEN) * REEL_LEN, seg = REEL.find(x => u >= x[0] && u < x[1]) || REEL[0], lt = u - seg[0], bm = E.bm;
     E.bm = 'off'; ENV.bg = '#ffffff';
-    const band = { ang: 0.35, amp: 0.22, per: 6, reach: 0.38, r: 0.02, half: 0.12 };
+    const band = { ang: 0.35, amp: 0.22, per: 4 * BAR, reach: 0.38, r: 0.02, half: 0.12 };
     switch (seg[2]) {
       case 'blurZig': figScene('blurZig', lt, E, vp, out, { delay: 0.5, zoom: 1.05 }); break;
       case 'derive': { const st0 = out.length; sceneDerive(lt * 1.1, E, vp, out); scaleItems(out, st0, Math.min(1.35, vp[2] / 165)); break; }
-      case 'close': ENV.bg = null; ENV.dark = false; figScene('close', lt, E, vp, out, { delay: 0, zoom: 1.08, band: { ...band, ang: -1.2, per: 5 } }); break;
+      case 'close': ENV.bg = null; ENV.dark = false; figScene('close', lt, E, vp, out, { delay: 0, zoom: 1.08, band: { ...band, ang: -1.2, per: 4 * BAR } }); break;
       case 'tiers': ENV.bg = null; ENV.dark = false; figScene('tiers', lt, E, vp, out, { delay: 0, band, zoom: TZ(vp) }); break;
       case 'zig': figScene('zig', lt, E, vp, out, { delay: 0.15 }); break;
       case 'logo': {
@@ -1015,7 +1021,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     E.bm = bm;
   }
   const reelBrand = T => { const u = frac(T / REEL_LEN) * REEL_LEN;
-    return u < 25.5 ? null : { logo: smooth((u - 25.9) / 0.8), claim: smooth((u - 27) / 0.8) }; };
+    return u < 23.59 ? null : { logo: smooth((u - 23.95) / 0.9), claim: smooth((u - 25.16) / 0.9) }; };
 
   // Film: cuts between the variants, ending on the logo and claim. 15 s loop.
   const FILM = [[0, 4.5, 'derive'], [4.5, 7, 'fill'], [7, 9, 'free'], [9, 11, 'close'], [11, 15, 'end']];
@@ -1201,7 +1207,16 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   }
 
   const polys = [], ENV = { A: 0, bc: 0 };
-  const blurCv = document.createElement('canvas'), tsCv = document.createElement('canvas');
+  const blurCv = document.createElement('canvas'), tsCv = document.createElement('canvas'), halfCv = document.createElement('canvas');
+  // draw a blurred copy of src onto dst, blurring at half resolution (same look, a quarter of the work)
+  function blurInto(dst, src, px, w, h) {
+    const f = px >= 10 ? 4 : 2, hw = Math.max(1, Math.round(w / f)), hh = Math.max(1, Math.round(h / f));
+    if (halfCv.width !== hw || halfCv.height !== hh) { halfCv.width = hw; halfCv.height = hh; }
+    const c = halfCv.getContext('2d');
+    c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, hw, hh);
+    c.filter = 'blur(' + (px / f).toFixed(2) + 'px)'; c.drawImage(src, 0, 0, hw, hh); c.filter = 'none';
+    dst.drawImage(halfCv, 0, 0, w, h);
+  }
   // tilt-shift: a blurred copy of the frame laid over it through a gradient mask, sharp along a line or band
   function tiltShift(ctx, w, h, m, t, amount) {
     if (tsCv.width !== w || tsCv.height !== h) { tsCv.width = w; tsCv.height = h; }
@@ -1210,7 +1225,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const px = Math.max(0.5, t.r * k * amount / 0.6);
     const c = tsCv.getContext('2d');
     c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, w, h);
-    c.filter = 'blur(' + px.toFixed(1) + 'px)'; c.drawImage(ctx.canvas, 0, 0); c.filter = 'none';
+    blurInto(c, ctx.canvas, px, w, h);
     c.globalCompositeOperation = 'destination-in';
     const A = S(t.ax, t.ay), B = S(t.bx, t.by);
     let g;
@@ -1267,15 +1282,14 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       }
     }
     const phi = vis.phi + o.angle + o.swing * vis.lg * Math.sin(o.TG * 0.21);
-    const lw = (o.edges ? 1.1 : 0.9) * (o.dpr || 1) / sc;
+    const lw = (o.edges ? 1.1 : 2.0) * (o.dpr || 1) / sc;   // 2 px: neighbouring pleats overlap, no seam shows through
     const B = o.B === undefined ? 1 : o.B, win = o.win || 0.2;
     let drawn = 0, dc = ctx, run = null;
     // a run of fragments marked out of focus is drawn to a side canvas, then blurred onto the frame in one go
     const flush = () => {
       if (!run) return;
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.filter = 'blur(' + (run.bl * w * 0.016).toFixed(1) + 'px)';
-      ctx.drawImage(blurCv, 0, 0); ctx.restore();
+      blurInto(ctx, blurCv, run.bl * w * 0.016, w, h); ctx.restore();
       run = null; dc = ctx;
     };
     for (let i = 0; i < polys.length; i++) {
@@ -1283,9 +1297,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       if (ENV.logoMid && i === ENV.logoMid.at) { flush(); drawBrand(ctx, w, h, ENV.logoMid, true); }
       if (run && f.grp !== run.grp) flush();
       if (!run && f.grp && f.bl > 0.02 && BLUR_OK) {
-        if (blurCv.width !== w || blurCv.height !== h) { blurCv.width = w; blurCv.height = h; }
+        // out-of-focus fragments are drawn straight at a quarter of the size: they are about to be blurred anyway
+        const qw = Math.ceil(w / 4), qh = Math.ceil(h / 4);
+        if (blurCv.width !== qw || blurCv.height !== qh) { blurCv.width = qw; blurCv.height = qh; }
         const bctx = blurCv.getContext('2d');
-        bctx.setTransform(1, 0, 0, 1, 0, 0); bctx.clearRect(0, 0, w, h); bctx.setTransform(...view2); bctx.lineJoin = 'round';
+        bctx.setTransform(1, 0, 0, 1, 0, 0); bctx.clearRect(0, 0, qw, qh); bctx.setTransform(...view2.map(v => v / 4)); bctx.lineJoin = 'round';
         run = { grp: f.grp, bl: f.bl }; dc = bctx;
       }
       let P = f.p;
@@ -1303,17 +1319,39 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
     flush();
     if (ENV.logoMid && ENV.logoMid.at >= polys.length) drawBrand(ctx, w, h, ENV.logoMid, true);
-    if (ENV.ts && BLUR_OK && (o.focus === undefined || o.focus > 0.01)) tiltShift(ctx, w, h, view2, ENV.ts, o.focus === undefined ? 0.6 : o.focus);
+    const tsOn = ENV.ts && (o.focus === undefined || o.focus > 0.01);
+    if (o.cssTS) o.cssTS(tsOn ? ENV.ts : null, view2, o.focus === undefined ? 0.6 : o.focus);
+    else if (tsOn && BLUR_OK) tiltShift(ctx, w, h, view2, ENV.ts, o.focus === undefined ? 0.6 : o.focus);
     // logo and claim, from the visual's own timeline or from the Brand setting
     const brand = vis.brandAt ? vis.brandAt(T) : null;
     const pick = brand || (o.brand === 'logo' ? { logo: 1, claim: 0 } : o.brand === 'both' ? { logo: 1, claim: 1 } : null);
-    drawBrand(ctx, w, h, pick, ENV.dark !== undefined ? ENV.dark : bg === '#ffffff');
+    let bctx = ctx;
+    if (o.top) { if (o.top.width !== w || o.top.height !== h) { o.top.width = w; o.top.height = h; } bctx = o.top.getContext('2d'); bctx.setTransform(1, 0, 0, 1, 0, 0); bctx.clearRect(0, 0, w, h); }
+    drawBrand(bctx, w, h, pick, ENV.dark !== undefined ? ENV.dark : bg === '#ffffff');
     return drawn;
   }
 
   /* ---------- page wiring ---------- */
   const $ = id => document.getElementById(id);
-  const stage = $('stage'), cv = $('cv');
+  const stage = $('stage'), cv = $('cv'), cvTop = $('cvtop'), tsfx = $('tsfx');
+  // live tilt-shift as a masked backdrop blur (GPU), matching the canvas version used for exports
+  function cssTiltShift(t, m, amount) {
+    if (!t) { tsfx.hidden = true; return; }
+    const k = Math.hypot(m[0], m[1]), css = cv.clientWidth / cv.width;
+    const S = (x, y) => [(m[0] * x + m[2] * y + m[4]) * css, (m[1] * x + m[3] * y + m[5]) * css];
+    const W = cv.clientWidth, H = cv.clientHeight, A = S(t.ax, t.ay), B = S(t.bx, t.by);
+    let dx = B[0] - A[0], dy = B[1] - A[1]; const L0 = Math.hypot(dx, dy) || 1; dx /= L0; dy /= L0;
+    const deg = Math.atan2(dx, -dy) * 180 / PI, L = Math.abs(W * dx) + Math.abs(H * dy);
+    const pos = (x, y) => (((x - W / 2) * dx + (y - H / 2) * dy) / L + 0.5) * 100;
+    const ta = pos(A[0], A[1]), tb = pos(B[0], B[1]);
+    let stops;
+    if (t.one) stops = `transparent ${ta.toFixed(2)}%, rgba(0,0,0,.5) ${((ta + tb) / 2).toFixed(2)}%, #000 ${tb.toFixed(2)}%`;
+    else { const hp = t.half * k * css / L * 100, rp = L0 / L * 100;
+      stops = `#000 ${(ta - rp).toFixed(2)}%, transparent ${(ta - hp).toFixed(2)}%, transparent ${(ta + hp).toFixed(2)}%, #000 ${(ta + rp).toFixed(2)}%`; }
+    tsfx.style.setProperty('--m', `linear-gradient(${deg.toFixed(1)}deg, ${stops})`);
+    tsfx.style.setProperty('--b', (Math.max(0.5, t.r * k * amount / 0.6) * css).toFixed(2) + 'px');
+    tsfx.hidden = false;
+  }
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, rot: 0, copies: 5, spin: 0.3, rpulse: 0.5, focus: 0.6, brand: 'off', clip: 5, edges: false, ar: '0.8',
                gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true,
@@ -1527,16 +1565,18 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
     if (st.playing || st.dirty) {
       const vis = VIS[st.cur];
-      const n = render(cv, vis, st.T, frameOpts(st.bt, st.dpr, st.edges));
+      const fo = frameOpts(st.bt, st.dpr, st.edges); fo.top = cvTop; fo.cssTS = cssTiltShift;
+      const n = render(cv, vis, st.T, fo);
       if (frame % 6 === 0 || st.dirty) {
         $('ro-n').textContent = n;
         const deg = (st.angle + st.swing * vis.lg * Math.sin(st.TG * 0.21)) * 180 / PI;
         $('ro-l').textContent = (deg >= 0 ? '+' : '−') + Math.abs(deg).toFixed(0);
       }
-      if (st.dirty || frame % 2 === 0) {
+      if (st.dirty || frame % 3 === 0) {
         const o = { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse, TG: st.TG, edges: false, dpr: 1,
                     copies: st.copies, spin: st.spin, rpulse: st.rpulse, focus: st.focus };
-        for (let i = 0; i < VIS.length; i++) render(thumbCv[i], VIS[i], st.T, o);
+        if (st.dirty) for (let i = 0; i < VIS.length; i++) render(thumbCv[i], VIS[i], st.T, o);
+        else { const ti = (frame / 3 | 0) % VIS.length; render(thumbCv[ti], VIS[ti], st.T, o); }
       }
       st.dirty = false;
     }
