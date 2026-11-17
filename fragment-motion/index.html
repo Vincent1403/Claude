@@ -136,7 +136,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <div class="stage" id="stage"><canvas id="cv" aria-label="Animated gradient-fragment visual"></canvas></div>
       </div>
       <div class="readout" aria-live="off">
-        <span><b id="ro-name">Pleated disc</b></span>
+        <span><b id="ro-name">Film</b></span>
         <span><span id="ro-n">0</span> fragments drawn</span>
         <span>light <span id="ro-l">0</span>°</span>
       </div>
@@ -156,6 +156,15 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           <div class="row"><label for="fold">Fold</label><input id="fold" type="range" min="0" max="1" step="0.05" value="0.8"><output id="fold-o" for="fold">80%</output></div>
           <div class="row"><label for="zoom">Zoom</label><input id="zoom" type="range" min="0.4" max="3" step="0.05" value="1"><output id="zoom-o" for="zoom">1.0×</output></div>
           <div class="row"><label for="rot">Rotate</label><input id="rot" type="range" min="-180" max="180" step="1" value="0"><output id="rot-o" for="rot">0°</output></div>
+        </div>
+        <div class="group">
+          <p class="label">Scryns</p>
+          <div class="row"><label for="focus">Blur</label><input id="focus" type="range" min="0" max="1" step="0.05" value="0.6"><output id="focus-o" for="focus">60%</output></div>
+          <div class="seg" id="brands" aria-label="Logo and claim">
+            <button class="btn" type="button" data-v="off" aria-pressed="true">No logo</button>
+            <button class="btn" type="button" data-v="logo" aria-pressed="false">Logo</button>
+            <button class="btn" type="button" data-v="both" aria-pressed="false">Logo + claim</button>
+          </div>
         </div>
         <div class="group">
           <p class="label">Fan</p>
@@ -195,6 +204,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           <div class="btn-row">
             <button class="btn primary" id="export-btn" type="button">Export 5 s MP4</button>
           </div>
+          <div class="seg" id="clips" aria-label="Clip length">
+            <button class="btn" type="button" data-v="5" aria-pressed="true">5 s</button>
+            <button class="btn" type="button" data-v="10" aria-pressed="false">10 s</button>
+            <button class="btn" type="button" data-v="15" aria-pressed="false">15 s</button>
+          </div>
           <p class="hint" id="export-info" aria-live="polite">1080 × 1350 · 30 fps · starts at the frame on stage</p>
         </div>
       </div>
@@ -213,6 +227,10 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     <div>
       <h2>Build</h2>
       <p>Piece by piece adds the fragments one after another, each growing out of the one before. Unfold starts tightly folded and opens the whole structure in one move. With a build selected, exported clips start with it.</p>
+    </div>
+    <div>
+      <h2>Scryns</h2>
+      <p>Film cuts from the single element opening into the lamp, through full-bleed fans, a fan free in space and a close-up, to the logo and claim. Element to lamp, Free in space, Full fill, Close up and End screen are the variants on their own. Blur sets how far focus moves between layers; Logo adds the logo or logo and claim to any visual. Clips can be 5, 10 or 15 s.</p>
     </div>
     <div>
       <h2>Fan</h2>
@@ -688,6 +706,159 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     };
   }
 
+  /* ---------- Scryns: pleats arranged around a centre point, turned in perspective ---------- */
+  // The pleat follows the single element on the "Animation" board in Figma (node 1177:2680/2682): two faces meeting
+  // at a ridge, narrow toward the centre, with a notch at the outer end. Each face carries the board's gradient from
+  // dark at the outer end to lavender toward the centre.
+  const SC0 = [[0, '#321419'], [0.28, '#ff6400'], [0.42, '#f27f48'], [0.69, '#d5c6e4'], [1, '#b296ff']];
+  const SC1 = [[0.16, '#321419'], [0.33, '#ff6400'], [0.5, '#f27f48'], [0.69, '#d5c6e4'], [1, '#b296ff']];
+  const LOGO = ["M34.3789 17.883C34.3789 6.8343 41.9849 0.0625 50.6413 0.0625C58.0481 0.0625 63.0011 4.61564 63.2003 11.1201L55.1325 11.1201V3.25237C53.9463 2.6643 52.4251 2.4059 50.6413 2.4059C44.6923 2.4059 40.3822 8.43814 40.3822 15.9851C40.3822 23.5321 44.8281 29.3238 51.7007 29.3238C56.8529 29.3238 60.4929 25.6884 62.0141 21.9817H64.1963C62.2767 28.2902 57.8489 34.3403 49.6543 34.3403C40.4637 34.3403 34.388 27.3813 34.388 17.883H34.3789Z", "M87.5157 7.21731C85.8587 8.7766 84.4733 10.5319 83.4139 12.5546V31.3552H91.6447V33.4402L72.0683 33.4402V31.3552H76.6681V4.49077L68.2109 2.73545V0.908846L83.0789 0.908846L81.8927 10.4696H82.2911C86.2571 4.48186 91.2825 1.16724 99.4137 0V7.21731L87.5157 7.21731Z", "M167.752 31.3552V11.9665C167.752 6.89654 165.353 4.02744 161.586 4.02744C158.018 4.02744 154.36 7.63609 152.748 9.88148V31.3463H157.403L157.312 33.4313H141.828L141.919 31.3463H146.546V4.55314L141.656 2.73545V0.908846L152.957 0.908846L151.897 7.80539H152.296C154.605 3.6443 159.195 0 164.284 0C170.432 0 173.937 4.35712 173.937 11.12V31.3463H178.564V33.4313H163.08V31.3463H167.734L167.752 31.3552Z", "M184.221 30.9644V22.1165H185.742L191.093 31.1604C192.94 31.7485 194.996 32.0069 196.843 32.0069C201.144 32.0069 204.44 30.6436 204.44 26.7409C204.44 23.6223 202.394 21.9472 197.83 20.3166L194.462 19.1494C189.436 17.3941 184.882 15.2289 184.882 9.63323C184.882 4.03759 190.17 0.197266 197.776 0.197266C201.878 0.197266 205.11 1.17739 208.216 2.99509V10.9965H206.695L201.542 2.99509C200.22 2.54066 198.962 2.40701 197.776 2.40701C193.873 2.40701 190.242 3.77028 190.242 7.3522C190.242 10.4084 192.823 11.8875 197.051 13.3844L200.42 14.5517C205.11 16.1734 210 18.2762 210 23.9342C210 30.9555 204.051 34.2077 196.78 34.2077C191.093 34.2077 186.403 32.194 184.221 30.9555V30.9644Z", "M0.00905478 30.9644L0.00905478 22.1165H1.53026L6.88163 31.1604C8.72881 31.7485 10.7842 32.0069 12.6314 32.0069C16.9324 32.0069 20.2284 30.6436 20.2284 26.7409C20.2284 23.6223 18.182 21.9472 13.6184 20.3166L10.25 19.1494C5.23366 17.3852 0.670053 15.22 0.670053 9.62432C0.670053 4.02868 5.95804 0.197266 13.555 0.197266C17.6568 0.197266 20.8894 1.17739 23.9952 2.99509V10.9965H22.474L17.3218 2.99509C15.9998 2.54066 14.7412 2.40701 13.555 2.40701C9.65239 2.40701 6.02143 3.77028 6.02143 7.3522C6.02143 10.4084 8.60204 11.8875 12.8306 13.3844L16.199 14.5517C20.8894 16.1734 25.7789 18.2762 25.7789 23.9342C25.7789 30.9555 19.83 34.2077 12.559 34.2077C6.87258 34.2077 2.1822 32.194 0 30.9555L0.00905478 30.9644Z", "M104.439 0.90918L118.981 0.90918V2.99418L111.973 2.99418L122.485 26.6064L133.46 2.99418L126.786 2.99418V0.90918L136.565 0.90918V2.60213L118.193 41.041C116.147 45.4605 110.786 48.4543 103.986 48.6503L103.986 41.6291H115.16L118.927 33.4316L104.439 2.60213V0.90918Z"].map(d => new Path2D(d));
+  const CLAIM = ["M8.72988 11.704H0V11.1839H1.2683V0.520179H0V0H4.41435V0.520179H3.08016V11.1839H6.96743L8.26868 8.16031H8.72988V11.704Z", "M10.4659 0H12.4096V1.91816H10.4659V0ZM9.49413 11.1839H10.6471V4.48655L9.42824 4.03139V3.57623H12.3272V11.1839H13.4473V11.704H9.49413V11.1839Z", "M17.7627 8.71301C17.4662 8.71301 17.1862 8.68049 16.9226 8.63173L15.9343 10.1923H18.7674C20.6617 10.1923 21.9464 10.94 21.9464 12.468C21.9464 14.3049 20.0028 15.4916 17.4662 15.4916C15.3084 15.4916 13.8754 14.6138 13.8754 13.4759C13.8754 12.3868 15.1437 11.7691 15.9179 11.509L14.3696 10.7287V10.3061L16.3955 8.50168C15.2425 8.09529 14.4519 7.18498 14.4519 6.04709C14.4519 4.53531 15.9179 3.36491 17.7297 3.36491C18.1909 3.36491 18.6357 3.44619 19.0475 3.57623H22.0782V4.32399H20.2993C20.777 4.77915 21.0734 5.38061 21.0734 6.06334C21.0734 7.59137 19.6075 8.71301 17.7627 8.71301ZM17.7627 8.20908C18.751 8.20908 19.3439 7.23374 19.3439 6.03083C19.3439 4.90919 18.751 3.86883 17.7627 3.86883C16.7744 3.86883 16.1814 4.90919 16.1814 6.03083C16.1814 7.23374 16.7744 8.20908 17.7627 8.20908ZM17.7627 14.9389C19.3769 14.9389 20.6946 14.1749 20.6946 13.0533C20.6946 12.208 20.0193 11.6065 18.4874 11.6065H16.7579C15.8685 11.9316 15.292 12.5168 15.292 13.2808C15.292 14.2887 16.2638 14.9389 17.7627 14.9389Z", "M27.763 11.1839H28.8666V6.33969C28.8666 5.07175 28.4384 4.3565 27.3677 4.3565C26.4124 4.3565 25.6218 5.12052 25.177 5.81951V11.1839H26.2806V11.704H22.3439V11.1839H23.4969V0.910314L22.2451 0.455157V0H25.177V3.57623L24.8476 5.29933H24.93C25.5394 4.27522 26.7089 3.34866 28.0431 3.34866C29.6902 3.34866 30.5467 4.5028 30.5467 6.12836V11.1839H31.6668V11.704H27.763V11.1839Z", "M37.7862 9.88341C37.4073 11.005 36.4355 11.8828 35.1837 11.8828C33.9319 11.8828 33.1742 11.0538 33.1742 9.72085V4.29148H31.7906V3.57623H33.2071L34.426 1.43049H34.8543V3.57623H37.4732V4.29148H34.8543V9.44451C34.8543 10.3386 35.2166 10.8587 35.9249 10.8587C36.5014 10.8587 36.9956 10.4524 37.2756 9.88341H37.7862Z", "M44 11.1839H45.2683V0.520178H44V0H48.7108C51.3133 0 53.2899 0.959081 53.2899 2.8935C53.2899 4.63285 51.8404 5.60818 50.2756 5.98206L53.8335 11.1839H54.9371V11.704H52.071L48.4308 6.2259H47.0802V11.1839H48.3485V11.704H44V11.1839ZM48.5955 5.70572C50.2592 5.70572 51.3792 4.66536 51.3792 3.08856C51.3792 1.52803 50.2262 0.520178 48.5461 0.520178H47.0802V5.70572H48.5955Z", "M58.4285 11.9316C56.0895 11.9316 54.7389 10.1435 54.7389 7.8352C54.7389 5.26682 56.4519 3.34866 58.5767 3.34866C60.6521 3.34866 61.9369 4.84417 61.9369 6.85987H56.3531V7.1037C56.3531 9.10314 57.2755 10.5987 58.9885 10.5987C60.158 10.5987 61.0804 9.83464 61.4757 8.87556H62.0028C61.4922 10.5011 60.2898 11.9316 58.4285 11.9316ZM58.4944 3.9176C57.3084 3.9176 56.6002 4.99047 56.4025 6.30717H60.0756C60.0592 4.97421 59.565 3.9176 58.4944 3.9176Z", "M66.5922 11.9316C64.3685 11.9316 62.9026 10.1923 62.9026 7.81895C62.9026 5.07175 64.7474 3.38116 66.8392 3.38116C68.6182 3.38116 69.8041 4.51906 69.8535 6.12836H67.844V4.17769C67.5805 4.04764 67.251 3.96637 66.8392 3.96637C65.4227 3.96637 64.5332 5.42937 64.5332 7.29877C64.5332 9.16816 65.4721 10.5661 67.1028 10.5661C68.3217 10.5661 69.1947 9.76962 69.557 8.84305H70.1006C69.6394 10.4198 68.5852 11.9316 66.5922 11.9316Z", "M70.5422 11.704V11.1839H71.6952V0.910313L70.4434 0.455156V0H73.3753V11.1839H74.4954V11.704H70.5422Z", "M77.4797 11.8828C76.2608 11.8828 75.289 11.1513 75.289 9.96469C75.289 8.25785 77.1338 7.62388 78.4021 7.23374L80.1151 6.71356V6.17713C80.1151 4.89294 79.588 4.03139 78.468 4.03139C78.0068 4.03139 77.6279 4.12892 77.3479 4.34025V6.12836H75.4043C75.536 4.74664 76.9361 3.34866 78.9951 3.34866C80.6422 3.34866 81.7128 4.25897 81.7128 5.98206V10.81L82.8658 11.2489V11.704H80.2634L80.4775 10.1272H80.3787C79.8186 11.0213 78.8798 11.8828 77.4797 11.8828ZM78.155 10.9075C78.9292 10.9075 79.6374 10.4198 80.1151 9.62332V7.23374L78.5503 7.85146C77.9574 8.07903 76.9361 8.58296 76.9361 9.60706C76.9361 10.3873 77.4467 10.9075 78.155 10.9075Z", "M84.1609 0H86.1045V1.91816H84.1609V0ZM83.1891 11.1839H84.3421V4.48655L83.1232 4.03139V3.57623H86.0222V11.1839H87.1423V11.704H83.1891V11.1839Z", "M98.3262 11.1839H99.4298V6.33969C99.4298 5.07175 99.0181 4.3565 97.9639 4.3565C97.025 4.3565 96.2508 5.12051 95.8061 5.81951V11.1839H96.9262V11.704H93.0224V11.1839H94.126V6.33969C94.126 5.07175 93.7142 4.3565 92.6601 4.3565C91.7212 4.3565 90.947 5.12051 90.5023 5.81951V11.1839H91.6059V11.704H87.6692V11.1839H88.8222V4.48655L87.6033 4.03139V3.57623H90.4199L90.1564 5.29933H90.2552C90.8647 4.27522 92.0177 3.34866 93.3354 3.34866C94.5872 3.34866 95.3943 4.03139 95.6743 5.12051C96.3167 4.16143 97.4039 3.34866 98.6392 3.34866C100.27 3.34866 101.11 4.5028 101.11 6.12836V11.1839H102.23V11.704H98.3262V11.1839Z", "M106.638 11.9316C104.299 11.9316 102.949 10.1435 102.949 7.8352C102.949 5.26682 104.662 3.34866 106.787 3.34866C108.862 3.34866 110.147 4.84417 110.147 6.85987H104.563V7.1037C104.563 9.10314 105.485 10.5987 107.198 10.5987C108.368 10.5987 109.29 9.83464 109.686 8.87556H110.213C109.702 10.5011 108.5 11.9316 106.638 11.9316ZM106.704 3.9176C105.518 3.9176 104.81 4.99047 104.612 6.30717H108.286C108.269 4.97421 107.775 3.9176 106.704 3.9176Z", "M117.355 9.98094H117.256C116.696 10.9888 115.79 11.9316 114.407 11.9316C112.578 11.9316 111.112 10.4361 111.112 8.03027C111.112 5.36435 112.891 3.41368 115.379 3.41368C116.054 3.41368 116.466 3.55998 117.009 3.78756V0.910313L115.79 0.455156V0H118.689V10.7775L119.908 11.2489V11.704H117.092L117.355 9.98094ZM115 10.81C115.939 10.81 116.597 10.111 117.009 9.46076V5.07175C116.663 4.48655 116.12 3.98262 115.214 3.98262C113.567 3.98262 112.858 5.62444 112.858 7.47758C112.858 9.42825 113.633 10.81 115 10.81Z", "M123 9.75336V11.704H121.023V9.75336H123Z"].map(d => new Path2D(d));
+  // One fan: pleats at the given angles around (cx, cy), from radius ri to R, folded to depth(k), then turned
+  // (rz in its own plane, rx and ry in space) and seen in perspective. Faces are pushed far to near.
+  function fanRing(q, vp, out) {
+    const { cx, cy, R, ri, angles, w, depth, rx = 0, ry = 0, rz = 0, F = 4.5 * R, s = 0, grp = null, bl = 0, gr = [0.87, 0.16] } = q;
+    const cz = Math.cos(rz), sz = Math.sin(rz), cX = Math.cos(rx), sX = Math.sin(rx), cY = Math.cos(ry), sY = Math.sin(ry);
+    const P3 = (r, a, z) => {
+      let x = r * Math.cos(a), y = r * Math.sin(a);
+      const x1 = x * cz - y * sz, y1 = x * sz + y * cz;
+      const y2 = y1 * cX - z * sX, z2 = y1 * sX + z * cX;
+      const x3 = x1 * cY + z2 * sY, z3 = -x1 * sY + z2 * cY;
+      const k = F / Math.max(F + z3, F * 0.15);
+      return [cx + x3 * k, cy + y2 * k, z3];
+    };
+    const items = [];
+    for (let k = 0; k < angles.length; k++) {
+      const th = angles[k], d = depth(k), h = w / 2;
+      const VLo = P3(R, th - h, 0), VLi = P3(ri, th - h, 0), VRo = P3(R, th + h, 0), VRi = P3(ri, th + h, 0);
+      // notches and fold depth follow the pleat's width, in the element's proportions (inner ridge 38 %, outer notch 18 %)
+      const Ro = P3(R * (1 - 0.18 * w), th, -d * w * R * 1.6), Ri = P3(ri * (1 - 0.38 * w), th, -d * w * ri * 1.6);
+      const ga = ri + gr[0] * (R - ri), gb = ri + gr[1] * (R - ri);
+      const face = (A, Bp, C, D, am) => {
+        const p = [A[0], A[1], Bp[0], Bp[1], C[0], C[1], D[0], D[1]];
+        const g0 = P3(ga, am, -d * w * ga * 0.8), g1 = P3(gb, am, -d * w * gb * 0.8);
+        items.push({ p, s, g: [g0[0], g0[1], g1[0], g1[1]], z: (A[2] + Bp[2] + C[2] + D[2]) / 4, grp, bl });
+      };
+      face(VLo, Ro, Ri, VLi, th - w / 4);
+      face(Ro, VRo, VRi, Ri, th + w / 4);
+    }
+    items.sort((a, b) => b.z - a.z);
+    for (const it of items) if (visible(it.p, vp)) out.push(it);
+  }
+  // a fan that opens from one pleat: pleat k slides out to k steps, but never past the leading pleat P
+  const spread = (M, w, P, a0) => { const o = []; for (let k = 0; k < M; k++) o.push(a0 + w * Math.min(k, P)); return o; };
+  // accordion wave around a full ring: pleats bunch and spread as the wave travels, like a fan being waved
+  const accordion = (M, w, T, amp) => { const o = []; for (let k = 0; k < M; k++) o.push(k * w + amp * w * Math.sin(k * w * 2 - T * 0.7)); return o; };
+  const foldDepth = (T, E, ph) => k => 0.12 + 0.22 * fol(T, k * ph, E);
+
+  // keep a figure in the frame: move its fragments so their bounds sit centred on (ax, ay)
+  function centreOn(items, ax, ay) {
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    for (const it of items) for (let i = 0; i < it.p.length; i += 2) {
+      x0 = Math.min(x0, it.p[i]); x1 = Math.max(x1, it.p[i]); y0 = Math.min(y0, it.p[i + 1]); y1 = Math.max(y1, it.p[i + 1]);
+    }
+    const dx = ax - (x0 + x1) / 2, dy = ay - (y0 + y1) / 2;
+    for (const it of items) {
+      for (let i = 0; i < it.p.length; i += 2) { it.p[i] += dx; it.p[i + 1] += dy; }
+      it.g = [it.g[0] + dx, it.g[1] + dy, it.g[2] + dx, it.g[3] + dy];
+    }
+    return items;
+  }
+  const ALL = [-1e9, -1e9, 2e9, 2e9];
+
+  // From the single element to the lamp: one pleat, the fan opens pleat by pleat into the full ring, the ring
+  // tips back in perspective and turns, then folds back into one pleat. 12 s loop (or once, with a build).
+  function sceneDerive(T, E, vp, out) {
+    ENV.bg = '#ffffff';
+    const M = 16, w = TAU / M, R = 72, ri = 36, u = frac(T / 12) * 12;
+    let P;
+    if (E.bm !== 'off') P = (M - 1) * smooth(E.B);
+    else P = (M - 1) * (u < 1.2 ? 0 : u < 6 ? smooth((u - 1.2) / 4.8) : u < 9.5 ? 1 : 1 - smooth((u - 9.5) / 2.5));
+    const fr = smooth(P / (M - 1)), items = [];
+    fanRing({ cx: 0, cy: 0, R, ri, w, angles: spread(M, w, P, PI / 2 - w * P / 2),
+              depth: foldDepth(T, E, 0.5), rx: (8 + 50 * fr) * PI / 180, ry: 10 * Math.sin(T * 0.45) * PI / 180,
+              rz: E.S * T * 0.25 * fr, s: 0 }, ALL, items);
+    for (const it of centreOn(items, 0, 0)) if (visible(it.p, vp)) out.push(it);
+  }
+  // Free in space: an open fan on white, tipped far back so its pleats read as a folded row, turning and
+  // breathing open and closed; a smaller fan floats behind it, out of focus.
+  function sceneFree(T, E, vp, out) {
+    ENV.bg = '#ffffff';
+    const w = TAU / 16, N = Math.max(2, Math.round(E.N) + 1);
+    const P = (N - 1) * (1 - E.P * 0.5 * (0.5 + 0.5 * Math.sin(T * TAU / 7)));
+    const P2 = (N - 1) * (1 - E.P * 0.5 * (0.5 + 0.5 * Math.sin(T * TAU / 7 + 2)));
+    const a = PI / 2 + 0.2 * Math.sin(T * 0.2) + E.S * T * 0.1;
+    const back = [], front = [];
+    fanRing({ cx: 0, cy: 0, R: 50, ri: 24, w, angles: spread(N, w, P2, a + 0.8 - w * P2 / 2), depth: foldDepth(T, E, 0.5),
+              rx: 48 * PI / 180, ry: 25 * PI / 180, s: 1, grp: 'back', bl: E.F }, ALL, back);
+    fanRing({ cx: 0, cy: 0, R: 74, ri: 34, w, angles: spread(N, w, P, a - w * P / 2), depth: foldDepth(T, E, 0.5),
+              rx: (60 + 6 * Math.sin(T * 0.33)) * PI / 180, ry: (-14 + 10 * Math.sin(T * 0.27)) * PI / 180, s: 0 }, ALL, front);
+    for (const it of centreOn(back, vp[0] + vp[2] * 0.78, vp[1] + vp[3] * 0.78)) if (visible(it.p, vp)) out.push(it);
+    for (const it of centreOn(front, 0, -4)) if (visible(it.p, vp)) out.push(it);
+  }
+  // Tiers of long pleats from a centre far outside the frame, like the stacked fans on the board: each tier is a
+  // band of pleats, the next tier further out lies under it, so the notched outer edges cross the frame. Tiers
+  // drift outward, turn a little against each other and wave like fans; focus moves between them.
+  function tiers(T, E, vp, out, o) {
+    const { cx, cy, pw, len, step } = o;
+    const corners = [[vp[0], vp[1]], [vp[0] + vp[2], vp[1]], [vp[0], vp[1] + vp[3]], [vp[0] + vp[2], vp[1] + vp[3]]];
+    const ang = corners.map(c => Math.atan2(c[1] - cy, c[0] - cx)), rr = radii(vp, cx, cy, 0);
+    const amid = Math.atan2(vp[1] + vp[3] / 2 - cy, vp[0] + vp[2] / 2 - cx);
+    const rel = a => Math.atan2(Math.sin(a - amid), Math.cos(a - amid));
+    const lo = Math.min(...ang.map(rel)), hi = Math.max(...ang.map(rel));
+    const D = T * 0.04, base = rr[0] - len;
+    const m0 = Math.floor((rr[0] - len - base) / step - D) - 1, m1 = Math.ceil((rr[1] - base) / step - D) + 1;
+    const rack = Math.sin(T * TAU / 8);
+    for (let m = m0; m <= m1; m++) {                      // inner tiers first, each outer tier on top
+      const q = m + D, ri = base + q * step, R = ri + len;
+      if (R <= 0) continue;
+      const rm = Math.max((ri + R) / 2, 1), M = Math.max(8, Math.round(TAU * rm / pw)), w = TAU / M;
+      const turn = ((m & 1) ? 1 : -1) * E.S * T * 0.012 + (m & 1) * w / 2;
+      const all = accordion(M, w, T + m * 1.7, 0.3 * E.P + 0.05).map(a => a + turn);
+      const angles = all.filter(a => { const r = rel(a); return r > lo - w * 2 && r < hi + w * 2; });
+      const bl = E.F * ((m & 1) ? Math.max(0, rack) : Math.max(0, -rack)) * 0.8;
+      // the colour run spans the part of the tier left uncovered: lavender at its notched inner edge, dark where the next tier lies over it
+      fanRing({ cx, cy, R, ri: Math.max(ri, 1), w, angles, depth: foldDepth(T, E, 0.35), s: m & 1, grp: 't' + m, bl,
+                gr: [Math.min(1, step / len * 1.08), 0.02] }, vp, out);
+    }
+  }
+  // Full fill: pleats about five across the frame, tiers crossing diagonally.
+  function sceneFill(T, E, vp, out) { ENV.bg = null; tiers(T, E, vp, out, { cx: 520, cy: -500, pw: 44, len: 300, step: 150 }); }
+  // Close up: two or three very large pleats, nearly upright, an edge passing now and then.
+  function sceneClose(T, E, vp, out) { ENV.bg = null; tiers(T, E, vp, out, { cx: 160, cy: -980, pw: 84, len: 560, step: 420 }); }
+  // Film: cuts between the variants, ending on the logo and claim. 15 s loop.
+  const FILM = [[0, 4.5, 'derive'], [4.5, 7, 'fill'], [7, 9, 'free'], [9, 11, 'close'], [11, 15, 'end']];
+  function sceneFilm(T, E, vp, out) {
+    const u = frac(T / 15) * 15, seg = FILM.find(x => u >= x[0] && u < x[1]) || FILM[0], bm = E.bm;
+    E.bm = 'off';
+    if (seg[2] === 'derive') sceneDerive(1 + (u - seg[0]) * 1.6, E, vp, out);
+    else if (seg[2] === 'free') sceneFree(T, E, vp, out);
+    else if (seg[2] === 'close') sceneClose(T, E, vp, out);
+    else sceneFill(T, E, vp, out);
+    E.bm = bm;
+  }
+  // logo and claim: fade in over the moving background
+  const brandEnd = (T, len, at) => { const u = frac(T / len) * len, out = 1 - smooth((u - (len - 0.8)) / 0.8);
+    return { logo: smooth((u - at) / 1.2) * out, claim: smooth((u - at - 1.3) / 1.2) * out }; };
+  function drawBrand(ctx, w, h, b, dark) {
+    if (!b || (b.logo <= 0.001 && b.claim <= 0.001)) return;
+    const lw = Math.min(0.6 * w, 0.95 * h), ls = lw / 210, cw = lw * 0.586, cs = cw / 123;
+    ctx.save();
+    ctx.fillStyle = dark ? '#321419' : '#ffffff';
+    if (b.logo > 0.001) {
+      ctx.globalAlpha = b.logo;
+      const k = 1 + 0.04 * (1 - b.logo);
+      ctx.setTransform(ls * k, 0, 0, ls * k, w / 2 - lw * k / 2, h * 0.47 - 24.5 * ls * k);
+      for (const p of LOGO) ctx.fill(p);
+    }
+    if (b.claim > 0.001) {
+      ctx.globalAlpha = b.claim;
+      ctx.setTransform(cs, 0, 0, cs, w / 2 - cw / 2, h * 0.84 - 8 * cs);
+      for (const p of CLAIM) ctx.fill(p);
+    }
+    ctx.restore();
+  }
+
   /* ---------- build order: where a point sits in the sequence, 0 first, 1 last ---------- */
   const ordRadial = (cx, cy, wr, angle) => (x, y, vp) => {
     const rr = radii(vp, cx, cy, 0), r = Math.hypot(x - cx, y - cy);
@@ -706,6 +877,19 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   ];
   const SHAPES = [[0, '#321419'], [0.28, '#ff6400'], [0.42, '#f27f48'], [0.69, '#d5c6e4'], [1, '#b296ff']];
   const VIS = [
+    { id: 's-film', name: 'Film', meta: 'scryns · 15 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
+      coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, selfBuild: true, build: sceneFilm, loop: 15,
+      brandAt: T => { const u = frac(T / 15) * 15; return u < 11 ? null : { logo: smooth((u - 11.4) / 1), claim: smooth((u - 12.4) / 1) }; } },
+    { id: 's-derive', name: 'Element to lamp', meta: 'scryns · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
+      coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, selfBuild: true, build: sceneDerive, loop: 12 },
+    { id: 's-free', name: 'Free in space', meta: 'scryns · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
+      coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, build: sceneFree, ord: ordX },
+    { id: 's-fill', name: 'Full fill', meta: 'scryns · full bleed', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
+      coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, build: sceneFill, ord: ordX },
+    { id: 's-close', name: 'Close up', meta: 'scryns · full bleed', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
+      coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, build: sceneClose, ord: ordX },
+    { id: 's-end', name: 'End screen', meta: 'scryns · logo + claim', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
+      coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, build: sceneFill, ord: ordX, loop: 10, brandAt: T => brandEnd(T, 10, 0.5) },
     { id: 'disc', name: 'Pleated disc', meta: 'Figma', fit: 'cover',
       view: [6, 452, 174, 117], stops: [NAVY], coef: [-0.16, -1.01, 1.07], phi: 0, lg: 0.42, wave: 0.07, build: buildDisc,
       ord: ordRadial(277.5, 663.5, 0.8, (dx, dy) => frac(Math.atan2(dy, dx) / TAU * 6)) },
@@ -816,6 +1000,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   }
 
   const polys = [], ENV = { A: 0, bc: 0 };
+  const blurCv = document.createElement('canvas');
+  const BLUR_OK = (() => { try { const c = document.createElement('canvas').getContext('2d'); c.filter = 'blur(2px)'; return c.filter === 'blur(2px)'; } catch (e) { return false; } })();
   function render(cv, vis, T, o) {
     const ctx = cv.getContext('2d'), w = cv.width, h = cv.height;
     if (!w || !h) return 0;
@@ -827,15 +1013,17 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const ra = o.rot || 0, rc = Math.cos(ra), rs = Math.sin(ra);
     const bw = (Math.abs(w * rc) + Math.abs(h * rs)) / sc, bh = (Math.abs(w * rs) + Math.abs(h * rc)) / sc;
     const vp = [mx - bw / 2, my - bh / 2, bw, bh];
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillStyle = '#00001b'; ctx.fillRect(0, 0, w, h);
-    ctx.setTransform(sc * rc, sc * rs, -sc * rs, sc * rc, w / 2 - (mx * rc - my * rs) * sc, h / 2 - (mx * rs + my * rc) * sc);
-    ctx.lineJoin = 'round';
-    ctx.imageSmoothingQuality = 'high';
+    const view2 = [sc * rc, sc * rs, -sc * rs, sc * rc, w / 2 - (mx * rc - my * rs) * sc, h / 2 - (mx * rs + my * rc) * sc];
     polys.length = 0;
+    ENV.bg = null; ENV.F = o.focus === undefined ? 0.6 : o.focus;
     ENV.A = o.fold; ENV.bc = o.bc || 0;
     ENV.N = o.copies || 5; ENV.B = o.B === undefined ? 1 : o.B; ENV.bm = o.bmode || 'off'; ENV.S = o.spin === undefined ? 0.3 : o.spin; ENV.P = o.rpulse === undefined ? 0.5 : o.rpulse;
     vis.build(T, ENV, vp, polys, aspect);
+    const bg = ENV.bg || vis.bg || '#00001b';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+    ctx.setTransform(...view2);
+    ctx.lineJoin = 'round';
     // visuals drawn for a fixed area repeat it, mirrored at every edge so the seams meet, to fill a zoomed-out frame
     if (vis.tile) {
       const [tx, ty, tw, th, flip = true] = vis.tile, base = polys.length;
@@ -856,9 +1044,24 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const phi = vis.phi + o.angle + o.swing * vis.lg * Math.sin(o.TG * 0.21);
     const lw = (o.edges ? 1.1 : 0.9) * (o.dpr || 1) / sc;
     const B = o.B === undefined ? 1 : o.B, win = o.win || 0.2;
-    let drawn = 0;
+    let drawn = 0, dc = ctx, run = null;
+    // a run of fragments marked out of focus is drawn to a side canvas, then blurred onto the frame in one go
+    const flush = () => {
+      if (!run) return;
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.filter = 'blur(' + (run.bl * w * 0.016).toFixed(1) + 'px)';
+      ctx.drawImage(blurCv, 0, 0); ctx.restore();
+      run = null; dc = ctx;
+    };
     for (let i = 0; i < polys.length; i++) {
       const f = polys[i];
+      if (run && f.grp !== run.grp) flush();
+      if (!run && f.grp && f.bl > 0.02 && BLUR_OK) {
+        if (blurCv.width !== w || blurCv.height !== h) { blurCv.width = w; blurCv.height = h; }
+        const bctx = blurCv.getContext('2d');
+        bctx.setTransform(1, 0, 0, 1, 0, 0); bctx.clearRect(0, 0, w, h); bctx.setTransform(...view2); bctx.lineJoin = 'round';
+        run = { grp: f.grp, bl: f.bl }; dc = bctx;
+      }
       let P = f.p;
       if (B < 1 && !vis.selfBuild) {
         let cx = 0, cy = 0;
@@ -868,10 +1071,15 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         if (r <= 0.02) continue;
         if (r < 1) P = grow(P, vis, vp, 1 - Math.pow(1 - r, 3));
       }
-      if (f.g) paintAxis(ctx, P, vis.stops[f.s], f.g, phi - vis.phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges, P === f.p ? f.h : null);
-      else paint(ctx, P, vis.stops[f.s], f.c || vis.coef, phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
+      if (f.g) paintAxis(dc, P, vis.stops[f.s], f.g, phi - vis.phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges, P === f.p ? f.h : null);
+      else paint(dc, P, vis.stops[f.s], f.c || vis.coef, phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
       drawn++;
     }
+    flush();
+    // logo and claim, from the visual's own timeline or from the Brand setting
+    const brand = vis.brandAt ? vis.brandAt(T) : null;
+    const pick = brand || (o.brand === 'logo' ? { logo: 1, claim: 0 } : o.brand === 'both' ? { logo: 1, claim: 1 } : null);
+    drawBrand(ctx, w, h, pick, bg === '#ffffff');
     return drawn;
   }
 
@@ -879,7 +1087,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const $ = id => document.getElementById(id);
   const stage = $('stage'), cv = $('cv');
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, rot: 0, copies: 5, spin: 0.3, rpulse: 0.5, edges: false, ar: '0.8',
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, rot: 0, copies: 5, spin: 0.3, rpulse: 0.5, focus: 0.6, brand: 'off', clip: 5, edges: false, ar: '0.8',
                gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true,
                bmode: 'off', bt: 0, bdur: 3 };
 
@@ -892,7 +1100,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   function frameOpts(bt, dpr, edges) {
     const b = buildParams(bt);
     return { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse,
-             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom, rot: st.rot, copies: st.copies, spin: st.spin, rpulse: st.rpulse, bmode: st.bmode };
+             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom, rot: st.rot, copies: st.copies, spin: st.spin, rpulse: st.rpulse, bmode: st.bmode, focus: st.focus, brand: st.brand };
   }
 
   const thumbs = $('thumbs'), thumbCv = [];
@@ -949,6 +1157,14 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   bind('copies', v => String(v));
   bind('spin', v => signed(Math.round(v * 100), '%'));
   bind('rpulse', pct);
+  bind('focus', pct);
+  const segPick = (id, key, after) => $(id).addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]'); if (!b) return;
+    [...$(id).children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    st[key] = isNaN(+b.dataset.v) ? b.dataset.v : +b.dataset.v; st.dirty = true; if (after) after();
+  });
+  segPick('brands', 'brand');
+  segPick('clips', 'clip', () => { if (!exporting) { exBtn.textContent = 'Export ' + st.clip + ' s MP4'; exportIdle(); } });
   bind('bdur', v => v.toFixed(1) + ' s');
   bind('gspeed', v => v.toFixed(1) + '×');
   bind('angle', v => signed(v, '°'), v => v * PI / 180);
@@ -983,7 +1199,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 
   /* ---------- MP4 export: render 5 s frame by frame, encode with WebCodecs ---------- */
   const SIZES = { '0.8': [1080, 1350], '1': [1080, 1080], '0.5625': [1080, 1920], '1.7778': [1920, 1080] };
-  const CLIP_S = 5, FPS = 30;
+  const FPS = 30;
   const exBox = $('export'), exBtn = $('export-btn'), exInfo = $('export-info');
   let downloads = null, exporting = false;
   function exportSize() { return SIZES[st.ar] || SIZES['0.8']; }
@@ -1023,7 +1239,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       enc.configure(pick.cfg);
       const off = document.createElement('canvas'); off.width = w; off.height = h;
       const cssW = stage.getBoundingClientRect().width || w;
-      const T0 = st.T, G0 = st.TG, total = CLIP_S * FPS;
+      // scenes with their own timeline start from the beginning of the loop, so the film opens on the single element
+      const T0 = vis.loop && st.bmode === 'off' ? Math.floor(st.T / vis.loop) * vis.loop : st.T, G0 = st.TG, total = st.clip * FPS;
       for (let i = 0; i < total; i++) {
         if (encErr) throw encErr;
         const o = frameOpts(i / FPS, w / cssW, st.edges);
@@ -1046,7 +1263,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       await downloads.save({ filename: 'fragment-motion-' + vis.id + tag + '-' + w + 'x' + h + '.mp4', data: blob });
       const mb = (blob.size / 1048576).toFixed(1) + ' MB';
       exInfo.textContent = pick.mux === 'avc'
-        ? 'Saved a ' + CLIP_S + ' s clip, ' + w + ' × ' + h + ', ' + mb + '.'
+        ? 'Saved a ' + st.clip + ' s clip, ' + w + ' × ' + h + ', ' + mb + '.'
         : 'Saved, ' + mb + '. This browser has no H.264 encoder, so the clip is VP9 inside an MP4 and may not open in every app.';
     } catch (e) {
       const code = e && e.code;
@@ -1057,7 +1274,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       else if (typeof code === 'string') exInfo.textContent = 'Saving files is not available in this view.';
       else exInfo.textContent = 'Encoding failed: ' + ((e && e.message) || 'unknown error') + '.';
     } finally {
-      exporting = false; exBtn.disabled = false; exBtn.textContent = 'Export ' + CLIP_S + ' s MP4'; st.dirty = true;
+      exporting = false; exBtn.disabled = false; exBtn.textContent = 'Export ' + st.clip + ' s MP4'; st.dirty = true;
     }
   }
   exBtn.addEventListener('click', exportClip);
@@ -1090,7 +1307,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       }
       if (st.dirty || frame % 2 === 0) {
         const o = { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse, TG: st.TG, edges: false, dpr: 1,
-                    copies: st.copies, spin: st.spin, rpulse: st.rpulse };
+                    copies: st.copies, spin: st.spin, rpulse: st.rpulse, focus: st.focus };
         for (let i = 0; i < VIS.length; i++) render(thumbCv[i], VIS[i], st.T, o);
       }
       st.dirty = false;
