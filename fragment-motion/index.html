@@ -158,8 +158,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           <div class="row"><label for="rot">Rotate</label><input id="rot" type="range" min="-180" max="180" step="1" value="0"><output id="rot-o" for="rot">0°</output></div>
         </div>
         <div class="group">
-          <p class="label">Radial</p>
-          <div class="row"><label for="copies">Copies</label><input id="copies" type="range" min="5" max="24" step="1" value="12"><output id="copies-o" for="copies">12</output></div>
+          <p class="label">Fan</p>
+          <div class="row"><label for="copies">Copies</label><input id="copies" type="range" min="1" max="10" step="1" value="5"><output id="copies-o" for="copies">5</output></div>
           <div class="row"><label for="spin">Spin</label><input id="spin" type="range" min="-1" max="1" step="0.05" value="0.3"><output id="spin-o" for="spin">+30%</output></div>
           <div class="row"><label for="rpulse">Pulse</label><input id="rpulse" type="range" min="0" max="1" step="0.05" value="0.5"><output id="rpulse-o" for="rpulse">50%</output></div>
         </div>
@@ -215,8 +215,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       <p>Piece by piece adds the fragments one after another, each growing out of the one before. Unfold starts tightly folded and opens the whole structure in one move. With a build selected, exported clips start with it.</p>
     </div>
     <div>
-      <h2>Radial</h2>
-      <p>Fold ring, Petal ring, Horn ring and Band ring use the updated shapes from Figma, repeated in rings around the centre. Copies sets how many sit in each ring, Spin turns the rings, Pulse sends a swelling wave outward. Builds add them ring by ring, around each circle.</p>
+      <h2>Fan</h2>
+      <p>Petal fan, Horn fan, Band fan and Fold fan use the updated shapes from Figma. One piece multiplies into an overlapping fan around its pivot, breathes and turns, then folds back. Copies sets the size of the fan, Spin turns it, Pulse sets how far it breathes. With a build selected, the fan opens once.</p>
     </div>
     <div>
       <h2>Round</h2>
@@ -596,22 +596,22 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   // Outlines and gradient handles copied from Figma ("Shapes Update", node 1185:2565), in page coordinates.
   // Each piece: d = outline (subpaths after the first are cut-outs), g = gradient start and end.
   const MOTIF_SRC = {
-    zigzag: { axis: [231, -177], pack: 0.5, pieces: [
+    zigzag: { axis: [231, -177], fan: { pivot: [0, 0.35], step: 11, slide: [0.02, 0.07], grow: 0.02 }, pieces: [
       { d: 'M20644.6,10018.2 L20622.4,10019.5 L20689.7,10060.4 L20736.3,10062.9 Z', g: [20686.7, 10067.3, 20672.5, 10016.9] },
       { d: 'M20644.6,10018.2 L20652.1,9998.7 L20746.5,10019.1 L20736.3,10062.9 Z', g: [20707.8, 10062, 20690.3, 10000.1] },
       { d: 'M20612.1,10037.7 L20589.7,10036.2 L20627.2,10093.5 L20673.6,10102 Z', g: [20640.9, 10101.8, 20623.1, 10038.7] },
       { d: 'M20612.1,10037.7 L20622.4,10019.5 L20689.7,10060.4 L20673.6,10102 Z', g: [20664.3, 10096.5, 20644.2, 10025.3] },
       { d: 'M20576.9,10052.9 L20589.7,10036.2 L20627.2,10093.5 L20605.6,10132.2 Z', g: [20616, 10122.3, 20594.4, 10046.1] },
       { d: 'M20673.9,9994.7 L20652.1,9998.7 L20746.5,10019.1 L20792.5,10015.6 Z', g: [20727.3, 10024.8, 20717.7, 9990.8] }] },
-    petals: { axis: [0, -1], pack: 0.36, pieces: [
+    petals: { axis: [0, -1], fan: { pivot: [0, 0], step: 11, slide: [0, 0.11], grow: 0.03 }, pieces: [
       { d: 'M20788.3,10242.7 L20782,10243.8 L20778.4,10173.5 L20789.8,10132 C20789.8,10132 20813.5,10138 20829,10151.3 C20829,10151.3 20807.1,10170.7 20796.2,10194.4 C20786.4,10215.5 20788.3,10242.7 20788.3,10242.7 Z', g: [20765.6, 10173.8, 20812.5, 10200.9] },
       { d: 'M20782,10243.8 L20776.1,10242.8 L20750.5,10162.6 L20749.5,10154.9 C20749.5,10154.9 20765.2,10138.7 20789.8,10132 C20789.8,10132 20781.2,10166.6 20781,10195.1 C20780.7,10223.7 20782,10243.8 20782,10243.8 Z', g: [20749.5, 10187.9, 20789.8, 10187.9] },
       { d: 'M20749.5,10154.9 C20749.5,10154.9 20731.9,10146.1 20706.9,10145.8 L20748.2,10187.8 L20770.9,10244.9 L20776.1,10242.8 C20776.1,10242.8 20774,10218.4 20767.5,10198.3 C20761,10178.2 20749.5,10154.9 20749.5,10154.9 Z', g: [20706.9, 10195.4, 20776.1, 10195.4] },
       { d: 'M20683,10173.4 C20683,10173.4 20697.9,10150.2 20706.9,10145.8 C20706.9,10145.8 20740.3,10164.2 20753.3,10188.8 C20765.5,10211.9 20770.9,10244.9 20770.9,10244.9 L20765,10245.3 C20765,10245.3 20754,10218 20740.6,10202.9 C20721.6,10181.3 20683,10173.4 20683,10173.4 Z', g: [20683, 10195.6, 20770.9, 10195.6] }] },
-    horn: { axis: [1, 0], pack: 0.34, pieces: [
+    horn: { axis: [1, 0], fan: { turn: 180, pivot: [0, 0], step: -13, slide: [0.03, 0], grow: 0.04 }, pieces: [
       { d: 'M20689.8,10372.5 L20687,10364.3 L20779.5,10344.1 L20837.1,10350.1 C20837.1,10350.1 20834.4,10382.9 20820.1,10406.4 C20820.1,10406.4 20789.5,10381.7 20755.7,10372.3 C20725.6,10363.9 20689.8,10372.5 20689.8,10372.5 Z', g: [20760.4, 10347.3, 20771.5, 10414.5] },
       { d: 'M20751.3,10352.3 C20789.2,10346.3 20837.1,10350.1 20837.1,10350.1 C20822.8,10319 20797.9,10301.7 20797.9,10301.7 C20797.9,10301.7 20769.5,10322.1 20744.2,10335.1 C20718.9,10348.2 20687.1,10356.3 20687.1,10356.3 L20687,10364.3 C20687,10364.3 20713.4,10358.2 20751.3,10352.3 Z', g: [20754, 10308.9, 20762.9, 10362.4] }] },
-    band: { axis: [1, 0.08], pack: 0.4, pieces: [
+    band: { axis: [1, 0.08], fan: { turn: 180, pivot: [-0.05, -0.75], step: 9, slide: [-0.07, 0.03], grow: 0.04 }, pieces: [
       { d: 'M21013.8,10052 C21013.8,10052 20996.4,10073.5 20963.1,10064.7 C20931.4,10056.3 20865.8,10012 20865.8,10012 L20851.4,10048.6 C20851.4,10048.6 20859.5,10054.7 20868.1,10059.5 C20876.8,10064.3 20926.2,10095.3 20961.8,10098.1 C20993.3,10100.5 21019.6,10064.3 21019.6,10064.3 L21013.8,10052 Z M20931.6,10074.3 C20931.6,10074.3 20956.7,10051 20978.1,10082 C20978.1,10082 20954.5,10103.3 20931.6,10074.3 Z', g: [20854.3, 10038.4, 21014.2, 10083.4] }] }
   };
   function parsePath(d) {
@@ -644,49 +644,49 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       x0 = Math.min(x0, sp[i]); x1 = Math.max(x1, sp[i]); y0 = Math.min(y0, sp[i + 1]); y1 = Math.max(y1, sp[i + 1]);
     }
     const L = x1 - x0, ym = (y0 + y1) / 2, nrm = (x, y) => [(x - x0) / L, (y - ym) / L];
-    MOTIFS[key] = { W: (y1 - y0) / L, pack: src.pack || 0.6, pieces: raw.map(pc => ({
+    MOTIFS[key] = { W: (y1 - y0) / L, ax, ay, fan: src.fan, pieces: raw.map(pc => ({
       subs: pc.subs.map(sp => { const o = []; for (let i = 0; i < sp.length; i += 2) o.push(...nrm(sp[i], sp[i + 1])); return o; }),
       g: [...nrm(pc.g[0], pc.g[1]), ...nrm(pc.g[2], pc.g[3])] })) };
   }
-  // Rings of motifs around the origin (0, 0). Every ring holds the same number of copies and is larger than the
-  // one inside it by a fixed ratio, so the rings close up without gaps and fill any frame. Rings drift outward;
-  // pulse sends a swelling wave out through the rings; spin turns them, each lagging a little behind the last.
-  function makeRadial(key) {
-    const M = MOTIFS[key];
+  // Fan details: one piece multiplies into a small overlapping fan. Each new copy slides out from the one
+  // before it, turned a step further around the shape's pivot (and slid and grown a little), and lands on top.
+  // Loop: one piece, the copies fan out one by one, the fan breathes (pulse) and turns (spin), then folds back.
+  // With a build selected the fan opens once instead: piece by piece one copy at a time, unfold all together.
+  const smooth = x => { x = clamp01(x); return x * x * (3 - 2 * x); };
+  function makeFan(key) {
+    const M = MOTIFS[key], F = M.fan, U = 100;
+    const toWorld = (lx, ly) => [lx * M.ax - ly * M.ay, lx * M.ay + ly * M.ax];   // local frame back to the drawing's orientation
+    const place = (x, y, a, k, sx, sy) => {      // a copy: grow k and turn a about the pivot, then slide
+      const dx = (x - F.pivot[0]) * U * k, dy = (y - F.pivot[1]) * U * k, c = Math.cos(a), s2 = Math.sin(a);
+      return toWorld(F.pivot[0] * U + dx * c - dy * s2 + sx * U, F.pivot[1] * U + dx * s2 + dy * c + sy * U);
+    };
     return (T, E, vp, out) => {
-      // copies overlap around each ring and rings overlap each other, so the slim shapes close up into a full field
-      const N = Math.max(3, Math.round(E.N)), c = N * M.W * M.pack / TAU, g = 1 + 0.6 / c, LG = Math.log(g);
-      const D = T * 0.05, rr = radii(vp, 0, 0, 0), Rmin = Math.max(0.6 * c, 2.2 * c * vp[2] / 200);
-      const m0 = Math.floor(Math.log(Math.max(rr[0], Rmin) / c) / LG - D) - 1;
-      const m1 = Math.ceil(Math.log((rr[1] + 1) / c) / LG - D) + 1;
-      for (let m = m1; m >= m0; m--) {                      // outer rings first, inner rings on top
-        const q = m + D;
-        let R = c * Math.pow(g, q);
-        if (R < Rmin) continue;
-        const beat = 1 + E.P * 0.16 * Math.sin(T * TAU / 2.5 - q * 0.9);
-        R *= beat;
-        const f = fol(T, q * 0.8, E);
-        const sc = R / c * (1 - 0.75 * E.bc), sq = 1 - 0.3 * f;
-        const rotA = E.S * T * 0.4 + E.S * 0.3 * Math.sin(T * 0.5 - q * 0.7) + (m & 1) * PI / N + E.bc * 1.4 * (1 + 0.15 * q);
-        for (let j = 0; j < N; j++) {
-          const th = rotA + j * TAU / N, cs = Math.cos(th), sn = Math.sin(th);
-          const W = (x, y) => [(R + x * sc) * cs - y * sc * sq * sn, (R + x * sc) * sn + y * sc * sq * cs];
-          for (const pc of M.pieces) {
-            const subs = pc.subs.map(sp => { const o = new Array(sp.length); for (let i = 0; i < sp.length; i += 2) { const w = W(sp[i], sp[i + 1]); o[i] = w[0]; o[i + 1] = w[1]; } return o; });
-            if (!visible(subs[0], vp)) continue;
-            const a = W(pc.g[0], pc.g[1]), b = W(pc.g[2], pc.g[3]);
-            out.push({ p: subs[0], s: 0, g: [a[0], a[1], b[0], b[1]], h: subs.length > 1 ? subs.slice(1) : null });
-          }
+      const N = Math.max(1, Math.round(E.N)), step = F.step * PI / 180;
+      let p, together = false;
+      if (E.bm === 'off') {
+        const u = frac(T / 9);
+        p = u < 0.45 ? smooth(u / 0.45) : u < 0.86 ? 1 : 1 - smooth((u - 0.86) / 0.14);
+      } else { p = E.B; together = E.bm === 'unfold'; }
+      const breathe = 1 + E.P * 0.35 * Math.sin(T * TAU / 2.5) * smooth(p * 1.5 - 0.5);
+      // centre of the finished fan, so the detail stays in the middle of the frame while it grows and turns
+      let cx = 0, cy = 0;
+      for (let i = 0; i < N; i++) { const q = place(0.5, 0, i * step, 1 + i * F.grow, i * F.slide[0], i * F.slide[1]); cx += q[0] / N; cy += q[1] / N; }
+      // turn: how the detail is laid out in the mockups; spin: slow rotation of the whole fan
+      const spin = (F.turn || 0) * PI / 180 + E.S * T * 0.35 - E.bc * 0.6, cs = Math.cos(spin), sn = Math.sin(spin);
+      const W = (q) => { const x = q[0] - cx, y = q[1] - cy; return [x * cs - y * sn, x * sn + y * cs]; };
+      for (let i = 0; i < N; i++) {
+        const e = together ? smooth(p) : (i === 0 ? 1 : smooth(p * (N - 1) - (i - 1)));
+        if (i > 0 && e <= 0) break;
+        const at = together ? i * e : (i === 0 ? 0 : i - 1 + e);       // a copy travels out from the one before it
+        const a = at * step * breathe, k = 1 + at * F.grow, sx = at * F.slide[0], sy = at * F.slide[1];
+        for (const pc of M.pieces) {
+          const subs = pc.subs.map(sp => { const o = new Array(sp.length); for (let m = 0; m < sp.length; m += 2) { const w = W(place(sp[m], sp[m + 1], a, k, sx, sy)); o[m] = w[0]; o[m + 1] = w[1]; } return o; });
+          const g0 = W(place(pc.g[0], pc.g[1], a, k, sx, sy)), g1 = W(place(pc.g[2], pc.g[3], a, k, sx, sy));
+          out.push({ p: subs[0], s: 0, g: [g0[0], g0[1], g1[0], g1[1]], h: subs.length > 1 ? subs.slice(1) : null });
         }
       }
     };
   }
-  // build order for the rings: inner rings first, then around each circle
-  const ordRings = (x, y, vp) => {
-    const rr = radii(vp, 0, 0, 0), lo = Math.max(rr[0], 2), r = Math.max(Math.hypot(x, y), lo);
-    const a = Math.log(r / lo) / Math.log(Math.max(rr[1], lo * 1.01) / lo);
-    return clamp01(0.82 * a + 0.18 * frac(Math.atan2(y, x) / TAU + 0.25));
-  };
 
   /* ---------- build order: where a point sits in the sequence, 0 first, 1 last ---------- */
   const ordRadial = (cx, cy, wr, angle) => (x, y, vp) => {
@@ -734,14 +734,14 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     { id: 'iris', name: 'Swirl iris', meta: 'round · new', fit: 'cover',
       view: [-80, -60, 160, 120], stops: [REDGREEN], coef: [0.75, 0.6, -0.15], phi: 0, lg: 0.4, wave: 0.07, build: buildIris,
       ord: ordRadial(0, 0, 0.65, (dx, dy) => frac(Math.atan2(dy, dx) / TAU + 0.5)) },
-    { id: 'r-zigzag', name: 'Fold ring', meta: 'radial · new', fit: 'cover', view: [-100, -80, 200, 160], stops: [SHAPES],
-      coef: [1, 0, 0], phi: 0, lg: 0.3, wave: 0.05, build: makeRadial('zigzag'), ord: ordRings },
-    { id: 'r-petals', name: 'Petal ring', meta: 'radial · new', fit: 'cover', view: [-100, -80, 200, 160], stops: [SHAPES],
-      coef: [1, 0, 0], phi: 0, lg: 0.3, wave: 0.05, build: makeRadial('petals'), ord: ordRings },
-    { id: 'r-horn', name: 'Horn ring', meta: 'radial · new', fit: 'cover', view: [-100, -80, 200, 160], stops: [SHAPES],
-      coef: [1, 0, 0], phi: 0, lg: 0.3, wave: 0.05, build: makeRadial('horn'), ord: ordRings },
-    { id: 'r-band', name: 'Band ring', meta: 'radial · new', fit: 'cover', view: [-100, -80, 200, 160], stops: [SHAPES],
-      coef: [1, 0, 0], phi: 0, lg: 0.3, wave: 0.05, build: makeRadial('band'), ord: ordRings }
+    { id: 'f-petals', name: 'Petal fan', meta: 'fan · new', fit: 'contain', view: [-125, -125, 250, 250], stops: [SHAPES],
+      coef: [1, 0, 0], phi: 0, lg: 0.3, wave: 0.05, selfBuild: true, build: makeFan('petals'), ord: ordX },
+    { id: 'f-horn', name: 'Horn fan', meta: 'fan · new', fit: 'contain', view: [-95, -95, 190, 190], stops: [SHAPES],
+      coef: [1, 0, 0], phi: 0, lg: 0.3, wave: 0.05, selfBuild: true, build: makeFan('horn'), ord: ordX },
+    { id: 'f-band', name: 'Band fan', meta: 'fan · new', fit: 'contain', view: [-95, -95, 190, 190], stops: [SHAPES],
+      coef: [1, 0, 0], phi: 0, lg: 0.3, wave: 0.05, selfBuild: true, build: makeFan('band'), ord: ordX },
+    { id: 'f-zigzag', name: 'Fold fan', meta: 'fan · new', fit: 'contain', view: [-95, -95, 190, 190], stops: [SHAPES],
+      coef: [1, 0, 0], phi: 0, lg: 0.3, wave: 0.05, selfBuild: true, build: makeFan('zigzag'), ord: ordX }
   ];
 
   /* ---------- renderer: fit the gradient to each fragment's box, then fill ---------- */
@@ -834,7 +834,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     ctx.imageSmoothingQuality = 'high';
     polys.length = 0;
     ENV.A = o.fold; ENV.bc = o.bc || 0;
-    ENV.N = o.copies || 12; ENV.S = o.spin === undefined ? 0.3 : o.spin; ENV.P = o.rpulse === undefined ? 0.5 : o.rpulse;
+    ENV.N = o.copies || 5; ENV.B = o.B === undefined ? 1 : o.B; ENV.bm = o.bmode || 'off'; ENV.S = o.spin === undefined ? 0.3 : o.spin; ENV.P = o.rpulse === undefined ? 0.5 : o.rpulse;
     vis.build(T, ENV, vp, polys, aspect);
     // visuals drawn for a fixed area repeat it, mirrored at every edge so the seams meet, to fill a zoomed-out frame
     if (vis.tile) {
@@ -860,7 +860,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     for (let i = 0; i < polys.length; i++) {
       const f = polys[i];
       let P = f.p;
-      if (B < 1) {
+      if (B < 1 && !vis.selfBuild) {
         let cx = 0, cy = 0;
         for (let j = 0; j < P.length; j += 2) { cx += P[j]; cy += P[j + 1]; }
         const od = clamp01(vis.ord(cx / (P.length / 2), cy / (P.length / 2), vp));
@@ -879,7 +879,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const $ = id => document.getElementById(id);
   const stage = $('stage'), cv = $('cv');
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, rot: 0, copies: 12, spin: 0.3, rpulse: 0.5, edges: false, ar: '0.8',
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, rot: 0, copies: 5, spin: 0.3, rpulse: 0.5, edges: false, ar: '0.8',
                gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true,
                bmode: 'off', bt: 0, bdur: 3 };
 
@@ -892,7 +892,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   function frameOpts(bt, dpr, edges) {
     const b = buildParams(bt);
     return { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse,
-             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom, rot: st.rot, copies: st.copies, spin: st.spin, rpulse: st.rpulse };
+             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom, rot: st.rot, copies: st.copies, spin: st.spin, rpulse: st.rpulse, bmode: st.bmode };
   }
 
   const thumbs = $('thumbs'), thumbCv = [];
