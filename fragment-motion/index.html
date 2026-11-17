@@ -169,6 +169,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
             <button class="btn" type="button" data-v="logo" aria-pressed="false">Logo</button>
             <button class="btn" type="button" data-v="both" aria-pressed="false">Logo + claim</button>
           </div>
+          <div class="seg" id="logocols" aria-label="Logo colour">
+            <button class="btn" type="button" data-v="auto" aria-pressed="true">Auto colour</button>
+            <button class="btn" type="button" data-v="brown" aria-pressed="false">Brown</button>
+            <button class="btn" type="button" data-v="white" aria-pressed="false">White</button>
+          </div>
         </div>
         <div class="group">
           <p class="label">Fan</p>
@@ -1071,6 +1076,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }).sort((a, b) => a.x0 - b.x0);
   }
   let LOGO_SPANS = null, CLAIM_SPANS = null;
+  // logo colour: the Logo colour setting wins; on Auto the scene decides (brown on white, white on colour)
+  const logoDark = (o, auto) => o.logoCol === 'brown' ? true : o.logoCol === 'white' ? false : auto;
   // Logo: letter by letter, each from blurred and clear to sharp, the next starting before the last has settled.
   // Claim: typed character by character with a thin cursor. b.logo and b.claim run 0 → 1; b.alpha fades both.
   function drawBrand(ctx, w, h, b, dark) {
@@ -1345,7 +1352,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     };
     for (let i = 0; i < polys.length; i++) {
       const f = polys[i];
-      if (ENV.logoMid && i === ENV.logoMid.at) { flush(); drawBrand(ctx, w, h, ENV.logoMid, true); }
+      if (ENV.logoMid && i === ENV.logoMid.at) { flush(); drawBrand(ctx, w, h, ENV.logoMid, logoDark(o, true)); }
       if (run && f.grp !== run.grp) flush();
       if (!run && f.grp && f.bl > 0.02 && BLUR_OK) {
         // out-of-focus fragments are drawn straight at a quarter of the size: they are about to be blurred anyway
@@ -1369,7 +1376,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       drawn++;
     }
     flush();
-    if (ENV.logoMid && ENV.logoMid.at >= polys.length) drawBrand(ctx, w, h, ENV.logoMid, true);
+    if (ENV.logoMid && ENV.logoMid.at >= polys.length) drawBrand(ctx, w, h, ENV.logoMid, logoDark(o, true));
     const tsOn = ENV.ts && (o.focus === undefined || o.focus > 0.01);
     if (o.cssTS) o.cssTS(tsOn ? ENV.ts : null, view2, o.focus === undefined ? 0.6 : o.focus);
     else if (tsOn && BLUR_OK) tiltShift(ctx, w, h, view2, ENV.ts, o.focus === undefined ? 0.6 : o.focus);
@@ -1378,7 +1385,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const pick = brand || (o.brand === 'logo' ? { logo: 1, claim: 0 } : o.brand === 'both' ? { logo: 1, claim: 1 } : null);
     let bctx = ctx;
     if (o.top) { if (o.top.width !== w || o.top.height !== h) { o.top.width = w; o.top.height = h; } bctx = o.top.getContext('2d'); bctx.setTransform(1, 0, 0, 1, 0, 0); bctx.clearRect(0, 0, w, h); }
-    drawBrand(bctx, w, h, pick, ENV.dark !== undefined ? ENV.dark : bg === '#ffffff');
+    drawBrand(bctx, w, h, pick, logoDark(o, ENV.dark !== undefined ? ENV.dark : bg === '#ffffff'));
     return drawn;
   }
 
@@ -1404,7 +1411,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     tsfx.hidden = false;
   }
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, rot: 0, copies: 5, spin: 0.3, rpulse: 0.5, focus: 0.6, brand: 'off', clip: 5, edges: false, ar: '0.8',
+  const st = { cur: 0, playing: !reduced, speed: 1, fold: 0.8, zoom: 1, rot: 0, copies: 5, spin: 0.3, rpulse: 0.5, focus: 0.6, brand: 'off', logoCol: 'auto', clip: 5, edges: false, ar: '0.8',
                gspeed: 1, angle: 0, swing: 1, offset: 0, pulse: 1, T: 0, TG: 0, dirty: true,
                bmode: 'off', bt: 0, bdur: 3 };
 
@@ -1417,7 +1424,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   function frameOpts(bt, dpr, edges) {
     const b = buildParams(bt);
     return { fold: st.fold, angle: st.angle, swing: st.swing, offset: st.offset, pulse: st.pulse,
-             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom, rot: st.rot, copies: st.copies, spin: st.spin, rpulse: st.rpulse, bmode: st.bmode, focus: st.focus, brand: st.brand };
+             TG: st.TG, edges, dpr, B: b.B, bc: b.bc, win: b.win, zoom: st.zoom, rot: st.rot, copies: st.copies, spin: st.spin, rpulse: st.rpulse, bmode: st.bmode, focus: st.focus, brand: st.brand, logoCol: st.logoCol };
   }
 
   const thumbs = $('thumbs'), thumbCv = [];
@@ -1481,6 +1488,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     st[key] = isNaN(+b.dataset.v) ? b.dataset.v : +b.dataset.v; st.dirty = true; if (after) after();
   });
   segPick('brands', 'brand');
+  segPick('logocols', 'logoCol');
   segPick('clips', 'clip', () => { if (!exporting) { exBtn.textContent = 'Export ' + st.clip + ' s MP4'; exportIdle(); } });
   bind('bdur', v => v.toFixed(1) + ' s');
   bind('gspeed', v => v.toFixed(1) + '×');
