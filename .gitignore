@@ -1,3 +1,6 @@
 joe-strategiefilm/index.html
 joe-strategiefilm/*.mp4
 joe-strategiefilm/v3/stage_render_*.html
+
+# showreel renders carry the licensed soundtrack: kept local, not published
+fragment-motion/renders/*.mp4
