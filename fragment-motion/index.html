@@ -953,9 +953,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   function figScene(key, lt, E, vp, out, opt = {}) {
     const F = FIGS[key], [bx, by, bw, bh] = F.box, bcx = bx + bw / 2, bcy = by + bh / 2;
     const fit = opt.fit || (F.base === 'mid' ? 'cover' : 'contain');
-    let sc = fit === 'cover' ? Math.max(vp[2] / bw, vp[3] / bh) : Math.min(vp[2] / bw, vp[3] / bh) * 0.92;
+    // fit to the unzoomed frame, so the Zoom setting enlarges the figure instead of being cancelled out
+    const Z = ENV.zoom || 1, fw0 = vp[2] * Z, fh0 = vp[3] * Z;
+    let sc = fit === 'cover' ? Math.max(fw0 / bw, fh0 / bh) : Math.min(fw0 / bw, fh0 / bh) * 0.92;
     sc *= (F.zoom || 1) * (opt.zoom || 1) * (1 + 0.035 * Math.min(lt, 8) / 8);
-    const vcx = vp[0] + vp[2] / 2 + (opt.dx || 0) * vp[2], vcy = vp[1] + vp[3] / 2 + (opt.dy || 0) * vp[3];
+    const vcx = vp[0] + vp[2] / 2 + (opt.dx || 0) * vp[2] * (ENV.zoom || 1), vcy = vp[1] + vp[3] / 2 + (opt.dy || 0) * vp[3] * (ENV.zoom || 1);
     const [fx0, fy0, fx1, fy1] = F.bb, fw = fx1 - fx0, fh = fy1 - fy0;
     const yb = F.base === 'bottom' ? fy1 : (fy0 + fy1) / 2, ycm = (fy0 + fy1) / 2;
     const b0 = opt.build === false ? 99 : lt - (opt.delay || 0);
@@ -1031,7 +1033,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const band = { ang: 0.35, amp: 0.22, per: 4 * BAR, reach: 0.38, r: 0.02, half: 0.12 };
     switch (seg[2]) {
       case 'blurZig': figScene('blurZig', lt, E, vp, out, { delay: 0.5, zoom: 1.05 }); break;
-      case 'derive': { const st0 = out.length; sceneDerive(lt * 1.1, E, vp, out); scaleItems(out, st0, Math.min(1.35, vp[2] / 165)); break; }
+      case 'derive': { const st0 = out.length; sceneDerive(lt * 1.1, E, vp, out); scaleItems(out, st0, Math.min(1.35, vp[2] * (ENV.zoom || 1) / 165)); break; }
       case 'close': ENV.bg = null; ENV.dark = false; figScene('close', lt, E, vp, out, { delay: 0, zoom: 1.08, band: { ...band, ang: -1.2, per: 4 * BAR } }); break;
       case 'tiers': ENV.bg = null; ENV.dark = false; figScene('tiers', lt, E, vp, out, { delay: 0, band, zoom: TZ(vp) }); break;
       case 'zig': figScene('zig', lt, E, vp, out, { delay: 0.1, reveal: true }); break;
@@ -1314,7 +1316,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const vp = [mx - bw / 2, my - bh / 2, bw, bh];
     const view2 = [sc * rc, sc * rs, -sc * rs, sc * rc, w / 2 - (mx * rc - my * rs) * sc, h / 2 - (mx * rs + my * rc) * sc];
     polys.length = 0;
-    ENV.bg = null; ENV.ts = null; ENV.logoMid = null; ENV.dark = undefined; ENV.F = o.focus === undefined ? 0.6 : o.focus;
+    ENV.bg = null; ENV.ts = null; ENV.logoMid = null; ENV.dark = undefined; ENV.zoom = o.zoom || 1; ENV.F = o.focus === undefined ? 0.6 : o.focus;
     ENV.A = o.fold; ENV.bc = o.bc || 0;
     ENV.N = o.copies || 5; ENV.B = o.B === undefined ? 1 : o.B; ENV.bm = o.bmode || 'off'; ENV.S = o.spin === undefined ? 0.3 : o.spin; ENV.P = o.rpulse === undefined ? 0.5 : o.rpulse;
     vis.build(T, ENV, vp, polys, aspect);
