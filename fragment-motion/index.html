@@ -1033,7 +1033,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       case 'logo': {
         const at = out.length;
         figScene('blurZig', lt + 3, E, vp, out, { build: false, zoom: 1.1, dx: 0.3, dy: 0.34, ts: false });
-        ENV.logoMid = { at: Math.min(at + 3, out.length), logo: clamp01((lt - 0.2) / 1.6), claim: 0 };
+        ENV.logoMid = { at: Math.min(at + 3, out.length), logo: clamp01((lt - 0.2) / 0.8), claim: 0 };
         break;
       }
       default: ENV.bg = null; ENV.dark = false; figScene('tiers', lt + 4, E, vp, out, { build: false, band, zoom: TZ(vp) });
@@ -1041,7 +1041,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     E.bm = bm;
   }
   const reelBrand = T => { const u = frac(T / REEL_LEN) * REEL_LEN;
-    return u < 23.59 ? null : { logo: clamp01((u - 23.6) / 1.6), claim: clamp01((u - 25.16) / 1.3) }; };
+    return u < 23.59 ? null : { logo: clamp01((u - 23.6) / 0.8), claim: clamp01((u - 25.16) / 1.3) }; };
 
   // Film: cuts between the variants, ending on the logo and claim. 15 s loop.
   const FILM = [[0, 4.5, 'derive'], [4.5, 7, 'fill'], [7, 9, 'free'], [9, 11, 'close'], [11, 15, 'end']];
@@ -1056,7 +1056,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   }
   // logo and claim: fade in over the moving background
   const brandEnd = (T, len, at) => { const u = frac(T / len) * len;
-    return { logo: clamp01((u - at) / 1.6), claim: clamp01((u - at - 1.9) / 1.3), alpha: 1 - smooth((u - (len - 0.8)) / 0.8) }; };
+    return { logo: clamp01((u - at) / 0.8), claim: clamp01((u - at - 1.2) / 1.3), alpha: 1 - smooth((u - (len - 0.8)) / 0.8) }; };
   // Each letter's left and right edge in its SVG's units, found once by drawing it and reading its pixels,
   // so letters can be revealed in reading order.
   function letterSpans(paths, vw, vh) {
@@ -1137,7 +1137,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('tiers', { zoomFn: TZ, band: { ang: 0.35, amp: 0.22, per: 6, reach: 0.38, r: 0.02, half: 0.12 } }), loop: BOARD_LOOP },
     { id: 's-film', name: 'Film', meta: 'scryns · 15 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
       coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, selfBuild: true, build: sceneFilm, loop: 15,
-      brandAt: T => { const u = frac(T / 15) * 15; return u < 11 ? null : { logo: clamp01((u - 11.3) / 1.6), claim: clamp01((u - 13.0) / 1.3) }; } },
+      brandAt: T => { const u = frac(T / 15) * 15; return u < 11 ? null : { logo: clamp01((u - 11.3) / 0.8), claim: clamp01((u - 12.4) / 1.3) }; } },
     { id: 's-derive', name: 'Element to lamp', meta: 'scryns · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
       coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, selfBuild: true, build: sceneDerive, loop: 12 },
     { id: 's-free', name: 'Free in space', meta: 'scryns · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
