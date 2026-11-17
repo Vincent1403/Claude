@@ -12,7 +12,7 @@
   --muted:#6b6779;
   --line:#dbd8e4;
   --accent:#d95200;
-  --stage:#00001b;
+  --stage:#ffffff;
   --display:"Instrument Serif","Iowan Old Style","Times New Roman",serif;
   --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
   --mono:"DM Mono",ui-monospace,"SF Mono",Menlo,monospace;
@@ -20,12 +20,12 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0b0a17; --surface:#15132a; --fg:#eeebf7; --muted:#9c97b2;
-    --line:#2b2845; --accent:#ff8a3d; --stage:#00001b; color-scheme:dark;
+    --line:#2b2845; --accent:#ff8a3d; --stage:#ffffff; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0b0a17; --surface:#15132a; --fg:#eeebf7; --muted:#9c97b2;
-  --line:#2b2845; --accent:#ff8a3d; --stage:#00001b; color-scheme:dark;
+  --line:#2b2845; --accent:#ff8a3d; --stage:#ffffff; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{
@@ -136,7 +136,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <div class="stage" id="stage"><canvas id="cv" aria-label="Animated gradient-fragment visual"></canvas></div>
       </div>
       <div class="readout" aria-live="off">
-        <span><b id="ro-name">Film</b></span>
+        <span><b id="ro-name">Showreel</b></span>
         <span><span id="ro-n">0</span> fragments drawn</span>
         <span>light <span id="ro-l">0</span>°</span>
       </div>
@@ -199,6 +199,15 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
             <button class="btn" type="button" data-ar="1.7778" aria-pressed="false">16:9</button>
           </div>
         </div>
+        <div class="group">
+          <p class="label">Soundtrack</p>
+          <div class="btn-row">
+            <label class="btn" for="sound-file">Choose audio file</label>
+            <input id="sound-file" type="file" accept="audio/*" hidden>
+            <button class="btn" id="sound-start" type="button" disabled>Play showreel from start</button>
+          </div>
+          <p class="hint" id="sound-info">Plays in sync with the Showreel while you watch. Exports stay silent.</p>
+        </div>
         <div class="group" id="export" hidden>
           <p class="label">Export</p>
           <div class="btn-row">
@@ -208,6 +217,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
             <button class="btn" type="button" data-v="5" aria-pressed="true">5 s</button>
             <button class="btn" type="button" data-v="10" aria-pressed="false">10 s</button>
             <button class="btn" type="button" data-v="15" aria-pressed="false">15 s</button>
+            <button class="btn" type="button" data-v="30" aria-pressed="false">30 s</button>
           </div>
           <p class="hint" id="export-info" aria-live="polite">1080 × 1350 · 30 fps · starts at the frame on stage</p>
         </div>
@@ -450,7 +460,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       const bOut = th => Rn * (1 + c * Math.pow(Math.cos(PI * (th - off) / D), 2));
       const rin = Rk, rout = Rn * (1 + c);
       // more points on rings that appear large on screen, so curves stay smooth when zoomed in
-      const px = (rout - rin) / vp[2], SEG = Math.max(10, Math.min(64, Math.round(px * 90))), RS = Math.max(6, Math.round(SEG * 0.6));
+      const px = (rout - rin) / vp[2], SEG = Math.max(18, Math.min(96, Math.round(px * 140))), RS = Math.max(10, Math.round(SEG * 0.6));
       for (let i = 0; i < N; i++) {
         const thc = off + i * D;
         const open = 1 - 0.93 * fol(T, q * 1.4 + i * TAU * 2 / N, E);
@@ -533,7 +543,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     // Pipes fanned around a point above the frame, like the lower ring of a lampshade seen from below.
     // Concentric rings; each pipe has two flat faces with a ridge down the middle, a V-shaped back end,
     // and a drop-shaped opening at the front. Inner rings sit in front of outer ones.
-    const VX = 0, VY = -170, w0 = 21, step = 2.95 * w0, SEG = 22;
+    const VX = 0, VY = -170, w0 = 21, step = 2.95 * w0, SEG = 44;
     const s = frac(T * 0.08), rot = 0.05 * Math.sin(T * 0.21);
     const rr = radii(vp, VX, VY, 0);
     const inside = vp[0] <= VX && VX <= vp[0] + vp[2] && vp[1] <= VY && VY <= vp[1] + vp[3];
@@ -598,7 +608,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     };
     for (let k = k0; k <= k1; k++) {
       const q = k + s;
-      SEG = Math.max(8, Math.min(48, Math.round(R0 * Math.pow(rho, q) / vp[2] * 60)));
+      SEG = Math.max(14, Math.min(72, Math.round(R0 * Math.pow(rho, q) / vp[2] * 90)));
       for (let j = 0; j < N; j++) {
         const p = [];
         edge(p, q, j, j + 1);
@@ -640,8 +650,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       if (m[1] === 'M') { cur = [n[0], n[1]]; subs.push(cur); x = n[0]; y = n[1]; }
       else if (m[1] === 'L') { cur.push(n[0], n[1]); x = n[0]; y = n[1]; }
       else if (m[1] === 'C') {
-        for (let t = 1; t <= 8; t++) {
-          const u = t / 8, a = (1 - u) ** 3, b = 3 * u * (1 - u) ** 2, c = 3 * u * u * (1 - u), e = u ** 3;
+        for (let t = 1; t <= 24; t++) {
+          const u = t / 24, a = (1 - u) ** 3, b = 3 * u * (1 - u) ** 2, c = 3 * u * u * (1 - u), e = u ** 3;
           cur.push(a * x + b * n[0] + c * n[2] + e * n[4], a * y + b * n[1] + c * n[3] + e * n[5]);
         }
         x = n[4]; y = n[5];
@@ -750,6 +760,16 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   // accordion wave around a full ring: pleats bunch and spread as the wave travels, like a fan being waved
   const accordion = (M, w, T, amp) => { const o = []; for (let k = 0; k < M; k++) o.push(k * w + amp * w * Math.sin(k * w * 2 - T * 0.7)); return o; };
   const foldDepth = (T, E, ph) => k => 0.12 + 0.22 * fol(T, k * ph, E);
+  // a paper fan: M pleats always joined edge to edge; opening o (0..1) sets each pleat's width, and the folds
+  // deepen as the fan closes so the paper keeps its size. Fully closed it is one folded element.
+  function paperFan(M, w0, o, a0, T, E) {
+    o = Math.max(o, 0.02);
+    const angles = []; for (let k = 0; k < M; k++) angles.push(a0 + k * w0 * o);
+    const deep = 0.32 * Math.sqrt(Math.max(0, 1 - o * o)) / o;
+    return { angles, w: w0 * o, depth: k => 0.1 + deep + 0.12 * fol(T, k * 0.5, E) };
+  }
+  const easeOut = x => 1 - Math.pow(1 - clamp01(x), 3);
+  const easeBack = x => { x = clamp01(x); const c = 1.4; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
 
   // keep a figure in the frame: move its fragments so their bounds sit centred on (ax, ay)
   function centreOn(items, ax, ay) {
@@ -765,33 +785,37 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     return items;
   }
   const ALL = [-1e9, -1e9, 2e9, 2e9];
+  function scaleItems(arr, from, k) {              // scale fragments about the frame centre (0, 0)
+    for (let i = from; i < arr.length; i++) { const it = arr[i]; for (let j = 0; j < it.p.length; j++) it.p[j] *= k; it.g = it.g.map(v => v * k); }
+  }
 
   // From the single element to the lamp: one pleat, the fan opens pleat by pleat into the full ring, the ring
   // tips back in perspective and turns, then folds back into one pleat. 12 s loop (or once, with a build).
   function sceneDerive(T, E, vp, out) {
     ENV.bg = '#ffffff';
-    const M = 16, w = TAU / M, R = 72, ri = 36, u = frac(T / 12) * 12;
-    let P;
-    if (E.bm !== 'off') P = (M - 1) * smooth(E.B);
-    else P = (M - 1) * (u < 1.2 ? 0 : u < 6 ? smooth((u - 1.2) / 4.8) : u < 9.5 ? 1 : 1 - smooth((u - 9.5) / 2.5));
-    const fr = smooth(P / (M - 1)), items = [];
-    fanRing({ cx: 0, cy: 0, R, ri, w, angles: spread(M, w, P, PI / 2 - w * P / 2),
-              depth: foldDepth(T, E, 0.5), rx: (8 + 50 * fr) * PI / 180, ry: 10 * Math.sin(T * 0.45) * PI / 180,
-              rz: E.S * T * 0.25 * fr, s: 0 }, ALL, items);
+    const M = 16, w0 = TAU / M, R = 72, ri = 36, u = frac(T / 12) * 12;
+    // fast opening, then slow and smooth
+    let fr;
+    if (E.bm !== 'off') fr = easeOut(E.B);
+    else fr = u < 0.6 ? 0 : u < 2.4 ? easeOut((u - 0.6) / 1.8) : u < 9.6 ? 1 : 1 - smooth((u - 9.6) / 2.4);
+    const o = 1 / M + (1 - 1 / M) * fr, f = paperFan(M, w0, o, PI / 2 - (M - 1) * w0 * o / 2, T, E), items = [];
+    fanRing({ cx: 0, cy: 0, R, ri, w: f.w, angles: f.angles, depth: f.depth,
+              rx: (8 + 50 * smooth(fr)) * PI / 180, ry: 10 * Math.sin(T * 0.35) * PI / 180,
+              rz: E.S * T * 0.2 * smooth(fr), s: 0 }, ALL, items);
     for (const it of centreOn(items, 0, 0)) if (visible(it.p, vp)) out.push(it);
   }
-  // Free in space: an open fan on white, tipped far back so its pleats read as a folded row, turning and
+  // Free in space: an open paper fan on white, tipped far back so its pleats read as a folded row, turning and
   // breathing open and closed; a smaller fan floats behind it, out of focus.
   function sceneFree(T, E, vp, out) {
     ENV.bg = '#ffffff';
-    const w = TAU / 16, N = Math.max(2, Math.round(E.N) + 1);
-    const P = (N - 1) * (1 - E.P * 0.5 * (0.5 + 0.5 * Math.sin(T * TAU / 7)));
-    const P2 = (N - 1) * (1 - E.P * 0.5 * (0.5 + 0.5 * Math.sin(T * TAU / 7 + 2)));
+    const w0 = TAU / 16, N = Math.max(2, Math.round(E.N) + 1);
+    const o1 = 1 - E.P * 0.5 * (0.5 + 0.5 * Math.sin(T * TAU / 7)), o2 = 1 - E.P * 0.5 * (0.5 + 0.5 * Math.sin(T * TAU / 7 + 2));
     const a = PI / 2 + 0.2 * Math.sin(T * 0.2) + E.S * T * 0.1;
+    const f1 = paperFan(N, w0, o1, a - (N - 1) * w0 * o1 / 2, T, E), f2 = paperFan(N, w0, o2, a + 0.8 - (N - 1) * w0 * o2 / 2, T, E);
     const back = [], front = [];
-    fanRing({ cx: 0, cy: 0, R: 50, ri: 24, w, angles: spread(N, w, P2, a + 0.8 - w * P2 / 2), depth: foldDepth(T, E, 0.5),
+    fanRing({ cx: 0, cy: 0, R: 50, ri: 24, w: f2.w, angles: f2.angles, depth: f2.depth,
               rx: 48 * PI / 180, ry: 25 * PI / 180, s: 1, grp: 'back', bl: E.F }, ALL, back);
-    fanRing({ cx: 0, cy: 0, R: 74, ri: 34, w, angles: spread(N, w, P, a - w * P / 2), depth: foldDepth(T, E, 0.5),
+    fanRing({ cx: 0, cy: 0, R: 74, ri: 34, w: f1.w, angles: f1.angles, depth: f1.depth,
               rx: (60 + 6 * Math.sin(T * 0.33)) * PI / 180, ry: (-14 + 10 * Math.sin(T * 0.27)) * PI / 180, s: 0 }, ALL, front);
     for (const it of centreOn(back, vp[0] + vp[2] * 0.78, vp[1] + vp[3] * 0.78)) if (visible(it.p, vp)) out.push(it);
     for (const it of centreOn(front, 0, -4)) if (visible(it.p, vp)) out.push(it);
@@ -823,9 +847,176 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
   }
   // Full fill: pleats about five across the frame, tiers crossing diagonally.
-  function sceneFill(T, E, vp, out) { ENV.bg = null; tiers(T, E, vp, out, { cx: 520, cy: -500, pw: 44, len: 300, step: 150 }); }
+  function sceneFill(T, E, vp, out) { ENV.bg = null; ENV.dark = false; tiers(T, E, vp, out, { cx: 520, cy: -500, pw: 44, len: 300, step: 150 }); }
   // Close up: two or three very large pleats, nearly upright, an edge passing now and then.
-  function sceneClose(T, E, vp, out) { ENV.bg = null; tiers(T, E, vp, out, { cx: 160, cy: -980, pw: 84, len: 560, step: 420 }); }
+  function sceneClose(T, E, vp, out) { ENV.bg = null; ENV.dark = false; tiers(T, E, vp, out, { cx: 160, cy: -980, pw: 84, len: 560, step: 420 }); }
+
+  /* ---------- the board's screens, exactly: outlines and gradients from Figma ("Animation", node 1177:2559) ---------- */
+  const BZ = [[0, '#4e172b'], [0.26, '#ff6600'], [0.519, '#b78aff'], [0.774, '#f4d4f4'], [0.957, '#ffffff']];
+  const q4 = (str, g) => ({ p: str.split(' ').map(Number), g });
+  const FIGS = {
+    // Group 60 in "Group 75": the zigzag fading to white at its top, with a progressive blur toward the left
+    blurZig: { box: [18182.7, 12794.2, 193, 116.9], base: 'bottom', stops: [BZ], blur: { r: 6.7, sharp: 0.486, full: 0.263 }, layers: [[
+      q4('18248.5 12809.5 18221.2 12808.4 18297.9 12860.7 18354.4 12868.9', [18310.6, 12883.5, 18198.4, 12821.9]),
+      q4('18248.5 12809.5 18260.2 12789.2 18372.5 12822.4 18354.4 12868.9', [18340.5, 12876.2, 18216.3, 12808.9]),
+      q4('18206.4 12827 18179.2 12822.8 18217.5 12889.5 18272.9 12904.2', [18249.9, 12913.9, 18168.6, 12834.2]),
+      q4('18206.4 12827 18221.2 12808.4 18297.9 12860.7 18272.9 12904.2', [18281.7, 12906, 18185.4, 12826.4]),
+      q4('18161.5 12839.4 18179.2 12822.8 18217.5 12889.5 18186.1 12929.1', [18210.9, 12926.8, 18134.8, 12843]),
+      q4('18287.2 12787.3 18260.2 12789.2 18372.5 12822.4 18429.1 12824', [18365.1, 12843, 18225.4, 12804.4])]] },
+    // Group 76: the zigzag on white
+    zig: { box: [18291, 12134, 342, 213], base: 'bottom', stops: [SC0], layers: [[
+      q4('18485.7 12189.1 18514.3 12179 18457.2 12268.7 18400.9 12296.8', [18465.4, 12276.3, 18450.3, 12202.2]),
+      q4('18485.7 12189.1 18463.7 12167.4 18359.7 12244.4 18400.9 12296.8', [18435.7, 12280.5, 18417.2, 12189.5]),
+      q4('18538.8 12197.6 18565.7 12183.8 18556.3 12279.2 18504.2 12315.1', [18544.7, 12297.5, 18525.9, 12204.7]),
+      q4('18538.8 12197.6 18514.3 12179 18457.2 12268.7 18504.2 12315.1', [18512.2, 12302.8, 18490.9, 12198.3]),
+      q4('18592.4 12199 18565.7 12183.8 18556.3 12279.2 18608.4 12318.8', [18589, 12311.3, 18566.2, 12199.2]),
+      q4('18434.1 12173.6 18463.7 12167.4 18359.8 12244.4 18300.3 12264.3', [18387.3, 12241.7, 18377.1, 12191.8])]] },
+    // Ebene_1 1177:2573: the close-up fan, long pleats nearly upright
+    close: { box: [18661, 12132, 218, 218], base: 'mid', stops: [SC0], layers: [[
+      q4('18359 12498.4 18416.5 12520.9 18634.9 12155.2 18603.7 12136.9', [18376.6, 12457.2, 18615.8, 12227.3]),
+      q4('18456.7 12420.2 18416.5 12520.9 18634.9 12155.2 18654.6 12100.8', [18416.2, 12425.6, 18646.7, 12204]),
+      q4('18763.5 12374.7 18808.6 12462.9 18837.5 12128.7 18814.7 12079.8', [18759.1, 12321.9, 18853.1, 12231.5]),
+      q4('18763.5 12374.7 18710.2 12431.1 18786.6 12114.2 18814.7 12079.8', [18693.3, 12321.9, 18826.9, 12193.5]),
+      q4('18864.5 12423.6 18904.4 12525 18886.9 12157.1 18867.4 12102.4', [18849.6, 12348.6, 18915.4, 12285.4]),
+      q4('18864.5 12423.6 18808.6 12462.9 18837.5 12128.7 18867.4 12102.4', [18784.2, 12340.4, 18890.9, 12237.8]),
+      q4('18962 12503.5 18904.4 12525 18886.9 12157.1 18918.3 12139.3', [18870.7, 12382, 18954.2, 12301.7]),
+      q4('18456.7 12420.2 18512.5 12460.4 18684.5 12127.6 18654.6 12100.8', [18472, 12387.9, 18671.3, 12196.3]),
+      q4('18557.9 12373 18611 12430.3 18735.4 12113.8 18707.4 12079', [18568.6, 12341.7, 18730, 12186.6]),
+      q4('18557.8 12373 18512.5 12460.4 18684.5 12127.6 18707.4 12079', [18508.5, 12367.3, 18704.4, 12178.9]),
+      q4('18660.7 12357.8 18710.2 12431.1 18786.6 12114.2 18761.1 12072', [18666.4, 12305.2, 18792.2, 12183.2]),
+      q4('18660.7 12357.8 18611 12430.3 18735.4 12113.8 18761.1 12072', [18602.9, 12331.5, 18766, 12173.4])]] },
+    // Ebene_1 1177:2587: three stacked fans, the lowest group first
+    tiers: { box: [18894, 12132, 307, 218], base: 'mid', stops: [SC0, SC1], zoom: 1.16, layers: [
+      [q4('19493 12504.9 19577.2 12549.4 19256 12345.7 19213.2 12326.8', [19237.9, 12351.3, 19543, 12516.6]),
+       q4('19493 12504.9 19419.4 12560.8 19172.8 12355.3 19213.2 12326.8', [19192.4, 12376.7, 19443.5, 12512.7]),
+       q4('19657.5 12504.2 19735.8 12559.4 19338.8 12344.2 19300.4 12321', [19336.9, 12336.9, 19691.4, 12529]),
+       q4('19657.5 12504.2 19577.2 12549.4 19256 12345.7 19300.4 12321', [19292.5, 12350.8, 19596.5, 12515.5]),
+       q4('19821.6 12525.6 19735.8 12559.4 19338.8 12344.3 19386.5 12323.7', [19392.7, 12333.4, 19754.8, 12529.6]),
+       q4('18885.5 12723.6 18978.4 12719.6 18935.6 12430 18883.3 12430.7', [18838.9, 12538, 19005.1, 12628]),
+       q4('19024.4 12638 19117.5 12646.6 19011.3 12397.8 18960 12393.4', [18935.7, 12473.4, 19126.5, 12576.7]),
+       q4('19024.4 12638 18978.4 12719.6 18935.6 12430 18960 12393.4', [18898.8, 12518.4, 19033.4, 12591.3]),
+       q4('19173.7 12572.4 19265.3 12593.4 19090.8 12372.7 19041.5 12363.3', [19035.6, 12420.2, 19258.1, 12540.7]),
+       q4('19173.7 12572.4 19117.4 12646.6 19011.3 12397.8 19041.5 12363.3', [18994.9, 12459.2, 19159.3, 12548.2]),
+       q4('19330.8 12527.7 19419.4 12560.8 19172.8 12355.3 19126.4 12341', [19136.9, 12379.3, 19397.7, 12520.6]),
+       q4('19330.8 12527.7 19265.3 12593.4 19090.8 12372.7 19126.4 12341', [19093.5, 12411.7, 19297.7, 12522.4])],
+      [q4('19322 12347.1 19392.8 12387.3 19122.9 12203.4 19087 12186.3', [19105, 12212.5, 19366.5, 12354.2]),
+       q4('19322 12347.1 19260.3 12397.5 19053.1 12212.1 19087 12186.3', [19067.3, 12234.4, 19281.8, 12350.5]),
+       q4('19460.3 12346.4 19526 12396.3 19192.5 12202.1 19160.3 12181.1', [19186, 12203.6, 19489.5, 12368]),
+       q4('19460.3 12346.4 19392.8 12387.3 19122.9 12203.4 19160.3 12181.1', [19149.4, 12215.3, 19408.5, 12355.7]),
+       q4('19598.1 12365.8 19526 12396.3 19192.5 12202.1 19232.6 12183.5', [19232.5, 12202.5, 19540.9, 12369.6]),
+       q4('18811.7 12544.5 18889.7 12540.9 18853.9 12279.5 18809.8 12280.1', [18769.1, 12377.4, 18915.4, 12456.7]),
+       q4('18928.4 12467.3 19006.6 12475 18917.4 12250.4 18874.3 12246.4', [18850.9, 12319.8, 19017.1, 12409.8]),
+       q4('18928.4 12467.3 18889.7 12540.9 18853.9 12279.5 18874.3 12246.4', [18819.9, 12360, 18939.8, 12424.9]),
+       q4('19053.8 12408 19130.8 12427 18984.2 12227.8 18942.8 12219.3', [18935.2, 12272.5, 19127.5, 12376.7]),
+       q4('19053.8 12408 19006.6 12475 18917.4 12250.4 18942.8 12219.3', [18901, 12307.2, 19043.1, 12384.2]),
+       q4('19185.8 12367.7 19260.3 12397.5 19053.1 12212.1 19014.1 12199.1', [19020.5, 12236.3, 19244.8, 12357.8]),
+       q4('19185.8 12367.7 19130.8 12426.9 18984.2 12227.8 19014.1 12199.1', [18984, 12265.2, 19159.3, 12360.1])],
+      [q4('19206.4 12202.9 19270.2 12234.9 19026.6 12088.8 18994.2 12075.2', [19014.5, 12090.6, 19242.4, 12214.1]),
+       q4('19206.4 12202.9 19150.6 12243 18963.6 12095.6 18994.2 12075.2', [18979.9, 12109, 19168, 12210.9]),
+       q4('19331.1 12202.4 19390.5 12242.1 19089.4 12087.7 19060.3 12071.1', [19089.6, 12079.7, 19354.8, 12223.4]),
+       q4('19331.1 12202.4 19270.2 12234.9 19026.6 12088.8 19060.3 12071.1', [19057.5, 12086.9, 19285.6, 12210.5]),
+       q4('19455.6 12217.8 19390.5 12242.1 19089.4 12087.7 19125.6 12073', [19131.8, 12076.5, 19403.5, 12223.8]),
+       q4('18745.7 12359.8 18816.1 12357 18783.7 12149.2 18744 12149.7', [18712.7, 12226.3, 18834.3, 12292.2]),
+       q4('18851 12298.5 18921.6 12304.6 18841.1 12126.1 18802.2 12123', [18785.7, 12179.6, 18926.5, 12255.9]),
+       q4('18851 12298.5 18816.1 12356.9 18783.7 12149.2 18802.2 12123', [18757.8, 12212.1, 18855.3, 12265]),
+       q4('18964.2 12251.4 19033.7 12266.4 18901.4 12108.1 18864 12101.4', [18861.2, 12141, 19026.4, 12230.5]),
+       q4('18964.2 12251.4 18921.6 12304.6 18841.1 12126.1 18864 12101.4', [18830.5, 12169.2, 18952.4, 12235.3]),
+       q4('19083.3 12219.3 19150.6 12243 18963.6 12095.6 18928.4 12085.4', [18937.9, 12111.1, 19132.3, 12216.5]),
+       q4('19083.4 12219.3 19033.7 12266.4 18901.4 12108.1 18928.4 12085.4', [18905, 12134.7, 19057.5, 12217.3])]],
+      layerStops: [1, 1, 0] }
+  };
+  for (const k in FIGS) {                       // bounds of every figure, for the build and the pulse
+    const F = FIGS[k]; let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    for (const L of F.layers) for (const pc of L) for (let i = 0; i < pc.p.length; i += 2) {
+      x0 = Math.min(x0, pc.p[i]); x1 = Math.max(x1, pc.p[i]); y0 = Math.min(y0, pc.p[i + 1]); y1 = Math.max(y1, pc.p[i + 1]);
+    }
+    F.bb = [x0, y0, x1, y1];
+  }
+  // One board screen. The frame of the Figma screen fills the stage (cover for full-bleed screens, contain on white).
+  // Motion is one smooth field applied to every corner, so pieces that share an edge stay joined:
+  //  build: the figure unfolds from its left end like an accordion while the pleats grow up, staggered left to right
+  //  pulse: a slow wave runs along the zigzag; drift: a slow push in.
+  function figScene(key, lt, E, vp, out, opt = {}) {
+    const F = FIGS[key], [bx, by, bw, bh] = F.box, bcx = bx + bw / 2, bcy = by + bh / 2;
+    const fit = opt.fit || (F.base === 'mid' ? 'cover' : 'contain');
+    let sc = fit === 'cover' ? Math.max(vp[2] / bw, vp[3] / bh) : Math.min(vp[2] / bw, vp[3] / bh) * 0.92;
+    sc *= (F.zoom || 1) * (opt.zoom || 1) * (1 + 0.035 * Math.min(lt, 8) / 8);
+    const vcx = vp[0] + vp[2] / 2 + (opt.dx || 0) * vp[2], vcy = vp[1] + vp[3] / 2 + (opt.dy || 0) * vp[3];
+    const [fx0, fy0, fx1, fy1] = F.bb, fw = fx1 - fx0, fh = fy1 - fy0;
+    const yb = F.base === 'bottom' ? fy1 : (fy0 + fy1) / 2, ycm = (fy0 + fy1) / 2;
+    const b0 = opt.build === false ? 99 : lt - (opt.delay || 0);
+    const acc = 0.3 + 0.7 * easeOut(b0 / 1.3);
+    const P = E.P === undefined ? 0.5 : E.P;
+    const V = (x, y) => {
+      const xn = (x - fx0) / fw;
+      const grow = easeBack((b0 - 0.1 - 0.75 * xn) / 0.6);
+      let X = fx0 + (x - fx0) * acc, Y = yb + (y - yb) * grow;
+      const wv = Math.sin(TAU * lt / 3.2 - xn * 3.6), wv2 = Math.sin(TAU * lt / 5.3 + xn * 2.1);
+      Y += (y - ycm) * 0.07 * P * wv;
+      X += (y - ycm) * 0.05 * P * wv2;
+      return [vcx + (X - bcx) * sc, vcy + (Y - bcy) * sc];
+    };
+    const start = out.length;
+    F.layers.forEach((L, li) => {
+      for (const pc of L) {
+        const p = new Array(pc.p.length);
+        for (let i = 0; i < pc.p.length; i += 2) { const q = V(pc.p[i], pc.p[i + 1]); p[i] = q[0]; p[i + 1] = q[1]; }
+        const g0 = V(pc.g[0], pc.g[1]), g1 = V(pc.g[2], pc.g[3]);
+        if (visible(p, vp)) out.push({ p, s: 0, st: F.stops[F.layerStops ? F.layerStops[li] : 0], g: [g0[0], g0[1], g1[0], g1[1]] });
+      }
+    });
+    // tilt-shift: sharp across the figure's right part, blurring toward its left, and the sharp band drifts
+    if (F.blur && opt.ts !== false) {
+      const drift = 0.16 * Math.sin(TAU * lt / 7) * (opt.tsMove === false ? 0 : 1);
+      const xs = bx + bw * (F.blur.sharp + drift), xf = bx + bw * (F.blur.full + drift);
+      const A = V(xs, bcy), B = V(xf, bcy);
+      ENV.ts = { ax: A[0], ay: A[1], bx: B[0], by: B[1], r: F.blur.r * sc, one: true };
+    } else if (opt.band) {
+      // a moving band of focus across full-bleed screens
+      const ang = opt.band.ang, c = Math.cos(ang), s2 = Math.sin(ang), off = opt.band.amp * Math.sin(TAU * lt / opt.band.per);
+      const cx = vp[0] + vp[2] / 2 + c * off * vp[2], cy = vp[1] + vp[3] / 2 + s2 * off * vp[3];
+      ENV.ts = { ax: cx, ay: cy, bx: cx + c * vp[2] * opt.band.reach, by: cy + s2 * vp[2] * opt.band.reach, r: vp[2] * opt.band.r, half: vp[2] * opt.band.half };
+    }
+    return start;
+  }
+  const BOARD_LOOP = 8;
+  const TZ = vp => 1 + Math.max(0, vp[2] / vp[3] - 1.2) * 0.45;   // stacked fans: wider frames zoom in so the top stays covered
+  const boardScene = (key, opt) => (T, E, vp, out) => {
+    const lt = E.bm !== 'off' ? E.B * 2 + Math.max(0, T % BOARD_LOOP - 2) : frac(T / BOARD_LOOP) * BOARD_LOOP;
+    ENV.bg = '#ffffff';
+    if (key === 'close' || key === 'tiers') { ENV.bg = null; ENV.dark = false; }
+    figScene(key, lt, E, vp, out, opt.zoomFn ? { ...opt, zoom: opt.zoomFn(vp) } : opt);
+  };
+
+  // The showreel, after the board's script: build-up on white, from element to lamp, cuts between full-bleed
+  // fans and pleats free in space, the logo with pleats over it, and the end screen with logo and claim. 30 s.
+  const REEL = [
+    [0, 6, 'blurZig'], [6, 11, 'derive'], [11, 14.5, 'close'], [14.5, 18.5, 'tiers'],
+    [18.5, 22, 'zig'], [22, 25.5, 'logo'], [25.5, 30, 'end']];
+  const REEL_LEN = 30;
+  function sceneReel(T, E, vp, out) {
+    const u = frac(T / REEL_LEN) * REEL_LEN, seg = REEL.find(x => u >= x[0] && u < x[1]) || REEL[0], lt = u - seg[0], bm = E.bm;
+    E.bm = 'off'; ENV.bg = '#ffffff';
+    const band = { ang: 0.35, amp: 0.22, per: 6, reach: 0.38, r: 0.02, half: 0.12 };
+    switch (seg[2]) {
+      case 'blurZig': figScene('blurZig', lt, E, vp, out, { delay: 0.5, zoom: 1.05 }); break;
+      case 'derive': { const st0 = out.length; sceneDerive(lt * 1.1, E, vp, out); scaleItems(out, st0, Math.min(1.35, vp[2] / 165)); break; }
+      case 'close': ENV.bg = null; ENV.dark = false; figScene('close', lt, E, vp, out, { delay: 0, zoom: 1.08, band: { ...band, ang: -1.2, per: 5 } }); break;
+      case 'tiers': ENV.bg = null; ENV.dark = false; figScene('tiers', lt, E, vp, out, { delay: 0, band, zoom: TZ(vp) }); break;
+      case 'zig': figScene('zig', lt, E, vp, out, { delay: 0.15 }); break;
+      case 'logo': {
+        const at = out.length;
+        figScene('blurZig', lt + 3, E, vp, out, { build: false, zoom: 1.1, dx: 0.3, dy: 0.34, ts: false });
+        ENV.logoMid = { at: Math.min(at + 3, out.length), logo: smooth((lt - 0.2) / 0.6), claim: 0 };
+        break;
+      }
+      default: ENV.bg = null; ENV.dark = false; figScene('tiers', lt + 4, E, vp, out, { build: false, band, zoom: TZ(vp) });
+    }
+    E.bm = bm;
+  }
+  const reelBrand = T => { const u = frac(T / REEL_LEN) * REEL_LEN;
+    return u < 25.5 ? null : { logo: smooth((u - 25.9) / 0.8), claim: smooth((u - 27) / 0.8) }; };
+
   // Film: cuts between the variants, ending on the logo and claim. 15 s loop.
   const FILM = [[0, 4.5, 'derive'], [4.5, 7, 'fill'], [7, 9, 'free'], [9, 11, 'close'], [11, 15, 'end']];
   function sceneFilm(T, E, vp, out) {
@@ -877,6 +1068,16 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   ];
   const SHAPES = [[0, '#321419'], [0.28, '#ff6400'], [0.42, '#f27f48'], [0.69, '#d5c6e4'], [1, '#b296ff']];
   const VIS = [
+    { id: 's-reel', name: 'Showreel', meta: 'scryns · 30 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1, BZ],
+      coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: sceneReel, loop: REEL_LEN, brandAt: reelBrand },
+    { id: 'b-blurzig', name: 'Blurred zigzag', meta: 'board · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [BZ],
+      coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('blurZig', { delay: 0.4 }), loop: BOARD_LOOP },
+    { id: 'b-zig', name: 'Zigzag', meta: 'board · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0],
+      coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('zig', { delay: 0.3 }), loop: BOARD_LOOP },
+    { id: 'b-close', name: 'Close-up fan', meta: 'board · full bleed', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0],
+      coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('close', { band: { ang: -1.2, amp: 0.22, per: 5, reach: 0.38, r: 0.02, half: 0.12 } }), loop: BOARD_LOOP },
+    { id: 'b-tiers', name: 'Stacked fans', meta: 'board · full bleed', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
+      coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('tiers', { zoomFn: TZ, band: { ang: 0.35, amp: 0.22, per: 6, reach: 0.38, r: 0.02, half: 0.12 } }), loop: BOARD_LOOP },
     { id: 's-film', name: 'Film', meta: 'scryns · 15 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
       coef: [1, 0, 0], phi: 0, lg: 0.2, wave: 0.04, selfBuild: true, build: sceneFilm, loop: 15,
       brandAt: T => { const u = frac(T / 15) * 15; return u < 11 ? null : { logo: smooth((u - 11.4) / 1), claim: smooth((u - 12.4) / 1) }; } },
@@ -1000,7 +1201,31 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   }
 
   const polys = [], ENV = { A: 0, bc: 0 };
-  const blurCv = document.createElement('canvas');
+  const blurCv = document.createElement('canvas'), tsCv = document.createElement('canvas');
+  // tilt-shift: a blurred copy of the frame laid over it through a gradient mask, sharp along a line or band
+  function tiltShift(ctx, w, h, m, t, amount) {
+    if (tsCv.width !== w || tsCv.height !== h) { tsCv.width = w; tsCv.height = h; }
+    const S = (x, y) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+    const k = Math.hypot(m[0], m[1]);
+    const px = Math.max(0.5, t.r * k * amount / 0.6);
+    const c = tsCv.getContext('2d');
+    c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, w, h);
+    c.filter = 'blur(' + px.toFixed(1) + 'px)'; c.drawImage(ctx.canvas, 0, 0); c.filter = 'none';
+    c.globalCompositeOperation = 'destination-in';
+    const A = S(t.ax, t.ay), B = S(t.bx, t.by);
+    let g;
+    if (t.one) {                                   // sharp at A, fully blurred from B onward
+      g = c.createLinearGradient(A[0], A[1], B[0], B[1]);
+      g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(0.5, 'rgba(0,0,0,0.5)'); g.addColorStop(1, 'rgba(0,0,0,1)');
+    } else {                                       // a sharp band through A, blurring out on both sides
+      const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, hk = Math.min(0.9, t.half * k / L);
+      g = c.createLinearGradient(A[0] - dx, A[1] - dy, A[0] + dx, A[1] + dy);
+      g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(0.5 - hk / 2, 'rgba(0,0,0,0)');
+      g.addColorStop(0.5 + hk / 2, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,1)');
+    }
+    c.fillStyle = g; c.fillRect(0, 0, w, h); c.restore();
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(tsCv, 0, 0); ctx.restore();
+  }
   const BLUR_OK = (() => { try { const c = document.createElement('canvas').getContext('2d'); c.filter = 'blur(2px)'; return c.filter === 'blur(2px)'; } catch (e) { return false; } })();
   function render(cv, vis, T, o) {
     const ctx = cv.getContext('2d'), w = cv.width, h = cv.height;
@@ -1015,11 +1240,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const vp = [mx - bw / 2, my - bh / 2, bw, bh];
     const view2 = [sc * rc, sc * rs, -sc * rs, sc * rc, w / 2 - (mx * rc - my * rs) * sc, h / 2 - (mx * rs + my * rc) * sc];
     polys.length = 0;
-    ENV.bg = null; ENV.F = o.focus === undefined ? 0.6 : o.focus;
+    ENV.bg = null; ENV.ts = null; ENV.logoMid = null; ENV.dark = undefined; ENV.F = o.focus === undefined ? 0.6 : o.focus;
     ENV.A = o.fold; ENV.bc = o.bc || 0;
     ENV.N = o.copies || 5; ENV.B = o.B === undefined ? 1 : o.B; ENV.bm = o.bmode || 'off'; ENV.S = o.spin === undefined ? 0.3 : o.spin; ENV.P = o.rpulse === undefined ? 0.5 : o.rpulse;
     vis.build(T, ENV, vp, polys, aspect);
-    const bg = ENV.bg || vis.bg || '#00001b';
+    const bg = ENV.bg || vis.bg || '#ffffff';
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
     ctx.setTransform(...view2);
@@ -1055,6 +1280,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     };
     for (let i = 0; i < polys.length; i++) {
       const f = polys[i];
+      if (ENV.logoMid && i === ENV.logoMid.at) { flush(); drawBrand(ctx, w, h, ENV.logoMid, true); }
       if (run && f.grp !== run.grp) flush();
       if (!run && f.grp && f.bl > 0.02 && BLUR_OK) {
         if (blurCv.width !== w || blurCv.height !== h) { blurCv.width = w; blurCv.height = h; }
@@ -1071,15 +1297,17 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         if (r <= 0.02) continue;
         if (r < 1) P = grow(P, vis, vp, 1 - Math.pow(1 - r, 3));
       }
-      if (f.g) paintAxis(dc, P, vis.stops[f.s], f.g, phi - vis.phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges, P === f.p ? f.h : null);
+      if (f.g) paintAxis(dc, P, f.st || vis.stops[f.s], f.g, phi - vis.phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges, P === f.p ? f.h : null);
       else paint(dc, P, vis.stops[f.s], f.c || vis.coef, phi, o.pulse * vis.wave, o.TG, o.offset, lw, o.edges);
       drawn++;
     }
     flush();
+    if (ENV.logoMid && ENV.logoMid.at >= polys.length) drawBrand(ctx, w, h, ENV.logoMid, true);
+    if (ENV.ts && BLUR_OK && (o.focus === undefined || o.focus > 0.01)) tiltShift(ctx, w, h, view2, ENV.ts, o.focus === undefined ? 0.6 : o.focus);
     // logo and claim, from the visual's own timeline or from the Brand setting
     const brand = vis.brandAt ? vis.brandAt(T) : null;
     const pick = brand || (o.brand === 'logo' ? { logo: 1, claim: 0 } : o.brand === 'both' ? { logo: 1, claim: 1 } : null);
-    drawBrand(ctx, w, h, pick, bg === '#ffffff');
+    drawBrand(ctx, w, h, pick, ENV.dark !== undefined ? ENV.dark : bg === '#ffffff');
     return drawn;
   }
 
@@ -1315,5 +1543,30 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+  // soundtrack: plays in step with the Showreel's 30 s timeline
+  const audio = new Audio(); audio.preload = 'auto';
+  let soundReady = false;
+  $('sound-file').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    audio.src = URL.createObjectURL(f); soundReady = true;
+    $('sound-start').disabled = false;
+    $('sound-info').textContent = f.name + ' · plays with the Showreel. Exports stay silent.';
+  });
+  $('sound-start').addEventListener('click', () => {
+    const k = VIS.findIndex(v => v.id === 's-reel'); if (k >= 0) select(k);
+    st.T = 0; st.TG = 0; setPlaying(true); st.dirty = true;
+    try { audio.currentTime = 0; audio.play().catch(() => {}); } catch (err) { /* no audio here */ }
+  });
+  setInterval(() => {
+    if (!soundReady) return;
+    const vis = VIS[st.cur];
+    if (vis.id !== 's-reel' || !st.playing || exporting) { if (!audio.paused) audio.pause(); return; }
+    const want = (st.T % REEL_LEN) * 1;
+    if (audio.paused) { try { audio.currentTime = want; audio.play().catch(() => {}); } catch (err) {} }
+    else if (Math.abs(audio.currentTime - want) > 0.25 && audio.duration > want) audio.currentTime = want;
+  }, 250);
+
+  // jump to a moment (seconds), used to check frames without waiting
+  window.__fmSeek = t => { st.T = t; st.TG = t; st.dirty = true; };
 })();
 </script>
