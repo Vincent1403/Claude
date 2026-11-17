@@ -798,15 +798,19 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   // tips back in perspective and turns, then folds back into one pleat. 12 s loop (or once, with a build).
   function sceneDerive(T, E, vp, out) {
     ENV.bg = '#ffffff';
+    // Reveal from nothing: the ring starts edge-on to the camera and flat, so it has no visible thickness; it tips
+    // toward the camera while turning in its own plane, opens like a paper fan and its folds grow to full depth.
+    // Then slow rotation; at the end of the loop it folds flat and turns edge-on again.
     const M = 16, w0 = TAU / M, R = 72, ri = 36, u = frac(T / 12) * 12;
-    // fast opening, then slow and smooth
-    let fr;
-    if (E.bm !== 'off') fr = easeOut(E.B);
-    else fr = u < 0.6 ? 0 : u < 2.4 ? easeOut((u - 0.6) / 1.8) : u < 9.6 ? 1 : 1 - smooth((u - 9.6) / 2.4);
-    const o = 1 / M + (1 - 1 / M) * fr, f = paperFan(M, w0, o, PI / 2 - (M - 1) * w0 * o / 2, T, E), items = [];
-    fanRing({ cx: 0, cy: 0, R, ri, w: f.w, angles: f.angles, depth: f.depth,
-              rx: (8 + 50 * smooth(fr)) * PI / 180, ry: 10 * Math.sin(T * 0.35) * PI / 180,
-              rz: E.S * T * 0.2 * smooth(fr), s: 0 }, ALL, items);
+    let p;
+    if (E.bm !== 'off') p = easeOut(E.B);
+    else p = u < 0.3 ? 0 : u < 3.4 ? easeOut((u - 0.3) / 3.1) : u < 9.4 ? 1 : 1 - smooth((u - 9.4) / 2.6);
+    if (p < 0.002) return;                                          // edge-on and flat: nothing to see
+    const open = 0.3 + 0.7 * smooth((p - 0.1) / 0.9);
+    const f = paperFan(M, w0, open, PI / 2 - (M - 1) * w0 * open / 2, T, E), items = [];
+    fanRing({ cx: 0, cy: 0, R, ri, w: f.w, angles: f.angles, depth: k => f.depth(k) * p,
+              rx: (90 - 32 * p) * PI / 180, ry: 10 * Math.sin(T * 0.35) * p * PI / 180,
+              rz: -0.9 * (1 - p) + E.S * T * 0.2, s: 0 }, ALL, items);
     for (const it of centreOn(items, 0, 0)) if (visible(it.p, vp)) out.push(it);
   }
   // Free in space: an open paper fan on white, tipped far back so its pleats read as a folded row, turning and
@@ -950,16 +954,32 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const [fx0, fy0, fx1, fy1] = F.bb, fw = fx1 - fx0, fh = fy1 - fy0;
     const yb = F.base === 'bottom' ? fy1 : (fy0 + fy1) / 2, ycm = (fy0 + fy1) / 2;
     const b0 = opt.build === false ? 99 : lt - (opt.delay || 0);
-    const acc = 0.3 + 0.7 * easeOut(b0 / 1.3);
+    // reveal from nothing: the flat figure starts edge-on to the camera (no thickness, so invisible), then turns
+    // toward the camera in perspective while it unfolds; with revealOut it turns edge-on again at the end
+    let rv = 1;
+    if (opt.reveal) {
+      rv = easeOut(b0 / 2.8);
+      if (opt.revealOut) rv *= 1 - smooth((lt - (opt.revealOut - 1.4)) / 1.3);
+      if (rv < 0.002) return out.length;
+    }
+    const acc = opt.reveal ? 0.55 + 0.45 * easeOut(b0 / 2.4) : 0.3 + 0.7 * easeOut(b0 / 1.3);
+    const ra = (1 - rv) * PI / 2, rb = (1 - rv) * 0.6, cA = Math.cos(ra), sA = Math.sin(ra), cB = Math.cos(rb), sB = Math.sin(rb);
+    const Fp = 2.6 * vp[2];
+    const turn = (x, y) => {                       // tilt about the horizontal axis, swing about the vertical, perspective
+      const dx = x - vcx, dy = y - vcy, y1 = dy * cA, z1 = dy * sA;
+      const x2 = dx * cB + z1 * sB, z2 = -dx * sB + z1 * cB, k = Fp / Math.max(Fp + z2, Fp * 0.2);
+      return [vcx + x2 * k, vcy + y1 * k];
+    };
     const P = E.P === undefined ? 0.5 : E.P;
     const V = (x, y) => {
       const xn = (x - fx0) / fw;
-      const grow = easeOut((b0 - 0.05 - 0.6 * xn) / 0.75);
+      const grow = opt.reveal ? 1 : easeOut((b0 - 0.05 - 0.6 * xn) / 0.75);
       let X = fx0 + (x - fx0) * acc, Y = yb + (y - yb) * grow;
       const wv = Math.sin(TAU * lt / (2 * BAR) - xn * 3.6), wv2 = Math.sin(TAU * lt / (3 * BAR) + xn * 2.1);   // pulses on two and three bars
       Y += (y - ycm) * 0.07 * P * wv;
       X += (y - ycm) * 0.05 * P * wv2;
-      return [vcx + (X - bcx) * sc, vcy + (Y - bcy) * sc];
+      const sx = vcx + (X - bcx) * sc, sy = vcy + (Y - bcy) * sc;
+      return rv < 1 ? turn(sx, sy) : [sx, sy];
     };
     const start = out.length;
     F.layers.forEach((L, li) => {
@@ -1009,7 +1029,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       case 'derive': { const st0 = out.length; sceneDerive(lt * 1.1, E, vp, out); scaleItems(out, st0, Math.min(1.35, vp[2] / 165)); break; }
       case 'close': ENV.bg = null; ENV.dark = false; figScene('close', lt, E, vp, out, { delay: 0, zoom: 1.08, band: { ...band, ang: -1.2, per: 4 * BAR } }); break;
       case 'tiers': ENV.bg = null; ENV.dark = false; figScene('tiers', lt, E, vp, out, { delay: 0, band, zoom: TZ(vp) }); break;
-      case 'zig': figScene('zig', lt, E, vp, out, { delay: 0.15 }); break;
+      case 'zig': figScene('zig', lt, E, vp, out, { delay: 0.1, reveal: true }); break;
       case 'logo': {
         const at = out.length;
         figScene('blurZig', lt + 3, E, vp, out, { build: false, zoom: 1.1, dx: 0.3, dy: 0.34, ts: false });
@@ -1110,7 +1130,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     { id: 'b-blurzig', name: 'Blurred zigzag', meta: 'board · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [BZ],
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('blurZig', { delay: 0.4 }), loop: BOARD_LOOP },
     { id: 'b-zig', name: 'Zigzag', meta: 'board · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0],
-      coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('zig', { delay: 0.3 }), loop: BOARD_LOOP },
+      coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('zig', { delay: 0.3, reveal: true, revealOut: BOARD_LOOP }), loop: BOARD_LOOP },
     { id: 'b-close', name: 'Close-up fan', meta: 'board · full bleed', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0],
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('close', { band: { ang: -1.2, amp: 0.22, per: 5, reach: 0.38, r: 0.02, half: 0.12 } }), loop: BOARD_LOOP },
     { id: 'b-tiers', name: 'Stacked fans', meta: 'board · full bleed', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
