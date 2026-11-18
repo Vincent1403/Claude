@@ -146,7 +146,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           <button class="btn" id="dof" type="button" aria-pressed="true">Depth of field on</button>
           <button class="btn" id="refocus" type="button">Focus on target</button>
         </div>
-        <div class="row"><label for="aperture">Aperture</label><input id="aperture" type="range" min="0" max="1" step="0.01" value="0.45"><output id="aperture-o" for="aperture">45%</output></div>
+        <div class="row"><label for="aperture">Aperture</label><input id="aperture" type="range" min="0" max="1" step="0.01" value="0"><output id="aperture-o" for="aperture">0%</output></div>
         <div class="row"><label for="fshift">Focus</label><input id="fshift" type="range" min="-1" max="1" step="0.01" value="0"><output id="fshift-o" for="fshift">0</output></div>
         <p class="note">Click a point on the lamp to focus there. Moving to a shot puts focus back on its target.</p>
       </div>
@@ -394,7 +394,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   });
   const quadScene = new THREE.Scene(), quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   quadScene.add(new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2), dofMat));
-  const dof = { on: true, aperture: 0.45, shift: 0, picked: null };   // picked: a focus distance chosen by clicking
+  const dof = { on: true, aperture: 0, shift: 0, picked: null };   // picked: a focus distance chosen by clicking
   const bufSize = new THREE.Vector2();
   function sizeTargets() {
     renderer.getDrawingBufferSize(bufSize);
@@ -831,7 +831,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     return [
       mk('Nothing', { az: -40, el: 0, dist: 170, tgt: [0, 0, 0], fov: 30 }, { P: { open: 0.06, rise: 0 } }, 0, 0.4, 'smooth'),
       mk('Low view', 'Low view', {}, 3.4, 0.8, 'out'),
-      mk('Rim close-up', 'Rim close-up', { dof: { aperture: 0.6 } }, 3.2, 0.6, 'smooth'),
+      mk('Rim close-up', 'Rim close-up', {}, 3.2, 0.6, 'smooth'),
       mk('From below', 'From below', { P: { tiers: 3 } }, 3.6, 0.8, 'smooth'),
       mk('Side detail', 'Side detail', { P: { tiers: 1 } }, 3.2, 0.6, 'smooth'),
       mk('Overview', 'Overview', {}, 3.2, 1.2, 'smooth')
@@ -844,7 +844,15 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   }
   const STORE = 'scryns-lamp-timeline-v1';
   function save() { try { localStorage.setItem(STORE, JSON.stringify(tl.keys)); } catch (e) { /* storage unavailable: the timeline lives for this visit only */ } }
-  function load() { try { const v = JSON.parse(localStorage.getItem(STORE) || 'null'); return Array.isArray(v) && v.length ? v : null; } catch (e) { return null; } }
+  function load() {
+    try {
+      const v = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (!Array.isArray(v) || !v.length) return null;
+      // one-time change: aperture 0 on every saved key (depth of field off by default)
+      if (!localStorage.getItem(STORE + '-ap0')) { v.forEach(k => { if (k.s && k.s.dof) k.s.dof.aperture = 0; }); localStorage.setItem(STORE + '-ap0', '1'); localStorage.setItem(STORE, JSON.stringify(v)); }
+      return v;
+    } catch (e) { return null; }
+  }
   $('tl-reset').addEventListener('click', () => { setActive(false); tl.keys = exampleKeys(); thumbsFor(tl.keys); tl.t = 0; save(); renderKeys(); });
 
   /* ---------- render the timeline to MP4 ---------- */
