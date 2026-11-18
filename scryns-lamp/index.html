@@ -38,6 +38,27 @@ body{background:var(--bg); color:var(--fg); font-family:var(--body); font-size:1
 .spot[aria-selected="true"]{border-color:#d95200; border-style:solid}
 .spot[aria-selected="true"] .knob{border-color:#d95200; background:#d95200}
 .spots[hidden]{display:none}
+.timeline{display:flex; flex-direction:column; gap:10px; background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:14px; min-width:0}
+.tl-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.tl-bar output, .tl-info{font-family:var(--mono); font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+.tl-track{position:relative; display:flex; height:26px; border:1px solid var(--line); border-radius:2px; overflow:hidden; cursor:pointer; background:var(--bg)}
+.tl-seg{position:relative; height:100%; display:flex; min-width:0}
+.tl-seg .mv{height:100%; background:repeating-linear-gradient(135deg, color-mix(in srgb, var(--accent) 35%, transparent) 0 5px, transparent 5px 10px)}
+.tl-seg .hd{height:100%; background:color-mix(in srgb, var(--accent) 55%, transparent); border-right:1px solid var(--surface)}
+.tl-seg span{position:absolute; left:4px; top:4px; font-family:var(--mono); font-size:10px; color:var(--fg); pointer-events:none; white-space:nowrap}
+.tl-head{position:absolute; top:0; bottom:0; width:2px; background:var(--fg); pointer-events:none}
+.tl-keys{display:flex; gap:10px; overflow-x:auto; padding-bottom:6px}
+.key{flex:0 0 176px; display:flex; flex-direction:column; gap:6px; border:1px solid var(--line); border-radius:2px; padding:8px; background:var(--bg); min-width:0}
+.key[aria-current="true"]{border-color:var(--accent)}
+.key.drag-over{outline:2px dashed var(--accent)}
+.key img{width:100%; aspect-ratio:16/9; object-fit:cover; background:#fff; display:block; border:1px solid var(--line); cursor:grab}
+.key .kn{display:flex; gap:6px; align-items:center; font-family:var(--mono); font-size:12px}
+.key .kn input{flex:1; min-width:0; font:inherit; font-family:var(--body); font-size:13px; font-weight:600; border:1px solid transparent; background:none; color:var(--fg); padding:2px 4px}
+.key .kn input:hover, .key .kn input:focus{border-color:var(--line)}
+.key .kf{display:grid; grid-template-columns:auto minmax(0,1fr); gap:4px 8px; align-items:center; font-size:12px; color:var(--muted)}
+.key .kf input, .key .kf select{font:inherit; font-family:var(--mono); font-size:12px; color:var(--fg); background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:2px 4px; min-width:0; width:100%}
+.key .btns .btn{padding:3px 7px; font-size:12px}
+.btn:disabled{opacity:.5; cursor:default}
 .readout{display:flex; flex-wrap:wrap; gap:4px 18px; font-family:var(--mono); font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
 .readout b{font-weight:500; color:var(--fg)}
 .rail{display:flex; flex-direction:column; gap:20px; min-width:0}
@@ -88,6 +109,23 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <span><span id="ro-n">0</span> pleats</span>
         <span>focus <span id="ro-focus">target</span></span>
       </div>
+
+      <section class="timeline" aria-label="Timeline">
+        <div class="tl-bar">
+          <button class="btn primary" id="tl-add" type="button">Add current state</button>
+          <button class="btn" id="tl-play" type="button">Play timeline</button>
+          <button class="btn" id="tl-loop" type="button" aria-pressed="true">Loop</button>
+          <button class="btn" id="tl-free" type="button">Free camera</button>
+          <output id="tl-time" for="tl-play">0.0 / 0.0 s</output>
+        </div>
+        <div class="tl-track" id="tl-track" title="Click to jump to a moment"><div class="tl-head" id="tl-head"></div></div>
+        <div class="tl-keys" id="tl-keys"></div>
+        <div class="tl-bar">
+          <button class="btn primary" id="tl-render" type="button">Render MP4</button>
+          <span class="tl-info" id="tl-info">Renders the whole timeline at 30 fps in the chosen format.</span>
+          <button class="btn" id="tl-reset" type="button">Load example timeline</button>
+        </div>
+      </section>
     </div>
 
     <aside class="rail">
@@ -131,6 +169,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <p class="label">Shape</p>
         <div class="row"><label for="pleats">Pleats</label><input id="pleats" type="range" min="6" max="40" step="1" value="16"><output id="pleats-o" for="pleats">16</output></div>
         <div class="row"><label for="open">Open</label><input id="open" type="range" min="0.06" max="1" step="0.01" value="1"><output id="open-o" for="open">100%</output></div>
+        <div class="row"><label for="rise">Rise</label><input id="rise" type="range" min="0" max="1" step="0.01" value="1"><output id="rise-o" for="rise">100%</output></div>
         <div class="row"><label for="depth">Fold</label><input id="depth" type="range" min="0" max="2" step="0.01" value="1"><output id="depth-o" for="depth">100%</output></div>
         <div class="row"><label for="inner">Inner</label><input id="inner" type="range" min="0.15" max="0.85" step="0.01" value="0.5"><output id="inner-o" for="inner">50%</output></div>
         <div class="row"><label for="notch">Notch</label><input id="notch" type="range" min="0" max="0.6" step="0.01" value="0.18"><output id="notch-o" for="notch">18%</output></div>
@@ -163,7 +202,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           <button class="btn" type="button" data-ar="0.5625" aria-pressed="false">9:16</button>
           <button class="btn" type="button" data-ar="1.7778" aria-pressed="true">16:9</button>
         </div>
-        <p class="note">Next steps: shots saved on a timeline with continuous moves, build-ups in 3D, logo ending and MP4 export.</p>
+        <p class="note">Set up a state with the controls, then "Add current state" on the timeline. The timeline moves smoothly from state to state; drag keys to reorder them.</p>
       </div>
     </aside>
   </section>
@@ -171,6 +210,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.2/build/mp4-muxer.js"></script>
 <script>
 (() => {
   'use strict';
@@ -202,6 +242,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     return tx;
   }
 
+  const TEX = {};
+  const texOf = name => TEX[name] || (TEX[name] = gradTexture(PALETTES[name]));
+  const pal = { a: 'board', b: 'board', mix: 0 };       // palette, possibly blending into another during a move
+  function applyPal() { uniforms.uGrad.value = texOf(pal.a); uniforms.uGrad2.value = texOf(pal.b); uniforms.uMix.value = pal.mix; }
+
   /* ---------- renderer, scene, camera ---------- */
   const stage = $('stage');
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -217,21 +262,22 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   // shifts the gradient a little by how the face is turned toward a fixed light, so neighbouring folds read apart while
   // the look stays as flat as the Figma graphics.
   const uniforms = {
-    uGrad: { value: gradTexture(PALETTES.board) }, uShade: { value: 0.35 }, uOffset: { value: 0 },
+    uGrad: { value: null }, uGrad2: { value: null }, uMix: { value: 0 }, uShade: { value: 0.35 }, uOffset: { value: 0 },
     uLight: { value: new THREE.Vector3(-0.45, 0.8, 0.4).normalize() }
   };
+  applyPal();
   const material = new THREE.ShaderMaterial({
     uniforms, side: THREE.DoubleSide,
     vertexShader: `
       attribute float aU; varying float vU; varying vec3 vN;
       void main(){ vU = aU; vN = mat3(modelMatrix) * normal; gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0); }`,
     fragmentShader: `
-      uniform sampler2D uGrad; uniform float uShade; uniform float uOffset; uniform vec3 uLight;
+      uniform sampler2D uGrad; uniform sampler2D uGrad2; uniform float uMix; uniform float uShade; uniform float uOffset; uniform vec3 uLight;
       varying float vU; varying vec3 vN;
       void main(){
         vec3 n = normalize(vN); if (!gl_FrontFacing) n = -n;
         float u = clamp(vU + uOffset + uShade * (dot(n, uLight) - 0.3), 0.0, 1.0);
-        gl_FragColor = texture2D(uGrad, vec2(u, 0.5));
+        gl_FragColor = mix(texture2D(uGrad, vec2(u, 0.5)), texture2D(uGrad2, vec2(u, 0.5)), uMix);
       }`
   });
 
@@ -249,17 +295,20 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   lamp.frustumCulled = false;
   const group = new THREE.Group(); group.add(lamp); scene.add(group);
 
-  const P = { pleats: 16, open: 1, depth: 1.0, inner: 0.5, notch: 0.18, tiers: 1, gap: 0.35, spin: 0.3, pulse: 0.35 };
+  const P = { pleats: 16, open: 1, rise: 1, depth: 1.0, inner: 0.5, notch: 0.18, tiers: 1, gap: 0.35, spin: 0.3, pulse: 0.35 };
   let reveal = null;                                     // { t0 } while "Reveal from nothing" runs
 
   function buildLamp(T) {
     let v = 0;
-    const M = P.pleats, w0 = TAU / M;
-    let open = P.open, depthK = 1;
-    if (reveal) { const b = (T - reveal.t0) / 3.4; open = P.open * (1 / M + (1 - 1 / M) * easeOut(b)); depthK = easeOut(b * 1.2); }
-    const w = w0 * open, paper = (w0 / 2) * (w0 / 2);
+    const M = Math.max(3, Math.round(P.pleats)), w0 = TAU / M;
+    let open0 = P.open, rise0 = P.rise;
+    if (reveal) { const b = (T - reveal.t0) / 3.4; open0 = P.open * (1 / M + (1 - 1 / M) * easeOut(b)); rise0 = P.rise * easeOut(b * 1.2); }
+    const paper = (w0 / 2) * (w0 / 2);
     const put = (x, y, z, u) => { pos[v * 3] = x; pos[v * 3 + 1] = y; pos[v * 3 + 2] = z; uu[v] = u; v++; };
-    for (let t = 0; t < P.tiers; t++) {
+    const nT = Math.ceil(P.tiers - 1e-6);
+    for (let t = 0; t < nT; t++) {
+      const grow = t === 0 ? 1 : clamp01(P.tiers - t);           // a tier that is still coming in opens from one pleat and rises
+      const open = open0 * (1 / M + (1 - 1 / M) * easeOut(grow)), depthK = rise0 * grow, w = w0 * open;
       const s = 1 + t * P.gap, Ro = R * s, Ri = R * P.inner * s, yT = -t * P.gap * R * 0.55;
       const ga = Ri + 1.12 * (Ro - Ri), gb = Ri + 0.2 * (Ro - Ri);   // dark band at the outer edge, lavender toward the centre
       const U = r => clamp01((ga - r) / (ga - gb));
@@ -280,7 +329,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     geo.setDrawRange(0, v);
     geo.attributes.position.needsUpdate = true; geo.attributes.aU.needsUpdate = true;
     geo.computeVertexNormals();
-    return M * P.tiers;
+    return M * nT;
   }
 
   /* ---------- depth of field ---------- */
@@ -501,19 +550,21 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   });
 
   /* ---------- controls ---------- */
-  const st = { T: 0, playing: true };
+  const st = { T: 0, playing: true, rot: 0 };
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const playBtn = $('play');
   function setPlaying(p) { st.playing = p; playBtn.textContent = p ? 'Pause' : 'Play'; }
   setPlaying(!reduced);
   playBtn.addEventListener('click', () => setPlaying(!st.playing));
   const pct = v => Math.round(v * 100) + '%';
+  const FMT = {};
   const bind = (id, fmt, onSet) => {
+    FMT[id] = fmt;
     const el = $(id), out = $(id + '-o');
     const upd = () => { const v = parseFloat(el.value); if (id in P) P[id] = v; out.textContent = fmt(v); if (onSet) onSet(v); };
     el.addEventListener('input', upd); upd();
   };
-  bind('pleats', v => String(v)); bind('open', pct); bind('depth', pct); bind('inner', pct); bind('notch', pct);
+  bind('pleats', v => String(v)); bind('open', pct); bind('rise', pct); bind('depth', pct); bind('inner', pct); bind('notch', pct);
   bind('tiers', v => String(v)); bind('gap', pct);
   bind('spin', v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(Math.round(v * 100)) + '%'); bind('pulse', pct);
   bind('shade', pct, v => { uniforms.uShade.value = v; });
@@ -544,12 +595,12 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   $('palettes').addEventListener('click', e => {
     const b = e.target.closest('button[data-v]'); if (!b) return;
     [...$('palettes').children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
-    uniforms.uGrad.value = gradTexture(PALETTES[b.dataset.v]);
+    pal.a = pal.b = b.dataset.v; pal.mix = 0; applyPal();
   });
   $('formats').addEventListener('click', e => {
     const b = e.target.closest('button[data-ar]'); if (!b) return;
     [...$('formats').children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
-    stage.style.setProperty('--ar', b.dataset.ar); resize();
+    stage.style.setProperty('--ar', b.dataset.ar); resize(); if (typeof renderIdle === 'function') renderIdle();
   });
   controls.addEventListener('start', () => { tween = null; controls.enabled = true; [...shotsEl.children].forEach(b => b.setAttribute('aria-pressed', 'false')); $('ro-shot').textContent = 'Free'; });
 
@@ -566,14 +617,317 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   applyShot(SHOTS[0]);
   renderSpotUI();
 
+
+  /* ---------- timeline: states (keys) the lamp moves through, in order ---------- */
+  // A key is a full snapshot: camera, shape, motion, look, depth of field and blur spots. Playback starts on the first
+  // key, holds it, then moves to the next one with that key's easing and move time, holds it, and so on.
+  const tl = { keys: [], t: 0, playing: false, active: false, loop: true, cur: -1, rotT: 0 };
+  const EASES = { smooth: ['Smooth', smooth], out: ['Ease out', easeOut], in: ['Ease in', x => Math.pow(clamp01(x), 3)],
+                  linear: ['Linear', clamp01], cut: ['Cut', x => x > 0 ? 1 : 0] };
+  const DPICK = () => ({ x: 0, y: 0, size: 0.2, str: 0 });
+  function capture(name) {
+    const c = currentShot();
+    return { name: name || 'Key ' + (tl.keys.length + 1), move: 3, hold: 0.6, ease: 'smooth', thumb: '',
+             s: { cam: { az: c.az, el: c.el, dist: c.dist, tgt: c.tgt.slice(), fov: c.fov }, P: { ...P }, shade: uniforms.uShade.value,
+                  offset: uniforms.uOffset.value, pal: pal.mix < 0.5 ? pal.a : pal.b,
+                  dof: { on: dof.on, aperture: dof.aperture, shift: dof.shift, focus: focusDist() },
+                  spots: spots.map(q => ({ x: q.x, y: q.y, size: q.size, str: q.str })), drift } };
+  }
+  const L = (a, b, k) => a + (b - a) * k;
+  function blend(A, B, k) {
+    let daz = ((B.cam.az - A.cam.az) % 360 + 540) % 360 - 180;
+    const cam = { az: A.cam.az + daz * k, el: L(A.cam.el, B.cam.el, k), dist: Math.exp(L(Math.log(A.cam.dist), Math.log(B.cam.dist), k)),
+                  tgt: A.cam.tgt.map((x, i) => L(x, B.cam.tgt[i], k)), fov: L(A.cam.fov, B.cam.fov, k) };
+    const Pm = {};
+    for (const key in A.P) Pm[key] = key === 'pleats' ? (k < 0.5 ? A.P.pleats : B.P.pleats) : L(A.P[key], B.P[key] === undefined ? A.P[key] : B.P[key], k);
+    const ap = o => o.on ? o.aperture : 0;
+    const n = Math.max(A.spots.length, B.spots.length), sp = [];
+    for (let i = 0; i < n; i++) {
+      const a = A.spots[i] || { ...B.spots[i], str: 0 }, b = B.spots[i] || { ...A.spots[i], str: 0 };
+      sp.push({ x: L(a.x, b.x, k), y: L(a.y, b.y, k), size: L(a.size, b.size, k), str: L(a.str, b.str, k) });
+    }
+    return { cam, P: Pm, shade: L(A.shade, B.shade, k), offset: L(A.offset, B.offset, k), palA: A.pal, palB: B.pal, palMix: A.pal === B.pal ? 0 : k,
+             dof: { on: A.dof.on || B.dof.on, aperture: L(ap(A.dof), ap(B.dof), k), shift: L(A.dof.shift, B.dof.shift, k),
+                    focus: Math.exp(L(Math.log(A.dof.focus), Math.log(B.dof.focus), k)) },
+             spots: sp, drift: k < 0.5 ? A.drift : B.drift };
+  }
+  function applyState(S) {
+    tween = null;
+    applyShot(S.cam);
+    Object.assign(P, S.P);
+    uniforms.uShade.value = S.shade; uniforms.uOffset.value = S.offset;
+    if (S.palA !== undefined) { pal.a = S.palA; pal.b = S.palB; pal.mix = S.palMix; } else { pal.a = pal.b = S.pal; pal.mix = 0; }
+    applyPal();
+    dof.on = S.dof.on; dof.aperture = S.dof.aperture; dof.shift = S.dof.shift; dof.picked = S.dof.focus / Math.pow(2, dof.shift);
+    const relayout = spots.length !== S.spots.length;
+    spots.length = S.spots.length;
+    S.spots.forEach((q, i) => { spots[i] = { ...(spots[i] || { ph: i * 1.9 }), x: q.x, y: q.y, size: q.size, str: q.str }; });
+    drift = !!S.drift;
+    if (relayout) { selSpot = Math.min(selSpot, Math.max(0, spots.length - 1)); renderSpotUI(); }
+  }
+  // put the controls on the rail in line with the current values
+  function syncUI() {
+    const set = (id, v) => { const el = $(id); if (!el || document.activeElement === el) return; el.value = v; $(id + '-o').textContent = FMT[id](+el.value); };
+    for (const key in P) if ($(key)) set(key, P[key]);
+    set('shade', uniforms.uShade.value); set('offset', uniforms.uOffset.value);
+    set('aperture', dof.aperture); set('fshift', dof.shift); set('fov', Math.round(camera.fov));
+    const d = $('dof'); d.setAttribute('aria-pressed', String(dof.on)); d.textContent = dof.on ? 'Depth of field on' : 'Depth of field off';
+    $('spot-drift').setAttribute('aria-pressed', String(drift));
+    const pn = pal.mix < 0.5 ? pal.a : pal.b;
+    [...$('palettes').children].forEach(x => x.setAttribute('aria-pressed', x.dataset.v === pn ? 'true' : 'false'));
+    syncSpotSliders();
+  }
+  // the timeline's length and the state at any moment
+  function segs() {
+    const out = []; let t = 0;
+    tl.keys.forEach((k, i) => {
+      const mv = i === 0 ? 0 : Math.max(0, +k.move || 0), hd = Math.max(0, +k.hold || 0);
+      out.push({ i, t0: t, mv, hd }); t += mv + hd;
+    });
+    return { list: out, total: t };
+  }
+  function stateAt(t) {
+    const { list } = segs();
+    if (!list.length) return null;
+    for (const g of list) {
+      if (t < g.t0 + g.mv) return { S: blend(tl.keys[g.i - 1].s, tl.keys[g.i].s, EASES[tl.keys[g.i].ease || 'smooth'][1]((t - g.t0) / g.mv)), i: g.i };
+      if (t < g.t0 + g.mv + g.hd) return { S: tl.keys[g.i].s, i: g.i };
+    }
+    const g = list[list.length - 1]; return { S: tl.keys[g.i].s, i: g.i };
+  }
+  // the lamp's turn at time t: the spin speed added up from the start, in 1/60 s steps
+  function rotAt(t) {
+    let r = 0;
+    for (let x = 0; x < t; x += 1 / 60) { const s = stateAt(x); r -= (s ? s.S.P.spin : 0) * 0.25 * Math.min(1 / 60, t - x); }
+    return r;
+  }
+  function showAt(t, live) {
+    const a = stateAt(t); if (!a) return;
+    applyState(a.S); st.T = t;
+    if (!live || Math.abs(t - tl.rotT) > 0.2 || t < tl.rotT) st.rot = rotAt(t);
+    tl.rotT = t; tl.cur = a.i;
+    $('ro-shot').textContent = tl.keys[a.i].name;
+  }
+  function setActive(on) {
+    tl.active = on; controls.enabled = !on;
+    $('tl-free').disabled = !on;
+    if (!on) { tl.playing = false; $('tl-play').textContent = 'Play timeline'; }
+    drawTrack();
+  }
+  function playTL(on) {
+    if (on && !tl.keys.length) return;
+    tl.playing = on; $('tl-play').textContent = on ? 'Pause timeline' : 'Play timeline';
+    if (on) { setActive(true); if (tl.t >= segs().total - 1e-3) tl.t = 0; tl.playing = true; $('tl-play').textContent = 'Pause timeline'; }
+  }
+  $('tl-play').addEventListener('click', () => playTL(!tl.playing));
+  $('tl-loop').addEventListener('click', e => { tl.loop = !tl.loop; e.currentTarget.setAttribute('aria-pressed', String(tl.loop)); });
+  $('tl-free').addEventListener('click', () => setActive(false));
+  controls.addEventListener('start', () => { if (tl.active) setActive(false); });
+
+  // track: one block per key, striped while moving, solid while holding; click to jump
+  const track = $('tl-track'), head = $('tl-head');
+  function drawTrack() {
+    const { list, total } = segs();
+    [...track.querySelectorAll('.tl-seg')].forEach(x => x.remove());
+    list.forEach(g => {
+      const el = document.createElement('div'); el.className = 'tl-seg';
+      el.style.flex = (g.mv + g.hd) + ' 0 0';
+      if (g.mv > 0) { const m = document.createElement('div'); m.className = 'mv'; m.style.flex = g.mv + ' 0 0'; el.append(m); }
+      const h = document.createElement('div'); h.className = 'hd'; h.style.flex = Math.max(g.hd, 0.0001) + ' 0 0'; el.append(h);
+      el.title = (g.i + 1) + ' ' + tl.keys[g.i].name;
+      if (total && (g.mv + g.hd) / total > 0.07) { const lb = document.createElement('span'); lb.textContent = (g.i + 1) + ' ' + tl.keys[g.i].name; el.append(lb); }
+      track.insertBefore(el, head);
+    });
+    head.style.left = total ? (tl.t / total * 100) + '%' : '0';
+    $('tl-time').textContent = tl.t.toFixed(1) + ' / ' + total.toFixed(1) + ' s';
+    [...$('tl-keys').children].forEach((c, i) => c.setAttribute('aria-current', tl.active && i === tl.cur ? 'true' : 'false'));
+  }
+  track.addEventListener('click', e => {
+    const r = track.getBoundingClientRect(), { total } = segs(); if (!total) return;
+    tl.t = clamp01((e.clientX - r.left) / r.width) * total;
+    setActive(true); playTL(false); setActive(true); showAt(tl.t); syncUI(); drawTrack();
+  });
+
+  // key cards
+  const keysEl = $('tl-keys');
+  let dragFrom = -1;
+  function renderKeys() {
+    keysEl.replaceChildren(...tl.keys.map((k, i) => {
+      const c = document.createElement('div'); c.className = 'key'; c.draggable = true;
+      c.addEventListener('dragstart', e => { dragFrom = i; e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', String(i)); } catch (err) {} });
+      c.addEventListener('dragover', e => { e.preventDefault(); c.classList.add('drag-over'); });
+      c.addEventListener('dragleave', () => c.classList.remove('drag-over'));
+      c.addEventListener('drop', e => { e.preventDefault(); c.classList.remove('drag-over'); moveKey(dragFrom, i); });
+      const img = document.createElement('img'); img.alt = 'Key ' + (i + 1); if (k.thumb) img.src = k.thumb;
+      img.addEventListener('click', () => goKey(i));
+      const kn = document.createElement('div'); kn.className = 'kn';
+      const num = document.createElement('b'); num.textContent = i + 1;
+      const name = document.createElement('input'); name.value = k.name; name.id = 'kname-' + i; name.setAttribute('aria-label', 'Name of key ' + (i + 1));
+      name.addEventListener('change', () => { k.name = name.value || 'Key ' + (i + 1); save(); drawTrack(); });
+      kn.append(num, name);
+      const kf = document.createElement('div'); kf.className = 'kf';
+      const field = (label, el) => { const l = document.createElement('label'); l.textContent = label; l.htmlFor = el.id; kf.append(l, el); };
+      const num_ = (id, v, on) => { const x = document.createElement('input'); x.type = 'number'; x.min = '0'; x.max = '30'; x.step = '0.1'; x.id = id; x.value = v; x.addEventListener('change', () => { on(Math.max(0, +x.value || 0)); save(); drawTrack(); }); return x; };
+      if (i > 0) {
+        field('Move s', num_('kmove-' + i, k.move, v => { k.move = v; }));
+        const sel = document.createElement('select'); sel.id = 'kease-' + i;
+        for (const e in EASES) { const o = document.createElement('option'); o.value = e; o.textContent = EASES[e][0]; if (e === (k.ease || 'smooth')) o.selected = true; sel.append(o); }
+        sel.addEventListener('change', () => { k.ease = sel.value; save(); });
+        field('Easing', sel);
+      }
+      field(i === 0 ? 'Start hold s' : 'Hold s', num_('khold-' + i, k.hold, v => { k.hold = v; }));
+      const bt = document.createElement('div'); bt.className = 'btns';
+      const B = (txt, fn, title) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = txt; if (title) b.title = title; b.addEventListener('click', fn); bt.append(b); return b; };
+      B('Go', () => goKey(i), 'Show this state');
+      B('Update', () => { const n = capture(k.name); k.s = n.s; k.thumb = snapThumb(); save(); renderKeys(); }, 'Save the current state into this key');
+      B('◀', () => moveKey(i, i - 1), 'Move earlier').disabled = i === 0;
+      B('▶', () => moveKey(i, i + 1), 'Move later').disabled = i === tl.keys.length - 1;
+      B('✕', () => { tl.keys.splice(i, 1); save(); renderKeys(); }, 'Delete key');
+      c.append(img, kn, kf, bt);
+      return c;
+    }));
+    drawTrack();
+  }
+  function moveKey(a, b) {
+    if (a < 0 || b < 0 || a >= tl.keys.length || b >= tl.keys.length || a === b) return;
+    const [k] = tl.keys.splice(a, 1); tl.keys.splice(b, 0, k); save(); renderKeys();
+  }
+  function goKey(i) {
+    const { list } = segs(); const g = list[i]; if (!g) return;
+    tl.t = g.t0 + g.mv; playTL(false); setActive(true); showAt(tl.t); syncUI(); drawTrack();
+  }
+  // a small picture of the stage for the key card
+  const thumbCv = document.createElement('canvas'); thumbCv.width = 320; thumbCv.height = 180;
+  function snapThumb() {
+    buildLamp(st.T); group.rotation.y = st.rot; draw();
+    const g = thumbCv.getContext('2d'), src = renderer.domElement, sw = src.width, sh = src.height, k = Math.max(320 / sw, 180 / sh);
+    g.fillStyle = '#fff'; g.fillRect(0, 0, 320, 180);
+    g.drawImage(src, (320 - sw * k) / 2, (180 - sh * k) / 2, sw * k, sh * k);
+    try { return thumbCv.toDataURL('image/jpeg', 0.7); } catch (e) { return ''; }
+  }
+  $('tl-add').addEventListener('click', () => {
+    const k = capture($('ro-shot').textContent !== 'Free' && !tl.active ? $('ro-shot').textContent : null);
+    k.thumb = snapThumb();
+    if (tl.active && tl.cur >= 0) tl.keys.splice(tl.cur + 1, 0, k); else tl.keys.push(k);
+    save(); renderKeys();
+  });
+
+  // example timeline: from nothing into the low view, then details and back out
+  function exampleKeys() {
+    const base = capture();
+    const mk = (name, shot, over, move, hold, ease) => {
+      const k = JSON.parse(JSON.stringify(base)); k.name = name; k.move = move; k.hold = hold; k.ease = ease;
+      const sh = typeof shot === 'string' ? SHOTS.find(x => x.name === shot) : shot;
+      k.s.cam = { az: sh.az, el: sh.el, dist: sh.dist, tgt: sh.tgt.slice(), fov: sh.fov };
+      k.s.dof.focus = sh.dist;
+      Object.assign(k.s.P, over.P || {}); if (over.dof) Object.assign(k.s.dof, over.dof); if (over.pal) k.s.pal = over.pal;
+      return k;
+    };
+    return [
+      mk('Nothing', { az: -40, el: 0, dist: 170, tgt: [0, 0, 0], fov: 30 }, { P: { open: 0.06, rise: 0 } }, 0, 0.4, 'smooth'),
+      mk('Low view', 'Low view', {}, 3.4, 0.8, 'out'),
+      mk('Rim close-up', 'Rim close-up', { dof: { aperture: 0.6 } }, 3.2, 0.6, 'smooth'),
+      mk('From below', 'From below', { P: { tiers: 3 } }, 3.6, 0.8, 'smooth'),
+      mk('Side detail', 'Side detail', { P: { tiers: 1 } }, 3.2, 0.6, 'smooth'),
+      mk('Overview', 'Overview', {}, 3.2, 1.2, 'smooth')
+    ];
+  }
+  function thumbsFor(keys) {
+    const keep = capture(), keepRot = st.rot, keepT = st.T, keepPicked = dof.picked;
+    keys.forEach(k => { if (!k.thumb) { applyState(k.s); st.T = 1.2; st.rot = 0; k.thumb = snapThumb(); } });
+    applyState(keep.s); st.rot = keepRot; st.T = keepT; dof.picked = keepPicked;
+  }
+  const STORE = 'scryns-lamp-timeline-v1';
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(tl.keys)); } catch (e) { /* storage unavailable: the timeline lives for this visit only */ } }
+  function load() { try { const v = JSON.parse(localStorage.getItem(STORE) || 'null'); return Array.isArray(v) && v.length ? v : null; } catch (e) { return null; } }
+  $('tl-reset').addEventListener('click', () => { setActive(false); tl.keys = exampleKeys(); thumbsFor(tl.keys); tl.t = 0; save(); renderKeys(); });
+
+  /* ---------- render the timeline to MP4 ---------- */
+  const SIZES = { '0.8': [1080, 1350], '1': [1080, 1080], '0.5625': [1080, 1920], '1.7778': [1920, 1080] };
+  const FPS = 30;
+  let downloads = null, rendering = false;
+  const fmtNow = () => { const b = [...$('formats').children].find(x => x.getAttribute('aria-pressed') === 'true'); return b ? b.dataset.ar : '1.7778'; };
+  function renderIdle() {
+    const [w, h] = SIZES[fmtNow()] || SIZES['1.7778'], { total } = segs();
+    $('tl-info').textContent = downloads ? (total.toFixed(1) + ' s · ' + w + ' × ' + h + ' · ' + FPS + ' fps') : 'Saving files is not available in this view.';
+  }
+  async function pickCodec(w, h) {
+    for (const [mux, codec] of [['avc', 'avc1.640033'], ['avc', 'avc1.640028'], ['avc', 'avc1.4d0028'], ['vp9', 'vp09.00.40.08']]) {
+      const cfg = { codec, width: w, height: h, bitrate: 16e6, framerate: FPS };
+      try { const r = await VideoEncoder.isConfigSupported(cfg); if (r && r.supported) return { mux, cfg }; } catch (e) {}
+    }
+    return null;
+  }
+  async function renderMP4() {
+    if (rendering || !downloads || !tl.keys.length) return;
+    const btn = $('tl-render'), [w, h] = SIZES[fmtNow()] || SIZES['1.7778'], { total } = segs();
+    rendering = true; btn.disabled = true; playTL(false); setActive(true);
+    const handles = spotsEl.hidden; spotsEl.hidden = true;
+    try {
+      if (!('VideoEncoder' in window) || !window.Mp4Muxer) throw { code: 'no_encoder' };
+      const pick = await pickCodec(w, h); if (!pick) throw { code: 'no_encoder' };
+      const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: pick.mux, width: w, height: h, frameRate: FPS }, fastStart: 'in-memory' });
+      let encErr = null;
+      const enc = new VideoEncoder({ output: (c, m) => muxer.addVideoChunk(c, m), error: e => { encErr = e; } });
+      enc.configure(pick.cfg);
+      // render at the export size, one frame at a time
+      renderer.setPixelRatio(1); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); sizeTargets();
+      const frames = Math.max(1, Math.round(total * FPS));
+      st.rot = 0; tl.rotT = 0;
+      for (let i = 0; i < frames; i++) {
+        if (encErr) throw encErr;
+        const t = i / FPS, a = stateAt(t);
+        applyState(a.S); st.T = t;
+        if (i > 0) st.rot -= a.S.P.spin * 0.25 / FPS;
+        group.rotation.y = st.rot; buildLamp(t); draw();
+        const vf = new VideoFrame(renderer.domElement, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
+        enc.encode(vf, { keyFrame: i % FPS === 0 }); vf.close();
+        if (i % 3 === 0 || enc.encodeQueueSize > 3) {
+          btn.textContent = 'Rendering ' + Math.round(i / frames * 100) + '%';
+          do { await new Promise(r => setTimeout(r, 0)); } while (enc.encodeQueueSize > 3 && !encErr);
+        }
+      }
+      await enc.flush(); enc.close(); if (encErr) throw encErr;
+      muxer.finalize();
+      const blob = new Blob([muxer.target.buffer], { type: 'video/mp4' });
+      btn.textContent = 'Confirm the save';
+      await downloads.save({ filename: 'scryns-lamp-' + w + 'x' + h + '.mp4', data: blob });
+      $('tl-info').textContent = 'Saved ' + total.toFixed(1) + ' s, ' + w + ' × ' + h + ', ' + (blob.size / 1048576).toFixed(1) + ' MB.';
+    } catch (e) {
+      const code = e && e.code;
+      $('tl-info').textContent = code === 'declined' ? 'Save cancelled. Render again when you want the file.'
+        : code === 'no_encoder' ? 'This browser cannot encode video here. Try current Chrome, Edge or Safari.'
+        : code === 'rate_limited' ? 'A save prompt is already open. Try again in a moment.'
+        : typeof code === 'string' ? 'Saving files is not available in this view.' : 'Rendering failed: ' + ((e && e.message) || 'unknown error') + '.';
+    } finally {
+      rendering = false; btn.disabled = false; btn.textContent = 'Render MP4'; spotsEl.hidden = handles; resize();
+    }
+  }
+  $('tl-render').addEventListener('click', renderMP4);
+  if (window.claude && typeof window.claude.use === 'function') {
+    window.claude.use('downloads').then(d => { downloads = d; $('tl-render').disabled = !d; renderIdle(); }).catch(() => { renderIdle(); });
+  } else { $('tl-render').disabled = true; }
+
   /* ---------- loop ---------- */
   let last = performance.now(), frame = 0;
   function tick(now) {
     const dt = Math.min((now - last) / 1000, 0.1); last = now; frame++;
-    if (st.playing) st.T += dt;
-    stepTween(now);
-    if (!tween) controls.update();
-    group.rotation.y = -P.spin * st.T * 0.25;
+    if (rendering) { requestAnimationFrame(tick); return; }
+    if (tl.active) {
+      if (tl.playing) {
+        const { total } = segs();
+        tl.t += dt;
+        if (tl.t >= total) { if (tl.loop && total > 0) { tl.t %= total; st.rot = 0; tl.rotT = 0; } else { tl.t = total; playTL(false); } }
+        const a = stateAt(tl.t); if (a) { applyState(a.S); st.T = tl.t; st.rot -= a.S.P.spin * 0.25 * dt; tl.rotT = tl.t; tl.cur = a.i; $('ro-shot').textContent = tl.keys[a.i].name; }
+        if (frame % 6 === 0) { syncUI(); drawTrack(); }
+      }
+    } else {
+      if (st.playing) st.T += dt;
+      stepTween(now);
+      if (!tween) controls.update();
+    }
+    if (!tl.active && st.playing) st.rot -= P.spin * dt * 0.25;
+    group.rotation.y = st.rot;
     const n = buildLamp(st.T);
     if (reveal && st.T - reveal.t0 > 4) reveal = null;
     draw();
@@ -586,9 +940,12 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
     requestAnimationFrame(tick);
   }
+  tl.keys = load() || exampleKeys();
+  thumbsFor(tl.keys); renderKeys(); setActive(false); renderIdle();
   requestAnimationFrame(tick);
   // jump to a moment (seconds), used to check frames without waiting
   window.__lampFocus = (x, y) => pickFocus(x, y);
+  window.__lampTL = { tl, segs, showAt, renderKeys, save };   // used to check the timeline without waiting
   window.__lampSeek = (t, shot) => { st.T = t; if (shot !== undefined) { tween = null; applyShot(SHOTS[shot]); } };
 })();
 </script>
