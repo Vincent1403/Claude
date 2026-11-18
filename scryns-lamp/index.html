@@ -450,7 +450,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     { name: 'Edge-on', az: 0, el: 0, dist: 330, tgt: [0, 0, 0], fov: 30 },
     { name: 'Rim close-up', az: 24, el: 20, dist: 82, tgt: [0, 8, 58], fov: 30 },
     { name: 'From below', az: 0, el: -58, dist: 175, tgt: [0, -12, 0], fov: 34 },
-    { name: 'Side detail', az: 0, el: 9, dist: 120, tgt: [64, 6, 0], fov: 28 }
+    { name: 'Side detail', az: 0, el: 9, dist: 120, tgt: [64, 6, 0], fov: 28 },
+    { name: 'Low view', az: 0, el: 26, dist: 170, tgt: [0, 0, 26], fov: 24 }     // zoom 1.5x, low: where the reveal lands
   ];
   const shotsEl = $('shots');
   SHOTS.forEach((s, i) => {
@@ -494,8 +495,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   $('reveal').addEventListener('click', () => {
     reveal = { t0: st.T };
     if (!st.playing) setPlaying(true);
-    applyShot({ ...SHOTS[1], az: -40 });
-    goTo(0, 3.4, { ...SHOTS[1], az: -40 });
+    const end = SHOTS.findIndex(x => x.name === 'Low view');
+    applyShot({ ...SHOTS[1], az: -40, dist: 170 });
+    goTo(end, 3.4, { ...SHOTS[1], az: -40, dist: 170 });
   });
 
   /* ---------- controls ---------- */
