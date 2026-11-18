@@ -718,9 +718,10 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       const spin = (F.turn || 0) * PI / 180 + E.S * T * 0.35 - E.bc * 0.6, cs = Math.cos(spin), sn = Math.sin(spin);
       const W = (q) => { const x = q[0] - cx, y = q[1] - cy; return [x * cs - y * sn, x * sn + y * cs]; };
       for (let i = 0; i < N; i++) {
-        const lag = 0.18, e = flow ? (i === 0 ? 1 : smooth((p * (1 + (N - 1) * lag) - (i - 1) * lag)))
-                                   : together ? smooth(p) : (i === 0 ? 1 : smooth(p * (N - 1) - (i - 1)));
-        if (i > 0 && e <= 0) break;
+        // flow: every pleat exists from the start, stacked exactly on the first (a closed fan); opening spreads them
+        // evenly, all moving together like a real fan
+        const e = flow ? smooth(p) : together ? smooth(p) : (i === 0 ? 1 : smooth(p * (N - 1) - (i - 1)));
+        if (!flow && i > 0 && e <= 0) break;
         const at = flow ? i * e : together ? i * e : (i === 0 ? 0 : i - 1 + e);       // a copy travels out from the one before it
         const a = at * step * breathe, k = 1 + at * F.grow, sx = at * F.slide[0], sy = at * F.slide[1];
         for (const pc of M.pieces) {
@@ -1090,7 +1091,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       const enter = easeOut(l / 1.1);
       const s = (0.55 + 0.45 * enter) * (1 + 0.04 * l) * (1 + 2.2 * ex * ex);
       const o = { x: q.x + q.dx * 175 * ex * ex, y: q.y + q.dy * 175 * ex * ex, rot: q.rot + 0.25 * ex,
-                  B: smooth((l - 0.1) / 2.6), bl: 1.3 * ex, grp: 'near' + i };
+                  B: smooth((l - 0.5) / 2.2), bl: 1.3 * ex, grp: 'near' + i };
       if (q.ring) {
         // close-up: once built, the camera pushes in on the near rim before the ring sweeps past
         const push = q.push ? smooth((l - 2.0) / 1.1) * (1 - ex) : 0, k = 1 + 1.5 * push;
