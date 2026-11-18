@@ -30,6 +30,14 @@ body{background:var(--bg); color:var(--fg); font-family:var(--body); font-size:1
 .stage:active{cursor:grabbing}
 .stage canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
 .hint{position:absolute; left:12px; bottom:10px; margin:0; font-family:var(--mono); font-size:11px; color:#8a8597; pointer-events:none}
+.spots{position:absolute; inset:0; pointer-events:none}
+.spot{position:absolute; border-radius:50%; border:1.5px dashed rgba(22,19,31,.55); box-shadow:0 0 0 1px rgba(255,255,255,.6) inset;
+  transform:translate(-50%,-50%); pointer-events:none}
+.spot .knob{position:absolute; left:50%; top:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%;
+  background:rgba(255,255,255,.9); border:2px solid #16131f; cursor:move; pointer-events:auto; touch-action:none}
+.spot[aria-selected="true"]{border-color:#d95200; border-style:solid}
+.spot[aria-selected="true"] .knob{border-color:#d95200; background:#d95200}
+.spots[hidden]{display:none}
 .readout{display:flex; flex-wrap:wrap; gap:4px 18px; font-family:var(--mono); font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
 .readout b{font-weight:500; color:var(--fg)}
 .rail{display:flex; flex-direction:column; gap:20px; min-width:0}
@@ -67,6 +75,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     <div class="stage-col">
       <div class="desk">
         <div class="stage" id="stage">
+          <div class="spots" id="spots"></div>
           <p class="hint">Drag to orbit · scroll to zoom · right-drag to pan · click to focus</p>
         </div>
       </div>
@@ -101,6 +110,20 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <div class="row"><label for="aperture">Aperture</label><input id="aperture" type="range" min="0" max="1" step="0.01" value="0.45"><output id="aperture-o" for="aperture">45%</output></div>
         <div class="row"><label for="fshift">Focus</label><input id="fshift" type="range" min="-1" max="1" step="0.01" value="0"><output id="fshift-o" for="fshift">0</output></div>
         <p class="note">Click a point on the lamp to focus there. Moving to a shot puts focus back on its target.</p>
+      </div>
+
+      <div class="group">
+        <p class="label">Blur spots</p>
+        <div class="btns">
+          <button class="btn" id="spot-add" type="button">Add spot</button>
+          <button class="btn" id="spot-del" type="button">Remove spot</button>
+          <button class="btn" id="spot-show" type="button" aria-pressed="true">Handles</button>
+          <button class="btn" id="spot-drift" type="button" aria-pressed="false">Drift</button>
+        </div>
+        <div class="btns" id="spot-list"></div>
+        <div class="row"><label for="spot-size">Size</label><input id="spot-size" type="range" min="0.05" max="0.6" step="0.01" value="0.22"><output id="spot-size-o" for="spot-size">22%</output></div>
+        <div class="row"><label for="spot-str">Strength</label><input id="spot-str" type="range" min="0" max="1" step="0.01" value="0.6"><output id="spot-str-o" for="spot-str">60%</output></div>
+        <p class="note">Drag a spot's handle on the stage to move it. Size and strength apply to the selected spot.</p>
       </div>
 
       <div class="group">
@@ -270,7 +293,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const depthMat = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, side: THREE.DoubleSide });
   const dofUniforms = {
     tColor: { value: rtColor.texture }, tDepth: { value: rtDepth.texture }, uRes: { value: new THREE.Vector2(4, 4) },
-    uFocus: { value: 255 }, uAperture: { value: 20 }, uMax: { value: 24 }, uNear: { value: camera.near }, uFar: { value: camera.far }
+    uFocus: { value: 255 }, uAperture: { value: 20 }, uMax: { value: 24 }, uNear: { value: camera.near }, uFar: { value: camera.far },
+    uSpots: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] },
+    uSpotN: { value: 0 }
   };
   const dofMat = new THREE.ShaderMaterial({
     uniforms: dofUniforms, depthTest: false, depthWrite: false,
@@ -279,18 +304,32 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       #include <packing>
       uniform sampler2D tColor; uniform sampler2D tDepth; uniform vec2 uRes;
       uniform float uFocus; uniform float uAperture; uniform float uMax; uniform float uNear; uniform float uFar;
+      uniform vec4 uSpots[6]; uniform int uSpotN;      // x, y in 0..1, radius in pixels, blur in pixels
       varying vec2 vUv;
+      // blur from the spots at this point: full in the middle, easing out to nothing at the rim (as in the 2D version)
+      float spotAt(vec2 uv){
+        float b = 0.0;
+        for (int i = 0; i < 6; i++) {
+          if (i >= uSpotN) break;
+          vec4 s = uSpots[i];
+          float d = length((uv - s.xy) * uRes) / max(s.z, 1.0);
+          float f = d < 0.45 ? 1.0 - 0.15 * smoothstep(0.0, 0.45, d) : 0.85 * (1.0 - smoothstep(0.45, 1.0, d));
+          b = max(b, s.w * f);
+        }
+        return b;
+      }
       float distAt(vec2 uv){ float d = unpackRGBAToDepth(texture2D(tDepth, uv)); return -perspectiveDepthToViewZ(d, uNear, uFar); }
       float cocOf(float z){ return min(uMax, uAperture * abs(z - uFocus) / z); }
+      float blurAt(vec2 uv, float z){ return max(cocOf(z), spotAt(uv)); }
       void main(){
-        float z0 = distAt(vUv), c0 = cocOf(z0);
+        float z0 = distAt(vUv), c0 = blurAt(vUv, z0);
         vec3 acc = texture2D(tColor, vUv).rgb; float wsum = 1.0;
         float spread = max(c0, uMax * 0.6);
         if (spread > 0.5) {
           for (int i = 1; i < 64; i++) {
             float fi = float(i), r = sqrt(fi / 64.0) * spread, a = fi * 2.39996323;
             vec2 suv = vUv + vec2(cos(a), sin(a)) * r / uRes;
-            float zs = distAt(suv), cs = cocOf(zs);
+            float zs = distAt(suv), cs = blurAt(suv, zs);
             float w = zs < z0 - 0.5 ? clamp(cs - r + 1.0, 0.0, 1.0) : clamp(min(cs, c0) - r + 1.0, 0.0, 1.0);
             acc += texture2D(tColor, suv).rgb * w; wsum += w;
           }
@@ -309,16 +348,81 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const targetDist = () => camera.position.distanceTo(controls.target);
   function focusDist() { return (dof.picked || targetDist()) * Math.pow(2, dof.shift); }
   function draw() {
-    if (!dof.on || dof.aperture <= 0.001) { renderer.setRenderTarget(null); renderer.render(scene, camera); return; }
+    const spotsOn = updateSpots();
+    const dofOn = dof.on && dof.aperture > 0.001;
+    if (!dofOn && !spotsOn) { renderer.setRenderTarget(null); renderer.render(scene, camera); return; }
     renderer.setClearColor(0xffffff, 1);
     renderer.setRenderTarget(rtColor); renderer.render(scene, camera);
     scene.overrideMaterial = depthMat; renderer.setRenderTarget(rtDepth); renderer.render(scene, camera); scene.overrideMaterial = null;
     const h = bufSize.y;
     dofUniforms.uFocus.value = focusDist();
-    dofUniforms.uAperture.value = dof.aperture * 0.09 * h;     // blur in pixels for an object twice the focus distance away: about 4.5 % of the frame height
+    dofUniforms.uAperture.value = dofOn ? dof.aperture * 0.09 * h : 0;   // blur in pixels for an object twice the focus distance away: about 4.5 % of the frame height
     dofUniforms.uMax.value = Math.max(1, 0.045 * h);
     renderer.setRenderTarget(null); renderer.render(quadScene, quadCam);
   }
+  /* ---------- blur spots: soft round areas out of focus, placed on the frame ---------- */
+  // position as a fraction of the frame (so they stay put across formats), size as a fraction of the frame height,
+  // strength as a share of the largest blur (about 4.5 % of the frame height, like the depth of field)
+  const spots = [{ x: 0.24, y: 0.42, size: 0.22, str: 0.6, ph: 0 }, { x: 0.74, y: 0.64, size: 0.18, str: 0.5, ph: 2.1 }];
+  let selSpot = 0, spotsVisible = true, drift = false;
+  const spotsEl = $('spots');
+  const spotXY = (sp, T) => drift ? [sp.x + 0.05 * Math.sin(T * 0.37 + sp.ph), sp.y + 0.035 * Math.sin(T * 0.29 + sp.ph * 1.7)] : [sp.x, sp.y];
+  function updateSpots() {
+    const h = bufSize.y, n = Math.min(spots.length, 6);
+    for (let i = 0; i < n; i++) {
+      const sp = spots[i], [x, y] = spotXY(sp, st.T);
+      dofUniforms.uSpots.value[i].set(x, 1 - y, sp.size * h, sp.str * 0.045 * h);
+    }
+    dofUniforms.uSpotN.value = n;
+    return n > 0 && spots.some(sp => sp.str > 0.001);
+  }
+  function placeHandles() {
+    const W = stage.clientWidth, H = stage.clientHeight;
+    [...spotsEl.children].forEach((el, i) => {
+      const sp = spots[i]; if (!sp) return;
+      const [x, y] = spotXY(sp, st.T), d = sp.size * H * 2;
+      el.style.left = x * W + 'px'; el.style.top = y * H + 'px'; el.style.width = el.style.height = d + 'px';
+      el.setAttribute('aria-selected', i === selSpot ? 'true' : 'false');
+    });
+  }
+  function renderSpotUI() {
+    spotsEl.replaceChildren(...spots.map((sp, i) => {
+      const el = document.createElement('div'); el.className = 'spot';
+      const knob = document.createElement('div'); knob.className = 'knob'; knob.title = 'Drag to move spot ' + (i + 1);
+      knob.addEventListener('pointerdown', e => {
+        e.preventDefault(); e.stopPropagation(); selectSpot(i); knob.setPointerCapture(e.pointerId);
+        const r = stage.getBoundingClientRect();
+        const move = ev => { sp.x = clamp01((ev.clientX - r.left) / r.width); sp.y = clamp01((ev.clientY - r.top) / r.height); placeHandles(); };
+        const up = () => { knob.removeEventListener('pointermove', move); knob.removeEventListener('pointerup', up); knob.removeEventListener('pointercancel', up); };
+        knob.addEventListener('pointermove', move); knob.addEventListener('pointerup', up); knob.addEventListener('pointercancel', up);
+      });
+      el.append(knob); return el;
+    }));
+    $('spot-list').replaceChildren(...spots.map((sp, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = 'Spot ' + (i + 1);
+      b.setAttribute('aria-pressed', i === selSpot ? 'true' : 'false'); b.addEventListener('click', () => selectSpot(i)); return b;
+    }));
+    $('spot-del').disabled = !spots.length; $('spot-add').disabled = spots.length >= 6;
+    syncSpotSliders(); placeHandles();
+  }
+  function selectSpot(i) {
+    selSpot = i; [...$('spot-list').children].forEach((b, j) => b.setAttribute('aria-pressed', j === i ? 'true' : 'false'));
+    syncSpotSliders(); placeHandles();
+  }
+  function syncSpotSliders() {
+    const sp = spots[selSpot], on = !!sp;
+    ['spot-size', 'spot-str'].forEach(id => { $(id).disabled = !on; });
+    if (!on) return;
+    $('spot-size').value = sp.size; $('spot-size-o').textContent = Math.round(sp.size * 100) + '%';
+    $('spot-str').value = sp.str; $('spot-str-o').textContent = Math.round(sp.str * 100) + '%';
+  }
+  $('spot-size').addEventListener('input', e => { const sp = spots[selSpot]; if (!sp) return; sp.size = +e.target.value; $('spot-size-o').textContent = Math.round(sp.size * 100) + '%'; placeHandles(); });
+  $('spot-str').addEventListener('input', e => { const sp = spots[selSpot]; if (!sp) return; sp.str = +e.target.value; $('spot-str-o').textContent = Math.round(sp.str * 100) + '%'; });
+  $('spot-add').addEventListener('click', () => { if (spots.length >= 6) return; spots.push({ x: 0.5, y: 0.5, size: 0.2, str: 0.6, ph: spots.length * 1.9 }); selSpot = spots.length - 1; renderSpotUI(); });
+  $('spot-del').addEventListener('click', () => { if (!spots.length) return; spots.splice(selSpot, 1); selSpot = Math.max(0, Math.min(selSpot, spots.length - 1)); renderSpotUI(); });
+  $('spot-show').addEventListener('click', e => { spotsVisible = !spotsVisible; spotsEl.hidden = !spotsVisible; e.currentTarget.setAttribute('aria-pressed', String(spotsVisible)); });
+  $('spot-drift').addEventListener('click', e => { drift = !drift; e.currentTarget.setAttribute('aria-pressed', String(drift)); });
+
   // click (without dragging) on the lamp: focus on that point
   function pickFocus(cx, cy) {
     const r = renderer.domElement.getBoundingClientRect();
@@ -433,11 +537,13 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     renderer.setPixelRatio(dpr); renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false);
     camera.aspect = r.width / Math.max(1, r.height); camera.updateProjectionMatrix();
     sizeTargets();
+    if (typeof placeHandles === 'function' && spotsEl.children.length) placeHandles();
   }
   if ('ResizeObserver' in window) new ResizeObserver(resize).observe(stage);
   window.addEventListener('resize', resize);
   resize();
   applyShot(SHOTS[0]);
+  renderSpotUI();
 
   /* ---------- loop ---------- */
   let last = performance.now(), frame = 0;
@@ -450,6 +556,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const n = buildLamp(st.T);
     if (reveal && st.T - reveal.t0 > 4) reveal = null;
     draw();
+    if (drift && spotsVisible) placeHandles();
     if (frame % 6 === 0) {
       updateFocusReadout();
       const s = currentShot();
