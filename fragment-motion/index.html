@@ -1074,41 +1074,28 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   }
   const SHAPE_LEN = 16;
   const SHAPE_SEQ = [                       // start time, base position, exit direction, turn
-    { key: 'petals', t0: 0.0, x: -14, y: 4, dx: -1.0, dy: 0.45, rot: -0.15 },
-    { key: 'band', t0: 2.6, x: 16, y: -2, dx: 1.0, dy: -0.35, rot: 0.1, ring: 22 },
-    { key: 'horn', t0: 5.2, x: -12, y: -6, dx: -0.85, dy: -0.6, rot: 0.25 },
-    { key: 'zigzag', t0: 7.8, x: 10, y: 6, dx: 0.85, dy: 0.6, rot: -0.2, ring: 26 }
+    // one shape on screen at a time: each one has left the frame before the next starts
+    { key: 'petals', t0: 0.0, len: 3.6, x: -8, y: 4, dx: -1.0, dy: 0.45, rot: -0.15 },
+    { key: 'band', t0: 3.6, len: 4.0, x: 8, y: -2, dx: 1.0, dy: -0.35, rot: 0.1, ring: 22, push: true },
+    { key: 'horn', t0: 7.6, len: 3.4, x: -6, y: -4, dx: -0.85, dy: -0.6, rot: 0.25 },
+    { key: 'zigzag', t0: 11.0, len: 5.0, x: 0, y: 14, dx: 0.85, dy: 0.6, rot: -0.2, ring: 26 }
   ];
   function sceneShapes(T, E, vp, out) {
     ENV.bg = '#ffffff';
     const u = frac(T / SHAPE_LEN) * SHAPE_LEN;
-    // the sequence: newest shape drawn first, so the one sweeping toward the viewer stays in front
-    for (let i = SHAPE_SEQ.length - 1; i >= 0; i--) {
+    for (let i = 0; i < SHAPE_SEQ.length; i++) {
       const q = SHAPE_SEQ[i], l = u - q.t0;
-      if (l < 0) continue;
-      const ex = smooth((l - 3.0) / 1.25);
-      if (ex >= 1) continue;
+      if (l < 0 || l >= q.len) continue;
+      const ex = smooth((l - (q.len - 0.9)) / 0.9);                // sweeps toward the viewer and out of focus in its last 0.9 s
       const enter = easeOut(l / 1.1);
       const s = (0.55 + 0.45 * enter) * (1 + 0.04 * l) * (1 + 2.2 * ex * ex);
       const o = { x: q.x + q.dx * 175 * ex * ex, y: q.y + q.dy * 175 * ex * ex, rot: q.rot + 0.25 * ex,
                   B: smooth((l - 0.1) / 2.6), bl: 1.3 * ex, grp: 'near' + i };
       if (q.ring) {
         // close-up: once built, the camera pushes in on the near rim before the ring sweeps past
-        const push = smooth((l - 1.9) / 1.1) * (1 - ex), k = 1 + 1.5 * push;
+        const push = q.push ? smooth((l - 2.0) / 1.1) * (1 - ex) : 0, k = 1 + 1.5 * push;
         placeRing(q.key, T, E, vp, out, { ...o, x: o.x * (1 - push), y: o.y - 34 * push, s: s * 1.4 * k, N: q.ring, squash: 0.5 + 0.12 * ex });
-      }
-      else placeFan(q.key, T, E, vp, out, { ...o, s: s * 0.5, N: 6 });
-    }
-    // finale: the four shapes around the centre, pointing in, building up together
-    const lf = u - 11.2;
-    if (lf >= 0) {
-      const k = easeOut(lf / 1.3), fade = smooth((u - (SHAPE_LEN - 0.6)) / 0.5);
-      const cs = [[-56, -36], [56, -36], [56, 36], [-56, 36]];
-      SHAPE_SEQ.forEach((q, i) => {
-        const [cx, cy] = cs[i], a = Math.atan2(-cy, -cx) - PI / 2;
-        placeFan(q.key, T, E, vp, out, { x: cx * (1.25 - 0.25 * k) * (1 + 0.6 * fade), y: cy * (1.25 - 0.25 * k) * (1 + 0.6 * fade), s: 0.3 * (0.6 + 0.4 * k),
-                                         rot: a + 0.3 * (1 - k), B: smooth((lf - i * 0.12) / 1.5), N: 4, bl: 0, grp: null });
-      });
+      } else placeFan(q.key, T, E, vp, out, { ...o, s: s * 0.5, N: 6 });
     }
     // a slow band of focus across the frame
     const ang = 0.4, c = Math.cos(ang), sn = Math.sin(ang), off = 0.2 * Math.sin(TAU * u / 6.4);
@@ -1129,7 +1116,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     ENV.ts = { ax: fx, ay: fy, bx: fx + c * vp[2] * 0.4, by: fy + sn * vp[2] * 0.4, r: vp[2] * 0.02, half: vp[2] * 0.13 };
   };
   const shapesBrand = T => { const u = frac(T / SHAPE_LEN) * SHAPE_LEN;
-    return { logo: clamp01((u - 12.9) / 0.8), claim: clamp01((u - (12.9 + 0.8 + 0.21)) / 1.3), alpha: 1 - smooth((u - (SHAPE_LEN - 0.6)) / 0.5) }; };
+    return { logo: clamp01((u - 13.3) / 0.8), claim: clamp01((u - (13.3 + 0.8 + 0.21)) / 1.3), alpha: 1 - smooth((u - 15.3) / 0.5) }; };
 
   // Stacked fans + logo: the fans build up from the left on an empty frame, then the logo comes in letter by letter
   // from blur to sharp and the claim types in. 7 s loop; logo and claim fade out at the end.
