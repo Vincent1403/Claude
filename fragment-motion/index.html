@@ -1269,6 +1269,14 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('close', { band: { ang: -1.2, amp: 0.22, per: 5, reach: 0.38, r: 0.02, half: 0.12 } }), loop: BOARD_LOOP },
     { id: 's-shapes', name: 'Shape film', meta: 'scryns · 16 s · new', fit: 'cover', view: [-100, -80, 200, 160], stops: [SHAPES],
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: sceneShapes, loop: SHAPE_LEN, brandAt: shapesBrand },
+    // each section of the shape film on its own: it plays exactly that stretch of the film, on a loop
+    ...SHAPE_SEQ.map((q, k) => {
+      const at = T => q.t0 + frac(T / q.len) * q.len;
+      const NAMES = { petals: 'Petals fan', band: 'Band ring', horn: 'Horn fan', zigzag: 'Fold ring + logo' };
+      return { id: 'shape-' + (k + 1), name: (k + 1) + ' ' + NAMES[q.key], meta: 'section · ' + q.len.toFixed(1) + ' s', fit: 'cover', view: [-100, -80, 200, 160],
+               stops: [SHAPES], coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, part: true, loop: q.len,
+               build: (T, E, vp, out) => sceneShapes(at(T), E, vp, out), brandAt: T => shapesBrand(at(T)) };
+    }),
     ...[['petals', 'Petal close-up', false], ['band', 'Band ring close-up', true], ['horn', 'Horn close-up', false], ['zigzag', 'Fold ring close-up', true]]
       .map(([key, name, ring]) => ({ id: 'c-' + key, name, meta: 'close-up · 8 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SHAPES],
         coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: closeScene(key, ring), loop: CLOSE_LEN })),
