@@ -1076,9 +1076,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const SHAPE_LEN = 16;
   const SHAPE_SEQ = [                       // start time, base position, exit direction, turn
     // one shape on screen at a time: each one has left the frame before the next starts
-    { key: 'petals', t0: 0.0, len: 3.6, x: -8, y: 4, dx: -1.0, dy: 0.45, rot: -0.15 },
+    { key: 'petals', t0: 0.0, len: 3.6, x: -8, y: 4, dx: -1.0, dy: 0.45, rot: -0.15, fixed: true },   // fixed: one size throughout
     { key: 'band', t0: 3.6, len: 4.0, x: 8, y: -2, dx: 1.0, dy: -0.35, rot: 0.1, ring: 22, push: true },
-    { key: 'horn', t0: 7.6, len: 3.4, x: -6, y: -4, dx: -0.85, dy: -0.6, rot: 0.25 },
+    { key: 'horn', t0: 7.6, len: 3.4, x: -6, y: -4, dx: -0.85, dy: -0.6, rot: 0.25, fixed: true },
     { key: 'zigzag', t0: 11.0, len: 5.0, x: 0, y: 14, dx: 0.85, dy: 0.6, rot: -0.2, ring: 26 }
   ];
   function sceneShapes(T, E, vp, out) {
@@ -1089,8 +1089,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       if (l < 0 || l >= q.len) continue;
       const ex = smooth((l - (q.len - 0.9)) / 0.9);                // sweeps toward the viewer and out of focus in its last 0.9 s
       const enter = easeOut(l / 1.1);
-      const s = (0.55 + 0.45 * enter) * (1 + 0.04 * l) * (1 + 2.2 * ex * ex);
-      const o = { x: q.x + q.dx * 175 * ex * ex, y: q.y + q.dy * 175 * ex * ex, rot: q.rot + 0.25 * ex,
+      const s = q.fixed ? 1 : (0.55 + 0.45 * enter) * (1 + 0.04 * l) * (1 + 2.2 * ex * ex);
+      const mv = q.fixed ? 210 * ex * ex : 175 * ex * ex;           // fixed size: it slides out of frame instead
+      const o = { x: q.x + q.dx * mv, y: q.y + q.dy * mv, rot: q.rot + (q.fixed ? 0 : 0.25 * ex),
                   B: smooth((l - 0.5) / 2.2), bl: 1.3 * ex, grp: 'near' + i };
       if (q.ring) {
         // close-up: once built, the camera pushes in on the near rim before the ring sweeps past
