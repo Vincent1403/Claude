@@ -1090,9 +1090,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       const ex = smooth((l - (q.len - 0.9)) / 0.9);                // sweeps toward the viewer and out of focus in its last 0.9 s
       const enter = easeOut(l / 1.1);
       const s = q.fixed ? 1 : (0.55 + 0.45 * enter) * (1 + 0.04 * l) * (1 + 2.2 * ex * ex);
-      const mv = q.fixed ? 210 * ex * ex : 175 * ex * ex;           // fixed size: it slides out of frame instead
+      const mv = q.fixed ? 0 : 175 * ex * ex;                       // fixed: stays where it is, no exit move
       const o = { x: q.x + q.dx * mv, y: q.y + q.dy * mv, rot: q.rot + (q.fixed ? 0 : 0.25 * ex),
-                  B: smooth((l - 0.5) / 2.2), bl: 1.3 * ex, grp: 'near' + i };
+                  B: smooth((l - 0.5) / 2.2), bl: q.fixed ? 0 : 1.3 * ex, grp: 'near' + i };
       if (q.ring) {
         // close-up: once built, the camera pushes in on the near rim before the ring sweeps past
         const push = q.push ? smooth((l - 2.0) / 1.1) * (1 - ex) : 0, k = 1 + 1.5 * push;
