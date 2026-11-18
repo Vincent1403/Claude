@@ -227,6 +227,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
             <button class="btn" type="button" data-v="10" aria-pressed="false">10 s</button>
             <button class="btn" type="button" data-v="15" aria-pressed="false">15 s</button>
             <button class="btn" type="button" data-v="30" aria-pressed="false">30 s</button>
+            <button class="btn" type="button" data-v="comp" aria-pressed="false">Comp length</button>
           </div>
           <p class="hint" id="export-info" aria-live="polite">1080 × 1350 · 30 fps · starts at the frame on stage</p>
         </div>
@@ -1047,6 +1048,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
     E.bm = bm;
   }
+  // each part of the showreel as its own comp: it plays exactly that stretch of the reel's timeline, on a loop
+  const REEL_NAMES = { blurZig: 'Build-up', derive: 'Element to lamp', close: 'Close-up', tiers: 'Stacked fans', zig: 'Zigzag', logo: 'Logo', end: 'End screen' };
+  const reelPartT = k => T => { const [a, b] = REEL[k]; return a + frac(T / (b - a)) * (b - a); };
   const reelBrand = T => { const u = frac(T / REEL_LEN) * REEL_LEN;
     return u < 23.59 ? null : { logo: clamp01((u - 23.6) / 0.8), claim: clamp01((u - 25.16) / 1.3) }; };
 
@@ -1137,6 +1141,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const VIS = [
     { id: 's-reel', name: 'Showreel', meta: 'scryns · 30 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1, BZ],
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: sceneReel, loop: REEL_LEN, brandAt: reelBrand },
+    ...REEL.map((r, k) => ({ id: 'reel-' + (k + 1), name: (k + 1) + ' ' + REEL_NAMES[r[2]], meta: 'reel part · ' + (r[1] - r[0]).toFixed(1) + ' s',
+      fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1, BZ], coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true,
+      part: true, loop: r[1] - r[0], build: (T, E, vp, out) => sceneReel(reelPartT(k)(T), E, vp, out), brandAt: T => reelBrand(reelPartT(k)(T)) })),
     { id: 'b-blurzig', name: 'Blurred zigzag', meta: 'board · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [BZ],
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('blurZig', { delay: 0.4 }), loop: BOARD_LOOP },
     { id: 'b-zig', name: 'Zigzag', meta: 'board · on white', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0],
@@ -1448,6 +1455,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     [...thumbs.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i ? 'true' : 'false'));
     $('ro-name').textContent = VIS[i].name;
     if (st.bmode !== 'off') st.bt = 0;
+    if (st.clip === 'comp' && !exporting) { exBtn.textContent = exLabel(); exportIdle(); }
   }
 
   function sizeStage() {
@@ -1492,7 +1500,10 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   });
   segPick('brands', 'brand');
   segPick('logocols', 'logoCol');
-  segPick('clips', 'clip', () => { if (!exporting) { exBtn.textContent = 'Export ' + st.clip + ' s MP4'; exportIdle(); } });
+  // export length in seconds: the chosen length, or with "Comp length" the selected comp's own loop (5 s if it has none)
+  const clipLen = () => st.clip === 'comp' ? (VIS[st.cur].loop || 5) : st.clip;
+  const exLabel = () => 'Export ' + (+clipLen().toFixed(2)) + ' s MP4';
+  segPick('clips', 'clip', () => { if (!exporting) { exBtn.textContent = exLabel(); exportIdle(); } });
   bind('bdur', v => v.toFixed(1) + ' s');
   bind('gspeed', v => v.toFixed(1) + '×');
   bind('angle', v => signed(v, '°'), v => v * PI / 180);
@@ -1568,7 +1579,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       const off = document.createElement('canvas'); off.width = w; off.height = h;
       const cssW = stage.getBoundingClientRect().width || w;
       // scenes with their own timeline start from the beginning of the loop, so the film opens on the single element
-      const T0 = vis.loop && st.bmode === 'off' ? Math.floor(st.T / vis.loop) * vis.loop : st.T, G0 = st.TG, total = st.clip * FPS;
+      const T0 = vis.loop && st.bmode === 'off' ? Math.floor(st.T / vis.loop) * vis.loop : st.T, G0 = st.TG, total = Math.round(clipLen() * FPS);
       for (let i = 0; i < total; i++) {
         if (encErr) throw encErr;
         const o = frameOpts(i / FPS, w / cssW, st.edges);
@@ -1591,7 +1602,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       await downloads.save({ filename: 'fragment-motion-' + vis.id + tag + '-' + w + 'x' + h + '.mp4', data: blob });
       const mb = (blob.size / 1048576).toFixed(1) + ' MB';
       exInfo.textContent = pick.mux === 'avc'
-        ? 'Saved a ' + st.clip + ' s clip, ' + w + ' × ' + h + ', ' + mb + '.'
+        ? 'Saved a ' + (+clipLen().toFixed(2)) + ' s clip, ' + w + ' × ' + h + ', ' + mb + '.'
         : 'Saved, ' + mb + '. This browser has no H.264 encoder, so the clip is VP9 inside an MP4 and may not open in every app.';
     } catch (e) {
       const code = e && e.code;
@@ -1602,7 +1613,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       else if (typeof code === 'string') exInfo.textContent = 'Saving files is not available in this view.';
       else exInfo.textContent = 'Encoding failed: ' + ((e && e.message) || 'unknown error') + '.';
     } finally {
-      exporting = false; exBtn.disabled = false; exBtn.textContent = 'Export ' + st.clip + ' s MP4'; st.dirty = true;
+      exporting = false; exBtn.disabled = false; exBtn.textContent = exLabel(); st.dirty = true;
     }
   }
   exBtn.addEventListener('click', exportClip);
