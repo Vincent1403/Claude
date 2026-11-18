@@ -98,6 +98,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
           <button class="btn primary" id="reveal" type="button">Reveal from nothing</button>
           <button class="btn" id="play" type="button">Pause</button>
         </div>
+        <div class="row"><label for="zoom">Zoom</label><input id="zoom" type="range" min="-2" max="3" step="0.01" value="0"><output id="zoom-o" for="zoom">1.0×</output></div>
         <div class="row"><label for="fov">Lens</label><input id="fov" type="range" min="12" max="70" step="1" value="30"><output id="fov-o" for="fov">30°</output></div>
       </div>
 
@@ -210,7 +211,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const camera = new THREE.PerspectiveCamera(30, 16 / 9, 4, 3000);
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; controls.dampingFactor = 0.08; controls.rotateSpeed = 0.6; controls.zoomSpeed = 0.7;
-  controls.minDistance = 20; controls.maxDistance = 1600;
+  controls.minDistance = 30; controls.maxDistance = 1020;
 
   // Unlit faces: each face shows the brand gradient from its outer edge (dark) to the centre (lavender). The fold shading
   // shifts the gradient a little by how the face is turned toward a fixed light, so neighbouring folds read apart while
@@ -519,6 +520,24 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   bind('fshift', v => (v > 0 ? 'farther ' : v < 0 ? 'nearer ' : '') + (v ? Math.abs(v).toFixed(2) : '0'), v => { dof.shift = v; });
   $('dof').addEventListener('click', e => { dof.on = !dof.on; e.currentTarget.setAttribute('aria-pressed', String(dof.on)); e.currentTarget.textContent = dof.on ? 'Depth of field on' : 'Depth of field off'; });
   $('refocus').addEventListener('click', () => { dof.picked = null; updateFocusReadout(); });
+  // Zoom: camera distance to its target, 1.0× at the overview distance; scrolling and shot moves keep it in sync
+  const ZREF = 255, zoomEl = $('zoom');
+  const fmtZoom = v => { const z = Math.pow(2, v); return (z < 10 ? z.toFixed(1) : Math.round(z)) + '×'; };
+  let zoomDragging = false;
+  zoomEl.addEventListener('pointerdown', () => { zoomDragging = true; });
+  window.addEventListener('pointerup', () => { zoomDragging = false; });
+  zoomEl.addEventListener('input', () => {
+    const v = +zoomEl.value, d = ZREF / Math.pow(2, v);
+    tween = null; controls.enabled = true;
+    const dir = camera.position.clone().sub(controls.target).normalize();
+    camera.position.copy(controls.target).addScaledVector(dir, d);
+    $('zoom-o').textContent = fmtZoom(v);
+  });
+  function syncZoom() {
+    if (zoomDragging || document.activeElement === zoomEl) return;
+    const v = Math.log2(ZREF / Math.max(1, targetDist()));
+    zoomEl.value = v; $('zoom-o').textContent = fmtZoom(v);
+  }
   bind('fov', v => v + '°', v => { if (!tween) { camera.fov = v; camera.updateProjectionMatrix(); } });
   $('palettes').addEventListener('click', e => {
     const b = e.target.closest('button[data-v]'); if (!b) return;
@@ -558,7 +577,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     draw();
     if (drift && spotsVisible) placeHandles();
     if (frame % 6 === 0) {
-      updateFocusReadout();
+      updateFocusReadout(); syncZoom();
       const s = currentShot();
       $('ro-az').textContent = Math.round(s.az); $('ro-el').textContent = Math.round(s.el);
       $('ro-d').textContent = Math.round(s.dist); $('ro-f').textContent = Math.round(camera.fov); $('ro-n').textContent = n;
