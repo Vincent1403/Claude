@@ -709,6 +709,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         const u = frac(T / 9);
         p = u < 0.45 ? smooth(u / 0.45) : u < 0.86 ? 1 : 1 - smooth((u - 0.86) / 0.14);
       } else { p = E.B; together = E.bm === 'unfold'; }
+      const flow = E.bm === 'flow';                       // one continuous opening, each copy a little behind the one before
       const breathe = 1 + E.P * 0.35 * Math.sin(T * TAU / 2.5) * smooth(p * 1.5 - 0.5);
       // centre of the finished fan, so the detail stays in the middle of the frame while it grows and turns
       let cx = 0, cy = 0;
@@ -717,9 +718,10 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       const spin = (F.turn || 0) * PI / 180 + E.S * T * 0.35 - E.bc * 0.6, cs = Math.cos(spin), sn = Math.sin(spin);
       const W = (q) => { const x = q[0] - cx, y = q[1] - cy; return [x * cs - y * sn, x * sn + y * cs]; };
       for (let i = 0; i < N; i++) {
-        const e = together ? smooth(p) : (i === 0 ? 1 : smooth(p * (N - 1) - (i - 1)));
+        const lag = 0.18, e = flow ? (i === 0 ? 1 : smooth((p * (1 + (N - 1) * lag) - (i - 1) * lag)))
+                                   : together ? smooth(p) : (i === 0 ? 1 : smooth(p * (N - 1) - (i - 1)));
         if (i > 0 && e <= 0) break;
-        const at = together ? i * e : (i === 0 ? 0 : i - 1 + e);       // a copy travels out from the one before it
+        const at = flow ? i * e : together ? i * e : (i === 0 ? 0 : i - 1 + e);       // a copy travels out from the one before it
         const a = at * step * breathe, k = 1 + at * F.grow, sx = at * F.slide[0], sy = at * F.slide[1];
         for (const pc of M.pieces) {
           const subs = pc.subs.map(sp => { const o = new Array(sp.length); for (let m = 0; m < sp.length; m += 2) { const w = W(place(sp[m], sp[m + 1], a, k, sx, sy)); o[m] = w[0]; o[m + 1] = w[1]; } return o; });
@@ -1032,7 +1034,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   const FAN_FN = {};
   function placeFan(key, T, E, vp, out, o) {
     const fn = FAN_FN[key] || (FAN_FN[key] = makeFan(key)), tmp = [];
-    fn(T, Object.assign({}, E, { bm: 'piece', B: clamp01(o.B), N: o.N }), vp, tmp);
+    fn(T, Object.assign({}, E, { bm: 'flow', B: clamp01(o.B), N: o.N }), vp, tmp);
     const c = Math.cos(o.rot || 0), sn = Math.sin(o.rot || 0);
     const tf = (x, y) => [o.x + (x * c - y * sn) * o.s, o.y + (x * sn + y * c) * o.s];
     const mapP = P => { const q = new Array(P.length); for (let i = 0; i < P.length; i += 2) { const v = tf(P[i], P[i + 1]); q[i] = v[0]; q[i + 1] = v[1]; } return q; };
@@ -1042,12 +1044,40 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       out.push({ p: mapP(it.p), s: 0, g: [a[0], a[1], b[0], b[1]], h: it.h ? it.h.map(mapP) : null, grp: blur ? o.grp : null, bl: blur });
     }
   }
+  // a full circle of one shape around a centre point, seen in perspective (like the lamp ring). It opens smoothly
+  // around the circle: each copy sweeps into its place a little behind the one before, growing as it goes.
+  function placeRing(key, T, E, vp, out, o) {
+    const M = MOTIFS[key], N = o.N || 16, dA = TAU / N, p = clamp01(o.B), lag = 0.9 / N;
+    const r0 = 24 * (1 + (E.P || 0) * 0.04 * Math.sin(T * TAU / 2.5)), Ls = 34, sq = o.squash || 0.5;
+    const spin = (o.rot || 0) + (E.S || 0) * T * 0.25, c0 = Math.cos(spin), s0 = Math.sin(spin);
+    const blur = o.bl > 0.02 ? o.bl : 0, copies = [];
+    for (let i = 0; i < N; i++) {
+      const e = i === 0 ? smooth(p / (lag * 3)) : smooth((p * (1 + (N - 1) * lag) - i * lag) / (lag * 3));
+      if (e <= 0.001) continue;
+      const a = (i - (1 - e) * 1.5) * dA, ca = Math.cos(a), sa = Math.sin(a), k = 0.35 + 0.65 * e;
+      const W = (x, y) => {
+        const r = r0 + x * Ls * k, t = y * Ls * k;
+        const X = ca * r - sa * t, Y = sa * r + ca * t;
+        const RX = X * c0 - Y * s0, RY = (X * s0 + Y * c0) * sq;          // tilt: the circle seen from above at an angle
+        return [o.x + RX * o.s, o.y + RY * o.s];
+      };
+      const items = M.pieces.map(pc => {
+        const subs = pc.subs.map(sp => { const q = new Array(sp.length); for (let j = 0; j < sp.length; j += 2) { const v = W(sp[j], sp[j + 1]); q[j] = v[0]; q[j + 1] = v[1]; } return q; });
+        const g0 = W(pc.g[0], pc.g[1]), g1 = W(pc.g[2], pc.g[3]);
+        return { p: subs[0], s: 0, g: [g0[0], g0[1], g1[0], g1[1]], h: subs.length > 1 ? subs.slice(1) : null, grp: blur ? o.grp : null, bl: blur };
+      });
+      const mid = W(0.5, 0);
+      copies.push({ y: mid[1], items });
+    }
+    copies.sort((A, B) => A.y - B.y);                                  // far side first, near side on top
+    for (const cp of copies) for (const it of cp.items) out.push(it);
+  }
   const SHAPE_LEN = 16;
   const SHAPE_SEQ = [                       // start time, base position, exit direction, turn
     { key: 'petals', t0: 0.0, x: -14, y: 4, dx: -1.0, dy: 0.45, rot: -0.15 },
-    { key: 'band', t0: 2.6, x: 16, y: -4, dx: 1.0, dy: -0.35, rot: 0.1 },
+    { key: 'band', t0: 2.6, x: 16, y: -2, dx: 1.0, dy: -0.35, rot: 0.1, ring: 22 },
     { key: 'horn', t0: 5.2, x: -12, y: -6, dx: -0.85, dy: -0.6, rot: 0.25 },
-    { key: 'zigzag', t0: 7.8, x: 12, y: 8, dx: 0.85, dy: 0.6, rot: -0.2 }
+    { key: 'zigzag', t0: 7.8, x: 10, y: 6, dx: 0.85, dy: 0.6, rot: -0.2, ring: 26 }
   ];
   function sceneShapes(T, E, vp, out) {
     ENV.bg = '#ffffff';
@@ -1060,8 +1090,14 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       if (ex >= 1) continue;
       const enter = easeOut(l / 1.1);
       const s = (0.55 + 0.45 * enter) * (1 + 0.04 * l) * (1 + 2.2 * ex * ex);
-      placeFan(q.key, T, E, vp, out, { x: q.x + q.dx * 175 * ex * ex, y: q.y + q.dy * 175 * ex * ex, s: s * 0.5, rot: q.rot + 0.25 * ex,
-                                       B: easeOut((l - 0.15) / 2.2), N: 6, bl: 1.3 * ex, grp: 'near' + i });
+      const o = { x: q.x + q.dx * 175 * ex * ex, y: q.y + q.dy * 175 * ex * ex, rot: q.rot + 0.25 * ex,
+                  B: smooth((l - 0.1) / 2.6), bl: 1.3 * ex, grp: 'near' + i };
+      if (q.ring) {
+        // close-up: once built, the camera pushes in on the near rim before the ring sweeps past
+        const push = smooth((l - 1.9) / 1.1) * (1 - ex), k = 1 + 1.5 * push;
+        placeRing(q.key, T, E, vp, out, { ...o, x: o.x * (1 - push), y: o.y - 34 * push, s: s * 1.4 * k, N: q.ring, squash: 0.5 + 0.12 * ex });
+      }
+      else placeFan(q.key, T, E, vp, out, { ...o, s: s * 0.5, N: 6 });
     }
     // finale: the four shapes around the centre, pointing in, building up together
     const lf = u - 11.2;
@@ -1071,7 +1107,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       SHAPE_SEQ.forEach((q, i) => {
         const [cx, cy] = cs[i], a = Math.atan2(-cy, -cx) - PI / 2;
         placeFan(q.key, T, E, vp, out, { x: cx * (1.25 - 0.25 * k) * (1 + 0.6 * fade), y: cy * (1.25 - 0.25 * k) * (1 + 0.6 * fade), s: 0.3 * (0.6 + 0.4 * k),
-                                         rot: a + 0.3 * (1 - k), B: easeOut((lf - i * 0.12) / 1.1), N: 4, bl: 0, grp: null });
+                                         rot: a + 0.3 * (1 - k), B: smooth((lf - i * 0.12) / 1.5), N: 4, bl: 0, grp: null });
       });
     }
     // a slow band of focus across the frame
@@ -1079,6 +1115,19 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const fx = vp[0] + vp[2] / 2 + c * off * vp[2], fy = vp[1] + vp[3] / 2 + sn * off * vp[3];
     ENV.ts = { ax: fx, ay: fy, bx: fx + c * vp[2] * 0.4, by: fy + sn * vp[2] * 0.4, r: vp[2] * 0.016, half: vp[2] * 0.16 };
   }
+  // Close-ups: one shape filling the frame with large overlapping pleats, building up, drifting and turning slowly
+  const CLOSE_LEN = 8;
+  const closeScene = (key, ring) => (T, E, vp, out) => {
+    ENV.bg = '#ffffff';
+    const lt = E.bm !== 'off' ? E.B * 2.6 + Math.max(0, T % CLOSE_LEN - 2.6) : frac(T / CLOSE_LEN) * CLOSE_LEN;
+    const B = smooth(lt / 2.6), dx = 10 * Math.sin(TAU * lt / CLOSE_LEN), dy = 6 * Math.sin(TAU * lt / CLOSE_LEN + 1.3);
+    const zoom = 1 + 0.08 * lt / CLOSE_LEN;
+    if (ring) placeRing(key, T, E, vp, out, { x: dx, y: 70 + dy, s: 3.1 * zoom, N: key === 'zigzag' ? 26 : 22, squash: 0.55, rot: 0.15 * lt / CLOSE_LEN, B, bl: 0 });
+    else placeFan(key, T, E, vp, out, { x: dx - 10, y: dy + 8, s: 1.55 * zoom, rot: 0.12 * Math.sin(TAU * lt / CLOSE_LEN), B, N: 7, bl: 0 });
+    const ang = 0.35, c = Math.cos(ang), sn = Math.sin(ang), off = 0.22 * Math.sin(TAU * lt / 6);
+    const fx = vp[0] + vp[2] / 2 + c * off * vp[2], fy = vp[1] + vp[3] / 2 + sn * off * vp[3];
+    ENV.ts = { ax: fx, ay: fy, bx: fx + c * vp[2] * 0.4, by: fy + sn * vp[2] * 0.4, r: vp[2] * 0.02, half: vp[2] * 0.13 };
+  };
   const shapesBrand = T => { const u = frac(T / SHAPE_LEN) * SHAPE_LEN;
     return { logo: clamp01((u - 12.9) / 0.8), claim: clamp01((u - (12.9 + 0.8 + 0.21)) / 1.3), alpha: 1 - smooth((u - (SHAPE_LEN - 0.6)) / 0.5) }; };
 
@@ -1233,6 +1282,9 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: boardScene('close', { band: { ang: -1.2, amp: 0.22, per: 5, reach: 0.38, r: 0.02, half: 0.12 } }), loop: BOARD_LOOP },
     { id: 's-shapes', name: 'Shape film', meta: 'scryns · 16 s · new', fit: 'cover', view: [-100, -80, 200, 160], stops: [SHAPES],
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: sceneShapes, loop: SHAPE_LEN, brandAt: shapesBrand },
+    ...[['petals', 'Petal close-up', false], ['band', 'Band ring close-up', true], ['horn', 'Horn close-up', false], ['zigzag', 'Fold ring close-up', true]]
+      .map(([key, name, ring]) => ({ id: 'c-' + key, name, meta: 'close-up · 8 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SHAPES],
+        coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: closeScene(key, ring), loop: CLOSE_LEN })),
     { id: 's-stacklogo', name: 'Stacked + logo', meta: 'scryns · 7 s', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
       coef: [1, 0, 0], phi: 0, lg: 0.15, wave: 0.03, selfBuild: true, build: sceneStackLogo, loop: STACK_LEN, brandAt: stackBrand },
     { id: 'b-tiers', name: 'Stacked fans', meta: 'board · full bleed', fit: 'cover', view: [-100, -80, 200, 160], stops: [SC0, SC1],
