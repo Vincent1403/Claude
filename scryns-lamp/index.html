@@ -204,6 +204,11 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         </div>
         <p class="note">Set up a state with the controls, then "Add current state" on the timeline. The timeline moves smoothly from state to state; drag keys to reorder them.</p>
       </div>
+      <div class="group">
+        <p class="label">3D model</p>
+        <div class="btns"><button class="btn primary" id="model-export" type="button">Export 3D model</button></div>
+        <p class="note" id="model-info">Saves the lamp as shown (shape, folds, gradient) as a ZIP with a GLB for After Effects and an OBJ with its gradient texture.</p>
+      </div>
     </aside>
   </section>
 </main>
@@ -904,9 +909,118 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     }
   }
   $('tl-render').addEventListener('click', renderMP4);
+  /* ---------- 3D model export: GLB (After Effects 2024+, Blender, Cinema 4D) and OBJ, gradient baked into a texture ---------- */
+  // Each vertex gets a texture coordinate along a gradient strip: the same value the page's shader uses, including the
+  // small shift by fold angle, so the faces look the same once imported. Units: 6 per model unit (lamp about 860 wide).
+  function crcTable() { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; }
+  const CRC = crcTable();
+  const crc32 = u8 => { let c = 0xffffffff; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+  function zip(files) {                       // files: [{ name, data: Uint8Array }], stored without compression
+    const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+    for (const f of files) {
+      const nm = enc.encode(f.name), crc = crc32(f.data), h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint32(14, crc, true);
+      h.setUint32(18, f.data.length, true); h.setUint32(22, f.data.length, true); h.setUint16(26, nm.length, true);
+      parts.push(new Uint8Array(h.buffer), nm, f.data);
+      const c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint32(16, crc, true);
+      c.setUint32(20, f.data.length, true); c.setUint32(24, f.data.length, true); c.setUint16(28, nm.length, true); c.setUint32(42, off, true);
+      central.push(new Uint8Array(c.buffer), nm);
+      off += 30 + nm.length + f.data.length;
+    }
+    const cs = central.reduce((a, x) => a + x.length, 0), e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cs, true); e.setUint32(16, off, true);
+    return new Blob([...parts, ...central, new Uint8Array(e.buffer)], { type: 'application/zip' });
+  }
+  function gradientPNG(name) {
+    const c = document.createElement('canvas'); c.width = 1024; c.height = 16;
+    const g = c.getContext('2d'), stops = PALETTES[name], lg = g.createLinearGradient(0, 0, 1024, 0);
+    for (const [t, col] of stops) lg.addColorStop(t, col);
+    g.fillStyle = lg; g.fillRect(0, 0, 1024, 16);
+    return new Promise(res => c.toBlob(b => b.arrayBuffer().then(a => res(new Uint8Array(a))), 'image/png'));
+  }
+  function modelData() {
+    buildLamp(st.T);
+    const n = geo.drawRange.count, P_ = geo.attributes.position.array, N = geo.attributes.normal.array, Uu = geo.attributes.aU.array;
+    const SC = 6, Lg = uniforms.uLight.value, pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), uv = new Float32Array(n * 2);
+    const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9];
+    // every triangle is turned so its front (and normal) faces up, the side the page shows from above
+    for (let t = 0; t < n; t += 3) {
+      const up = N[t * 3 + 1] >= 0, order = up ? [t, t + 1, t + 2] : [t, t + 2, t + 1], sg = up ? 1 : -1;
+      order.forEach((src, j) => {
+        const i = t + j;
+        for (let c = 0; c < 3; c++) { const v = P_[src * 3 + c] * SC; pos[i * 3 + c] = v; nor[i * 3 + c] = sg * N[src * 3 + c]; mn[c] = Math.min(mn[c], v); mx[c] = Math.max(mx[c], v); }
+        const l = sg * (N[src * 3] * Lg.x + N[src * 3 + 1] * Lg.y + N[src * 3 + 2] * Lg.z);
+        uv[i * 2] = clamp01(Uu[src] + uniforms.uOffset.value + uniforms.uShade.value * (l - 0.3)) * 0.998 + 0.001; uv[i * 2 + 1] = 0.5;
+      });
+    }
+    return { n, pos, nor, uv, mn, mx, pal: pal.mix < 0.5 ? pal.a : pal.b };
+  }
+  function glb(m, png) {
+    const pad4 = x => (x + 3) & ~3;
+    const views = [], chunks = []; let len = 0;
+    const add = (u8, target) => { const o = len; chunks.push(u8); const pl = pad4(u8.length); if (pl > u8.length) chunks.push(new Uint8Array(pl - u8.length)); len += pl; views.push({ buffer: 0, byteOffset: o, byteLength: u8.length, ...(target ? { target } : {}) }); return views.length - 1; };
+    const vPos = add(new Uint8Array(m.pos.buffer), 34962), vNor = add(new Uint8Array(m.nor.buffer), 34962), vUv = add(new Uint8Array(m.uv.buffer), 34962), vImg = add(png);
+    const json = {
+      asset: { version: '2.0', generator: 'Scryns Lamp 3D' }, scene: 0, scenes: [{ nodes: [0] }], nodes: [{ mesh: 0, name: 'Scryns lamp' }],
+      meshes: [{ name: 'Scryns lamp', primitives: [{ attributes: { POSITION: 0, NORMAL: 1, TEXCOORD_0: 2 }, material: 0 }] }],
+      materials: [{ name: 'Scryns gradient', doubleSided: true, pbrMetallicRoughness: { baseColorTexture: { index: 0 }, metallicFactor: 0, roughnessFactor: 1 },
+                    emissiveTexture: { index: 0 }, emissiveFactor: [1, 1, 1], extensions: { KHR_materials_unlit: {} } }],
+      extensionsUsed: ['KHR_materials_unlit'],
+      textures: [{ source: 0, sampler: 0 }], samplers: [{ magFilter: 9729, minFilter: 9729, wrapS: 33071, wrapT: 33071 }],
+      images: [{ bufferView: vImg, mimeType: 'image/png' }],
+      accessors: [
+        { bufferView: vPos, componentType: 5126, count: m.n, type: 'VEC3', min: m.mn, max: m.mx },
+        { bufferView: vNor, componentType: 5126, count: m.n, type: 'VEC3' },
+        { bufferView: vUv, componentType: 5126, count: m.n, type: 'VEC2' }],
+      bufferViews: views, buffers: [{ byteLength: len }]
+    };
+    const enc = new TextEncoder();
+    let jb = enc.encode(JSON.stringify(json)); const jl = pad4(jb.length);
+    const jpad = new Uint8Array(jl); jpad.fill(0x20); jpad.set(jb);
+    const out = new Uint8Array(12 + 8 + jl + 8 + len), dv = new DataView(out.buffer);
+    dv.setUint32(0, 0x46546c67, true); dv.setUint32(4, 2, true); dv.setUint32(8, out.length, true);
+    dv.setUint32(12, jl, true); dv.setUint32(16, 0x4e4f534a, true); out.set(jpad, 20);
+    dv.setUint32(20 + jl, len, true); dv.setUint32(24 + jl, 0x004e4942, true);
+    let o = 28 + jl; for (const c of chunks) { out.set(c, o); o += c.length; }
+    return out;
+  }
+  function obj(m) {
+    const L_ = ['# Scryns lamp, exported from Scryns Lamp 3D', 'mtllib scryns-lamp.mtl', 'o scryns_lamp'];
+    for (let i = 0; i < m.n; i++) L_.push('v ' + m.pos[i * 3].toFixed(4) + ' ' + m.pos[i * 3 + 1].toFixed(4) + ' ' + m.pos[i * 3 + 2].toFixed(4));
+    for (let i = 0; i < m.n; i++) L_.push('vt ' + m.uv[i * 2].toFixed(5) + ' 0.5');
+    for (let i = 0; i < m.n; i++) L_.push('vn ' + m.nor[i * 3].toFixed(5) + ' ' + m.nor[i * 3 + 1].toFixed(5) + ' ' + m.nor[i * 3 + 2].toFixed(5));
+    L_.push('usemtl scryns_gradient');
+    for (let i = 0; i < m.n; i += 3) {
+      const f = (a, b, c) => 'f ' + [a, b, c].map(k => (k + 1) + '/' + (k + 1) + '/' + (k + 1)).join(' ');
+      L_.push(f(i, i + 1, i + 2), f(i, i + 2, i + 1));        // both sides, so the back faces show too
+    }
+    return L_.join('\n') + '\n';
+  }
+  const MTL = 'newmtl scryns_gradient\nKa 1 1 1\nKd 1 1 1\nKe 1 1 1\nNs 0\nillum 0\nmap_Kd scryns-lamp-gradient.png\nmap_Ke scryns-lamp-gradient.png\n';
+  async function exportModel() {
+    if (!downloads) return;
+    const btn = $('model-export'); btn.disabled = true;
+    try {
+      const m = modelData(), png = await gradientPNG(m.pal), enc = new TextEncoder();
+      const readme = 'Scryns lamp, 3D model\n\nscryns-lamp.glb: one file with the gradient inside. Import into After Effects (2024 or later) with File > Import, or into Blender / Cinema 4D.\n' +
+        'scryns-lamp.obj + .mtl + scryns-lamp-gradient.png: the same model for programs without glTF.\n\n' +
+        'The gradient is a texture; each face samples it at a fixed point, so the look matches the page. The material is set to unlit/emissive where the program supports it; if it looks dark, turn off lighting for the layer or raise its emissive or ambient value.\n' +
+        'Units: about ' + Math.round(m.mx[0] - m.mn[0]) + ' wide. Y is up. ' + (m.n / 3) + ' triangles. Gradient: ' + m.pal + '.\n';
+      const z = zip([{ name: 'scryns-lamp.glb', data: glb(m, png) }, { name: 'scryns-lamp.obj', data: enc.encode(obj(m)) },
+                     { name: 'scryns-lamp.mtl', data: enc.encode(MTL) }, { name: 'scryns-lamp-gradient.png', data: png }, { name: 'README.txt', data: enc.encode(readme) }]);
+      await downloads.save({ filename: 'scryns-lamp-3d.zip', data: z });
+      $('model-info').textContent = 'Saved scryns-lamp-3d.zip: GLB, OBJ and gradient, ' + (m.n / 3) + ' triangles.';
+    } catch (e) {
+      const code = e && e.code;
+      $('model-info').textContent = code === 'declined' ? 'Save cancelled.' : typeof code === 'string' ? 'Saving files is not available in this view.' : 'Export failed: ' + ((e && e.message) || 'unknown error') + '.';
+    } finally { btn.disabled = false; }
+  }
+  $('model-export').addEventListener('click', exportModel);
+
   if (window.claude && typeof window.claude.use === 'function') {
-    window.claude.use('downloads').then(d => { downloads = d; $('tl-render').disabled = !d; renderIdle(); }).catch(() => { renderIdle(); });
-  } else { $('tl-render').disabled = true; }
+    window.claude.use('downloads').then(d => { downloads = d; $('tl-render').disabled = !d; $('model-export').disabled = !d; renderIdle(); }).catch(() => { renderIdle(); });
+  } else { $('tl-render').disabled = true; $('model-export').disabled = true; }
 
   /* ---------- loop ---------- */
   let last = performance.now(), frame = 0;
