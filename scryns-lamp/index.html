@@ -447,7 +447,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
       knob.addEventListener('pointerdown', e => {
         e.preventDefault(); e.stopPropagation(); selectSpot(i); knob.setPointerCapture(e.pointerId);
         const r = stage.getBoundingClientRect();
-        const move = ev => { sp.x = clamp01((ev.clientX - r.left) / r.width); sp.y = clamp01((ev.clientY - r.top) / r.height); placeHandles(); };
+        const move = ev => { const q = spots[i]; if (!q) return; q.x = clamp01((ev.clientX - r.left) / r.width); q.y = clamp01((ev.clientY - r.top) / r.height); placeHandles(); };
         const up = () => { knob.removeEventListener('pointermove', move); knob.removeEventListener('pointerup', up); knob.removeEventListener('pointercancel', up); };
         knob.addEventListener('pointermove', move); knob.addEventListener('pointerup', up); knob.addEventListener('pointercancel', up);
       });
@@ -666,7 +666,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     dof.on = S.dof.on; dof.aperture = S.dof.aperture; dof.shift = S.dof.shift; dof.picked = S.dof.focus / Math.pow(2, dof.shift);
     const relayout = spots.length !== S.spots.length;
     spots.length = S.spots.length;
-    S.spots.forEach((q, i) => { spots[i] = { ...(spots[i] || { ph: i * 1.9 }), x: q.x, y: q.y, size: q.size, str: q.str }; });
+    S.spots.forEach((q, i) => { if (spots[i]) Object.assign(spots[i], { x: q.x, y: q.y, size: q.size, str: q.str }); else spots[i] = { ph: i * 1.9, x: q.x, y: q.y, size: q.size, str: q.str }; });
     drift = !!S.drift;
     if (relayout) { selSpot = Math.min(selSpot, Math.max(0, spots.length - 1)); renderSpotUI(); }
   }
