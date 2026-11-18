@@ -1,0 +1,367 @@
+<title>Scryns Lamp 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+/* Layout: the 3D stage on the left, always on white like the brand screens; a narrow rail of
+   controls on the right, grouped View / Shape / Motion / Look / Format. Rail drops below on phones. */
+:root{
+  --bg:#f3f2f6; --surface:#ffffff; --fg:#16131f; --muted:#6b6779; --line:#dbd8e4; --accent:#d95200;
+  --stage:#ffffff;
+  --display:"Instrument Serif","Iowan Old Style","Times New Roman",serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"DM Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0b0a17; --surface:#15132a; --fg:#eeebf7; --muted:#9c97b2; --line:#2b2845; --accent:#ff8a3d; color-scheme:dark }
+}
+:root[data-theme="dark"]{ --bg:#0b0a17; --surface:#15132a; --fg:#eeebf7; --muted:#9c97b2; --line:#2b2845; --accent:#ff8a3d; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--fg); font-family:var(--body); font-size:15px; line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:24px 48px}
+.wrap{max-width:1280px; margin-inline:auto; display:flex; flex-direction:column; gap:22px}
+.head{display:flex; flex-wrap:wrap; align-items:flex-end; gap:6px 36px}
+.head h1{font-family:var(--display); font-style:italic; font-weight:400; font-size:clamp(36px,5vw,56px); line-height:.95; margin:0; text-wrap:balance}
+.head p{margin:0; color:var(--muted); max-width:62ch; flex:1 1 320px; min-width:0}
+.work{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:28px; align-items:start}
+.stage-col{display:flex; flex-direction:column; gap:10px; min-width:0}
+.desk{background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:20px; display:flex; justify-content:center}
+.stage{--ar:1.7778; position:relative; width:min(100%, calc(min(72vh, 760px) * var(--ar))); aspect-ratio:var(--ar); max-width:100%;
+  background:var(--stage); overflow:hidden; cursor:grab; touch-action:none}
+.stage:active{cursor:grabbing}
+.stage canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+.hint{position:absolute; left:12px; bottom:10px; margin:0; font-family:var(--mono); font-size:11px; color:#8a8597; pointer-events:none}
+.readout{display:flex; flex-wrap:wrap; gap:4px 18px; font-family:var(--mono); font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+.readout b{font-weight:500; color:var(--fg)}
+.rail{display:flex; flex-direction:column; gap:20px; min-width:0}
+.group{display:flex; flex-direction:column; gap:10px}
+.label{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0}
+.row{display:grid; grid-template-columns:62px minmax(0,1fr) 48px; gap:10px; align-items:center}
+.row label{font-size:13px; font-weight:500}
+.row output{font-family:var(--mono); font-size:12px; color:var(--muted); text-align:right; font-variant-numeric:tabular-nums}
+input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:0}
+.btns{display:flex; flex-wrap:wrap; gap:6px}
+.btn{font:inherit; font-size:13px; font-weight:500; color:var(--fg); background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:6px 11px; cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn[aria-pressed="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600}
+.seg{display:flex}
+.seg .btn{border-radius:0; margin-left:-1px; font-family:var(--mono); font-size:12px; padding:6px 10px}
+.seg .btn:first-child{margin-left:0; border-radius:2px 0 0 2px}
+.seg .btn:last-child{border-radius:0 2px 2px 0}
+.note{margin:0; font-size:12.5px; color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+@media (max-width: 880px){
+  .work{grid-template-columns:minmax(0,1fr)}
+  .desk{padding:0; border:0; background:none}
+  .stage{width:min(100%, calc(min(62vh, 620px) * var(--ar)))}
+}
+</style>
+
+<main class="wrap">
+  <header class="head">
+    <h1>Scryns Lamp 3D</h1>
+    <p>The lamp as one 3D model: the single pleat from the Figma board, repeated around a centre point, with the brand gradients on its faces. Every shot is a camera position on this one object.</p>
+  </header>
+
+  <section class="work">
+    <div class="stage-col">
+      <div class="desk">
+        <div class="stage" id="stage">
+          <p class="hint">Drag to orbit · scroll to zoom · right-drag to pan</p>
+        </div>
+      </div>
+      <div class="readout" aria-live="off">
+        <span>shot <b id="ro-shot">Overview</b></span>
+        <span>orbit <span id="ro-az">0</span>°</span>
+        <span>height <span id="ro-el">0</span>°</span>
+        <span>distance <span id="ro-d">0</span></span>
+        <span>lens <span id="ro-f">0</span>°</span>
+        <span><span id="ro-n">0</span> pleats</span>
+      </div>
+    </div>
+
+    <aside class="rail">
+      <div class="group">
+        <p class="label">View</p>
+        <div class="btns" id="shots"></div>
+        <div class="btns">
+          <button class="btn primary" id="reveal" type="button">Reveal from nothing</button>
+          <button class="btn" id="play" type="button">Pause</button>
+        </div>
+        <div class="row"><label for="fov">Lens</label><input id="fov" type="range" min="12" max="70" step="1" value="30"><output id="fov-o" for="fov">30°</output></div>
+      </div>
+
+      <div class="group">
+        <p class="label">Shape</p>
+        <div class="row"><label for="pleats">Pleats</label><input id="pleats" type="range" min="6" max="40" step="1" value="16"><output id="pleats-o" for="pleats">16</output></div>
+        <div class="row"><label for="open">Open</label><input id="open" type="range" min="0.06" max="1" step="0.01" value="1"><output id="open-o" for="open">100%</output></div>
+        <div class="row"><label for="depth">Fold</label><input id="depth" type="range" min="0" max="2" step="0.01" value="1"><output id="depth-o" for="depth">100%</output></div>
+        <div class="row"><label for="inner">Inner</label><input id="inner" type="range" min="0.15" max="0.85" step="0.01" value="0.5"><output id="inner-o" for="inner">50%</output></div>
+        <div class="row"><label for="notch">Notch</label><input id="notch" type="range" min="0" max="0.6" step="0.01" value="0.18"><output id="notch-o" for="notch">18%</output></div>
+        <div class="row"><label for="tiers">Tiers</label><input id="tiers" type="range" min="1" max="4" step="1" value="1"><output id="tiers-o" for="tiers">1</output></div>
+        <div class="row"><label for="gap">Tier gap</label><input id="gap" type="range" min="0.1" max="0.8" step="0.01" value="0.35"><output id="gap-o" for="gap">35%</output></div>
+      </div>
+
+      <div class="group">
+        <p class="label">Motion</p>
+        <div class="row"><label for="spin">Spin</label><input id="spin" type="range" min="-1" max="1" step="0.05" value="0.3"><output id="spin-o" for="spin">+30%</output></div>
+        <div class="row"><label for="pulse">Pulse</label><input id="pulse" type="range" min="0" max="1" step="0.05" value="0.35"><output id="pulse-o" for="pulse">35%</output></div>
+      </div>
+
+      <div class="group">
+        <p class="label">Look</p>
+        <div class="seg" id="palettes">
+          <button class="btn" type="button" data-v="board" aria-pressed="true">Board</button>
+          <button class="btn" type="button" data-v="fade" aria-pressed="false">Fade to white</button>
+          <button class="btn" type="button" data-v="deep" aria-pressed="false">Deep</button>
+        </div>
+        <div class="row"><label for="shade">Folds</label><input id="shade" type="range" min="0" max="1" step="0.01" value="0.35"><output id="shade-o" for="shade">35%</output></div>
+        <div class="row"><label for="offset">Offset</label><input id="offset" type="range" min="-0.5" max="0.5" step="0.01" value="0"><output id="offset-o" for="offset">0%</output></div>
+      </div>
+
+      <div class="group">
+        <p class="label">Format</p>
+        <div class="seg" id="formats">
+          <button class="btn" type="button" data-ar="0.8" aria-pressed="false">4:5</button>
+          <button class="btn" type="button" data-ar="1" aria-pressed="false">1:1</button>
+          <button class="btn" type="button" data-ar="0.5625" aria-pressed="false">9:16</button>
+          <button class="btn" type="button" data-ar="1.7778" aria-pressed="true">16:9</button>
+        </div>
+        <p class="note">Next steps: shots saved on a timeline with continuous moves, build-ups in 3D, depth of field, logo ending and MP4 export.</p>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(() => {
+  'use strict';
+  const PI = Math.PI, TAU = 2 * PI, D2R = PI / 180;
+  const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
+  const smooth = x => { x = clamp01(x); return x * x * (3 - 2 * x); };
+  const easeOut = x => 1 - Math.pow(1 - clamp01(x), 3);
+  const $ = id => document.getElementById(id);
+
+  /* ---------- brand gradients (from the Figma board) ---------- */
+  const PALETTES = {
+    board: [[0, '#321419'], [0.28, '#ff6400'], [0.42, '#f27f48'], [0.69, '#d5c6e4'], [1, '#b296ff']],
+    fade: [[0, '#4e172b'], [0.26, '#ff6600'], [0.519, '#b78aff'], [0.774, '#f4d4f4'], [0.957, '#ffffff'], [1, '#ffffff']],
+    deep: [[0, '#321419'], [0.16, '#321419'], [0.33, '#ff6400'], [0.5, '#f27f48'], [0.69, '#d5c6e4'], [1, '#b296ff']]
+  };
+  function gradTexture(stops) {
+    const n = 256, d = new Uint8Array(n * 4), rgb = h => [1, 3, 5].map(i => parseInt(h.substr(i, 2), 16));
+    for (let i = 0; i < n; i++) {
+      const t = i / (n - 1);
+      let a = stops[0], b = stops[stops.length - 1];
+      for (let k = 0; k < stops.length - 1; k++) if (t >= stops[k][0] && t <= stops[k + 1][0]) { a = stops[k]; b = stops[k + 1]; break; }
+      if (t < stops[0][0]) b = a = stops[0];
+      const f = b[0] > a[0] ? (t - a[0]) / (b[0] - a[0]) : 0, A = rgb(a[1]), B = rgb(b[1]);
+      for (let c = 0; c < 3; c++) d[i * 4 + c] = Math.round(A[c] + (B[c] - A[c]) * f);
+      d[i * 4 + 3] = 255;
+    }
+    const tx = new THREE.DataTexture(d, n, 1, THREE.RGBAFormat);
+    tx.magFilter = tx.minFilter = THREE.LinearFilter; tx.wrapS = tx.wrapT = THREE.ClampToEdgeWrapping; tx.needsUpdate = true;
+    return tx;
+  }
+
+  /* ---------- renderer, scene, camera ---------- */
+  const stage = $('stage');
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setClearColor(0xffffff, 1);
+  stage.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 16 / 9, 1, 5000);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = 0.08; controls.rotateSpeed = 0.6; controls.zoomSpeed = 0.7;
+  controls.minDistance = 20; controls.maxDistance = 1600;
+
+  // Unlit faces: each face shows the brand gradient from its outer edge (dark) to the centre (lavender). The fold shading
+  // shifts the gradient a little by how the face is turned toward a fixed light, so neighbouring folds read apart while
+  // the look stays as flat as the Figma graphics.
+  const uniforms = {
+    uGrad: { value: gradTexture(PALETTES.board) }, uShade: { value: 0.35 }, uOffset: { value: 0 },
+    uLight: { value: new THREE.Vector3(-0.45, 0.8, 0.4).normalize() }
+  };
+  const material = new THREE.ShaderMaterial({
+    uniforms, side: THREE.DoubleSide,
+    vertexShader: `
+      attribute float aU; varying float vU; varying vec3 vN;
+      void main(){ vU = aU; vN = mat3(modelMatrix) * normal; gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `
+      uniform sampler2D uGrad; uniform float uShade; uniform float uOffset; uniform vec3 uLight;
+      varying float vU; varying vec3 vN;
+      void main(){
+        vec3 n = normalize(vN); if (!gl_FrontFacing) n = -n;
+        float u = clamp(vU + uOffset + uShade * (dot(n, uLight) - 0.3), 0.0, 1.0);
+        gl_FragColor = texture2D(uGrad, vec2(u, 0.5));
+      }`
+  });
+
+  /* ---------- the lamp ---------- */
+  // One pleat = two faces meeting at a ridge, between two valley lines from the inner to the outer radius, as on the
+  // board (Figma 1177:2680/2682). Pleats sit edge to edge around the centre like a paper fan: the paper of each pleat
+  // keeps its width, so when the fan closes the ridges rise. The ridge ends a little short of both edges (the notch).
+  const R = 72, MAXV = 40 * 4 * 12;
+  const pos = new Float32Array(MAXV * 3), uu = new Float32Array(MAXV);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('aU', new THREE.BufferAttribute(uu, 1));
+  geo.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(MAXV * 3), 3));
+  const lamp = new THREE.Mesh(geo, material);
+  lamp.frustumCulled = false;
+  const group = new THREE.Group(); group.add(lamp); scene.add(group);
+
+  const P = { pleats: 16, open: 1, depth: 1.0, inner: 0.5, notch: 0.18, tiers: 1, gap: 0.35, spin: 0.3, pulse: 0.35 };
+  let reveal = null;                                     // { t0 } while "Reveal from nothing" runs
+
+  function buildLamp(T) {
+    let v = 0;
+    const M = P.pleats, w0 = TAU / M;
+    let open = P.open, depthK = 1;
+    if (reveal) { const b = (T - reveal.t0) / 3.4; open = P.open * (1 / M + (1 - 1 / M) * easeOut(b)); depthK = easeOut(b * 1.2); }
+    const w = w0 * open, paper = (w0 / 2) * (w0 / 2);
+    const put = (x, y, z, u) => { pos[v * 3] = x; pos[v * 3 + 1] = y; pos[v * 3 + 2] = z; uu[v] = u; v++; };
+    for (let t = 0; t < P.tiers; t++) {
+      const s = 1 + t * P.gap, Ro = R * s, Ri = R * P.inner * s, yT = -t * P.gap * R * 0.55;
+      const ga = Ri + 1.12 * (Ro - Ri), gb = Ri + 0.2 * (Ro - Ri);   // dark band at the outer edge, lavender toward the centre
+      const U = r => clamp01((ga - r) / (ga - gb));
+      const a0 = -PI / 2 - (M - 1) * w / 2 + (t & 1) * w / 2;
+      for (let k = 0; k < M; k++) {
+        const th = a0 + k * w, h = w / 2;
+        const d = P.depth * depthK * (1 + P.pulse * 0.7 * Math.sin(T * TAU / 2.6 - k * 0.55 - t * 1.3));
+        const lift = r => depthK * r * Math.sqrt(Math.max(0, paper * (1 + d * d) - h * h));   // ridge height for this opening (flat at the start of a reveal)
+        const P3 = (r, a, y) => [r * Math.cos(a), yT + y, r * Math.sin(a)];
+        const ro = Ro * (1 - P.notch * w0), ri = Ri * (1 - 2.1 * P.notch * w0);
+        const VLo = P3(Ro, th - h, 0), VLi = P3(Ri, th - h, 0), VRo = P3(Ro, th + h, 0), VRi = P3(Ri, th + h, 0);
+        const Xo = P3(ro, th, lift(ro)), Xi = P3(ri, th, lift(ri));
+        const tri = (A, Bp, C, ra, rb, rc) => { put(...A, U(ra)); put(...Bp, U(rb)); put(...C, U(rc)); };
+        tri(VLo, Xo, Xi, Ro, ro, ri); tri(VLo, Xi, VLi, Ro, ri, Ri);
+        tri(Xo, VRo, VRi, ro, Ro, Ri); tri(Xo, VRi, Xi, ro, Ri, ri);
+      }
+    }
+    geo.setDrawRange(0, v);
+    geo.attributes.position.needsUpdate = true; geo.attributes.aU.needsUpdate = true;
+    geo.computeVertexNormals();
+    return M * P.tiers;
+  }
+
+  /* ---------- shots: camera positions on the one object ---------- */
+  // orbit and height in degrees, distance in model units, target point, lens (vertical field of view)
+  const SHOTS = [
+    { name: 'Overview', az: 0, el: 34, dist: 255, tgt: [0, 0, 0], fov: 30 },
+    { name: 'Edge-on', az: 0, el: 0, dist: 330, tgt: [0, 0, 0], fov: 30 },
+    { name: 'Rim close-up', az: 24, el: 20, dist: 82, tgt: [0, 8, 58], fov: 30 },
+    { name: 'From below', az: 0, el: -58, dist: 175, tgt: [0, -12, 0], fov: 34 },
+    { name: 'Side detail', az: 0, el: 9, dist: 120, tgt: [64, 6, 0], fov: 28 }
+  ];
+  const shotsEl = $('shots');
+  SHOTS.forEach((s, i) => {
+    const b = document.createElement('button'); b.className = 'btn'; b.type = 'button'; b.textContent = s.name;
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.addEventListener('click', () => goTo(i, 1.6));
+    shotsEl.append(b);
+  });
+  const shotPos = s => {
+    const az = s.az * D2R, el = s.el * D2R;
+    return new THREE.Vector3(s.tgt[0] + s.dist * Math.cos(el) * Math.sin(az), s.tgt[1] + s.dist * Math.sin(el), s.tgt[2] + s.dist * Math.cos(el) * Math.cos(az));
+  };
+  function currentShot() {
+    const off = camera.position.clone().sub(controls.target), dist = off.length();
+    return { az: Math.atan2(off.x, off.z) / D2R, el: Math.asin(clamp01((off.y / dist + 1) / 2) * 2 - 1) / D2R, dist,
+             tgt: controls.target.toArray(), fov: camera.fov };
+  }
+  let tween = null;
+  function goTo(i, dur, from) {
+    [...shotsEl.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i ? 'true' : 'false'));
+    $('ro-shot').textContent = SHOTS[i].name;
+    const a = from || currentShot(), b = SHOTS[i];
+    let daz = ((b.az - a.az) % 360 + 540) % 360 - 180;    // turn the short way round
+    tween = { a, b: { ...b, az: a.az + daz }, t0: performance.now(), dur: dur * 1000 };
+    controls.enabled = false;
+  }
+  function applyShot(s) {
+    camera.position.copy(shotPos(s)); controls.target.set(...s.tgt);
+    camera.fov = s.fov; camera.updateProjectionMatrix(); camera.lookAt(controls.target);
+  }
+  function stepTween(now) {
+    if (!tween) return;
+    const k = smooth((now - tween.t0) / tween.dur), a = tween.a, b = tween.b, L = (x, y) => x + (y - x) * k;
+    applyShot({ az: L(a.az, b.az), el: L(a.el, b.el), dist: Math.exp(L(Math.log(a.dist), Math.log(b.dist))),
+                tgt: a.tgt.map((x, i) => L(x, b.tgt[i])), fov: L(a.fov, b.fov) });
+    if (k >= 1) { tween = null; controls.enabled = true; $('fov').value = Math.round(camera.fov); $('fov-o').textContent = Math.round(camera.fov) + '°'; }
+  }
+  // the camera starts level with the flat lamp, so it has no visible thickness, then rises to the overview while
+  // the fan opens from one pleat and its folds grow
+  $('reveal').addEventListener('click', () => {
+    reveal = { t0: st.T };
+    if (!st.playing) setPlaying(true);
+    applyShot({ ...SHOTS[1], az: -40 });
+    goTo(0, 3.4, { ...SHOTS[1], az: -40 });
+  });
+
+  /* ---------- controls ---------- */
+  const st = { T: 0, playing: true };
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const playBtn = $('play');
+  function setPlaying(p) { st.playing = p; playBtn.textContent = p ? 'Pause' : 'Play'; }
+  setPlaying(!reduced);
+  playBtn.addEventListener('click', () => setPlaying(!st.playing));
+  const pct = v => Math.round(v * 100) + '%';
+  const bind = (id, fmt, onSet) => {
+    const el = $(id), out = $(id + '-o');
+    const upd = () => { const v = parseFloat(el.value); if (id in P) P[id] = v; out.textContent = fmt(v); if (onSet) onSet(v); };
+    el.addEventListener('input', upd); upd();
+  };
+  bind('pleats', v => String(v)); bind('open', pct); bind('depth', pct); bind('inner', pct); bind('notch', pct);
+  bind('tiers', v => String(v)); bind('gap', pct);
+  bind('spin', v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(Math.round(v * 100)) + '%'); bind('pulse', pct);
+  bind('shade', pct, v => { uniforms.uShade.value = v; });
+  bind('offset', v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(Math.round(v * 100)) + '%', v => { uniforms.uOffset.value = v; });
+  bind('fov', v => v + '°', v => { if (!tween) { camera.fov = v; camera.updateProjectionMatrix(); } });
+  $('palettes').addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]'); if (!b) return;
+    [...$('palettes').children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    uniforms.uGrad.value = gradTexture(PALETTES[b.dataset.v]);
+  });
+  $('formats').addEventListener('click', e => {
+    const b = e.target.closest('button[data-ar]'); if (!b) return;
+    [...$('formats').children].forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    stage.style.setProperty('--ar', b.dataset.ar); resize();
+  });
+  controls.addEventListener('start', () => { tween = null; controls.enabled = true; [...shotsEl.children].forEach(b => b.setAttribute('aria-pressed', 'false')); $('ro-shot').textContent = 'Free'; });
+
+  function resize() {
+    const r = stage.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(dpr); renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false);
+    camera.aspect = r.width / Math.max(1, r.height); camera.updateProjectionMatrix();
+  }
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(stage);
+  window.addEventListener('resize', resize);
+  resize();
+  applyShot(SHOTS[0]);
+
+  /* ---------- loop ---------- */
+  let last = performance.now(), frame = 0;
+  function tick(now) {
+    const dt = Math.min((now - last) / 1000, 0.1); last = now; frame++;
+    if (st.playing) st.T += dt;
+    stepTween(now);
+    if (!tween) controls.update();
+    group.rotation.y = -P.spin * st.T * 0.25;
+    const n = buildLamp(st.T);
+    if (reveal && st.T - reveal.t0 > 4) reveal = null;
+    renderer.render(scene, camera);
+    if (frame % 6 === 0) {
+      const s = currentShot();
+      $('ro-az').textContent = Math.round(s.az); $('ro-el').textContent = Math.round(s.el);
+      $('ro-d').textContent = Math.round(s.dist); $('ro-f').textContent = Math.round(camera.fov); $('ro-n').textContent = n;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  // jump to a moment (seconds), used to check frames without waiting
+  window.__lampSeek = (t, shot) => { st.T = t; if (shot !== undefined) { tween = null; applyShot(SHOTS[shot]); } };
+})();
+</script>
