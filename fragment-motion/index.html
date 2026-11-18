@@ -818,6 +818,13 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
               rx: (90 - 32 * p) * PI / 180, ry: 10 * Math.sin(T * 0.35) * p * PI / 180,
               rz: -0.9 * (1 - p) + E.S * T * 0.2, s: 0 }, ALL, items);
     for (const it of centreOn(items, 0, 0)) if (visible(it.p, vp)) out.push(it);
+    // blur spots: three soft out-of-focus areas drifting slowly around the ring, so parts of the lamp fall out of focus
+    const sp = [];
+    for (let k = 0; k < 3; k++) {
+      const a = T * 0.22 + k * TAU / 3 + 0.4 * Math.sin(T * 0.3 + k), rr = R * (1.05 + 0.15 * Math.sin(T * 0.17 + k * 2));
+      sp.push({ x: rr * Math.cos(a), y: rr * 0.5 * Math.sin(a), r: R * (0.3 + 0.07 * Math.sin(T * 0.4 + k)) });
+    }
+    ENV.ts = { spots: sp, r: 4.5 * Math.min(1, p * 1.5) };
   }
   // Free in space: an open paper fan on white, tipped far back so its pleats read as a folded row, turning and
   // breathing open and closed; a smaller fan floats behind it, out of focus.
@@ -1034,7 +1041,8 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const band = { ang: 0.35, amp: 0.22, per: 4 * BAR, reach: 0.38, r: 0.02, half: 0.12 };
     switch (seg[2]) {
       case 'blurZig': figScene('blurZig', lt, E, vp, out, { delay: 0.5, zoom: 1.05 }); break;
-      case 'derive': { const st0 = out.length; sceneDerive(lt * 1.1, E, vp, out); scaleItems(out, st0, Math.min(1.35, vp[2] * (ENV.zoom || 1) / 165)); break; }
+      case 'derive': { const st0 = out.length; sceneDerive(lt * 1.1, E, vp, out); const kk = Math.min(1.35, vp[2] * (ENV.zoom || 1) / 165); scaleItems(out, st0, kk);
+        if (ENV.ts && ENV.ts.spots) { ENV.ts.spots = ENV.ts.spots.map(q => ({ x: q.x * kk, y: q.y * kk, r: q.r * kk })); ENV.ts.r *= kk; } break; }
       case 'close': ENV.bg = null; ENV.dark = false; figScene('close', lt, E, vp, out, { delay: 0, zoom: 1.08, band: { ...band, ang: -1.2, per: 4 * BAR } }); break;
       case 'tiers': ENV.bg = null; ENV.dark = false; figScene('tiers', lt, E, vp, out, { delay: 0, band, zoom: TZ(vp) }); break;
       case 'zig': figScene('zig', lt, E, vp, out, { delay: 0.1, reveal: true }); break;
@@ -1275,7 +1283,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
   }
 
   const polys = [], ENV = { A: 0, bc: 0 };
-  const blurCv = document.createElement('canvas'), tsCv = document.createElement('canvas'), halfCv = document.createElement('canvas');
+  const blurCv = document.createElement('canvas'), tsCv = document.createElement('canvas'), halfCv = document.createElement('canvas'), spotCv = document.createElement('canvas');
   // draw a blurred copy of src onto dst, blurring at half resolution (same look, a quarter of the work)
   function blurInto(dst, src, px, w, h) {
     const f = px >= 10 ? 4 : 2, hw = Math.max(1, Math.round(w / f)), hh = Math.max(1, Math.round(h / f));
@@ -1295,6 +1303,19 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, w, h);
     blurInto(c, ctx.canvas, px, w, h);
     c.globalCompositeOperation = 'destination-in';
+    if (t.spots) {                                  // soft round spots: blurred inside, sharp outside
+      // build the mask on its own layer, then keep the blurred copy only where the mask is
+      const mk = spotCv; if (mk.width !== w || mk.height !== h) { mk.width = w; mk.height = h; }
+      const mc = mk.getContext('2d'); mc.setTransform(1, 0, 0, 1, 0, 0); mc.clearRect(0, 0, w, h);
+      for (const q of t.spots) {
+        const P = S(q.x, q.y), R = q.r * k, g = mc.createRadialGradient(P[0], P[1], 0, P[0], P[1], R);
+        g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(0.45, 'rgba(0,0,0,0.85)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+        mc.fillStyle = g; mc.fillRect(P[0] - R, P[1] - R, 2 * R, 2 * R);
+      }
+      c.globalCompositeOperation = 'destination-in'; c.drawImage(mk, 0, 0); c.restore();
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(tsCv, 0, 0); ctx.restore();
+      return;
+    }
     const A = S(t.ax, t.ay), B = S(t.bx, t.by);
     let g;
     if (t.one) {                                   // sharp at A, fully blurred from B onward
@@ -1407,6 +1428,12 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     if (!t) { tsfx.hidden = true; return; }
     const k = Math.hypot(m[0], m[1]), css = cv.clientWidth / cv.width;
     const S = (x, y) => [(m[0] * x + m[2] * y + m[4]) * css, (m[1] * x + m[3] * y + m[5]) * css];
+    if (t.spots) {
+      tsfx.style.setProperty('--m', t.spots.map(q => { const P = S(q.x, q.y), R = q.r * k * css;
+        return `radial-gradient(circle ${R.toFixed(1)}px at ${P[0].toFixed(1)}px ${P[1].toFixed(1)}px, #000 0%, rgba(0,0,0,.85) 45%, transparent 100%)`; }).join(', '));
+      tsfx.style.setProperty('--b', (Math.max(0.5, t.r * k * amount / 0.6) * css).toFixed(2) + 'px');
+      tsfx.hidden = false; return;
+    }
     const W = cv.clientWidth, H = cv.clientHeight, A = S(t.ax, t.ay), B = S(t.bx, t.by);
     let dx = B[0] - A[0], dy = B[1] - A[1]; const L0 = Math.hypot(dx, dy) || 1; dx /= L0; dy /= L0;
     const deg = Math.atan2(dx, -dy) * 180 / PI, L = Math.abs(W * dx) + Math.abs(H * dy);
