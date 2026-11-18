@@ -162,7 +162,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
         <div class="btns" id="spot-list"></div>
         <div class="row"><label for="spot-size">Size</label><input id="spot-size" type="range" min="0.05" max="0.6" step="0.01" value="0.22"><output id="spot-size-o" for="spot-size">22%</output></div>
         <div class="row"><label for="spot-str">Strength</label><input id="spot-str" type="range" min="0" max="1" step="0.01" value="0.6"><output id="spot-str-o" for="spot-str">60%</output></div>
-        <p class="note">Drag a spot's handle on the stage to move it. Size and strength apply to the selected spot.</p>
+        <p class="note">Drag a spot's handle on the stage to move it. Size and strength apply to the selected spot. The spots are an overlay on the whole animation: they stay put through every key and in the render.</p>
       </div>
 
       <div class="group">
@@ -664,11 +664,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     if (S.palA !== undefined) { pal.a = S.palA; pal.b = S.palB; pal.mix = S.palMix; } else { pal.a = pal.b = S.pal; pal.mix = 0; }
     applyPal();
     dof.on = S.dof.on; dof.aperture = S.dof.aperture; dof.shift = S.dof.shift; dof.picked = S.dof.focus / Math.pow(2, dof.shift);
-    const relayout = spots.length !== S.spots.length;
-    spots.length = S.spots.length;
-    S.spots.forEach((q, i) => { if (spots[i]) Object.assign(spots[i], { x: q.x, y: q.y, size: q.size, str: q.str }); else spots[i] = { ph: i * 1.9, x: q.x, y: q.y, size: q.size, str: q.str }; });
-    drift = !!S.drift;
-    if (relayout) { selSpot = Math.min(selSpot, Math.max(0, spots.length - 1)); renderSpotUI(); }
+    // blur spots are not part of a key: they are one overlay over the whole timeline and the render
   }
   // put the controls on the rail in line with the current values
   function syncUI() {
@@ -1053,7 +1049,7 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
     const n = buildLamp(st.T);
     if (reveal && st.T - reveal.t0 > 4) reveal = null;
     draw();
-    if (drift && spotsVisible) placeHandles();
+    if (spotsVisible) placeHandles();             // handles always sit on the blur they control
     if (frame % 6 === 0) {
       updateFocusReadout(); syncZoom();
       const s = currentShot();
