@@ -323,6 +323,10 @@ input[type="range"]{width:100%; accent-color:var(--accent); margin:0; min-width:
 
   // Pleated disc: concentric zigzag rings, each ring sqrt(2) larger than the last, 48 pleats.
   function buildDisc(T, E, vp, out) {
+    // depth: a sharp band of focus drifts slowly across the pleats, everything outside it falls softly out of focus
+    { const ang = 0.5, c = Math.cos(ang), sn = Math.sin(ang), off = 0.24 * Math.sin(TAU * T / 7.2);
+      const fx = vp[0] + vp[2] / 2 + c * off * vp[2], fy = vp[1] + vp[3] / 2 + sn * off * vp[3];
+      ENV.ts = { ax: fx, ay: fy, bx: fx + c * vp[2] * 0.4, by: fy + sn * vp[2] * 0.4, r: vp[2] * 0.022, half: vp[2] * 0.12 }; }
     const cx = 277.5, cy = 663.5, N = 48, R0 = 126.4, th0 = 4.05 * PI / 180;
     const s = frac(T * 0.05), rot = T * 0.016;
     const rr = radii(vp, cx, cy, 12);
