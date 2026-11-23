@@ -1039,6 +1039,7 @@ if KURZ:
 PARAMS["cloud"] = {**PARAMS.get("cloud", {}), "v2Rate": round(.8875 / CLIPS["cloud"].get("rate", 1), 4)}
 # Kunde (23.11.): bei 0:13 Hintergrund hinter dem weißen jö → BIPA-Pink-Verlauf (Markenfarbe #E6007E); jö-Aufbau und Übergang zum App-Icon 1,4× schneller,
 # dadurch steht das jö länger auf Pink; während des (schnelleren) Icon-Übergangs blendet es zurück auf den jö-Verlauf (Julian schließt wie bisher an)
+PARAMS["people"] = {**PARAMS.get("people", {}), "sb": 6}   # Kunde (23.11.): zwei BIPA-Folien statt drei Marken – 6 statt 4 Schläge pro Person, gleiche Gesamtlänge
 BIPA_PINK_CSS = "radial-gradient(128.6% 191.1% at -18.4% 123.6%,#6e0038 0%,#a3005a 20%,#d4006f 45%,#e6007e 70%,#ef4a9b 90%,#f46fae 96%)"
 rep("const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}});",
     "const LG3PK=document.createElement('div');LG3PK.style.cssText=`position:absolute;inset:0;display:none;opacity:0;background:" + BIPA_PINK_CSS + "`;LG3BG.after(LG3PK);\n"
