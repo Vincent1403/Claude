@@ -1062,7 +1062,7 @@ CLIPS["ivBrille"] = {**CLIPS["ivBrille"], "start": 9000.0}     # geparkt
 rep("const IV_KOCHEN=makeIV('ivKochen','Video Mutter mit Kind','iv_mutter.webm',3,{fade:0});", "const IV_KOCHEN=makeIV('ivKochen','Video BIPA (Intro)','iv_bipa.webm',4.417,{fade:0});")
 # Kunde: Haken-Animation 1 s früher (sonst unverändert) – Pill startet mit dem ersten Videobild, nach der KURZ-Stauchung (früher geht nicht, davor läuft noch der Foto-Zoom)
 _rr = CLIPS["rabatt"].get("rate", 1)
-PARAMS["rabatt"] = {**PARAMS["rabatt"], "inAt": 0, "outAt": round(PARAMS["rabatt"]["outAt"] - 1.0 * _rr, 4)}
+PARAMS["rabatt"] = {**PARAMS["rabatt"], "inAt": 0, "outAt": 1.85}   # Kunde (23.11.): Pill „15% Rabattsammler“ steht ~1 s ganz offen (war 0,3 s, schrumpfte schon beim Hochzählen); Haken ist ~0,45 s vor dem Schnitt fertig
 # Kunde (23.11.): Tablet (Website) und Newsletter raus, Film wird kürzer: Musik verliert genau 3 Takte (Takt bei 87,021 → 93,894 s, ruhiger Riff-Teil),
 # POS-Bild 1 schließt direkt an die Anzeigen an und reicht bis zur alten Stelle von POS 2 (−3 Takte); alles danach rückt 3 Takte vor (Bass bleibt auf der Endcard)
 TABLET_NEWS_RAUS = True
