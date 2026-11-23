@@ -1083,16 +1083,13 @@ if TABLET_NEWS_RAUS:
 # die Logo-Übersicht bleibt stehen, solange der Schluss-Bass ausklingt, der Film endet mit der Musik (stille Reststrecke weg)
 WAND_ENDSCREEN_RAUS = True
 if WAND_ENDSCREEN_RAUS:
-    _WP, _WD = 64.764, 2.28567   # Kunde: Schnitt ruckelte (34 ms zu kurz, mitten im Aufbau vor dem Drop) → einen der gleichklingenden Takte davor raus, exakt 1 Takt; Drop bleibt auf „Konsistent …“
-    _w = CLIPS["wall"]; _we = _w["start"] + _w["len"]; _gse = CLIPS["gutsch"]["start"] + CLIPS["gutsch"]["len"]
+    # Kunde: jeder Musikschnitt an dieser Stelle war hörbar (Aufbau vor dem Drop) → KEIN Musikschnitt: die Wand gibt ihre Zeit an das Handy (Gutscheine) ab,
+    # das langsamer scrollt; „Konsistent über alle Kanäle“ bleibt wie im Original auf dem Drop, Film ~2,3 s länger
+    _WD = 0
+    _w = CLIPS["wall"]; _we = _w["start"] + _w["len"]; _gs = CLIPS["gutsch"]
     CLIPS["wall"] = {**_w, "start": 9000.0}
-    for _k, _v in CLIPS.items():
-        if _v["start"] >= 1000 or _k == "wall": continue
-        if _v["start"] >= _we - 1e-3: _v["start"] = round(_v["start"] - _WD, 4)
-        elif _v["start"] < _WP and _v["start"] + _v["len"] > _we + 1e-3: _v["len"] = round(_v["len"] - _WD, 4)
-    _ka = CLIPS["kanal"]; _kae = _ka["start"] + _ka["len"]; _kc = _ka["len"] * _ka.get("rate", 1)
-    _ka["start"] = round(_gse, 4); _ka["len"] = round(_kae - _gse, 4); _ka["rate"] = round(_kc / _ka["len"], 4)   # schließt direkt an das Handy an
-    _EDN_A = _EDN_A + [(_WP, -_WD, 0)]; _ED = _ED + [(_WP, -_WD, 0)]
+    _gs["len"] = round(_we - _gs["start"], 4); _gs["rate"] = 1
+    PARAMS["gutsch"] = {**PARAMS.get("gutsch", {}), "len": _gs["len"], "hold": .25, "zoomDur": .8, "scrollAt": 1.1, "scrollDur": 2.3, "matchAt": round(_gs["len"] - .97, 4)}
     # Endscreen: kein schwarzer Kreis / keine Pill mehr, Film endet, wenn der Bass ausgeklungen ist (Musik endet ~113,45 s vor diesem Schnitt)
     _ec = CLIPS["endc"]; _ecc = _ec["len"] * _ec.get("rate", 1); _end = round(113.45 + (6.873 - _CD) - _WD, 4)
     _ec["len"] = round(_end - _ec["start"], 4)
