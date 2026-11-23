@@ -1540,7 +1540,7 @@ const BRAND={
     {k:'lockup',label:'Lockup jö × Partner',min:0,max:1,step:1,fmt:v=>v?'an':'aus',sub:'jö steht links, kleines × in der Schriftfarbe, Partner-Logo-Kreis rechts; am Ende gleitet jö auf dem Verlauf zurück zur Mitte'},
     {k:'logos',label:'Partnerlogo',min:0,max:1,step:1,fmt:v=>v?'an':'aus',sub:'weißer Logo-Kreis der Marke unter dem jö (statt Name), ploppt bei jedem Farbwechsel auf'},
     {k:'allianz',label:'Allianz statt Penny',min:0,max:1,step:1,fmt:v=>v?'Allianz':'Penny'}],
-  model(P){const b=P.beat,list=BRANDS.map(x=>x[0]==='PENNY'&&P.allianz?BR_ALLIANZ:x),n=list.length,D=list.map((_,i)=>(i>=n-P.fast?P.step/2:P.step)*b),T=[];let acc=0;D.forEach(d=>{T.push(acc);acc+=d});return {P,b,list,T,D,Tend:acc,key:0,keyName:'erste Partnerfarbe',total:acc+P.hold*b}},
+  model(P){const b=P.beat,list=BRANDS.map(x=>x[0]==='PENNY'&&P.allianz?BR_ALLIANZ:x),n=list.length,D=list.map((x,i)=>(x[0]==='BIPA'&&P.bipa?P.bipa:(i>=n-P.fast?P.step/2:P.step))*b),T=[];let acc=0;D.forEach(d=>{T.push(acc);acc+=d});return {P,b,list,T,D,Tend:acc,key:0,keyName:'erste Partnerfarbe',total:acc+P.hold*b}},
   show(on){BRL.style.display=on?'':'none'},
   render(M,t){const P=M.P,E=BRE,n=M.list.length;let i=0;while(i<n&&t>=M.T[i]+M.D[i])i++;const lt=t-(i<n?M.T[i]:M.Tend);
     // Grund: jö-Verlauf (Ende von „Partner“); darüber wächst pro Marke ein Kreis aus einem jö-Punkt (reihum), langsam und überlappend
@@ -4490,7 +4490,7 @@ Object.assign(S.comps.partner.params,{"hit": 3.086, "lOut": 4.473, "sent": 1000,
 Object.assign(S.comps.white2.params,{"edge": 1925});FM.white2=COMPS.white2.model(S.comps.white2.params);
 Object.assign(S.comps.story.params,{"holdA": 1.4});FM.story=COMPS.story.model(S.comps.story.params);
 Object.assign(S.comps.story2.params,{"hold1": 1.4});FM.story2=COMPS.story2.model(S.comps.story2.params);
-Object.assign(S.comps.brand.params,{"step": 0.375, "accent": 0, "fast": 0});FM.brand=COMPS.brand.model(S.comps.brand.params);
+Object.assign(S.comps.brand.params,{"step": 0.25, "accent": 0, "fast": 0, "bipa": 2.5});FM.brand=COMPS.brand.model(S.comps.brand.params);
 Object.assign(S.comps.c4.params,{"len": 7, "outAt": 6.3, "outDir": -1});FM.c4=COMPS.c4.model(S.comps.c4.params);
 Object.assign(S.comps.colors.params,{"beatsB": 1.6856, "beatsC": 4.0644});FM.colors=COMPS.colors.model(S.comps.colors.params);
 Object.assign(S.comps.people.params,{"sb": 6});FM.people=COMPS.people.model(S.comps.people.params);
