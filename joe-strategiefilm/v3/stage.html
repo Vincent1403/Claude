@@ -3774,7 +3774,8 @@ const ADS={key:'deal',name:'Anzeigen',lane:'laneV4',cls:'bento',
 const LOGO2=Object.assign(Object.create(LOGO),{key:'logo2',name:'Logo (Schluss)',}); // Schluss: jö wird auf dem Hit (F4279) zum App-Icon wie nach „Das neue Jö.“
 const LG3BG=document.createElement('div');LG3BG.style.cssText=`position:absolute;inset:0;display:none;background:${JG_CSS}`;$('bg').after(LG3BG);
 const LOGO4=Object.assign(Object.create(LOGO),{key:'logo4',name:'Logo (Schluss, vor „Markenbühne“)',render(M,t){LOGO.render.call(this,M,Math.min(t,M.P.outAt-1/24))}}); // jö baut sich auf und bleibt stehen, kein App-Icon
-const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt
+const LG3PK=document.createElement('div');LG3PK.style.cssText=`position:absolute;inset:0;display:none;opacity:0;background:radial-gradient(128.6% 191.1% at -18.4% 123.6%,#6e0038 0%,#a3005a 20%,#d4006f 45%,#e6007e 70%,#ef4a9b 90%,#f46fae 96%)`;LG3BG.after(LG3PK);
+const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none';LG3PK.style.display=on?'':'none'}}); // jö baut sich auf dem Verlauf auf und wird zum App-Icon, Julian übernimmt
 /* Partnerfilm: Partner-Szene – erst „Viele Marken. / Eine starke Verbindung.“ in der Mitte, die Partner-Logos liegen
    oben und unten drumherum; dann ersetzt das jö-App-Icon die Worte, die Partner fliegen hinein, das Icon verschwindet,
    danach in zwei Schritten „Eine Welt voller Marken.“ → „Ein gemeinsames Markenerlebnis.“ */
@@ -3856,6 +3857,7 @@ const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „D
 {const H=1.88,L=2.275,r0=LOGO3.render,m0=LOGO3.model;
  LOGO3.model=function(P){const M=m0.call(this,P);M.total+=L;return M};
  LOGO3.render=function(M,t){r0.call(this,M,t<H?t:t<H+L?H:t-L)};}
+{const r1=LOGO3.render;LOGO3.render=function(M,t){const c=S.clips.logo3||{in:.475,rate:1.1365},K=1.4,B0=.475,B1=1.25,O0=4.345,T=M.total,b1=B0+(B1-B0)/K,o0=T-(T-O0)/K;const u=t<b1?B0+(t-B0)*K:t<o0?B1+(t-b1)*(O0-B1)/(o0-b1):O0+(t-o0)*K;r1.call(this,M,Math.min(T,Math.max(0,u)));const r=(t-c.in)/(c.rate||1),rb=(b1-c.in)/(c.rate||1),ro=(o0-c.in)/(c.rate||1),rT=(T-c.in)/(c.rate||1);LG3PK.style.opacity=Math.max(0,Math.min(eIO(seg(r,rb,rb+.5)),1-eIO(seg(r,ro,rT-.08)))).toFixed(3)}} // Kunde: jö auf BIPA-Pink, Aufbau + Icon-Übergang 1,4× schneller
 
 /* =====================================================================
    COMP: GUTSCHEINE IN DER APP (Partnerfilm, Kunde) – Zwischenschritt vor der Angebotswand:

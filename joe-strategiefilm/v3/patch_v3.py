@@ -1037,6 +1037,18 @@ if KURZ:
     print("KURZ: Faktoren", [round((b - a - r) / (b - a), 3) for (a, b), r in zip(_R, _RM)], "Ende", round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 # Kunde: Tamara-Video in der Wolke (0:38) im ursprünglichen Tempo (×0,8875), unabhängig davon, wie stark der Clip gestaucht ist – Clip-Länge bleibt
 PARAMS["cloud"] = {**PARAMS.get("cloud", {}), "v2Rate": round(.8875 / CLIPS["cloud"].get("rate", 1), 4)}
+# Kunde (23.11.): bei 0:13 Hintergrund hinter dem weißen jö → BIPA-Pink-Verlauf (Markenfarbe #E6007E); jö-Aufbau und Übergang zum App-Icon 1,4× schneller,
+# dadurch steht das jö länger auf Pink; während des (schnelleren) Icon-Übergangs blendet es zurück auf den jö-Verlauf (Julian schließt wie bisher an)
+BIPA_PINK_CSS = "radial-gradient(128.6% 191.1% at -18.4% 123.6%,#6e0038 0%,#a3005a 20%,#d4006f 45%,#e6007e 70%,#ef4a9b 90%,#f46fae 96%)"
+rep("const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none'}});",
+    "const LG3PK=document.createElement('div');LG3PK.style.cssText=`position:absolute;inset:0;display:none;opacity:0;background:" + BIPA_PINK_CSS + "`;LG3BG.after(LG3PK);\n"
+    "const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none';LG3PK.style.display=on?'':'none'}});")
+# äußerste Schicht (nach logo_hold_mod): Clip-Zeit t → schnellerer Aufbau/Icon-Übergang, Pink-Ebene ein/aus
+_HM = "LOGO3.render=function(M,t){r0.call(this,M,t<H?t:t<H+L?H:t-L)};}"
+rep(_HM, _HM + "\n{const r1=LOGO3.render;LOGO3.render=function(M,t){const c=S.clips.logo3||{in:.475,rate:1.1365},K=1.4,B0=.475,B1=1.25,O0=4.345,T=M.total,b1=B0+(B1-B0)/K,o0=T-(T-O0)/K;"
+    "const u=t<b1?B0+(t-B0)*K:t<o0?B1+(t-b1)*(O0-B1)/(o0-b1):O0+(t-o0)*K;r1.call(this,M,Math.min(T,Math.max(0,u)));"
+    "const r=(t-c.in)/(c.rate||1),rb=(b1-c.in)/(c.rate||1),ro=(o0-c.in)/(c.rate||1),rT=(T-c.in)/(c.rate||1);"
+    "LG3PK.style.opacity=Math.max(0,Math.min(eIO(seg(r,rb,rb+.5)),1-eIO(seg(r,ro,rT-.08)))).toFixed(3)}} // Kunde: jö auf BIPA-Pink, Aufbau + Icon-Übergang 1,4× schneller")
 # Kunde (23.11.): Intro-Videos (Mutter mit Kind + Brille) → durchgehend BIPA-Footage (quelle/Bipa_kunde.mp4).
 # iv_bipa.webm = die ersten drei ganzen Einstellungen (0–4,04 s) ×0,917 auf genau die Intro-Länge gestreckt (kein Aufblitzen der 4. Einstellung)
 _ivl = round(CLIPS["hl1c"]["start"] + CLIPS["hl1c"]["len"], 4)
