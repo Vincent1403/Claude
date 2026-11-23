@@ -1059,6 +1059,22 @@ rep("const IV_KOCHEN=makeIV('ivKochen','Video Mutter mit Kind','iv_mutter.webm',
 # Kunde: Haken-Animation 1 s früher (sonst unverändert) – Pill startet mit dem ersten Videobild, nach der KURZ-Stauchung (früher geht nicht, davor läuft noch der Foto-Zoom)
 _rr = CLIPS["rabatt"].get("rate", 1)
 PARAMS["rabatt"] = {**PARAMS["rabatt"], "inAt": 0, "outAt": round(PARAMS["rabatt"]["outAt"] - 1.0 * _rr, 4)}
+# Kunde (23.11.): Tablet (Website) und Newsletter raus, Film wird kürzer: Musik verliert genau 3 Takte (Takt bei 87,021 → 93,894 s, ruhiger Riff-Teil),
+# POS-Bild 1 schließt direkt an die Anzeigen an und reicht bis zur alten Stelle von POS 2 (−3 Takte); alles danach rückt 3 Takte vor (Bass bleibt auf der Endcard)
+TABLET_NEWS_RAUS = True
+if TABLET_NEWS_RAUS:
+    _CP, _CD = 87.021, round(93.894 - 87.021, 4)
+    _p1 = CLIPS["pos"]; _p1e = _p1["start"] + _p1["len"]
+    for _k in ("laptop", "newsl"): CLIPS[_k] = {**CLIPS[_k], "start": 9000.0}
+    for _k, _v in CLIPS.items():
+        if _v["start"] >= 1000 or _k == "pos": continue
+        if _v["start"] >= _p1e - 1e-3: _v["start"] = round(_v["start"] - _CD, 4)
+        elif _v["start"] < _CP and _v["start"] + _v["len"] > _p1e + 1e-3: _v["len"] = round(_v["len"] - _CD, 4)
+    _p1["start"] = round(CLIPS["deal"]["start"] + CLIPS["deal"]["len"] - .3855, 4); _p1["len"] = round(_p1e - _CD - _p1["start"], 4); _p1["rate"] = 1   # fährt wie bisher schon während des Vorgängers ein
+    PARAMS["pos"] = {**PARAMS.get("pos", {}), "len": round(_p1["len"] / BEAT, 3), "outAt": round(_p1["len"] / BEAT + 1, 3)}
+    _EDN_A = _EDN_A + [(_CP, -_CD, 0)]
+    _ED = _ED + [(_CP, -_CD, 0)]
+    print("Tablet/Newsletter raus: −%.3f s, Ende" % _CD, round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
 _EDJ = json.dumps([[p, d, src] for p, d, src in _ED])
