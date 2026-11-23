@@ -1079,6 +1079,26 @@ if TABLET_NEWS_RAUS:
     _EDN_A = _EDN_A + [(_CP, -_CD, 0)]
     _ED = _ED + [(_CP, -_CD, 0)]
     print("Tablet/Newsletter raus: −%.3f s, Ende" % _CD, round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
+# Kunde (23.11.): Angebotswand raus (Musik −1 Takt, Schlag 71,625 → 73,878, Takt-Phase bleibt) und Endscreen „hammeralbrecht.design“ raus:
+# die Logo-Übersicht bleibt stehen, solange der Schluss-Bass ausklingt, der Film endet mit der Musik (stille Reststrecke weg)
+WAND_ENDSCREEN_RAUS = True
+if WAND_ENDSCREEN_RAUS:
+    _WP, _WD = 71.625, round(73.878 - 71.625, 4)
+    _w = CLIPS["wall"]; _we = _w["start"] + _w["len"]; _gse = CLIPS["gutsch"]["start"] + CLIPS["gutsch"]["len"]
+    CLIPS["wall"] = {**_w, "start": 9000.0}
+    for _k, _v in CLIPS.items():
+        if _v["start"] >= 1000 or _k == "wall": continue
+        if _v["start"] >= _we - 1e-3: _v["start"] = round(_v["start"] - _WD, 4)
+        elif _v["start"] < _WP and _v["start"] + _v["len"] > _we + 1e-3: _v["len"] = round(_v["len"] - _WD, 4)
+    _ka = CLIPS["kanal"]; _kae = _ka["start"] + _ka["len"]; _kc = _ka["len"] * _ka.get("rate", 1)
+    _ka["start"] = round(_gse, 4); _ka["len"] = round(_kae - _gse, 4); _ka["rate"] = round(_kc / _ka["len"], 4)   # schließt direkt an das Handy an
+    _EDN_A = _EDN_A + [(_WP, -_WD, 0)]; _ED = _ED + [(_WP, -_WD, 0)]
+    # Endscreen: kein schwarzer Kreis / keine Pill mehr, Film endet, wenn der Bass ausgeklungen ist (Musik endet ~113,45 s vor diesem Schnitt)
+    _ec = CLIPS["endc"]; _ecc = _ec["len"] * _ec.get("rate", 1); _end = round(113.45 - _WD, 4)
+    _ec["len"] = round(_end - _ec["start"], 4)
+    rep("r0.call(this,M,Math.max(0,t-pre));\n  const out=pre+P.flyAt-.05;", "const out=pre+P.flyAt-.05;r0.call(this,M,Math.max(0,Math.min(t,out-.06)-pre)); // Kunde: keine Übergabe an „Rebranding by HammerAlbrecht“ – Logo-Übersicht bleibt bis zum Ende")
+    rep("k=eBack(seg(t,a,a+.4))*(1-eInCub(seg(t,o,o+.25)));", "k=eBack(seg(t,a,a+.4));")   # Partner-Bubbles bleiben (schweben weiter)
+    print("Wand + Endscreen raus: Ende", round(_ec["start"] + _ec["len"], 3))
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
 _EDJ = json.dumps([[p, d, src] for p, d, src in _ED])
