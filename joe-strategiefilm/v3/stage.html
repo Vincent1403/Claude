@@ -3857,7 +3857,7 @@ const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „D
 {const H=1.88,L=2.275,r0=LOGO3.render,m0=LOGO3.model;
  LOGO3.model=function(P){const M=m0.call(this,P);M.total+=L;return M};
  LOGO3.render=function(M,t){r0.call(this,M,t<H?t:t<H+L?H:t-L)};}
-{const r1=LOGO3.render;LOGO3.render=function(M,t){const c=S.clips.logo3||{in:.475,rate:1.1365},K=1.4,B0=.475,B1=1.25,O0=4.345,T=M.total,b1=B0+(B1-B0)/K,o0=T-(T-O0)/K;const u=t<b1?B0+(t-B0)*K:t<o0?B1+(t-b1)*(O0-B1)/(o0-b1):O0+(t-o0)*K;r1.call(this,M,Math.min(T,Math.max(0,u)));const r=(t-c.in)/(c.rate||1),rb=(b1-c.in)/(c.rate||1),ro=(o0-c.in)/(c.rate||1),rT=(T-c.in)/(c.rate||1);LG3PK.style.opacity=Math.max(0,Math.min(eIO(seg(r,rb,rb+.5)),1-eIO(seg(r,ro,rT-.08)))).toFixed(3)}} // Kunde: jö auf BIPA-Pink, Aufbau + Icon-Übergang 1,4× schneller
+{const r1=LOGO3.render;LOGO3.render=function(M,t){const c=S.clips.logo3||{in:.475,rate:1.1365},K=1.4,KB=1,PD=1.2,FD=.8,B0=.475,B1=1.25,O0=4.345,T=M.total,b1=B0+(B1-B0)/KB,o0=T-(T-O0)/K;const u=t<b1?B0+(t-B0)*KB:t<o0?B1+(t-b1)*(O0-B1)/(o0-b1):O0+(t-o0)*K;r1.call(this,M,Math.min(T,Math.max(0,u)));const r=(t-c.in)/(c.rate||1),rb=(b1-c.in)/(c.rate||1),ro=(o0-c.in)/(c.rate||1),rT=(T-c.in)/(c.rate||1);LG3PK.style.opacity=Math.max(0,Math.min(eIO(seg(r,rb+PD,rb+PD+FD)),1-eIO(seg(r,ro,rT-.08)))).toFixed(3)}} // Kunde: jö baut sich normal auf, steht 1,2 s auf dem Verlauf, blendet in 0,8 s auf BIPA-Pink; Icon-Übergang 1,4× schneller
 
 /* =====================================================================
    COMP: GUTSCHEINE IN DER APP (Partnerfilm, Kunde) – Zwischenschritt vor der Angebotswand:

@@ -1050,10 +1050,10 @@ rep("const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach
     "const LOGO3=Object.assign(Object.create(LOGO),{key:'logo3',name:'Logo (nach „Das neue Jö.“)',show(on){LOGO.show.call(this,on);LG3BG.style.display=on?'':'none';LG3PK.style.display=on?'':'none'}});")
 # äußerste Schicht (nach logo_hold_mod): Clip-Zeit t → schnellerer Aufbau/Icon-Übergang, Pink-Ebene ein/aus
 _HM = "LOGO3.render=function(M,t){r0.call(this,M,t<H?t:t<H+L?H:t-L)};}"
-rep(_HM, _HM + "\n{const r1=LOGO3.render;LOGO3.render=function(M,t){const c=S.clips.logo3||{in:.475,rate:1.1365},K=1.4,B0=.475,B1=1.25,O0=4.345,T=M.total,b1=B0+(B1-B0)/K,o0=T-(T-O0)/K;"
-    "const u=t<b1?B0+(t-B0)*K:t<o0?B1+(t-b1)*(O0-B1)/(o0-b1):O0+(t-o0)*K;r1.call(this,M,Math.min(T,Math.max(0,u)));"
+rep(_HM, _HM + "\n{const r1=LOGO3.render;LOGO3.render=function(M,t){const c=S.clips.logo3||{in:.475,rate:1.1365},K=1.4,KB=1,PD=1.2,FD=.8,B0=.475,B1=1.25,O0=4.345,T=M.total,b1=B0+(B1-B0)/KB,o0=T-(T-O0)/K;"
+    "const u=t<b1?B0+(t-B0)*KB:t<o0?B1+(t-b1)*(O0-B1)/(o0-b1):O0+(t-o0)*K;r1.call(this,M,Math.min(T,Math.max(0,u)));"
     "const r=(t-c.in)/(c.rate||1),rb=(b1-c.in)/(c.rate||1),ro=(o0-c.in)/(c.rate||1),rT=(T-c.in)/(c.rate||1);"
-    "LG3PK.style.opacity=Math.max(0,Math.min(eIO(seg(r,rb,rb+.5)),1-eIO(seg(r,ro,rT-.08)))).toFixed(3)}} // Kunde: jö auf BIPA-Pink, Aufbau + Icon-Übergang 1,4× schneller")
+    "LG3PK.style.opacity=Math.max(0,Math.min(eIO(seg(r,rb+PD,rb+PD+FD)),1-eIO(seg(r,ro,rT-.08)))).toFixed(3)}} // Kunde: jö baut sich normal auf, steht 1,2 s auf dem Verlauf, blendet in 0,8 s auf BIPA-Pink; Icon-Übergang 1,4× schneller")
 # Kunde (23.11.): Intro-Videos (Mutter mit Kind + Brille) → durchgehend BIPA-Footage (quelle/Bipa_kunde.mp4).
 # iv_bipa.webm = die ersten drei ganzen Einstellungen (0–4,04 s) ×0,917 auf genau die Intro-Länge gestreckt (kein Aufblitzen der 4. Einstellung)
 _ivl = round(CLIPS["hl1c"]["start"] + CLIPS["hl1c"]["len"], 4)
