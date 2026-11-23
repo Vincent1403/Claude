@@ -260,8 +260,8 @@
    "rate": 0.9938
   },
   "ivKochen": {
-   "start": 0.0,
-   "len": 2.4019,
+   "start": 0,
+   "len": 4.4035,
    "in": 0
   },
   "ivTanken": {
@@ -270,7 +270,7 @@
    "in": 0
   },
   "ivBrille": {
-   "start": 2.4019,
+   "start": 9000.0,
    "len": 2.0016,
    "in": 0
   },

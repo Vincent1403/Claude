@@ -1037,6 +1037,12 @@ if KURZ:
     print("KURZ: Faktoren", [round((b - a - r) / (b - a), 3) for (a, b), r in zip(_R, _RM)], "Ende", round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 # Kunde: Tamara-Video in der Wolke (0:38) im ursprünglichen Tempo (×0,8875), unabhängig davon, wie stark der Clip gestaucht ist – Clip-Länge bleibt
 PARAMS["cloud"] = {**PARAMS.get("cloud", {}), "v2Rate": round(.8875 / CLIPS["cloud"].get("rate", 1), 4)}
+# Kunde (23.11.): Intro-Videos (Mutter mit Kind + Brille) → durchgehend BIPA-Footage (quelle/Bipa_kunde.mp4).
+# iv_bipa.webm = die ersten drei ganzen Einstellungen (0–4,04 s) ×0,917 auf genau die Intro-Länge gestreckt (kein Aufblitzen der 4. Einstellung)
+_ivl = round(CLIPS["hl1c"]["start"] + CLIPS["hl1c"]["len"], 4)
+CLIPS["ivKochen"] = {"start": 0, "len": _ivl, "in": 0}
+CLIPS["ivBrille"] = {**CLIPS["ivBrille"], "start": 9000.0}     # geparkt
+rep("const IV_KOCHEN=makeIV('ivKochen','Video Mutter mit Kind','iv_mutter.webm',3,{fade:0});", "const IV_KOCHEN=makeIV('ivKochen','Video BIPA (Intro)','iv_bipa.webm',4.417,{fade:0});")
 # Kunde: Haken-Animation 1 s früher (sonst unverändert) – Pill startet mit dem ersten Videobild, nach der KURZ-Stauchung (früher geht nicht, davor läuft noch der Foto-Zoom)
 _rr = CLIPS["rabatt"].get("rate", 1)
 PARAMS["rabatt"] = {**PARAMS["rabatt"], "inAt": 0, "outAt": round(PARAMS["rabatt"]["outAt"] - 1.0 * _rr, 4)}
