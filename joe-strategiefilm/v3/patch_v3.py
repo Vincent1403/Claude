@@ -1156,6 +1156,28 @@ s = s[:_k] + ("{BEATS.length=0;BEATS.push(...BEATS0);PEAKS.length=0;PEAKS.push(.
     "else{PEAKS.splice(Math.round(p/per),0,...PEAKS.slice(Math.round(src/per),Math.round(src/per)+Math.round(d/per)));nb=BEATS.filter(v=>v<p-.02).concat(BEATS.filter(v=>v>=src-.02&&v<src+d-.02).map(v=>+(v-src+p).toFixed(3)),BEATS.filter(v=>v>=p-.02).map(v=>+(v+d).toFixed(3)))}BEATS.length=0;BEATS.push(...nb)}"
     "BAR.length=0;for(let i=0;i*4<BEATS.length;i++)BAR.push(+BEATS[i*4].toFixed(2))} // Kunde: Beat-Raster und Wellenform zum durchlaufenden Track\n") + s[_k:]
 s = re.sub(r"TRACK_LEN=[\d.]+;", f"TRACK_LEN={round(96.0522 + sum(d for _, d, _ in _EDN), 2)};", s, count=1)
+# Kunde (23.11.): Schnittstellen in der Musik in der Audiospur markieren. Nahtstellen in Filmzeit aus der Edit-Liste ableiten (gleiche Reihenfolge wie spliceAudio):
+# hörbar ist nur, wo die Musik springt – eine Einfügung, deren Ende nahtlos ins Original zurückläuft, hat nur am Anfang eine Naht; der Spurbeginn (−2,17 s) ist kein Schnitt
+_seams = []                                    # [Filmzeit, Beschreibung]
+for _p, _d, _sr in _EDN:
+    if _p < .1: _seams = [[round(t + _d, 3), l] for t, l in _seams]; continue
+    _new = []
+    for t, l in _seams:
+        if _d < 0:
+            if t >= _p - _d: _new.append([round(t + _d, 3), l])
+            elif t < _p: _new.append([t, l])
+        else: _new.append([round(t + _d, 3), l] if t >= _p else [t, l])
+    _seams = _new + [[_p, ("%d Takte rausgeschnitten (%.2f s)" % (round(-_d / BARL), -_d)) if _d < 0 else ("Musik springt %d Takte zurück" % round((_p - _sr) / BARL))]]
+    if _d > 0 and abs((_sr + _d) - _p) > .01: _seams.append([round(_p + _d, 3), "Einfügung Ende"])
+_seams = [[round(t - 2.1731, 3) if False else t, l] for t, l in sorted(_seams)]
+print("Musik-Nahtstellen (Filmzeit):", _seams)
+rep("function drawWave(){", "const AU_SEAMS=" + json.dumps(_seams) + "; // Kunde: Schnittstellen in der Musik (Filmzeit)\nfunction drawWave(){")
+rep("x.fillRect(o0+i*per,H-h,Math.max(1,per-.3),h*2)})}", "x.fillRect(o0+i*per,H-h,Math.max(1,per-.3),h*2)});"
+    "{x.fillStyle='#e6007e';const sx=c.width/T_MAIN;AU_SEAMS.forEach(([t])=>x.fillRect(Math.round(t*sx)-1.5,0,3,c.height));"
+    "const pa=c.parentElement;if(getComputedStyle(pa).position==='static')pa.style.position='relative';pa.querySelectorAll('.auSeam').forEach(e=>e.remove());"
+    "AU_SEAMS.forEach(([t,l])=>{const d=document.createElement('div');d.className='auSeam';d.title='Schnitt in der Musik bei '+t.toFixed(3)+' s: '+l;"
+    "d.textContent='✂ '+Math.floor(t/60)+':'+(t%60).toFixed(1).padStart(4,'0')+' · '+l;"
+    "Object.assign(d.style,{position:'absolute',left:(c.offsetLeft+t*pps+4)+'px',top:(c.offsetTop+1)+'px',font:'600 10px/14px system-ui,sans-serif',color:'#fff',background:'#e6007e',padding:'0 5px',borderRadius:'7px',whiteSpace:'nowrap',pointerEvents:'auto',zIndex:3});pa.appendChild(d)})}}")
 # Videos laufen im Clip-Tempo (rate) mit – sonst driftet das Video beim Abspielen weg und wird alle ~2 s neu gesetzt (sichtbarer Sprung, z. B. Kian bei 0:35)
 rep("try{COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))", "try{window.__RATE=(c.rate||1);COMPS[k].render(FM[k],Math.min(clipHold(k,c.in+(t-c.start)*(c.rate||1)),FM[k].total))")
 for _a, _b in (("VDV.playbackRate=P.speed;", "VDV.playbackRate=P.speed*(window.__RATE||1);"), ("CLV2.playbackRate=P.v2Rate;", "CLV2.playbackRate=P.v2Rate*(window.__RATE||1);"),
