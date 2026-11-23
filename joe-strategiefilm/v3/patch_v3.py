@@ -1067,7 +1067,8 @@ PARAMS["rabatt"] = {**PARAMS["rabatt"], "inAt": 0, "outAt": 1.85}   # Kunde (23.
 # POS-Bild 1 schließt direkt an die Anzeigen an und reicht bis zur alten Stelle von POS 2 (−3 Takte); alles danach rückt 3 Takte vor (Bass bleibt auf der Endcard)
 TABLET_NEWS_RAUS = True
 if TABLET_NEWS_RAUS:
-    _CP, _CD = 87.021, 6.85715   # Kunde: exakt 3 Takte (sample-genau per Wellenform-Abgleich; vorher 6,873 = 16 ms zu lang)
+    _CP, _CD = 87.021, 6.85715   # Bild: 3 Takte (Tablet + Newsletter)
+    _CDM = 9.14293                # Musik: 4 Takte (Kunde: bei 3 Takten klang derselbe Takt doppelt – die Musik läuft in 4-Takt-Phrasen; Ende muss nicht mehr exakt passen)
     _p1 = CLIPS["pos"]; _p1e = _p1["start"] + _p1["len"]
     for _k in ("laptop", "newsl"): CLIPS[_k] = {**CLIPS[_k], "start": 9000.0}
     for _k, _v in CLIPS.items():
@@ -1076,8 +1077,8 @@ if TABLET_NEWS_RAUS:
         elif _v["start"] < _CP and _v["start"] + _v["len"] > _p1e + 1e-3: _v["len"] = round(_v["len"] - _CD, 4)
     _p1["start"] = round(CLIPS["deal"]["start"] + CLIPS["deal"]["len"] - .3855, 4); _p1["len"] = round(_p1e - _CD - _p1["start"], 4); _p1["rate"] = 1   # fährt wie bisher schon während des Vorgängers ein
     PARAMS["pos"] = {**PARAMS.get("pos", {}), "len": round(_p1["len"] / BEAT, 3), "outAt": round(_p1["len"] / BEAT + 1, 3)}
-    _EDN_A = _EDN_A + [(_CP, -_CD, 0)]
-    _ED = _ED + [(_CP, -_CD, 0)]
+    _EDN_A = _EDN_A + [(_CP, -_CDM, 0)]
+    _ED = _ED + [(_CP, -_CDM, 0)]
     print("Tablet/Newsletter raus: −%.3f s, Ende" % _CD, round(CLIPS["endc"]["start"] + CLIPS["endc"]["len"], 3))
 # Kunde (23.11.): Angebotswand raus (Musik −1 Takt, Schlag 71,625 → 73,878, Takt-Phase bleibt) und Endscreen „hammeralbrecht.design“ raus:
 # die Logo-Übersicht bleibt stehen, solange der Schluss-Bass ausklingt, der Film endet mit der Musik (stille Reststrecke weg)
@@ -1091,7 +1092,7 @@ if WAND_ENDSCREEN_RAUS:
     _gs["len"] = round(_we - _gs["start"], 4); _gs["rate"] = 1
     PARAMS["gutsch"] = {**PARAMS.get("gutsch", {}), "len": _gs["len"], "hold": .25, "zoomDur": .8, "scrollAt": 1.1, "scrollDur": 2.3, "matchAt": round(_gs["len"] - .97, 4)}
     # Endscreen: kein schwarzer Kreis / keine Pill mehr, Film endet, wenn der Bass ausgeklungen ist (Musik endet ~113,45 s vor diesem Schnitt)
-    _ec = CLIPS["endc"]; _ecc = _ec["len"] * _ec.get("rate", 1); _end = round(113.45 + (6.873 - _CD) - _WD, 4)
+    _ec = CLIPS["endc"]; _ecc = _ec["len"] * _ec.get("rate", 1); _end = round(113.45 + (6.873 - _CDM) - _WD, 4)
     _ec["len"] = round(_end - _ec["start"], 4)
     rep("r0.call(this,M,Math.max(0,t-pre));\n  const out=pre+P.flyAt-.05;", "const out=pre+P.flyAt-.05;r0.call(this,M,Math.max(0,Math.min(t,out-.06)-pre)); // Kunde: keine Übergabe an „Rebranding by HammerAlbrecht“ – Logo-Übersicht bleibt bis zum Ende")
     rep("k=eBack(seg(t,a,a+.4))*(1-eInCub(seg(t,o,o+.25)));", "k=eBack(seg(t,a,a+.4));")   # Partner-Bubbles bleiben (schweben weiter)
