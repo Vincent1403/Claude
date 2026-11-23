@@ -1067,7 +1067,7 @@ PARAMS["rabatt"] = {**PARAMS["rabatt"], "inAt": 0, "outAt": round(PARAMS["rabatt
 # POS-Bild 1 schließt direkt an die Anzeigen an und reicht bis zur alten Stelle von POS 2 (−3 Takte); alles danach rückt 3 Takte vor (Bass bleibt auf der Endcard)
 TABLET_NEWS_RAUS = True
 if TABLET_NEWS_RAUS:
-    _CP, _CD = 87.021, round(93.894 - 87.021, 4)
+    _CP, _CD = 87.021, 6.85715   # Kunde: exakt 3 Takte (sample-genau per Wellenform-Abgleich; vorher 6,873 = 16 ms zu lang)
     _p1 = CLIPS["pos"]; _p1e = _p1["start"] + _p1["len"]
     for _k in ("laptop", "newsl"): CLIPS[_k] = {**CLIPS[_k], "start": 9000.0}
     for _k, _v in CLIPS.items():
@@ -1083,7 +1083,7 @@ if TABLET_NEWS_RAUS:
 # die Logo-Übersicht bleibt stehen, solange der Schluss-Bass ausklingt, der Film endet mit der Musik (stille Reststrecke weg)
 WAND_ENDSCREEN_RAUS = True
 if WAND_ENDSCREEN_RAUS:
-    _WP, _WD = 71.625, round(73.878 - 71.625, 4)
+    _WP, _WD = 64.764, 2.28567   # Kunde: Schnitt ruckelte (34 ms zu kurz, mitten im Aufbau vor dem Drop) → einen der gleichklingenden Takte davor raus, exakt 1 Takt; Drop bleibt auf „Konsistent …“
     _w = CLIPS["wall"]; _we = _w["start"] + _w["len"]; _gse = CLIPS["gutsch"]["start"] + CLIPS["gutsch"]["len"]
     CLIPS["wall"] = {**_w, "start": 9000.0}
     for _k, _v in CLIPS.items():
@@ -1094,7 +1094,7 @@ if WAND_ENDSCREEN_RAUS:
     _ka["start"] = round(_gse, 4); _ka["len"] = round(_kae - _gse, 4); _ka["rate"] = round(_kc / _ka["len"], 4)   # schließt direkt an das Handy an
     _EDN_A = _EDN_A + [(_WP, -_WD, 0)]; _ED = _ED + [(_WP, -_WD, 0)]
     # Endscreen: kein schwarzer Kreis / keine Pill mehr, Film endet, wenn der Bass ausgeklungen ist (Musik endet ~113,45 s vor diesem Schnitt)
-    _ec = CLIPS["endc"]; _ecc = _ec["len"] * _ec.get("rate", 1); _end = round(113.45 - _WD, 4)
+    _ec = CLIPS["endc"]; _ecc = _ec["len"] * _ec.get("rate", 1); _end = round(113.45 + (6.873 - _CD) - _WD, 4)
     _ec["len"] = round(_end - _ec["start"], 4)
     rep("r0.call(this,M,Math.max(0,t-pre));\n  const out=pre+P.flyAt-.05;", "const out=pre+P.flyAt-.05;r0.call(this,M,Math.max(0,Math.min(t,out-.06)-pre)); // Kunde: keine Übergabe an „Rebranding by HammerAlbrecht“ – Logo-Übersicht bleibt bis zum Ende")
     rep("k=eBack(seg(t,a,a+.4))*(1-eInCub(seg(t,o,o+.25)));", "k=eBack(seg(t,a,a+.4));")   # Partner-Bubbles bleiben (schweben weiter)
