@@ -1097,6 +1097,7 @@ if WAND_ENDSCREEN_RAUS:
     rep("r0.call(this,M,Math.max(0,t-pre));\n  const out=pre+P.flyAt-.05;", "const out=pre+P.flyAt-.05;r0.call(this,M,Math.max(0,Math.min(t,out-.06)-pre)); // Kunde: keine Übergabe an „Rebranding by HammerAlbrecht“ – Logo-Übersicht bleibt bis zum Ende")
     rep("k=eBack(seg(t,a,a+.4))*(1-eInCub(seg(t,o,o+.25)));", "k=eBack(seg(t,a,a+.4));")   # Partner-Bubbles bleiben (schweben weiter)
     print("Wand + Endscreen raus: Ende", round(_ec["start"] + _ec["len"], 3))
+CLIPS["formats"]["start"] = 75.619   # Kunde hat „Formate“ im Editor auf den Schlag gezogen (Timeline v152)
 _NET = round(sum(d for _, d, _ in _ED), 4)
 s = re.sub(r"const T_MAIN=([\d.]+), FPS=24, TRACK_LEN=([\d.]+);", lambda m: f"const T_MAIN={round(float(m.group(1)) + _NET, 2)}, FPS=24, TRACK_LEN={round(float(m.group(2)) + _NET, 2)};", s, count=1)
 _EDJ = json.dumps([[p, d, src] for p, d, src in _ED])
