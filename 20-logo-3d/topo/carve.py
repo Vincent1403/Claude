@@ -15,6 +15,8 @@
 #     --no-markers : leave out the crosses / squares.
 #     --ease PX    : instead of flattening a hard rectangle for the logo, let the terrain ease into
 #                    it (one level per PX px of distance), so contours curve around it smoothly.
+#     --zone X,Y,W,H : another flat area (crop px, y up, X,Y = bottom-left corner), e.g. for more
+#                    logos; repeatable. Listed in the output as zones[i] = {x, y, w, h, k}.
 import sys, json, numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
@@ -24,6 +26,9 @@ opts = {}
 for name in ('--surface', '--down', '--up', '--ease'):
     if name in args:
         i = args.index(name); opts[name] = int(args[i + 1]); del args[i:i + 2]
+extra = []
+while '--zone' in args:
+    i = args.index('--zone'); extra.append([int(v) for v in args[i + 1].split(',')]); del args[i:i + 2]
 no_markers = '--no-markers' in args
 args = [a for a in args if a != '--no-markers']
 img_path, elev_path, out = args[0:3]
@@ -41,25 +46,33 @@ else:
 lw = int(w * logo_frac); lh = int(lw / logo_aspect)
 mx, my = (int(w * margin),) * 2 if margin else (int(w * 0.08), int(w * 0.10))
 ly0 = h - my - lh
-zone = (slice(ly0 - 14, h - my + 14), slice(mx - 14, mx + lw + 14))
-vals, counts = np.unique(r[zone], return_counts=True)
-logo_k = int(vals[counts.argmax()])
-if '--ease' in opts:
-    # Ease the terrain into the flat zone instead of cutting it off at the rectangle: at distance d
-    # (px) from the zone the relief may differ from the logo level by at most d / RAMP levels, so
-    # contours that would cross the zone bend around it in smooth, rounded curves.
-    # The flat zone is a squircle (|x/a|^4 + |y/b|^4 <= 1) just enclosing the rectangle, so the
-    # curves around it have no straight runs.
-    ramp = opts['--ease']
-    (ys, xs) = zone
-    cy, cx = (ys.start + ys.stop) / 2, (xs.start + xs.stop) / 2
-    a_, b_ = (xs.stop - xs.start) / 2 * 2 ** 0.25, (ys.stop - ys.start) / 2 * 2 ** 0.25
-    yy, xx = np.mgrid[0:r.shape[0], 0:r.shape[1]]
-    inzone = ((xx - cx) / a_) ** 4 + ((yy - cy) / b_) ** 4 <= 1
-    d = ndi.distance_transform_edt(~inzone)
-    r = np.clip(r, np.ceil(logo_k - d / ramp), np.floor(logo_k + d / ramp)).astype(int)
-else:
-    r[zone] = logo_k
+def flatten(zone):
+    """Make a zone (y-down slices) flat at the level most of it already has; returns that level."""
+    global r
+    vals, counts = np.unique(r[zone], return_counts=True)
+    k = int(vals[counts.argmax()])
+    if '--ease' in opts:
+        # Ease the terrain into the flat zone instead of cutting it off at the rectangle: at
+        # distance d (px) from the zone the relief may differ from its level by at most d / RAMP
+        # levels, so contours that would cross the zone bend around it in smooth, rounded curves.
+        # The flat zone is a squircle (|x/a|^4 + |y/b|^4 <= 1) just enclosing the rectangle, so
+        # the curves around it have no straight runs.
+        ramp = opts['--ease']
+        (ys, xs) = zone
+        cy, cx = (ys.start + ys.stop) / 2, (xs.start + xs.stop) / 2
+        a_, b_ = (xs.stop - xs.start) / 2 * 2 ** 0.25, (ys.stop - ys.start) / 2 * 2 ** 0.25
+        yy, xx = np.mgrid[0:r.shape[0], 0:r.shape[1]]
+        inzone = ((xx - cx) / a_) ** 4 + ((yy - cy) / b_) ** 4 <= 1
+        d = ndi.distance_transform_edt(~inzone)
+        r = np.clip(r, np.ceil(k - d / ramp), np.floor(k + d / ramp)).astype(int)
+    else:
+        r[zone] = k
+    return k
+logo_k = flatten((slice(ly0 - 14, h - my + 14), slice(mx - 14, mx + lw + 14)))
+zones = []
+for zx, zy, zw, zh in extra:
+    zk = flatten((slice(h - zy - zh - 14, h - zy + 14), slice(zx - 14, zx + zw + 14)))
+    zones.append({'x': zx, 'y': zy, 'w': zw, 'h': zh, 'k': zk})
 kmin, kmax = int(r.min()), int(r.max())
 slabs = []
 for k in range(kmin + 1, kmax + 1):
@@ -109,4 +122,4 @@ if not no_markers:
             markers.append({'type': kind, 'x': round(best[0], 1), 'y': round(h - best[1], 1), 's': s_, 'k': best[2]})
 print('w', w, 'h', h, 'levels', kmin, '..', kmax, 'logo level', logo_k, 'markers', len(markers))
 json.dump({'w': w, 'h': h, 'kmin': kmin, 'kmax': kmax, 'slabs': slabs, 'markers': markers,
-           'logo': {'x': mx, 'y': my, 'w': lw, 'h': lh, 'k': logo_k}}, open(out, 'w'), separators=(',', ':'))
+           'logo': {'x': mx, 'y': my, 'w': lw, 'h': lh, 'k': logo_k}, 'zones': zones}, open(out, 'w'), separators=(',', ':'))
