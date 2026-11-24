@@ -457,10 +457,10 @@ function buildBlock() {
     const bar = new THREE.Shape().moveTo(-12, -b).lineTo(12, -b).lineTo(12, b).lineTo(-12, b).closePath();
     return new THREE.Shape(bar.getPoints().map(p => p.clone().rotateAround(new THREE.Vector2(), THREE.MathUtils.degToRad(a))));
   });
-  const zc = -12;   // column centre: towards the back, clear of the terraces cut in at the front edge
-  side(SVGLoader.createShapes(svgPaths[0]), zc, 420, 40, 40);            // Sunlight logo (palm disc)
-  side(cross(1.1), zc, 372, 22, 22);                                     // ×
-  side(partnerShapes(), zc, 328, 50, 30);                                // partner logo
+  const zc = -7;    // column centre: a little towards the back, clear of the terraces at the front edge
+  side(SVGLoader.createShapes(svgPaths[0]), zc, 422, 34, 34);            // Sunlight logo (palm disc)
+  side(cross(1.0), zc, 380, 19, 19);                                     // ×
+  side(partnerShapes(), zc, 343, 42, 25);                                // partner logo
   side(SVGLoader.createShapes(logoTextPaths[1]), zc, 112, 200, 30, true); // thank-you text, reading up
   return g;
 }
