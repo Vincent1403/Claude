@@ -250,8 +250,9 @@ const pointInPoly = (p, pts) => {
   return inside;
 };
 // Engrave: cut `pts` as a hole into whichever shape of the layer contains it. Returns success.
+// The host is found from a point on the outline itself (a centroid can fall outside a ring shape).
 const engrave = (shapes, pts) => {
-  const c = pts.reduce((m, p) => m.add(p), new THREE.Vector2()).divideScalar(pts.length);
+  const c = pts[0];
   const host = shapes.find(sh => pointInPoly(c, sh.getPoints()) && !sh.holes.some(h => pointInPoly(c, h.getPoints())));
   if (host) host.holes.push(new THREE.Path(pts));
   return !!host;
@@ -383,19 +384,23 @@ const logoTextPaths = new SVGLoader().parse(LOGO_TEXT_SVG).paths;
 
 // The certificate board leans back on a triangular wedge (side profile: a right triangle
 // against the back of the board). setStand(false) removes the wedge and stands it upright.
-// Placeholder for the partner logo: a thin rounded frame filling the top-right flat zone.
-function partnerPlaceholder({ w, h }) {
-  const rr = (p, x, y, pw, ph, r) => p.moveTo(x + r, y).lineTo(x + pw - r, y).quadraticCurveTo(x + pw, y, x + pw, y + r)
-    .lineTo(x + pw, y + ph - r).quadraticCurveTo(x + pw, y + ph, x + pw - r, y + ph).lineTo(x + r, y + ph)
-    .quadraticCurveTo(x, y + ph, x, y + ph - r).lineTo(x, y + r).quadraticCurveTo(x, y, x + r, y);
-  const frame = rr(new THREE.Shape(), 0, 0, w, h, 22), line = 5;   // crop px: ~1.4 mm line on A4
-  frame.holes.push(rr(new THREE.Path(), line, line, w - 2 * line, h - 2 * line, 22 - line));
-  return [frame];
-}
+// Partner logo (logo-thein.svg), engraved top right on the certificates and on the block's side.
+// Flipped so +y is up, like the other artwork.
+const PARTNER_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240.2 143.3"><g transform="scale(1,-1)">
+<path d="M159.9,24c10.2,0,17.1,10.9,12.6,20.1-4.3,9-16.3,10.7-23,3.4-3.2-3.5-4.4-8.4-3.2-12.9C147.9,28.4,153.5,24,159.9,24"/>
+<path d="M113.3,90.7h12.5s4.1-10.6,4.1-10.6h-12.8c-8.3-.7-3.8-12.1,4.6-11.4l-2.2,6h12.5l.9-2.6c3.7-9.4-.7-15.8-11.2-15.4C100.1,58.4,88.2,90.1,113.3,90.7"/>
+<path d="M73.8,49.1h12.9s-4,10.3-4,10.3c10-6.7,17.3,1.1,15.2,8l-9,23.3h-12.7s6.9-17.7,6.9-17.7c1.5-4.4-4.1-4.4-5.6-.4l-7,18h-12.7C62.6,78.2,69.1,61.5,73.8,49.1"/>
+<polyline points="132 90.6 144.7 90.7 157.7 57.6 144.9 57.6"/>
+<path d="M163.9,57.6h13s-.8,1.9-.8,1.9c10-6.8,17.3,1,15.2,8l-9.1,23.2h-12.6s6.9-17.7,6.9-17.7c1.5-4.3-4.1-4.4-5.6-.4l-7,18h-12.7C156,78.2,159.1,69.9,163.9,57.6"/>
+<path d="M140.9,44.7h-69c-6,5-22.7,24.3-22,45.9H10c1.3-9.3,3.7-15.2,7.5-21.3,1.5-2.4,9.2-15,21.1-24.6H0s4.7-12,4.7-12h135.7C139,37,139.2,40.5,140.9,44.7"/>
+<path d="M178.9,44.8h27.3c0,0,4.6-12.1,4.6-12.1h-31.5C180.7,36.4,180.7,41,178.9,44.8"/>
+<path d="M238.8,40.4C229.1,4.8,170.2-10.1,107.4,7.2c-20,5.5-38,13.6-53,23.3h36.2c6.8-4.4,14.3-8.4,22.4-11.8C158.4-.1,204.8,7.6,216.5,36c11.8,28.3-15.5,66.6-60.9,85.5-45.5,18.9-91.8,11.1-103.6-17.2-1.5-3.7-1.9-7.5-2.1-11.5H10c0,3.4.5,6.8,1.4,10.1,9.8,35.6,68.6,50.5,131.4,33.2C205.6,118.8,248.6,76,238.8,40.4"/>
+</g></svg>`;
+const partnerShapes = () => new SVGLoader().parse(PARTNER_SVG).paths.flatMap(p => SVGLoader.createShapes(p));
 function buildCert(plastic = false) {
   const board = buildTopo(CERT, CERT_W, CERT_D, CERT_STEP, logoTextPaths, plastic, [
     { zone: 0, shapes: SVGLoader.createShapes(svgPaths[0]) },   // top left: Sunlight logo (palm disc)
-    { zone: 1, shapes: partnerPlaceholder(CERT.zones[1]) },     // top right: partner logo placeholder
+    { zone: 1, shapes: partnerShapes() },                       // top right: partner logo
   ]);
   board.position.z = CERT_D / 2;                 // pivot = the board's back-bottom edge, where it rests
   const pivot = new THREE.Group();
@@ -420,7 +425,7 @@ function buildCert(plastic = false) {
 }
 
 // Upright topo block: the plain "20" engraved on the front, and on its left side (laser-burnt into
-// the surface) the Sunlight logo, a "×", the partner logo placeholder and the thank-you text
+// the surface) the Sunlight logo, a "×", the partner (Thein) logo and the thank-you text
 // running up the side.
 function buildBlock() {
   const g = buildTopo(TOPO, TOPO_W, TOPO_D, TOPO_STEP, [logoTextPaths[0]]);   // [0] = the plain "20"
@@ -454,7 +459,7 @@ function buildBlock() {
   });
   side(SVGLoader.createShapes(svgPaths[0]), 0, 420, 40, 40);            // Sunlight logo (palm disc)
   side(cross(1.1), 0, 372, 22, 22);                                     // ×
-  side(partnerPlaceholder({ w: 217, h: 126 }), 0, 330, 50, 29);         // partner logo placeholder
+  side(partnerShapes(), 0, 328, 56, 34);                                // partner logo
   side(SVGLoader.createShapes(logoTextPaths[1]), 0, 112, 200, 30, true); // thank-you text, reading up
   return g;
 }
