@@ -6,7 +6,7 @@ wooden "Topo" block in `../index.html` (the `TOPO` constant).
 ```bash
 python analyze.py topo-pattern.webp out                              # contour lines -> bands between them
 python height.py out                                                 # bands -> elevation (closed loops = summits)
-python carve.py topo-pattern.webp out/elev.npy out/carve.json 250 470 -2   # crop x, crop width, carve floor
+python carve.py topo-pattern.webp out/elev.npy out/carve.json 250 470 -2 0.55 2.585 --no-markers   # crop x, crop width, carve floor; plain "20" 55% wide
 python carve.py topo-pattern.webp out/elev.npy out/cert.json 100 758 -2 0.55 2.796 0.05 --surface 0 --down 3 --up 4 --no-markers --ease 30 --zone 37,909,126,126 --zone 504,909,217,126  # A4 crop; text 55% wide; relief both ways; flat corners for the Sunlight and partner logos
 ```
 
@@ -20,5 +20,5 @@ Needs numpy, scipy, scikit-image, pillow. Paste `out/carve.json` into `TOPO` (up
 - Certificate (`--surface 0 --down 3 --up 4`): contour level 0 is the board surface; higher ground
   is raised out of the wood up to 4 steps (mountains), lower ground carved in down to 3 steps.
 - A flat area at the bottom left is kept for the engraved logo, at the level most of it already
-  has. The pattern's crosses and squares (block only) are engraved into whichever level they land
-  on, nudged off step edges.
+  has. `carve.py` can also engrave the pattern's crosses and squares (leave out `--no-markers`);
+  neither piece uses them now.
