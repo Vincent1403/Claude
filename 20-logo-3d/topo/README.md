@@ -7,7 +7,7 @@ wooden "Topo" block in `../index.html` (the `TOPO` constant).
 python analyze.py topo-pattern.webp out                              # contour lines -> bands between them
 python height.py out                                                 # bands -> elevation (closed loops = summits)
 python carve.py topo-pattern.webp out/elev.npy out/carve.json 250 470 -2 0.55 2.585 0.05 --no-markers   # crop x, crop width, carve floor; plain "20" 55% wide, 5% margins
-python carve.py topo-pattern.webp out/elev.npy out/cert.json 100 758 -2 0.55 2.796 0.05 --surface 0 --down 3 --up 4 --no-markers --ease 30 --zone 37,909,126,126 --zone 504,909,217,126  # A4 crop; text 55% wide; relief both ways; flat corners for the Sunlight and partner logos
+python carve.py topo-pattern.webp out/elev.npy out/cert.json 100 758 -2 0.55 2.796 0.05 --surface 0 --down 3 --up 4 --no-markers --ease 30 --zone 37,909,126,126 --zone 461,909,260,126  # A4 crop; text 55% wide; relief both ways; flat corners for the Sunlight logo and the partner name
 ```
 
 Needs numpy, scipy, scikit-image, pillow. Paste `out/carve.json` into `TOPO` (upright block) and
